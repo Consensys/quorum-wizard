@@ -3,22 +3,24 @@ require "yaml"
 
 def start()
   prompt = TTY::Prompt.new(help_color: :cyan)
-  
+
   option = prompt.select("What would you like to do?", [
-    { name: 'Quickstart', value: 1 },
-    { name: 'Create Custom Network', value: 2 },
-    { name: 'Exit', value: 3 }
+      {name: 'Quickstart (quorum-examples)', value: 1},
+      { name: 'Create Custom Network', value: 2 },
+      { name: 'Exit', value: 3 }
   ])
-  
-  if(option == 1) 
+
+
+  case option
+  when 1
     result = prompt.collect do
       key('numNodes').ask('Number of nodes?', default: '7', in: '1-10')
-  
+
       key('consensus').select("Consensus?", %w(istanbul raft clique))
       key('deployment').select("How do you want to run this network?", %w(docker-compose kubernetes vagrant bash))
     end
     generate_default(result)
-  elsif(option == 2)
+  when 2
     result = prompt.collect do
       key('namespace') do
         key('name').ask('Name of network?', default: 'quorum-test')
@@ -29,11 +31,11 @@ def start()
       key('quorum') do
         consensus = key('consensus').select("Consensus?", %w(istanbul raft clique))
 
-        key('Permissioned_Nodes_File').ask("?", default: "7nodes/permissioned-nodes.json")
-        key('Genesis_File').ask("?", default: "7nodes/istanbul-7nodes/istanbul-genesis.json")
+        key('Permissioned_Nodes_File').ask("Permissioned nodes file location?", default: "7nodes/permissioned-nodes.json")
+        key('Genesis_File').ask("Genesis file location?", default: "7nodes/istanbul-7nodes/istanbul-genesis.json")
         key('quorum') do
           key('Quorum_Version').select('Quorum version?', %w(2.4.0 2.3.0 2.2.4 2.2.3))
-          if(consensus == 'raft')
+          if consensus == 'raft'
             key('Raft_Port').ask("Raft port?", default: 50401, convert: :int)
           end
         end
@@ -54,6 +56,8 @@ def start()
       end
     end
     generate(result)
+  else
+    # exit, do nothing
   end
 end
 
