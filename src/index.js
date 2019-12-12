@@ -1,4 +1,5 @@
 const inquirer = require('inquirer')
+const fs = require('fs')
 const {
   INITIAL_MODE,
   NUMBER_NODES,
@@ -65,6 +66,9 @@ async function quickstart () {
 
 function createNetwork (config) {
   console.log(config)
+  let path = `network/${config.network.name}`
+  fs.mkdirSync(path, {recursive: true})
+  fs.writeFileSync(`${path}/config.json`, JSON.stringify(config, null, 2))
 }
 
 

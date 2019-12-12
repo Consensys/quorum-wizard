@@ -1,0 +1,103 @@
+{
+  "network": {
+    "name": "7-nodes-istanbul-bash",
+    "consensus": "istanbul",
+    "id": 10,
+    "permissioned": "true",
+    "genesis_file": "7nodes/istanbul-genesis.json",
+    "generate_keys": "false"
+  },
+  "nodes": [
+    {
+      "quorum": {
+        "devP2pPort": 21000,
+        "rpcPort": 22000,
+        "wsPort": 23000,
+        "raftPort": 50401
+      },
+      "tm": {
+        "thirdPartyPort": 9081,
+        "p2pPort": 9001,
+        "enclavePort": 9180
+      }
+    },
+    {
+      "quorum": {
+        "devP2pPort": 21001,
+        "rpcPort": 22001,
+        "wsPort": 23001,
+        "raftPort": 50402
+      },
+      "tm": {
+        "thirdPartyPort": 9082,
+        "p2pPort": 9002,
+        "enclavePort": 9181
+      }
+    },
+    {
+      "quorum": {
+        "devP2pPort": 21002,
+        "rpcPort": 22002,
+        "wsPort": 23002,
+        "raftPort": 50403
+      },
+      "tm": {
+        "thirdPartyPort": 9083,
+        "p2pPort": 9003,
+        "enclavePort": 9182
+      }
+    },
+    {
+      "quorum": {
+        "devP2pPort": 21003,
+        "rpcPort": 22003,
+        "wsPort": 23003,
+        "raftPort": 50404
+      },
+      "tm": {
+        "thirdPartyPort": 9084,
+        "p2pPort": 9004,
+        "enclavePort": 9183
+      }
+    },
+    {
+      "quorum": {
+        "devP2pPort": 21004,
+        "rpcPort": 22004,
+        "wsPort": 23004,
+        "raftPort": 50405
+      },
+      "tm": {
+        "thirdPartyPort": 9085,
+        "p2pPort": 9005,
+        "enclavePort": 9184
+      }
+    },
+    {
+      "quorum": {
+        "devP2pPort": 21005,
+        "rpcPort": 22005,
+        "wsPort": 23005,
+        "raftPort": 50406
+      },
+      "tm": {
+        "thirdPartyPort": 9086,
+        "p2pPort": 9006,
+        "enclavePort": 9185
+      }
+    },
+    {
+      "quorum": {
+        "devP2pPort": 21006,
+        "rpcPort": 22006,
+        "wsPort": 23006,
+        "raftPort": 50407
+      },
+      "tm": {
+        "thirdPartyPort": 9087,
+        "p2pPort": 9007,
+        "enclavePort": 9186
+      }
+    }
+  ]
+}
