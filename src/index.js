@@ -22,6 +22,7 @@ function start() {
   })
 }
 
+
 async function quickstart () {
   const { numberNodes, consensus, deployment } = await inquirer.prompt([
     NUMBER_NODES,
@@ -38,31 +39,9 @@ async function quickstart () {
       genesisFile: `7nodes/${consensus}-genesis.json`,
       generateKeys: 'false',
     },
-    nodes: []
+    nodes: generateNodeConfigs(numberNodes)
   }
-  let devP2pPort = 21000,
-    rpcPort = 22000,
-    wsPort = 23000,
-    raftPort = 50401,
-    thirdPartyPort = 9081,
-    p2pPort = 9001,
-    enclavePort = 9180
-  for (let i = 0; i < parseInt(numberNodes, 10); i++) {
-    const node = {
-      quorum: {
-        devP2pPort: devP2pPort + i,
-        rpcPort: rpcPort + i,
-        wsPort: wsPort + i,
-        raftPort: raftPort + i,
-      },
-      tm: {
-        thirdPartyPort: thirdPartyPort + i,
-        p2pPort: p2pPort + i,
-        enclavePort: enclavePort + i,
-      }
-    }
-    config.nodes.push(node)
-  }
+
   createNetwork(config)
 }
 
@@ -103,37 +82,69 @@ function createNetwork (config) {
     const { verbosity, id, consensus } = config.network
     const { devP2pPort, rpcPort, wsPort, raftPort } = node.quorum
 
-    const args =`--nodiscover --verbosity ${verbosity} --networkid ${id} --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --emitcheckpoints --unlock 0 --password qdata/dd${nodeNumber}/keystore/password.txt`
-    console.log('consensus:', consensus)
+    const args = `--nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --emitcheckpoints --unlock 0 --password qdata/dd${nodeNumber}/keystore/password.txt`
     const consensusArgs = consensus === 'raft' ?
       `--raft --raftport ${raftPort}` :
       `--istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1`
 
-    const startCommand = `PRIVATE_CONFIG=ignore nohup geth --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --rpcport ${rpcPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
+    const startCommand = `PRIVATE_CONFIG=ignore nohup geth --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --verbosity ${verbosity} --networkid ${id} --rpcport ${rpcPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
     startCommands.push(startCommand)
   })
 
   config.nodes.forEach((node, i) => {
     // TODO figure out the safest way to run shell commands
-    exec(`cd ${path} && geth --datadir qdata/dd${i+1} init qdata/dd${i+1}/genesis.json`, (e, stdout, stderr)=> {
-      if (e instanceof Error) {
-        console.error(e);
-        throw e;
-      }
-    });
+    let nodeNumber = i + 1
+    exec(
+      `cd ${path} && geth --datadir qdata/dd${nodeNumber} init qdata/dd${nodeNumber}/genesis.json`,
+      (e, stdout, stderr) => {
+        if (e instanceof Error) {
+          console.error(e)
+          throw e
+        }
+      })
   })
-  fs.writeFileSync(`${path}/start.sh`, startCommands.join("\n"))
-  fs.chmodSync(`${path}/start.sh`, "755");
+  fs.writeFileSync(`${path}/start.sh`, startCommands.join('\n'))
+  fs.chmodSync(`${path}/start.sh`, '755')
   fs.copyFileSync(`lib/stop.sh`, `${path}/stop.sh`)
 
-  exitMessage = `Network successfully created.\n\ncd ${path}\n./start.sh`
+  exitMessage = `Network successfully created. Run the following to start your network:\n\ncd ${path}\n./start.sh`
+}
+
+function generateNodeConfigs (numberNodes) {
+  let devP2pPort = 21000,
+    rpcPort = 22000,
+    wsPort = 23000,
+    raftPort = 50401,
+    thirdPartyPort = 9081,
+    p2pPort = 9001,
+    enclavePort = 9180,
+    nodes = []
+
+  for (let i = 0; i < parseInt(numberNodes, 10); i++) {
+    const node = {
+      quorum: {
+        devP2pPort: devP2pPort + i,
+        rpcPort: rpcPort + i,
+        wsPort: wsPort + i,
+        raftPort: raftPort + i,
+      },
+      tm: {
+        thirdPartyPort: thirdPartyPort + i,
+        p2pPort: p2pPort + i,
+        enclavePort: enclavePort + i,
+      }
+    }
+    nodes.push(node)
+  }
+  return nodes
 }
 
 function generateStaticNodes (nodes, consensus) {
   return nodes.map((node, i) => {
     const nodeNumber = i + 1
     const generatedKeyFolder = `7nodes/key${nodeNumber}`
-    const enodeId = fs.readFileSync(`${generatedKeyFolder}/enode`, 'utf8').trim()
+    const enodeId = fs.readFileSync(`${generatedKeyFolder}/enode`,
+      'utf8').trim()
 
     let enodeAddress = `enode://${enodeId}@127.0.0.1:${node.quorum.devP2pPort}?discport=0`
     if (consensus === 'raft') {
