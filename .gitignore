@@ -1,4 +1,6 @@
 # Default ignored files
 .idea
-node_modules/
+node_modules
+network
+.DS_Store
 
