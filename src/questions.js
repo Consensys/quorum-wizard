@@ -25,7 +25,6 @@ module.exports = {
     choices: [
       'istanbul',
       'raft',
-      'clique'
     ]
   },
   DEPLOYMENT_TYPE: {
