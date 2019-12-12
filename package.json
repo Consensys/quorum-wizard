@@ -1,0 +1,24 @@
+{
+  "name": "quorum-creator",
+  "version": "0.1.0",
+  "description": "Tool for walking through the setup of Quorum networks.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QuorumEngineering/quorum-creator.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/QuorumEngineering/quorum-creator/issues"
+  },
+  "homepage": "https://github.com/QuorumEngineering/quorum-creator#readme",
+  "dependencies": {
+    "inquirer": "^7.0.0",
+    "js-yaml": "^3.13.1"
+  }
+}
