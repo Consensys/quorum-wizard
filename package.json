@@ -4,9 +4,10 @@
   "description": "Tool for walking through the setup of Quorum networks.",
   "main": "src/index.js",
   "scripts": {
-    "build": "babel src -d build",
-    "start": "babel src --watch -d build",
-    "test": "test"
+    "build": "babel src -d build --ignore \"src/**/*.test.js\"",
+    "start": "babel src --watch -d build --ignore \"src/**/*.test.js\"",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,8 @@
     "@babel/core": "^7.7.5",
     "@babel/plugin-transform-modules-commonjs": "^7.7.5",
     "@babel/plugin-transform-runtime": "^7.7.6",
-    "@babel/preset-env": "^7.7.6"
+    "@babel/preset-env": "^7.7.6",
+    "babel-jest": "^24.9.0",
+    "jest": "^24.9.0"
   }
 }
