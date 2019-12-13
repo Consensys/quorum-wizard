@@ -1,0 +1,189 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`creates 5nodes raft config 1`] = `
+Object {
+  "network": Object {
+    "consensus": "raft",
+    "generateKeys": "false",
+    "genesisFile": "7nodes/raft-genesis.json",
+    "id": 10,
+    "name": "5-nodes-raft-bash",
+    "permissioned": "true",
+    "verbosity": 5,
+  },
+  "nodes": Array [
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21000,
+        "raftPort": 50401,
+        "rpcPort": 22000,
+        "wsPort": 23000,
+      },
+      "tm": Object {
+        "enclavePort": 9180,
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21001,
+        "raftPort": 50402,
+        "rpcPort": 22001,
+        "wsPort": 23001,
+      },
+      "tm": Object {
+        "enclavePort": 9181,
+        "p2pPort": 9002,
+        "thirdPartyPort": 9082,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21002,
+        "raftPort": 50403,
+        "rpcPort": 22002,
+        "wsPort": 23002,
+      },
+      "tm": Object {
+        "enclavePort": 9182,
+        "p2pPort": 9003,
+        "thirdPartyPort": 9083,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21003,
+        "raftPort": 50404,
+        "rpcPort": 22003,
+        "wsPort": 23003,
+      },
+      "tm": Object {
+        "enclavePort": 9183,
+        "p2pPort": 9004,
+        "thirdPartyPort": 9084,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21004,
+        "raftPort": 50405,
+        "rpcPort": 22004,
+        "wsPort": 23004,
+      },
+      "tm": Object {
+        "enclavePort": 9184,
+        "p2pPort": 9005,
+        "thirdPartyPort": 9085,
+      },
+    },
+  ],
+}
+`;
+
+exports[`creates 7nodes istanbul config 1`] = `
+Object {
+  "network": Object {
+    "consensus": "istanbul",
+    "generateKeys": "false",
+    "genesisFile": "7nodes/istanbul-genesis.json",
+    "id": 10,
+    "name": "7-nodes-istanbul-bash",
+    "permissioned": "true",
+    "verbosity": 5,
+  },
+  "nodes": Array [
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21000,
+        "raftPort": 50401,
+        "rpcPort": 22000,
+        "wsPort": 23000,
+      },
+      "tm": Object {
+        "enclavePort": 9180,
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21001,
+        "raftPort": 50402,
+        "rpcPort": 22001,
+        "wsPort": 23001,
+      },
+      "tm": Object {
+        "enclavePort": 9181,
+        "p2pPort": 9002,
+        "thirdPartyPort": 9082,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21002,
+        "raftPort": 50403,
+        "rpcPort": 22002,
+        "wsPort": 23002,
+      },
+      "tm": Object {
+        "enclavePort": 9182,
+        "p2pPort": 9003,
+        "thirdPartyPort": 9083,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21003,
+        "raftPort": 50404,
+        "rpcPort": 22003,
+        "wsPort": 23003,
+      },
+      "tm": Object {
+        "enclavePort": 9183,
+        "p2pPort": 9004,
+        "thirdPartyPort": 9084,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21004,
+        "raftPort": 50405,
+        "rpcPort": 22004,
+        "wsPort": 23004,
+      },
+      "tm": Object {
+        "enclavePort": 9184,
+        "p2pPort": 9005,
+        "thirdPartyPort": 9085,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21005,
+        "raftPort": 50406,
+        "rpcPort": 22005,
+        "wsPort": 23005,
+      },
+      "tm": Object {
+        "enclavePort": 9185,
+        "p2pPort": 9006,
+        "thirdPartyPort": 9086,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21006,
+        "raftPort": 50407,
+        "rpcPort": 22006,
+        "wsPort": 23006,
+      },
+      "tm": Object {
+        "enclavePort": 9186,
+        "p2pPort": 9007,
+        "thirdPartyPort": 9087,
+      },
+    },
+  ],
+}
+`;

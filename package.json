@@ -4,8 +4,8 @@
   "description": "Tool for walking through the setup of Quorum networks.",
   "main": "src/index.js",
   "scripts": {
-    "build": "babel src -d build --ignore \"src/**/*.test.js\" --source-maps inline",
-    "start": "babel src --watch -d build --ignore \"src/**/*.test.js\" --source-maps inline",
+    "build": "babel src -d build --ignore \"src/__tests__/*\" --source-maps inline",
+    "start": "babel src --watch -d build --ignore \"src/__tests__/*\" --source-maps inline",
     "test": "jest",
     "test:watch": "jest --watch"
   },
