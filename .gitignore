@@ -3,4 +3,5 @@
 node_modules
 network
 .DS_Store
+build
 

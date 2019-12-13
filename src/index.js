@@ -1,12 +1,17 @@
-const inquirer = require('inquirer')
-const fs = require('fs')
-const exec = require('child_process').exec;
-const {
-  INITIAL_MODE,
-  NUMBER_NODES,
+import { exec } from 'child_process'
+
+import fs from 'fs'
+
+import inquirer from 'inquirer'
+
+import {
   CONSENSUS_MODE,
-  DEPLOYMENT_TYPE
-} = require('./questions')
+  DEPLOYMENT_TYPE,
+  INITIAL_MODE,
+  NUMBER_NODES
+} from './questions'
+
+
 
 let exitMessage = "Exiting..."
 
@@ -51,8 +56,7 @@ function createNetwork (config) {
   let path = `network/${config.network.name}`
   fs.rmdirSync(path, {recursive: true})
   let qdata = `${path}/qdata`
-  fs.mkdirSync(qdata, {recursive: true})
-  fs.mkdirSync(`${qdata}/logs`)
+  fs.mkdirSync(`${qdata}/logs`, {recursive: true})
   fs.writeFileSync(`${path}/config.json`, JSON.stringify(config, null, 2))
 
   const staticNodes = generateStaticNodes(config.nodes, config.network.consensus)
