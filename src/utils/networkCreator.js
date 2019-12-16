@@ -1,10 +1,11 @@
 import fs from 'fs'
 import path from 'path'
-import { exec } from 'child_process'
+import { execute } from './execUtils'
 import sanitize from 'sanitize-filename'
 import {
   copyFile,
   createFolder,
+  readFileToString,
   removeFolder,
   writeFile,
   writeJsonFile
@@ -69,7 +70,7 @@ export function createNetwork (config) {
   // initialize all the nodes
   initCommands.forEach((command) => {
     // TODO figure out the safest way to run shell commands
-    exec(command, (e, stdout, stderr) => {
+    execute(command, (e, stdout, stderr) => {
       if (e instanceof Error) {
         console.error(e)
         throw e
@@ -78,12 +79,11 @@ export function createNetwork (config) {
   })
 }
 
-function createStaticNodes (nodes, consensus) {
+export function createStaticNodes (nodes, consensus) {
   return nodes.map((node, i) => {
     const nodeNumber = i + 1
     const generatedKeyFolder = `7nodes/key${nodeNumber}`
-    const enodeId = fs.readFileSync(path.join(generatedKeyFolder, 'enode'),
-      'utf8').trim()
+    const enodeId = readFileToString(path.join(generatedKeyFolder, 'enode'))
 
     let enodeAddress = `enode://${enodeId}@127.0.0.1:${node.quorum.devP2pPort}?discport=0`
     if (consensus === 'raft') {

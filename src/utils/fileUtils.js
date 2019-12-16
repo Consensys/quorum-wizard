@@ -29,3 +29,7 @@ export function createFolder (path, recursive = false) {
 export function copyFile (src, dest) {
   fs.copyFileSync(src, dest)
 }
+
+export function readFileToString (file) {
+  return fs.readFileSync(file, 'utf8').trim()
+}

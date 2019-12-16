@@ -13,7 +13,7 @@ export function createQuickstartConfig (numberNodes, consensus, deployment) {
   }
 }
 
-function generateNodeConfigs (numberNodes) {
+export function generateNodeConfigs (numberNodes) {
   let devP2pPort = 21000,
     rpcPort = 22000,
     wsPort = 23000,
