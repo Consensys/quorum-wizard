@@ -1,5 +1,4 @@
-import fs from 'fs'
-import path from 'path'
+import { join, normalize } from 'path'
 import { execute } from './execUtils'
 import sanitize from 'sanitize-filename'
 import {
@@ -18,28 +17,28 @@ export function createNetwork (config) {
     throw new Error('Network name was empty or contained invalid characters')
   }
 
-  const networkPath = path.join(process.cwd(), 'network', networkFolderName)
+  const networkPath = join(process.cwd(), 'network', networkFolderName)
   removeFolder(networkPath)
 
-  const qdata = path.join(networkPath, 'qdata')
-  const logs = path.join(qdata, 'logs')
+  const qdata = join(networkPath, 'qdata')
+  const logs = join(qdata, 'logs')
   createFolder(logs, true)
   writeJsonFile(networkPath, 'config.json', config)
 
   const staticNodes = createStaticNodes(config.nodes, config.network.consensus)
   const initCommands = []
   const startCommands = []
-  const examplesPath = path.join(process.cwd(), '7nodes')
+  const examplesPath = join(process.cwd(), '7nodes')
 
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
-    const keyFolder = path.join(examplesPath, `key${nodeNumber}`)
-    const quorumDir = path.join(qdata, `dd${nodeNumber}`)
-    const gethDir = path.join(quorumDir, `geth`)
-    const keyDir = path.join(quorumDir, `keystore`)
-    const tmDir = path.join(qdata, `c${nodeNumber}`)
-    const passwordDestination = path.join(keyDir, 'password.txt')
-    let genesisDestination = path.join(quorumDir, 'genesis.json')
+    const keyFolder = join(examplesPath, `key${nodeNumber}`)
+    const quorumDir = join(qdata, `dd${nodeNumber}`)
+    const gethDir = join(quorumDir, `geth`)
+    const keyDir = join(quorumDir, `keystore`)
+    const tmDir = join(qdata, `c${nodeNumber}`)
+    const passwordDestination = join(keyDir, 'password.txt')
+    let genesisDestination = join(quorumDir, 'genesis.json')
     createFolder(quorumDir)
     createFolder(gethDir)
     createFolder(keyDir)
@@ -47,12 +46,12 @@ export function createNetwork (config) {
 
     writeJsonFile(quorumDir, 'permissioned-nodes.json', staticNodes)
     writeJsonFile(quorumDir, 'static-nodes.json', staticNodes)
-    copyFile(path.normalize(config.network.genesisFile), genesisDestination)
-    copyFile(path.join(keyFolder, 'key'), path.join(keyDir, 'key'))
-    copyFile(path.join(keyFolder, 'nodekey'), path.join(gethDir, 'nodekey'))
-    copyFile(path.join(keyFolder, 'password.txt'), passwordDestination)
-    copyFile(path.join(keyFolder, 'tm.key'), path.join(tmDir, 'tm.key'))
-    copyFile(path.join(keyFolder, 'tm.pub'), path.join(tmDir, 'tm.pub'))
+    copyFile(normalize(config.network.genesisFile), genesisDestination)
+    copyFile(join(keyFolder, 'key'), join(keyDir, 'key'))
+    copyFile(join(keyFolder, 'nodekey'), join(gethDir, 'nodekey'))
+    copyFile(join(keyFolder, 'password.txt'), passwordDestination)
+    copyFile(join(keyFolder, 'tm.key'), join(tmDir, 'tm.key'))
+    copyFile(join(keyFolder, 'tm.pub'), join(tmDir, 'tm.pub'))
 
     const initCommand = `cd ${networkPath} && geth --datadir ${quorumDir} init ${genesisDestination}`
     initCommands.push(initCommand)
@@ -63,9 +62,8 @@ export function createNetwork (config) {
     startCommands.push(startCommand)
   })
 
-  writeFile(path.join(networkPath, 'start.sh'), startCommands.join('\n'), true)
-  copyFile(path.join(process.cwd(), 'lib/stop.sh'),
-    path.join(networkPath, 'stop.sh'))
+  writeFile(join(networkPath, 'start.sh'), startCommands.join('\n'), true)
+  copyFile(join(process.cwd(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
 
   // initialize all the nodes
   initCommands.forEach((command) => {
@@ -83,7 +81,7 @@ export function createStaticNodes (nodes, consensus) {
   return nodes.map((node, i) => {
     const nodeNumber = i + 1
     const generatedKeyFolder = `7nodes/key${nodeNumber}`
-    const enodeId = readFileToString(path.join(generatedKeyFolder, 'enode'))
+    const enodeId = readFileToString(join(generatedKeyFolder, 'enode'))
 
     let enodeAddress = `enode://${enodeId}@127.0.0.1:${node.quorum.devP2pPort}?discport=0`
     if (consensus === 'raft') {

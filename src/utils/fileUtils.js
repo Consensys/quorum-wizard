@@ -1,8 +1,8 @@
 import fs from 'fs'
-import path from 'path'
+import { join } from 'path'
 
 export function writeJsonFile (folder, filename, object, space = 2) {
-  fs.writeFileSync(path.join(folder, filename),
+  fs.writeFileSync(join(folder, filename),
     JSON.stringify(object, null, space))
 }
 

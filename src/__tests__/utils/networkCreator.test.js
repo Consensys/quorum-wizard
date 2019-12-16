@@ -1,4 +1,4 @@
-import path from 'path'
+import { join } from 'path'
 import * as fileUtils from '../../utils/fileUtils'
 import * as execUtils from '../../utils/execUtils'
 import { createNetwork, createStaticNodes } from '../../utils/networkCreator'
@@ -85,9 +85,9 @@ describe('creates static nodes json', () => {
 })
 
 function createPath(...relativePaths) {
-  return path.join(process.cwd(), ...relativePaths)
+  return join(process.cwd(), ...relativePaths)
 }
 
 function createNetPath(config, ...relativePaths) {
-  return path.join(process.cwd(), 'network', config.network.name, ...relativePaths)
+  return join(process.cwd(), 'network', config.network.name, ...relativePaths)
 }
