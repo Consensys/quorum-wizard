@@ -4,12 +4,8 @@ import * as NetworkConfig from '../../model/NetworkConfig'
 import * as networkCreator from '../../utils/networkCreator'
 
 jest.mock('inquirer')
-jest.mock('../../model/NetworkConfig', () => ({
-  createQuickstartConfig: jest.fn()
-}))
-jest.mock('../../utils/networkCreator', () => ({
-  createNetwork: jest.fn()
-}))
+jest.mock('../../model/NetworkConfig')
+jest.mock('../../utils/networkCreator')
 
 const QUICKSTART_CONFIG = {
   numberNodes: '5',
@@ -18,7 +14,7 @@ const QUICKSTART_CONFIG = {
 }
 
 test('placeholder', async () => {
-  const fakeConfig = { test: 'test'}
+  const fakeConfig = { test: 'test' }
   NetworkConfig.createQuickstartConfig.mockReturnValue(fakeConfig)
   inquirer.prompt.mockResolvedValue(QUICKSTART_CONFIG)
   await quickstart()

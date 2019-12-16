@@ -1,23 +1,20 @@
 import { join } from 'path'
-import * as fileUtils from '../../utils/fileUtils'
-import * as execUtils from '../../utils/execUtils'
 import { createNetwork, createStaticNodes } from '../../utils/networkCreator'
 import {
   createQuickstartConfig,
   generateNodeConfigs
 } from '../../model/NetworkConfig'
+import {
+  copyFile,
+  createFolder,
+  readFileToString,
+  writeFile,
+  writeJsonFile
+} from '../../utils/fileUtils'
+import { execute } from '../../utils/execUtils'
 
-jest.mock('../../utils/execUtils', () => ({
-  execute: jest.fn()
-}))
-jest.mock('../../utils/fileUtils', () => ({
-  copyFile: jest.fn(),
-  createFolder: jest.fn(),
-  removeFolder: jest.fn(),
-  writeFile: jest.fn(),
-  writeJsonFile: jest.fn(),
-  readFileToString: jest.fn()
-}))
+jest.mock('../../utils/execUtils')
+jest.mock('../../utils/fileUtils')
 
 describe('creates a network', () => {
   it('rejects invalid network names', () => {
@@ -32,25 +29,25 @@ describe('creates a network', () => {
   it('Creates the correct directory structure and moves files in', () => {
     let config = createQuickstartConfig('5', 'raft', 'bash')
     createNetwork(config)
-    expect(fileUtils.createFolder).toBeCalledWith(createNetPath(config, `qdata/logs`), true)
-    expect(fileUtils.writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', config)
+    expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/logs`), true)
+    expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', config)
     for (let i = 1; i < 6; i++) {
-      expect(fileUtils.createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}`))
-      expect(fileUtils.writeJsonFile).toBeCalledWith(createNetPath(config, `qdata/dd${i}`), 'static-nodes.json', expect.anything())
-      expect(fileUtils.writeJsonFile).toBeCalledWith(createNetPath(config, `qdata/dd${i}`), 'permissioned-nodes.json', expect.anything())
-      expect(fileUtils.createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}/geth`))
-      expect(fileUtils.createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}/keystore`))
-      expect(fileUtils.createFolder).toBeCalledWith(createNetPath(config, `qdata/c${i}`))
-      expect(fileUtils.copyFile).toBeCalledWith(config.network.genesisFile, createNetPath(config, `qdata/dd${i}`, 'genesis.json'))
-      expect(fileUtils.copyFile).toBeCalledWith(createPath(`7nodes/key${i}/key`), createNetPath(config, `qdata/dd${i}/keystore`, 'key'))
-      expect(fileUtils.copyFile).toBeCalledWith(createPath(`7nodes/key${i}/password.txt`), createNetPath(config, `qdata/dd${i}/keystore`, 'password.txt'))
-      expect(fileUtils.copyFile).toBeCalledWith(createPath(`7nodes/key${i}/nodekey`), createNetPath(config, `qdata/dd${i}/geth`, 'nodekey'))
-      expect(fileUtils.copyFile).toBeCalledWith(createPath(`7nodes/key${i}/tm.key`), createNetPath(config, `qdata/c${i}/tm.key`))
-      expect(fileUtils.copyFile).toBeCalledWith(createPath(`7nodes/key${i}/tm.pub`), createNetPath(config, `qdata/c${i}/tm.pub`))
+      expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}`))
+      expect(writeJsonFile).toBeCalledWith(createNetPath(config, `qdata/dd${i}`), 'static-nodes.json', expect.anything())
+      expect(writeJsonFile).toBeCalledWith(createNetPath(config, `qdata/dd${i}`), 'permissioned-nodes.json', expect.anything())
+      expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}/geth`))
+      expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}/keystore`))
+      expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/c${i}`))
+      expect(copyFile).toBeCalledWith(config.network.genesisFile, createNetPath(config, `qdata/dd${i}`, 'genesis.json'))
+      expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/key`), createNetPath(config, `qdata/dd${i}/keystore`, 'key'))
+      expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/password.txt`), createNetPath(config, `qdata/dd${i}/keystore`, 'password.txt'))
+      expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/nodekey`), createNetPath(config, `qdata/dd${i}/geth`, 'nodekey'))
+      expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/tm.key`), createNetPath(config, `qdata/c${i}/tm.key`))
+      expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/tm.pub`), createNetPath(config, `qdata/c${i}/tm.pub`))
     }
-    expect(fileUtils.writeFile).toBeCalledWith(createNetPath(config, 'start.sh'), expect.any(String), true)
-    expect(fileUtils.copyFile).toBeCalledWith(createPath(`lib/stop.sh`), createNetPath(config, 'stop.sh'))
-    expect(execUtils.execute).toBeCalledTimes(5)
+    expect(writeFile).toBeCalledWith(createNetPath(config, 'start.sh'), expect.any(String), true)
+    expect(copyFile).toBeCalledWith(createPath(`lib/stop.sh`), createNetPath(config, 'stop.sh'))
+    expect(execute).toBeCalledTimes(5)
   })
 })
 
@@ -62,7 +59,7 @@ describe('creates static nodes json', () => {
       "enode://def@127.0.0.1:21001?discport=0&raftport=50402",
       "enode://ghi@127.0.0.1:21002?discport=0&raftport=50403",
     ]
-    fileUtils.readFileToString
+    readFileToString
     .mockReturnValueOnce('abc')
     .mockReturnValueOnce('def')
     .mockReturnValueOnce('ghi')
@@ -76,7 +73,7 @@ describe('creates static nodes json', () => {
       "enode://def@127.0.0.1:21001?discport=0",
       "enode://ghi@127.0.0.1:21002?discport=0",
     ]
-    fileUtils.readFileToString
+    readFileToString
     .mockReturnValueOnce('abc')
     .mockReturnValueOnce('def')
     .mockReturnValueOnce('ghi')
