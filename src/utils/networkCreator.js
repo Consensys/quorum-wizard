@@ -30,10 +30,8 @@ export function createNetwork (config) {
   if(config.network.generateKeys) {
       generateKeys(config, keyPath)
   }
-  console.log(keyPath)
 
   const staticNodes = createStaticNodes(config, config.network.consensus)
-
   const initCommands = []
   const startCommands = []
 

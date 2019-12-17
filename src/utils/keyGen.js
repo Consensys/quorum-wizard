@@ -1,17 +1,13 @@
 import fs from 'fs'
 import path from 'path'
-import { execSync } from 'child_process'
+import { executeSync } from './execUtils'
 import { createFolder, copyFile } from './fileUtils'
-// import apply from 'async/apply'
-// import parallel from 'async/parallel'
 
 export function generateKeys(config, keyPath) {
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
     let keyDir = path.join(keyPath, `key${nodeNumber}`)
-    console.log(keyDir)
     createFolder(keyDir, true)
-
     copyFile(config.network.passwordFile, path.join(keyDir, `password.txt`))
 
     doExec(keyDir)
@@ -24,7 +20,10 @@ function doExec(keyDir) {
   bootnode --nodekey=nodekey --writeaddress > enode
   find . -type f -name 'UTC*' -execdir mv {} key ';'`
 
-  execSync(cmd, function(err, stdout, stderr) {
-    console.log(stdout)
+  executeSync(cmd, function(err, stdout, stderr) {
+    if (e instanceof Error) {
+      console.error(e)
+      throw e
+    }
   })
 }
