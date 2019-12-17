@@ -6,7 +6,7 @@ export const INITIAL_MODE = {
   message: 'What would you like to do?',
   choices: [
     { name: 'Quickstart (quorum-examples)', value: 1 },
-    // { name: 'Create Custom Network', value: 2 },
+    { name: 'Create Custom Network', value: 2 },
     { name: 'Exit', value: 3 }
   ]
 }
