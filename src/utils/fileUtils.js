@@ -19,7 +19,10 @@ export function removeFolder (networkPath = '') {
     networkPath.indexOf(process.cwd()) !== 0) {
     throw new Error('Tried to remove folder outside of working directory')
   }
-  fs.rmdirSync(networkPath, { recursive: true })
+
+  if(fs.existsSync(networkPath)) {
+    fs.rmdirSync(networkPath, { recursive: true })
+  }
 }
 
 export function createFolder (path, recursive = false) {
