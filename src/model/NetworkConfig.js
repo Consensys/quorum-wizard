@@ -5,13 +5,33 @@ export function createQuickstartConfig (numberNodes, consensus, deployment) {
       verbosity: 5,
       consensus: consensus,
       id: 10,
-      permissioned: 'true',
+      permissioned: true,
       genesisFile: `7nodes/${consensus}-genesis.json`,
-      generateKeys: 'false',
+      generateKeys: false,
+      keyDir: `7nodes`,
+      tessera: false,
     },
     nodes: generateNodeConfigs(numberNodes)
   }
 }
+
+export function createCustomConfig (numberNodes, consensus, deployment) {
+  return {
+    network: {
+      name: `${numberNodes}-nodes-${consensus}-${deployment}`,
+      verbosity: 5,
+      consensus: consensus,
+      id: 10,
+      permissioned: true,
+      genesisFile: `7nodes/${consensus}-genesis.json`,
+      generateKeys: true,
+      keyDir: `network/${numberNodes}-nodes-${consensus}-${deployment}/generated`,
+      passwordFile: `7nodes/key1/password.txt`,
+      tessera: false,
+     },
+     nodes: generateNodeConfigs(numberNodes)
+   }
+ }
 
 export function generateNodeConfigs (numberNodes) {
   let devP2pPort = 21000,

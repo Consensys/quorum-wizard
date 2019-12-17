@@ -1,4 +1,4 @@
-import { createQuickstartConfig } from '../model/NetworkConfig'
+import { createQuickstartConfig, createCustomConfig } from '../model/NetworkConfig'
 import { createNetwork } from '../utils/networkCreator'
 import {
   CONSENSUS_MODE,
@@ -20,5 +20,12 @@ export async function quickstart () {
 }
 
 export async function customize () {
-  throw new Error('Not yet implemented')
+  const { numberNodes, consensus, deployment } = await inquirer.prompt([
+    NUMBER_NODES,
+    CONSENSUS_MODE,
+    DEPLOYMENT_TYPE
+  ])
+  const config = createCustomConfig(numberNodes, consensus, deployment)
+
+  createNetwork(config)
 }

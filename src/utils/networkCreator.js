@@ -9,6 +9,7 @@ import {
   writeFile,
   writeJsonFile
 } from './fileUtils'
+import { generateKeys } from './keyGen'
 
 export function createNetwork (config) {
   // https://nodejs.org/en/knowledge/file-system/security/introduction/
@@ -25,14 +26,20 @@ export function createNetwork (config) {
   createFolder(logs, true)
   writeJsonFile(networkPath, 'config.json', config)
 
-  const staticNodes = createStaticNodes(config.nodes, config.network.consensus)
+  var keyPath = join(process.cwd(), config.network.keyDir)
+  if(config.network.generateKeys) {
+      generateKeys(config, keyPath)
+  }
+  console.log(keyPath)
+
+  const staticNodes = createStaticNodes(config, config.network.consensus)
+
   const initCommands = []
   const startCommands = []
-  const examplesPath = join(process.cwd(), '7nodes')
 
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
-    const keyFolder = join(examplesPath, `key${nodeNumber}`)
+    const keyFolder = join(keyPath, `key${nodeNumber}`)
     const quorumDir = join(qdata, `dd${nodeNumber}`)
     const gethDir = join(quorumDir, `geth`)
     const keyDir = join(quorumDir, `keystore`)
@@ -50,8 +57,11 @@ export function createNetwork (config) {
     copyFile(join(keyFolder, 'key'), join(keyDir, 'key'))
     copyFile(join(keyFolder, 'nodekey'), join(gethDir, 'nodekey'))
     copyFile(join(keyFolder, 'password.txt'), passwordDestination)
-    copyFile(join(keyFolder, 'tm.key'), join(tmDir, 'tm.key'))
-    copyFile(join(keyFolder, 'tm.pub'), join(tmDir, 'tm.pub'))
+
+    if(config.network.tessera) {
+      copyFile(join(keyFolder, 'tm.key'), join(tmDir, 'tm.key'))
+      copyFile(join(keyFolder, 'tm.pub'), join(tmDir, 'tm.pub'))
+    }
 
     const initCommand = `cd ${networkPath} && geth --datadir ${quorumDir} init ${genesisDestination}`
     initCommands.push(initCommand)
@@ -77,11 +87,12 @@ export function createNetwork (config) {
   })
 }
 
-export function createStaticNodes (nodes, consensus) {
-  return nodes.map((node, i) => {
+function createStaticNodes (config, consensus) {
+  return config.nodes.map((node, i) => {
     const nodeNumber = i + 1
-    const generatedKeyFolder = `7nodes/key${nodeNumber}`
-    const enodeId = readFileToString(join(generatedKeyFolder, 'enode'))
+    const generatedKeyFolder = `${config.network.keyDir}/key${nodeNumber}`
+    const enodeId = readFileToString(join(generatedKeyFolder, 'enode'),
+      'utf8').trim()
 
     let enodeAddress = `enode://${enodeId}@127.0.0.1:${node.quorum.devP2pPort}?discport=0`
     if (consensus === 'raft') {
@@ -103,4 +114,3 @@ function createGethStartCommand (config, node, passwordDestination,
 
   return `PRIVATE_CONFIG=ignore nohup geth --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --verbosity ${verbosity} --networkid ${id} --rpcport ${rpcPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
 }
-
