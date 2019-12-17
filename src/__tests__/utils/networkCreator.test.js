@@ -1,5 +1,6 @@
 import { join } from 'path'
 import { createNetwork, createStaticNodes } from '../../utils/networkCreator'
+import {createConfig} from '../../model/TesseraConfig'
 import {
   createQuickstartConfig,
   generateNodeConfigs
@@ -45,6 +46,8 @@ describe('creates a network', () => {
       expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/nodekey`), createNetPath(config, `qdata/dd${i}/geth`, 'nodekey'))
       expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/tm.key`), createNetPath(config, `qdata/c${i}/tm.key`))
       expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/tm.pub`), createNetPath(config, `qdata/c${i}/tm.pub`))
+      // let tesseraConfig = createConfig(createNetPath(config, `qdata/c${i}`), i, 9080 + i, 9000 + i, peers)
+      // expect(writeJsonFile).toBeCalledWith(createNetPath(config, `qdata/c${i}`), `tessera-config.09-${i}.json`, tesseraConfig)
     }
     expect(writeFile).toBeCalledWith(createNetPath(config, 'start.sh'), expect.any(String), true)
     expect(copyFile).toBeCalledWith(createPath('lib/stop.sh'), createNetPath(config, 'stop.sh'))
@@ -91,3 +94,11 @@ function createPath(...relativePaths) {
 function createNetPath(config, ...relativePaths) {
   return join(process.cwd(), 'network', config.network.name, ...relativePaths)
 }
+
+const peers = [
+  'http://127.0.0.1:9001',
+  'http://127.0.0.1:9002',
+  'http://127.0.0.1:9003',
+  'http://127.0.0.1:9004',
+  'http://127.0.0.1:9005',
+]

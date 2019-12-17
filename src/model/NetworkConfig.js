@@ -57,8 +57,8 @@ export function generateNodeConfigs (numberNodes, transactionManager) {
       node.tm = {
         ip: '127.0.0.1',
         thirdPartyPort: thirdPartyPort + i,
-        p2pPort: p2pPort + i,
-        enclavePort: enclavePort + i,
+          p2pPort: p2pPort + i,
+          enclavePort: enclavePort + i,
       }
     }
     nodes.push(node)

@@ -10,6 +10,7 @@ export const INITIAL_MODE = {
     { name: 'Exit', value: 3 }
   ]
 }
+
 export const NUMBER_NODES = {
   type: 'input', // bug with number type when invalid, can't delete old value
   name: 'numberNodes',
@@ -17,6 +18,7 @@ export const NUMBER_NODES = {
   default: '7',
   validate: (input) => validateNumberStringInRange(input, 2, 7)
 }
+
 export const CONSENSUS_MODE = {
   type: 'list',
   name: 'consensus',

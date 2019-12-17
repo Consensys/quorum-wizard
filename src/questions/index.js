@@ -18,7 +18,7 @@ export async function quickstart () {
   ])
   const config = createQuickstartConfig(numberNodes, consensus, transactionManager, deployment)
 
-  createNetwork(config)
+  await createNetwork(config)
 }
 
 export async function customize () {
