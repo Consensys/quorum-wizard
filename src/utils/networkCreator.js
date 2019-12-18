@@ -65,22 +65,35 @@ export function createNetwork (config) {
     if(isTessera(config)) {
       copyFile(join(keyFolder, 'tm.key'), join(tmDir, 'tm.key'))
       copyFile(join(keyFolder, 'tm.pub'), join(tmDir, 'tm.pub'))
-      let tesseraConfig = createConfig(tmDir, nodeNumber, node.tm.thirdPartyPort, node.tm.p2pPort, peerList)
-      writeJsonFile(tmDir, `tessera-config-09-${nodeNumber}.json`, tesseraConfig)
+      let tesseraConfig = createConfig(tmDir, nodeNumber,
+        node.tm.thirdPartyPort, node.tm.p2pPort, peerList)
+      writeJsonFile(tmDir, `tessera-config-09-${nodeNumber}.json`,
+        tesseraConfig)
     }
 
     const initCommand = `cd ${networkPath} && geth --datadir ${quorumDir} init ${genesisDestination}`
     initCommands.push(initCommand)
 
+    let tmIpcLocation = isTessera(config) ? join(tmDir, 'tm.ipc') : 'ignore'
     const startCommand = createGethStartCommand(config, node,
-      passwordDestination,
-      nodeNumber)
+      passwordDestination, nodeNumber, tmIpcLocation)
     startCommands.push(startCommand)
 
-    const tmStartCommand = createTesseraStartCommand(config, node, nodeNumber)
+    if (isTessera(config)) {
+      const tmStartCommand = createTesseraStartCommand(config, node, nodeNumber,
+        tmDir, logs)
+      tmStartCommands.push(tmStartCommand)
+    }
   })
 
-  writeFile(join(networkPath, 'start.sh'), startCommands.join('\n'), true)
+  const waitForTmCommands = tmStartCommands.length === 0 ? ''
+    : waitForTesseraNodesCommand(config.nodes.length)
+  const startScript = [
+    ...tmStartCommands,
+    waitForTmCommands,
+    ...startCommands,
+  ]
+  writeFile(join(networkPath, 'start.sh'), startScript.join('\n'), true)
   copyFile(join(process.cwd(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
 
   // initialize all the nodes
@@ -114,7 +127,7 @@ function isTessera (config) {
 }
 
 function createPeerList (nodes, transactionManager) {
-  if(transactionManager !== 'tessera') {
+  if (transactionManager !== 'tessera') {
     return []
   }
   return nodes.map((node) => ({
@@ -122,7 +135,7 @@ function createPeerList (nodes, transactionManager) {
   }))
 }
 
-function createGethStartCommand (config, node, passwordDestination, nodeNumber) {
+function createGethStartCommand (config, node, passwordDestination, nodeNumber, tmIpcLocation) {
   const { verbosity, id, consensus } = config.network
   const { devP2pPort, rpcPort, wsPort, raftPort } = node.quorum
 
@@ -131,70 +144,60 @@ function createGethStartCommand (config, node, passwordDestination, nodeNumber) 
     `--raft --raftport ${raftPort}` :
     `--istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1`
 
-  return `PRIVATE_CONFIG=ignore nohup geth --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --verbosity ${verbosity} --networkid ${id} --rpcport ${rpcPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
+  return `PRIVATE_CONFIG=${tmIpcLocation} nohup geth --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --verbosity ${verbosity} --networkid ${id} --rpcport ${rpcPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
 }
 
-function createTesseraStartCommand(config, node, nodeNumber) {
- // echo "[*] Starting $numNodes Tessera node(s)"
-  //
-  // currentDir=`pwd`
-  // for i in `seq 1 ${numNodes}`
-  // do
-  //     DDIR="qdata/c$i"
-  //     mkdir -p ${DDIR}
-  //     mkdir -p qdata/logs
-  //     rm -f "$DDIR/tm.ipc"
-  //
-  //     DEBUG=""
-  //     if [ "$remoteDebug" == "true" ]; then
-  //       DEBUG="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=500$i -Xdebug"
-  //     fi
-  //
-  //     #Only set heap size if not specified on command line
-  //     MEMORY=
-  //     if [[ ! "$jvmParams" =~ "Xm" ]]; then
-  //       MEMORY="-Xms128M -Xmx128M"
-  //     fi
-  //
-  //     CMD="java $jvmParams $DEBUG $MEMORY -jar ${tesseraJar} -configfile $DDIR/tessera-config$TESSERA_CONFIG_TYPE$i.json"
-  //     echo "$CMD >> qdata/logs/tessera$i.log 2>&1 &"
-  //     ${CMD} >> "qdata/logs/tessera$i.log" 2>&1 &
-  //     sleep 1
-  // done
-  //
-  // echo "Waiting until all Tessera nodes are running..."
-  // DOWN=true
-  // k=10
-  // while ${DOWN}; do
-  //     sleep 1
-  //     DOWN=false
-  //     for i in `seq 1 ${numNodes}`
-  //     do
-  //         if [ ! -S "qdata/c${i}/tm.ipc" ]; then
-  //             echo "Node ${i} is not yet listening on tm.ipc"
-  //             DOWN=true
-  //         fi
-  //
-  //         set +e
-  //         #NOTE: if using https, change the scheme
-  //         #NOTE: if using the IP whitelist, change the host to an allowed host
-  //         result=$(curl -s http://localhost:900${i}/upcheck)
-  //         set -e
-  //         if [ ! "${result}" == "I'm up!" ]; then
-  //             echo "Node ${i} is not yet listening on http"
-  //             DOWN=true
-  //         fi
-  //     done
-  //
-  //     k=$((k - 1))
-  //     if [ ${k} -le 0 ]; then
-  //         echo "Tessera is taking a long time to start.  Look at the Tessera logs in qdata/logs/ for help diagnosing the problem."
-  //     fi
-  //     echo "Waiting until all Tessera nodes are running..."
-  //
-  //     sleep 5
-  // done
-  //
-  // echo "All Tessera nodes started"
+function createTesseraStartCommand (config, node, nodeNumber, tmDir, logDir) {
+  // `rm -f ${tmDir}/tm.ipc`
+
+  const tesseraJar = '$TESSERA_JAR' // require env variable to be set for now
+  let DEBUG = ''
+  if (config.network.remoteDebug) {
+    DEBUG = '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=500$i -Xdebug'
+  }
+
+  const MEMORY = '-Xms128M -Xmx128M'
+  const CMD = `java ${DEBUG} ${MEMORY} -jar ${tesseraJar} -configfile ${tmDir}/tessera-config-09-${nodeNumber}.json >> ${logDir}/tessera${nodeNumber}.log 2>&1 &`
+  return CMD
+}
+
+function waitForTesseraNodesCommand (numberNodes) {
+  // TODO use config values
+  return `
+echo "Waiting until all Tessera nodes are running..."
+DOWN=true
+k=10
+while \${DOWN}; do
+    sleep 1
+    DOWN=false
+    for i in \`seq 1 ${numberNodes}\`
+    do
+        if [ ! -S "qdata/c\${i}/tm.ipc" ]; then
+            echo "Node \${i} is not yet listening on tm.ipc"
+            DOWN=true
+        fi
+
+        set +e
+        #NOTE: if using https, change the scheme
+        #NOTE: if using the IP whitelist, change the host to an allowed host
+        result=$(curl -s http://localhost:900\${i}/upcheck)
+        set -e
+        if [ ! "\${result}" == "I'm up!" ]; then
+            echo "Node \${i} is not yet listening on http"
+            DOWN=true
+        fi
+    done
+
+    k=$((k - 1))
+    if [ \${k} -le 0 ]; then
+        echo "Tessera is taking a long time to start.  Look at the Tessera logs in qdata/logs/ for help diagnosing the problem."
+    fi
+    echo "Waiting until all Tessera nodes are running..."
+
+    sleep 5
+done
+
+echo "All Tessera nodes started"
+`
 }
 
