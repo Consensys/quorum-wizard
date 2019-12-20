@@ -10,6 +10,7 @@ import {
   writeJsonFile
 } from './fileUtils'
 import { generateKeys } from './keyGen'
+import { generateConsensusConfig, gen } from '../model/ConsensusConfig'
 
 export function createNetwork (config) {
   // https://nodejs.org/en/knowledge/file-system/security/introduction/
@@ -26,9 +27,10 @@ export function createNetwork (config) {
   createFolder(logs, true)
   writeJsonFile(networkPath, 'config.json', config)
 
-  var keyPath = join(process.cwd(), config.network.keyDir)
+  var configPath = join(process.cwd(), config.network.configDir)
   if(config.network.generateKeys) {
-      generateKeys(config, keyPath)
+      generateKeys(config, configPath)
+      generateConsensusConfig(configPath, config.network.consensus, config.nodes)
   }
 
   const staticNodes = createStaticNodes(config, config.network.consensus)
@@ -37,13 +39,13 @@ export function createNetwork (config) {
 
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
-    const keyFolder = join(keyPath, `key${nodeNumber}`)
+    const keyFolder = join(configPath, `key${nodeNumber}`)
     const quorumDir = join(qdata, `dd${nodeNumber}`)
     const gethDir = join(quorumDir, `geth`)
     const keyDir = join(quorumDir, `keystore`)
     const tmDir = join(qdata, `c${nodeNumber}`)
     const passwordDestination = join(keyDir, 'password.txt')
-    let genesisDestination = join(quorumDir, 'genesis.json')
+    let genesisDestination = join(quorumDir, `${config.network.consensus}-genesis.json`)
     createFolder(quorumDir)
     createFolder(gethDir)
     createFolder(keyDir)
@@ -55,6 +57,7 @@ export function createNetwork (config) {
     copyFile(join(keyFolder, 'key'), join(keyDir, 'key'))
     copyFile(join(keyFolder, 'nodekey'), join(gethDir, 'nodekey'))
     copyFile(join(keyFolder, 'password.txt'), passwordDestination)
+    copyFile(join(configPath, `${config.network.consensus}-genesis.json`), genesisDestination)
 
     if(config.network.tessera) {
       copyFile(join(keyFolder, 'tm.key'), join(tmDir, 'tm.key'))
@@ -88,9 +91,8 @@ export function createNetwork (config) {
 function createStaticNodes (config, consensus) {
   return config.nodes.map((node, i) => {
     const nodeNumber = i + 1
-    const generatedKeyFolder = `${config.network.keyDir}/key${nodeNumber}`
-    const enodeId = readFileToString(join(generatedKeyFolder, 'enode'),
-      'utf8').trim()
+    const generatedKeyFolder = `${config.network.configDir}/key${nodeNumber}`
+    const enodeId = readFileToString(join(generatedKeyFolder, 'enode'))
 
     let enodeAddress = `enode://${enodeId}@127.0.0.1:${node.quorum.devP2pPort}?discport=0`
     if (consensus === 'raft') {
