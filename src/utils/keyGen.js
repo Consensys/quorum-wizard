@@ -1,14 +1,14 @@
 import fs from 'fs'
-import path from 'path'
+import { join } from 'path'
 import { executeSync } from './execUtils'
 import { createFolder, copyFile } from './fileUtils'
 
 export function generateKeys(config, keyPath) {
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
-    let keyDir = path.join(keyPath, `key${nodeNumber}`)
+    let keyDir = join(keyPath, `key${nodeNumber}`)
     createFolder(keyDir, true)
-    copyFile(config.network.passwordFile, path.join(keyDir, `password.txt`))
+    copyFile(config.network.passwordFile, join(keyDir, `password.txt`))
 
     doExec(keyDir)
     })

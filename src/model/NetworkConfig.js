@@ -8,7 +8,7 @@ export function createQuickstartConfig (numberNodes, consensus, deployment) {
       permissioned: true,
       genesisFile: `7nodes/${consensus}-genesis.json`,
       generateKeys: false,
-      keyDir: `7nodes`,
+      configDir: `7nodes`,
       tessera: false,
     },
     nodes: generateNodeConfigs(numberNodes)
@@ -25,7 +25,7 @@ export function createCustomConfig (numberNodes, consensus, deployment) {
       permissioned: true,
       genesisFile: `7nodes/${consensus}-genesis.json`,
       generateKeys: true,
-      keyDir: `network/${numberNodes}-nodes-${consensus}-${deployment}/generated`,
+      configDir: `network/${numberNodes}-nodes-${consensus}-${deployment}/generated`,
       passwordFile: `7nodes/key1/password.txt`,
       tessera: false,
      },
