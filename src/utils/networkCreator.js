@@ -27,7 +27,7 @@ export function createNetwork (config) {
   createFolder(logs, true)
   writeJsonFile(networkPath, 'config.json', config)
 
-  var configPath = join(process.cwd(), config.network.configDir)
+  const configPath = join(process.cwd(), config.network.configDir)
   if(config.network.generateKeys) {
       generateKeys(config, configPath)
       generateConsensusConfig(configPath, config.network.consensus, config.nodes)
@@ -45,7 +45,7 @@ export function createNetwork (config) {
     const keyDir = join(quorumDir, `keystore`)
     const tmDir = join(qdata, `c${nodeNumber}`)
     const passwordDestination = join(keyDir, 'password.txt')
-    let genesisDestination = join(quorumDir, `${config.network.consensus}-genesis.json`)
+    const genesisDestination = join(quorumDir, `${config.network.consensus}-genesis.json`)
     createFolder(quorumDir)
     createFolder(gethDir)
     createFolder(keyDir)

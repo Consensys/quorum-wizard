@@ -22,18 +22,18 @@ function generateIstanbul(configDir, nodes) {
 }
 
 export function generateAccounts(nodes, configDir) {
-  var numNodes = nodes.length
-  var raftJsonString = `{`
+  const numNodes = nodes.length
+  let raftJsonString = `{`
   for (let i = 1; i < parseInt(numNodes, 10); i++) {
-    let keyDir = join(configDir, `key${i}`)
-    let keyString = readFileToString(join(keyDir, 'key'))
+    const keyDir = join(configDir, `key${i}`)
+    const keyString = readFileToString(join(keyDir, 'key'))
 
-    raftJsonString += `\"${JSON.parse(keyString).address}\":{\"balance\":\"1000000000000000000000000000\"},`
+    raftJsonString += `\"0x${JSON.parse(keyString).address}\":{\"balance\":\"1000000000000000000000000000\"},`
   }
-  let keyDir = join(configDir, `key${numNodes}`)
-  let keyString = readFileToString(join(keyDir, 'key'))
+  const keyDir = join(configDir, `key${numNodes}`)
+  const keyString = readFileToString(join(keyDir, 'key'))
 
-  raftJsonString += `\"${JSON.parse(keyString).address}\":{\"balance\":\"1000000000000000000000000000\"}}`
+  raftJsonString += `\"0x${JSON.parse(keyString).address}\":{\"balance\":\"1000000000000000000000000000\"}}`
   return JSON.parse(raftJsonString)
 }
 
@@ -65,21 +65,21 @@ function generateRaftConfig(numNodes, configDir) {
 }
 
 function generateExtraData(nodes, configDir) {
-  var validatorConfigString = `vanity = \"0x00\"\nvalidators=[`
-  var numNodes = nodes.length
+  let validatorConfigString = `vanity = \"0x00\"\nvalidators=[`
+  const numNodes = nodes.length
   for (let i = 1; i < parseInt(numNodes, 10); i++) {
-      let keyDir = join(configDir, `key${i}`)
-      let nodekey = nodekeyToAccount(readFileToString(join(keyDir, 'nodekey')))
+      const keyDir = join(configDir, `key${i}`)
+      const nodekey = nodekeyToAccount(`0x${readFileToString(join(keyDir, 'nodekey'))}`)
       validatorConfigString += `\"${nodekey}\",`
   }
-  let keyDir = join(configDir, `key${numNodes}`)
-  let nodekey = nodekeyToAccount(readFileToString(join(keyDir, 'nodekey')))
+  const keyDir = join(configDir, `key${numNodes}`)
+  const nodekey = nodekeyToAccount(`0x${readFileToString(join(keyDir, 'nodekey'))}`)
   validatorConfigString += `\"${nodekey}\"]`
 
-  var istanbulConfigFile = join(configDir, 'istanbul.toml')
+  const istanbulConfigFile = join(configDir, 'istanbul.toml')
   writeFile(istanbulConfigFile, validatorConfigString, false)
 
-  var extraDataCmd = `cd ${configDir} && istanbul extra encode --config ${istanbulConfigFile} | awk '{print $4}' > extraData`
+  let extraDataCmd = `cd ${configDir} && istanbul extra encode --config ${istanbulConfigFile} | awk '{print $4}' > extraData`
   executeSync(extraDataCmd, function(err, stdout, stderr) {
     if (e instanceof Error) {
       console.error(e)
@@ -91,7 +91,7 @@ function generateExtraData(nodes, configDir) {
 
 function nodekeyToAccount(nodekey) {
   const web3 = new Web3();
-  var acctObj = web3.eth.accounts.privateKeyToAccount(nodekey);
+  const acctObj = web3.eth.accounts.privateKeyToAccount(nodekey);
   return acctObj.address
 }
 

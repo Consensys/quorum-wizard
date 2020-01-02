@@ -6,7 +6,7 @@ import { createFolder, copyFile } from './fileUtils'
 export function generateKeys(config, keyPath) {
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
-    let keyDir = join(keyPath, `key${nodeNumber}`)
+    const keyDir = join(keyPath, `key${nodeNumber}`)
     createFolder(keyDir, true)
     copyFile(config.network.passwordFile, join(keyDir, `password.txt`))
 
@@ -15,7 +15,7 @@ export function generateKeys(config, keyPath) {
 }
 
 function doExec(keyDir) {
-  var cmd = `cd ${keyDir} && geth account new --keystore ${keyDir} --password password.txt
+  let cmd = `cd ${keyDir} && geth account new --keystore ${keyDir} --password password.txt
   bootnode -genkey=nodekey
   bootnode --nodekey=nodekey --writeaddress > enode
   find . -type f -name 'UTC*' -execdir mv {} key ';'`
