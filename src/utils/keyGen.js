@@ -10,15 +10,19 @@ export function generateKeys(config, keyPath) {
     createFolder(keyDir, true)
     copyFile(config.network.passwordFile, join(keyDir, `password.txt`))
 
-    doExec(keyDir)
+    doExec(keyDir, config.network.tessera)
     })
 }
 
-function doExec(keyDir) {
+function doExec(keyDir, isTessera) {
   let cmd = `cd ${keyDir} && geth account new --keystore ${keyDir} --password password.txt
   bootnode -genkey=nodekey
   bootnode --nodekey=nodekey --writeaddress > enode
-  find . -type f -name 'UTC*' -execdir mv {} key ';'`
+  find . -type f -name 'UTC*' -execdir mv {} key ';'
+  `
+  if(isTessera) {
+    cmd += `java -jar $TESSERA_JAR -keygen -filename tm`
+  }
 
   executeSync(cmd, function(err, stdout, stderr) {
     if (e instanceof Error) {
