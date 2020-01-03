@@ -10,7 +10,7 @@ import {
   writeJsonFile
 } from './fileUtils'
 import { generateKeys } from './keyGen'
-import { generateConsensusConfig, gen } from '../model/ConsensusConfig'
+import { generateConsensusConfig } from '../model/ConsensusConfig'
 
 export function createNetwork (config) {
   // https://nodejs.org/en/knowledge/file-system/security/introduction/
