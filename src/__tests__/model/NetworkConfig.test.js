@@ -1,4 +1,4 @@
-import { createQuickstartConfig } from '../../model/NetworkConfig'
+import { createQuickstartConfig, createCustomConfig } from '../../model/NetworkConfig'
 
 // rather than having big test jsons that we match to, we can just use snapshot
 // tests, where it will compare against the last time you ran and if it's
@@ -10,5 +10,15 @@ test('creates 7nodes istanbul config', () => {
 
 test('creates 5nodes raft no-TM config', () => {
   const config = createQuickstartConfig('5', 'raft', 'none', 'bash')
+  expect(config).toMatchSnapshot()
+})
+
+test('creates 6nodes raft custom config', () => {
+  const config = createCustomConfig('6', 'raft', 'tessera', 'bash')
+  expect(config).toMatchSnapshot()
+})
+
+test('creates 7nodes istanbul no-TM custom config', () => {
+  const config = createCustomConfig('7', 'istanbul', 'none', 'bash')
   expect(config).toMatchSnapshot()
 })
