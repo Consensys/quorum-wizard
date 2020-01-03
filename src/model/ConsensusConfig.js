@@ -1,12 +1,5 @@
-import {
-  writeFile,
-  writeJsonFile,
-  combineFiles,
-  readFileToString
-} from '../utils/fileUtils'
-import { join } from 'path'
-import { executeSync } from '../utils/execUtils'
-const Web3 = require('web3');
+import { writeJsonFile,} from '../utils/fileUtils'
+import {generateAccounts, generateExtraData } from '../utils/consensusHelper'
 
 export function generateConsensusConfig(configDir, consensus, nodes) {
   return consensus == `raft` ?  generateRaft(configDir, nodes) :
@@ -21,24 +14,8 @@ function generateIstanbul(configDir, nodes) {
   writeJsonFile(configDir, `istanbul-genesis.json`, generateIstanbulConfig(nodes, configDir))
 }
 
-export function generateAccounts(nodes, configDir) {
-  const numNodes = nodes.length
-  let raftJsonString = `{`
-  for (let i = 1; i < parseInt(numNodes, 10); i++) {
-    const keyDir = join(configDir, `key${i}`)
-    const keyString = readFileToString(join(keyDir, 'key'))
-
-    raftJsonString += `\"0x${JSON.parse(keyString).address}\":{\"balance\":\"1000000000000000000000000000\"},`
-  }
-  const keyDir = join(configDir, `key${numNodes}`)
-  const keyString = readFileToString(join(keyDir, 'key'))
-
-  raftJsonString += `\"0x${JSON.parse(keyString).address}\":{\"balance\":\"1000000000000000000000000000\"}}`
-  return JSON.parse(raftJsonString)
-}
-
-function generateRaftConfig(numNodes, configDir) {
-  const alloc = generateAccounts(numNodes, configDir)
+export function generateRaftConfig(nodes, configDir) {
+  const alloc = generateAccounts(nodes, configDir)
   return {
     alloc: alloc,
     coinbase: `0x0000000000000000000000000000000000000000`,
@@ -64,38 +41,7 @@ function generateRaftConfig(numNodes, configDir) {
   }
 }
 
-function generateExtraData(nodes, configDir) {
-  let validatorConfigString = `vanity = \"0x00\"\nvalidators=[`
-  const numNodes = nodes.length
-  for (let i = 1; i < parseInt(numNodes, 10); i++) {
-      const keyDir = join(configDir, `key${i}`)
-      const nodekey = nodekeyToAccount(`0x${readFileToString(join(keyDir, 'nodekey'))}`)
-      validatorConfigString += `\"${nodekey}\",`
-  }
-  const keyDir = join(configDir, `key${numNodes}`)
-  const nodekey = nodekeyToAccount(`0x${readFileToString(join(keyDir, 'nodekey'))}`)
-  validatorConfigString += `\"${nodekey}\"]`
-
-  const istanbulConfigFile = join(configDir, 'istanbul.toml')
-  writeFile(istanbulConfigFile, validatorConfigString, false)
-
-  let extraDataCmd = `cd ${configDir} && istanbul extra encode --config ${istanbulConfigFile} | awk '{print $4}' > extraData`
-  executeSync(extraDataCmd, function(err, stdout, stderr) {
-    if (e instanceof Error) {
-      console.error(e)
-      throw e
-    }
-  })
-  return readFileToString(join(configDir, 'extraData'))
-}
-
-function nodekeyToAccount(nodekey) {
-  const web3 = new Web3();
-  const acctObj = web3.eth.accounts.privateKeyToAccount(nodekey);
-  return acctObj.address
-}
-
-function generateIstanbulConfig(nodes, configDir) {
+export function generateIstanbulConfig(nodes, configDir) {
   const alloc = generateAccounts(nodes, configDir)
   const extraData = generateExtraData(nodes, configDir)
   return {
