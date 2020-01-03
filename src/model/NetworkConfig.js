@@ -1,39 +1,39 @@
-export function createQuickstartConfig (numberNodes, consensus, deployment) {
+export function createQuickstartConfig (numberNodes, consensus, transactionManager, deployment) {
   return {
     network: {
-      name: `${numberNodes}-nodes-${consensus}-${deployment}`,
+      name: `${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}`,
       verbosity: 5,
       consensus: consensus,
+      transactionManager: transactionManager,
       id: 10,
       permissioned: true,
       genesisFile: `7nodes/${consensus}-genesis.json`,
       generateKeys: false,
       configDir: `7nodes`,
-      tessera: false,
     },
-    nodes: generateNodeConfigs(numberNodes)
+    nodes: generateNodeConfigs(numberNodes, transactionManager)
   }
 }
 
-export function createCustomConfig (numberNodes, consensus, deployment) {
+export function createCustomConfig (numberNodes, consensus, transactionManager, deployment) {
   return {
     network: {
-      name: `${numberNodes}-nodes-${consensus}-${deployment}`,
+      name: `${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}`,
       verbosity: 5,
       consensus: consensus,
+      transactionManager: transactionManager,
       id: 10,
       permissioned: true,
       genesisFile: `7nodes/${consensus}-genesis.json`,
       generateKeys: true,
-      configDir: `network/${numberNodes}-nodes-${consensus}-${deployment}/generated`,
+      configDir: `network/${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}/generated`,
       passwordFile: `7nodes/key1/password.txt`,
-      tessera: false,
      },
-     nodes: generateNodeConfigs(numberNodes)
+     nodes: generateNodeConfigs(numberNodes, transactionManager)
    }
  }
 
-export function generateNodeConfigs (numberNodes) {
+export function generateNodeConfigs (numberNodes, transactionManager) {
   let devP2pPort = 21000,
     rpcPort = 22000,
     wsPort = 23000,
@@ -46,12 +46,16 @@ export function generateNodeConfigs (numberNodes) {
   for (let i = 0; i < parseInt(numberNodes, 10); i++) {
     const node = {
       quorum: {
+        ip: '127.0.0.1',
         devP2pPort: devP2pPort + i,
         rpcPort: rpcPort + i,
         wsPort: wsPort + i,
         raftPort: raftPort + i,
       },
-      tm: {
+    }
+    if(transactionManager === 'tessera') {
+      node.tm = {
+        ip: '127.0.0.1',
         thirdPartyPort: thirdPartyPort + i,
         p2pPort: p2pPort + i,
         enclavePort: enclavePort + i,

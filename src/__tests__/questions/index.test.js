@@ -10,6 +10,7 @@ jest.mock('../../utils/networkCreator')
 const QUICKSTART_CONFIG = {
   numberNodes: '5',
   consensus: 'istanbul',
+  transactionManager: 'tessera',
   deployment: 'bash'
 }
 
@@ -22,6 +23,7 @@ test('placeholder', async () => {
   .toHaveBeenCalledWith(
     QUICKSTART_CONFIG.numberNodes,
     QUICKSTART_CONFIG.consensus,
+    QUICKSTART_CONFIG.transactionManager,
     QUICKSTART_CONFIG.deployment
   )
   expect(networkCreator.createNetwork).toHaveBeenCalledWith(fakeConfig)

@@ -10,7 +10,7 @@ export function generateKeys(config, keyPath) {
     createFolder(keyDir, true)
     copyFile(config.network.passwordFile, join(keyDir, `password.txt`))
 
-    doExec(keyDir, config.network.tessera)
+    doExec(keyDir, config.network.transactionManager === 'tessera')
     })
 }
 
