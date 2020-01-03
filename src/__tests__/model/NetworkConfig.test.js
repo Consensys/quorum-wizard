@@ -4,11 +4,11 @@ import { createQuickstartConfig } from '../../model/NetworkConfig'
 // tests, where it will compare against the last time you ran and if it's
 // different you can review to make sure the changes were intended
 test('creates 7nodes istanbul config', () => {
-  const config = createQuickstartConfig('7', 'istanbul', 'bash')
+  const config = createQuickstartConfig('7', 'istanbul', 'tessera', 'bash')
   expect(config).toMatchSnapshot()
 })
 
-test('creates 5nodes raft config', () => {
-  const config = createQuickstartConfig('5', 'raft', 'bash')
+test('creates 5nodes raft no-TM config', () => {
+  const config = createQuickstartConfig('5', 'raft', 'none', 'bash')
   expect(config).toMatchSnapshot()
 })

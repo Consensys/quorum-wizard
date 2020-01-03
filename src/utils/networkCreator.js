@@ -33,7 +33,7 @@ export function createNetwork (config) {
       generateConsensusConfig(configPath, config.network.consensus, config.nodes)
   }
 
-  const staticNodes = createStaticNodes(config, config.network.consensus)
+  const staticNodes = createStaticNodes(config.nodes, config.network.consensus, config.network.configDir)
   const initCommands = []
   const startCommands = []
 
@@ -58,8 +58,7 @@ export function createNetwork (config) {
     copyFile(join(keyFolder, 'nodekey'), join(gethDir, 'nodekey'))
     copyFile(join(keyFolder, 'password.txt'), passwordDestination)
     copyFile(join(configPath, `${config.network.consensus}-genesis.json`), genesisDestination)
-
-    if(config.network.tessera) {
+    if(isTessera(config)) {
       copyFile(join(keyFolder, 'tm.key'), join(tmDir, 'tm.key'))
       copyFile(join(keyFolder, 'tm.pub'), join(tmDir, 'tm.pub'))
     }
@@ -88,18 +87,22 @@ export function createNetwork (config) {
   })
 }
 
-function createStaticNodes (config, consensus) {
-  return config.nodes.map((node, i) => {
+export function createStaticNodes (nodes, consensus, configDir) {
+  return nodes.map((node, i) => {
     const nodeNumber = i + 1
-    const generatedKeyFolder = `${config.network.configDir}/key${nodeNumber}`
+    const generatedKeyFolder = `${configDir}/key${nodeNumber}`
     const enodeId = readFileToString(join(generatedKeyFolder, 'enode'))
 
-    let enodeAddress = `enode://${enodeId}@127.0.0.1:${node.quorum.devP2pPort}?discport=0`
+    let enodeAddress = `enode://${enodeId}@${node.quorum.ip}:${node.quorum.devP2pPort}?discport=0`
     if (consensus === 'raft') {
       enodeAddress += `&raftport=${node.quorum.raftPort}`
     }
     return enodeAddress
   })
+}
+
+function isTessera (config) {
+  return config.network.transactionManager === 'tessera'
 }
 
 function createGethStartCommand (config, node, passwordDestination,

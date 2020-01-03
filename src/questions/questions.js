@@ -26,6 +26,17 @@ export const CONSENSUS_MODE = {
     'raft',
   ]
 }
+
+export const TRANSACTION_MANAGER = {
+  type: 'list',
+  name: 'transactionManager',
+  message: 'Which private transaction manager?',
+  choices: [
+    'tessera',
+    'none',
+  ]
+}
+
 export const DEPLOYMENT_TYPE = {
   type: 'list',
   name: 'deployment',
