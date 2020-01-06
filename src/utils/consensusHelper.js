@@ -1,7 +1,6 @@
 import {
   writeFile,
   writeJsonFile,
-  combineFiles,
   readFileToString
 } from '../utils/fileUtils'
 import { join } from 'path'
