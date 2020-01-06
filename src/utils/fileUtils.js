@@ -1,6 +1,5 @@
 import fs from 'fs'
 import { join } from 'path'
-import mergeFiles from 'merge-files'
 
 export function writeJsonFile (folder, filename, object, space = 2) {
   fs.writeFileSync(join(folder, filename),
@@ -36,8 +35,4 @@ export function copyFile (src, dest) {
 
 export function readFileToString (file) {
   return fs.readFileSync(file, 'utf8').trim()
-}
-
-export function combineFiles(filePathList, outputPath) {
-  return mergeFiles(filePathList, outputPath)
 }

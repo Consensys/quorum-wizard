@@ -12,6 +12,7 @@ import {
   writeJsonFile
 } from '../../utils/fileUtils'
 import { execute } from '../../utils/execUtils'
+import { anything } from 'expect'
 
 jest.mock('../../utils/execUtils')
 jest.mock('../../utils/fileUtils')
@@ -33,8 +34,8 @@ describe('creates a network', () => {
     expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', config)
     for (let i = 1; i < 6; i++) {
       expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}`))
-      expect(writeJsonFile).toBeCalledWith(createNetPath(config, `qdata/dd${i}`), 'static-nodes.json', expect.anything())
-      expect(writeJsonFile).toBeCalledWith(createNetPath(config, `qdata/dd${i}`), 'permissioned-nodes.json', expect.anything())
+      expect(writeJsonFile).toBeCalledWith(createNetPath(config, `qdata/dd${i}`), 'static-nodes.json', anything())
+      expect(writeJsonFile).toBeCalledWith(createNetPath(config, `qdata/dd${i}`), 'permissioned-nodes.json', anything())
       expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}/geth`))
       expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}/keystore`))
       expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/c${i}`))
