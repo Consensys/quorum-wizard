@@ -20,10 +20,9 @@
   },
   "homepage": "https://github.com/QuorumEngineering/quorum-creator#readme",
   "dependencies": {
-    "@babel/runtime": "^7.7.6",
+    "@babel/runtime": "^7.7.7",
     "inquirer": "^7.0.0",
     "js-yaml": "^3.13.1",
-    "merge-files": "^0.1.2",
     "sanitize-filename": "^1.6.3",
     "source-map-support": "^0.5.16",
     "web3": "^1.2.4"

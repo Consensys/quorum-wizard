@@ -43,7 +43,7 @@ export const DEPLOYMENT_TYPE = {
   message: 'How are you going to deploy?',
   choices: [
     'bash',
-    // 'docker-compose',
+    'docker-compose',
     // 'kubernetes',
     // 'vagrant',
   ]

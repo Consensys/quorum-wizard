@@ -101,7 +101,7 @@ export function createStaticNodes (nodes, consensus, configDir) {
   })
 }
 
-function isTessera (config) {
+export function isTessera (config) {
   return config.network.transactionManager === 'tessera'
 }
 

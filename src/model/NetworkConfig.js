@@ -11,7 +11,7 @@ export function createQuickstartConfig (numberNodes, consensus, transactionManag
       generateKeys: false,
       configDir: `7nodes`,
     },
-    nodes: generateNodeConfigs(numberNodes, transactionManager)
+    nodes: generateNodeConfigs(numberNodes, transactionManager, deployment)
   }
 }
 
@@ -29,11 +29,15 @@ export function createCustomConfig (numberNodes, consensus, transactionManager, 
       configDir: `network/${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}/generated`,
       passwordFile: `7nodes/key1/password.txt`,
      },
-     nodes: generateNodeConfigs(numberNodes, transactionManager)
+     nodes: generateNodeConfigs(numberNodes, transactionManager, deployment)
    }
  }
 
-export function generateNodeConfigs (numberNodes, transactionManager) {
+function isDocker (deployment) {
+  return deployment === 'docker-compose'
+}
+
+export function generateNodeConfigs (numberNodes, transactionManager, deployment) {
   let devP2pPort = 21000,
     rpcPort = 22000,
     wsPort = 23000,
@@ -46,7 +50,7 @@ export function generateNodeConfigs (numberNodes, transactionManager) {
   for (let i = 0; i < parseInt(numberNodes, 10); i++) {
     const node = {
       quorum: {
-        ip: '127.0.0.1',
+        ip: isDocker(deployment) ? `172.16.239.1${i+1}` : '127.0.0.1',
         devP2pPort: devP2pPort + i,
         rpcPort: rpcPort + i,
         wsPort: wsPort + i,
@@ -55,7 +59,7 @@ export function generateNodeConfigs (numberNodes, transactionManager) {
     }
     if(transactionManager === 'tessera') {
       node.tm = {
-        ip: '127.0.0.1',
+        ip: isDocker(deployment) ? `172.16.239.1${i+1}` : '127.0.0.1',
         thirdPartyPort: thirdPartyPort + i,
         p2pPort: p2pPort + i,
         enclavePort: enclavePort + i,
