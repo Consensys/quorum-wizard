@@ -74,6 +74,9 @@ export function createNetwork (config) {
 
   writeFile(join(networkPath, 'start.sh'), startCommands.join('\n'), true)
   copyFile(join(process.cwd(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
+  copyFile(join(process.cwd(), 'lib/runscript.sh'), join(networkPath, 'runscript.sh'))
+  copyFile(join(process.cwd(), 'lib/public-contract.js'), join(networkPath, 'public-contract.js'))
+  copyFile(join(process.cwd(), 'lib/private-contract.js'), join(networkPath, 'private-contract.js'))
 
   // initialize all the nodes
   initCommands.forEach((command) => {

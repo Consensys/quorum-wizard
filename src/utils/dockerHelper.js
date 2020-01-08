@@ -174,6 +174,9 @@ export function createDockerCompose(config) {
   writeFile(join(networkPath, 'docker-compose.yml'), file, false)
   writeFile(join(networkPath, 'start.sh'), startCommands, true)
   writeFile(join(networkPath, 'stop.sh'), 'docker-compose down', true)
-  //copyFile(join(process.cwd(), 'lib/dockerStop.sh'), join(networkPath, 'stop.sh'))
+
+  copyFile(join(process.cwd(), 'lib/runscript.sh'), join(qdata, 'runscript.sh'))
+  copyFile(join(process.cwd(), 'lib/public-contract.js'), join(qdata, 'public-contract.js'))
+  copyFile(join(process.cwd(), 'lib/private-contract.js'), join(qdata, 'private-contract.js'))
 
 }
