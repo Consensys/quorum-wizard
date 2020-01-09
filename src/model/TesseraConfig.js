@@ -44,10 +44,6 @@ export function createConfig (DDIR, i, serverPortThirdParty, serverPortP2P, peer
           'clientTrustMode': 'TOFU',
           'knownServersFile': `${DDIR}/knownServers`
         },
-        'cors': {
-          'allowedMethods': ['GET', 'OPTIONS'],
-          'allowedOrigins': ['*']
-        },
         'communicationType': 'REST'
       }
     ],
