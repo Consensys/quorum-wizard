@@ -7,7 +7,7 @@ import {
   readFileToString,
   removeFolder,
   writeFile,
-  writeJsonFile
+  writeJsonFile,
 } from './fileUtils'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
@@ -39,7 +39,6 @@ export function createNetwork (config) {
   const initCommands = []
   const startCommands = []
   const tmStartCommands = []
-  const examplesPath = join(process.cwd(), '7nodes')
 
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
@@ -86,11 +85,9 @@ export function createNetwork (config) {
     }
   })
 
-  const waitForTmCommands = tmStartCommands.length === 0 ? ''
-    : waitForTesseraNodesCommand(config.nodes.length)
   const startScript = [
     ...tmStartCommands,
-    waitForTmCommands,
+    waitForTesseraNodesCommand(config),
     ...startCommands,
   ]
   writeFile(join(networkPath, 'start.sh'), startScript.join('\n'), true)
@@ -131,7 +128,7 @@ function createPeerList (nodes, transactionManager) {
     return []
   }
   return nodes.map((node) => ({
-    url: `http://127.0.0.1:${node.tm.p2pPort}`
+    url: `http://${node.tm.ip}:${node.tm.p2pPort}`
   }))
 }
 
@@ -161,8 +158,11 @@ function createTesseraStartCommand (config, node, nodeNumber, tmDir, logDir) {
   return CMD
 }
 
-function waitForTesseraNodesCommand (numberNodes) {
-  // TODO use config values
+function waitForTesseraNodesCommand (config) {
+  if(!isTessera(config)) {
+    return ''
+  }
+  // TODO use config values for ip, port, data folder, etc.
   return `
 echo "Waiting until all Tessera nodes are running..."
 DOWN=true
@@ -170,7 +170,7 @@ k=10
 while \${DOWN}; do
     sleep 1
     DOWN=false
-    for i in \`seq 1 ${numberNodes}\`
+    for i in \`seq 1 ${config.nodes.length}\`
     do
         if [ ! -S "qdata/c\${i}/tm.ipc" ]; then
             echo "Node \${i} is not yet listening on tm.ipc"
