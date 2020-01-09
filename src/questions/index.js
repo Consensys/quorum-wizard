@@ -37,7 +37,7 @@ export async function customize () {
 
   if (deployment === 'bash') {
     createNetwork(config)
-  } else if (deployment == 'docker-compose') {
+  } else if (deployment === 'docker-compose') {
     createDockerCompose(config)
   }
 }

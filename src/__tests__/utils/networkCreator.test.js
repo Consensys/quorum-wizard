@@ -47,7 +47,7 @@ describe('creates a network', () => {
       expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/tm.pub`), createNetPath(config, `qdata/c${i}/tm.pub`))
     }
     expect(writeFile).toBeCalledWith(createNetPath(config, 'start.sh'), expect.any(String), true)
-    expect(copyFile).toBeCalledWith(createPath(`lib/stop.sh`), createNetPath(config, 'stop.sh'))
+    expect(copyFile).toBeCalledWith(createPath('lib/stop.sh'), createNetPath(config, 'stop.sh'))
     expect(execute).toBeCalledTimes(5)
   })
 })

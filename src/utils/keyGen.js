@@ -8,7 +8,7 @@ export function generateKeys(config, keyPath) {
     const nodeNumber = i + 1
     const keyDir = join(keyPath, `key${nodeNumber}`)
     createFolder(keyDir, true)
-    copyFile(config.network.passwordFile, join(keyDir, `password.txt`))
+    copyFile(config.network.passwordFile, join(keyDir, 'password.txt'))
 
     doExec(keyDir, config.network.transactionManager === 'tessera')
     })
@@ -21,7 +21,7 @@ function doExec(keyDir, isTessera) {
   find . -type f -name 'UTC*' -execdir mv {} key ';'
   `
   if(isTessera) {
-    cmd += `java -jar $TESSERA_JAR -keygen -filename tm`
+    cmd += 'java -jar $TESSERA_JAR -keygen -filename tm'
   }
 
   executeSync(cmd, function(err, stdout, stderr) {

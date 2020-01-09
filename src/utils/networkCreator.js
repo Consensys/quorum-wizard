@@ -41,8 +41,8 @@ export function createNetwork (config) {
     const nodeNumber = i + 1
     const keyFolder = join(configPath, `key${nodeNumber}`)
     const quorumDir = join(qdata, `dd${nodeNumber}`)
-    const gethDir = join(quorumDir, `geth`)
-    const keyDir = join(quorumDir, `keystore`)
+    const gethDir = join(quorumDir, 'geth')
+    const keyDir = join(quorumDir, 'keystore')
     const tmDir = join(qdata, `c${nodeNumber}`)
     const passwordDestination = join(keyDir, 'password.txt')
     const genesisDestination = join(quorumDir, `${config.network.consensus}-genesis.json`)
