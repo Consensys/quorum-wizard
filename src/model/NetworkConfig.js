@@ -27,7 +27,7 @@ export function createCustomConfig (numberNodes, consensus, transactionManager, 
       genesisFile: `7nodes/${consensus}-genesis.json`,
       generateKeys: true,
       configDir: `network/${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}/generated`,
-      passwordFile: `7nodes/key1/password.txt`,
+      passwordFile: '7nodes/key1/password.txt',
      },
      nodes: generateNodeConfigs(numberNodes, transactionManager)
    }
