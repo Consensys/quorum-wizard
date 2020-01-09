@@ -9,19 +9,15 @@ import { nodekeyToAccount } from './web3Helper'
 
 export function generateAccounts(nodes, configDir) {
   const numNodes = nodes.length
-  let raftJsonString = `{`
-  for (let i = 1; i < parseInt(numNodes, 10); i++) {
-    const keyDir = join(configDir, `key${i}`)
+  var accounts = {}
+  for (let i = 0; i < parseInt(numNodes, 10); i++) {
+    const numNode = i + 1
+    const keyDir = join(configDir, `key${numNode}`)
     const keyString = readFileToString(join(keyDir, 'key'))
-
-    raftJsonString += `\"0x${JSON.parse(keyString).address}\":{\"balance\":\"1000000000000000000000000000\"},`
+    const key = `0x${JSON.parse(keyString).address}`
+    accounts[key] = {balance : '1000000000000000000000000000'}
   }
-  const keyDir = join(configDir, `key${numNodes}`)
-  const keyString = readFileToString(join(keyDir, 'key'))
-
-  raftJsonString += `\"0x${JSON.parse(keyString).address}\":{\"balance\":\"1000000000000000000000000000\"}}`
-
-  return JSON.parse(raftJsonString)
+  return accounts
 }
 
 export function generateExtraData(nodes, configDir) {
