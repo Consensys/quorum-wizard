@@ -1,5 +1,6 @@
 import { join } from 'path'
 import { createNetwork, createStaticNodes } from '../../utils/networkCreator'
+import {createConfig} from '../../model/TesseraConfig'
 import {
   createQuickstartConfig,
   generateNodeConfigs
@@ -45,6 +46,7 @@ describe('creates a network', () => {
       expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/nodekey`), createNetPath(config, `qdata/dd${i}/geth`, 'nodekey'))
       expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/tm.key`), createNetPath(config, `qdata/c${i}/tm.key`))
       expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/tm.pub`), createNetPath(config, `qdata/c${i}/tm.pub`))
+      expect(writeJsonFile).toBeCalledWith(createNetPath(config, `qdata/c${i}`), `tessera-config-09-${i}.json`, anything())
     }
     expect(writeFile).toBeCalledWith(createNetPath(config, 'start.sh'), expect.any(String), true)
     expect(copyFile).toBeCalledWith(createPath('lib/stop.sh'), createNetPath(config, 'stop.sh'))

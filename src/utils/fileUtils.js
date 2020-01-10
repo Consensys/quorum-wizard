@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'fs-extra'
 import { join } from 'path'
 
 export function writeJsonFile (folder, filename, object, space = 2) {
@@ -21,7 +21,7 @@ export function removeFolder (networkPath = '') {
   }
 
   if(fs.existsSync(networkPath)) {
-    fs.rmdirSync(networkPath, { recursive: true })
+    fs.removeSync(networkPath)
   }
 }
 

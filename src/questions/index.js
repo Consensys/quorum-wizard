@@ -21,7 +21,7 @@ export async function quickstart () {
 
   if (deployment === 'bash') {
     createNetwork(config)
-  } else if (deployment == 'docker-compose') {
+  } else if (deployment === 'docker-compose') {
     createDockerCompose(config)
   }
 }
