@@ -20,9 +20,9 @@ export async function quickstart () {
   const config = createQuickstartConfig(numberNodes, consensus, transactionManager, deployment)
 
   if (deployment === 'bash') {
-    createNetwork(config)
+    await createNetwork(config)
   } else if (deployment === 'docker-compose') {
-    createDockerCompose(config)
+    await createDockerCompose(config)
   }
 }
 
@@ -36,8 +36,8 @@ export async function customize () {
   const config = createCustomConfig(numberNodes, consensus, transactionManager, deployment)
 
   if (deployment === 'bash') {
-    createNetwork(config)
+    await createNetwork(config)
   } else if (deployment === 'docker-compose') {
-    createDockerCompose(config)
+    await createDockerCompose(config)
   }
 }
