@@ -1,5 +1,5 @@
 import { createQuickstartConfig, createCustomConfig } from '../model/NetworkConfig'
-import { createNetwork } from '../utils/networkCreator'
+import { buildBash } from '../utils/bashHelper'
 import { createDockerCompose } from '../utils/dockerHelper'
 import {
   CONSENSUS_MODE,
@@ -18,9 +18,8 @@ export async function quickstart () {
     DEPLOYMENT_TYPE
   ])
   const config = createQuickstartConfig(numberNodes, consensus, transactionManager, deployment)
-
   if (deployment === 'bash') {
-    await createNetwork(config)
+    await buildBash(config)
   } else if (deployment === 'docker-compose') {
     await createDockerCompose(config)
   }
@@ -36,7 +35,7 @@ export async function customize () {
   const config = createCustomConfig(numberNodes, consensus, transactionManager, deployment)
 
   if (deployment === 'bash') {
-    await createNetwork(config)
+    await buildBash(config)
   } else if (deployment === 'docker-compose') {
     await createDockerCompose(config)
   }

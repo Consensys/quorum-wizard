@@ -10,6 +10,7 @@ export function createQuickstartConfig (numberNodes, consensus, transactionManag
       genesisFile: `7nodes/${consensus}-genesis.json`,
       generateKeys: false,
       configDir: `7nodes`,
+      deployment: deployment,
     },
     nodes: generateNodeConfigs(numberNodes, transactionManager, deployment)
   }
@@ -28,6 +29,7 @@ export function createCustomConfig (numberNodes, consensus, transactionManager, 
       generateKeys: true,
       configDir: `network/${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}/generated`,
       passwordFile: '7nodes/key1/password.txt',
+      deployment: deployment,
      },
      nodes: generateNodeConfigs(numberNodes, transactionManager, deployment)
    }

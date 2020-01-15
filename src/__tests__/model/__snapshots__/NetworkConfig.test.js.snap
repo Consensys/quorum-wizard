@@ -5,6 +5,7 @@ Object {
   "network": Object {
     "configDir": "7nodes",
     "consensus": "raft",
+    "deployment": "bash",
     "generateKeys": false,
     "genesisFile": "7nodes/raft-genesis.json",
     "id": 10,
@@ -68,6 +69,7 @@ Object {
   "network": Object {
     "configDir": "7nodes",
     "consensus": "istanbul",
+    "deployment": "bash",
     "generateKeys": false,
     "genesisFile": "7nodes/istanbul-genesis.json",
     "id": 10,
@@ -191,6 +193,7 @@ Object {
   "network": Object {
     "configDir": "network/7-nodes-istanbul-none-bash/generated",
     "consensus": "istanbul",
+    "deployment": "bash",
     "generateKeys": true,
     "genesisFile": "7nodes/istanbul-genesis.json",
     "id": 10,
@@ -273,6 +276,7 @@ Object {
   "network": Object {
     "configDir": "network/6-nodes-raft-tessera-bash/generated",
     "consensus": "raft",
+    "deployment": "bash",
     "generateKeys": true,
     "genesisFile": "7nodes/raft-genesis.json",
     "id": 10,

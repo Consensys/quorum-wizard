@@ -8,7 +8,7 @@ import {
   writeFile,
   writeJsonFile
 } from './fileUtils'
-import { isTessera, createStaticNodes } from './networkCreator'
+import { isTessera, createDirectory } from './networkCreator'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 const yaml = require('js-yaml')
@@ -34,53 +34,9 @@ export function createDockerCompose(config) {
   const file = isTessera(config) ?
     buildDockerComposeWithTessera(config) : buildDockerComposeNoTessera(config)
 
-  const networkFolderName = sanitize(config.network.name)
-  if (networkFolderName === '') {
-    throw new Error('Network name was empty or contained invalid characters')
-  }
-
-  const networkPath = join(process.cwd(), 'network', networkFolderName)
-  removeFolder(networkPath)
-
+  const commands = createDirectory(config)
+  const networkPath = commands.netPath
   const qdata = join(networkPath, 'qdata')
-  const logs = join(qdata, 'logs')
-  createFolder(logs, true)
-  writeJsonFile(networkPath, 'config.json', config)
-
-  const configPath = join(process.cwd(), config.network.configDir)
-  if(config.network.generateKeys) {
-      generateKeys(config, configPath)
-      generateConsensusConfig(configPath, config.network.consensus, config.nodes)
-  }
-
-  const staticNodes = createStaticNodes(config.nodes, config.network.consensus, config.network.configDir)
-
-  config.nodes.forEach((node, i) => {
-    const nodeNumber = i + 1
-    const keyFolder = join(configPath, `key${nodeNumber}`)
-    const quorumDir = join(qdata, `dd${nodeNumber}`)
-    const gethDir = join(quorumDir, `geth`)
-    const keyDir = join(quorumDir, `keystore`)
-    const tmDir = join(qdata, `c${nodeNumber}`)
-    const passwordDestination = join(keyDir, 'password.txt')
-    const genesisDestination = join(quorumDir, `${config.network.consensus}-genesis.json`)
-    createFolder(quorumDir)
-    createFolder(gethDir)
-    createFolder(keyDir)
-    createFolder(tmDir)
-
-    writeJsonFile(quorumDir, 'permissioned-nodes.json', staticNodes)
-    writeJsonFile(quorumDir, 'static-nodes.json', staticNodes)
-    copyFile(normalize(config.network.genesisFile), genesisDestination)
-    copyFile(join(keyFolder, 'key'), join(keyDir, 'key'))
-    copyFile(join(keyFolder, 'nodekey'), join(gethDir, 'nodekey'))
-    copyFile(join(keyFolder, 'password.txt'), passwordDestination)
-    copyFile(join(configPath, `${config.network.consensus}-genesis.json`), genesisDestination)
-    if(isTessera(config)) {
-      copyFile(join(keyFolder, 'tm.key'), join(tmDir, 'tm.key'))
-      copyFile(join(keyFolder, 'tm.pub'), join(tmDir, 'tm.pub'))
-    }
-  })
 
   let startCommands = `QUORUM_CONSENSUS=${config.network.consensus} docker-compose up -d`
 
