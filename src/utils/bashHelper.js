@@ -11,7 +11,7 @@ import { join, normalize } from 'path'
 import { execute } from './execUtils'
 
 export function buildBashScript(config) {
-  var commands = createDirectory(config)
+  const commands = createDirectory(config)
 
   const startScript = [
     commands.tesseraStart,

@@ -90,7 +90,7 @@ export function createDirectory (config) {
     }
   })
 
-  var obj = {
+  const obj = {
     tesseraStart:  tmStartCommands.join('\n'),
     gethStart: startCommands.join('\n'),
     initStart: initCommands,
