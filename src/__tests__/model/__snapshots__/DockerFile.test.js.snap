@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`creates 3nodes raft dockerFile tessera 1`] = `
+exports[`creates 3nodes raft dockerFile tessera no cakeshop 1`] = `
 "# The following environment variables are substituted if present
 # * QUORUM_CONSENSUS: default to istanbul
 # * QUORUM_DOCKER_IMAGE: default to quorumengineering/quorum:2.4.0
@@ -188,30 +188,6 @@ x-tx-manager-def:
           exit 1
           ;;
       esac
-x-cakeshop-def:
-  &cakeshop-def
-  image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}\\"
-  expose:
-    - \\"8999\\"
-  restart: \\"no\\"
-  healthcheck:
-    test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy=off\\", \\"http://localhost:8999/actuator/health\\"]
-    interval: 5s
-    timeout: 5s
-    retries: 20
-    start_period: 5s
-  entrypoint:
-    - /bin/sh
-    - -c
-    - |
-      DDIR=/qdata/cakeshop/local
-      rm -rf $\${DDIR}
-      mkdir -p $\${DDIR}
-      DOCKER_IMAGE=\\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}\\"
-      cp /examples/cakeshop/application.properties.template $\${DDIR}/application.properties
-      cp /examples/cakeshop/7nodes_docker.json $\${DDIR}/7nodes.json
-      java -Xms128M -Xmx128M -Dcakeshop.config.dir=/qdata/cakeshop -Dlogging.path=/qdata/logs/cakeshop -jar /opt/cakeshop/cakeshop.war
-      ;;
 services:
   node1:
     << : *quorum-def
@@ -300,17 +276,6 @@ services:
         ipv4_address: 172.16.239.103
     environment:
       - NODE_ID=3
-#  cakeshop:
-#    << : *cakeshop-def
-#    hostname: cakeshop
-#    ports:
-#      - \\"8999:8999\\"
-#    volumes:
-#      - cakeshopvol:/qdata
-#      - ./qdata:/examples:ro
-#    networks:
-#      quorum-examples-net:
-#        ipv4_address: 172.16.239.186
 networks:
   quorum-examples-net:
     name: quorum-examples-net
@@ -326,7 +291,7 @@ volumes:
   \\"cakeshopvol\\":"
 `;
 
-exports[`creates 5nodes istanbul dockerFile no tessera 1`] = `
+exports[`creates 5nodes istanbul dockerFile no tessera no cakeshop 1`] = `
 "# The following environment variables are substituted if present
 # * QUORUM_CONSENSUS: default to istanbul
 # * QUORUM_DOCKER_IMAGE: default to quorumengineering/quorum:2.4.0
@@ -385,30 +350,6 @@ x-quorum-def:
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
         \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
-x-cakeshop-def:
-  &cakeshop-def
-  image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}\\"
-  expose:
-    - \\"8999\\"
-  restart: \\"no\\"
-  healthcheck:
-    test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy=off\\", \\"http://localhost:8999/actuator/health\\"]
-    interval: 5s
-    timeout: 5s
-    retries: 20
-    start_period: 5s
-  entrypoint:
-    - /bin/sh
-    - -c
-    - |
-      DDIR=/qdata/cakeshop/local
-      rm -rf $\${DDIR}
-      mkdir -p $\${DDIR}
-      DOCKER_IMAGE=\\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}\\"
-      cp /examples/cakeshop/application.properties.template $\${DDIR}/application.properties
-      cp /examples/cakeshop/7nodes_docker.json $\${DDIR}/7nodes.json
-      java -Xms128M -Xmx128M -Dcakeshop.config.dir=/qdata/cakeshop -Dlogging.path=/qdata/logs/cakeshop -jar /opt/cakeshop/cakeshop.war
-      ;;
 services:
   node1:
     << : *quorum-def
@@ -480,17 +421,6 @@ services:
     networks:
       quorum-examples-net:
         ipv4_address: 172.16.239.15
-#  cakeshop:
-#    << : *cakeshop-def
-#    hostname: cakeshop
-#    ports:
-#      - \\"8999:8999\\"
-#    volumes:
-#      - cakeshopvol:/qdata
-#      - ./qdata:/examples:ro
-#    networks:
-#      quorum-examples-net:
-#        ipv4_address: 172.16.239.186
 networks:
   quorum-examples-net:
     name: quorum-examples-net

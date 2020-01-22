@@ -1,0 +1,24 @@
+x-cakeshop-def:
+  &cakeshop-def
+  image: "${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}"
+  expose:
+    - "8999"
+  restart: "no"
+  healthcheck:
+    test: ["CMD", "wget", "--spider", "--proxy=off", "http://localhost:8999/actuator/health"]
+    interval: 5s
+    timeout: 5s
+    retries: 20
+    start_period: 5s
+  entrypoint:
+    - /bin/sh
+    - -c
+    - |
+      DDIR=/qdata/cakeshop/local
+      rm -rf $${DDIR}
+      mkdir -p $${DDIR}
+      DOCKER_IMAGE="${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}"
+      cp /examples/cakeshop/application.properties.template $${DDIR}/application.properties
+      cp /examples/cakeshop/7nodes_docker.json $${DDIR}/7nodes.json
+      java -Xms128M -Xmx128M -Dcakeshop.config.dir=/qdata/cakeshop -Dlogging.path=/qdata/logs/cakeshop -jar /opt/cakeshop/cakeshop.war
+      ;;
