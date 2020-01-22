@@ -37,8 +37,6 @@ export function readFileToString (file) {
   return fs.readFileSync(file, 'utf8').trim()
 }
 
-export function formatEntrypoint(file) {
-  return `
-  ${file}
-`
+export function formatNewLine(file) {
+  return file !== "" ? file+'\n' : file
 }

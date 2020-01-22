@@ -30,6 +30,7 @@ x-quorum-def:
     - -c
     - |
       UDS_WAIT=10
+      if [ \\"$\${PRIVATE_CONFIG}\\" != \\"ignore\\" ]; then
       for i in $$(seq 1 100)
       do
         set -e
@@ -41,6 +42,7 @@ x-quorum-def:
           sleep $\${UDS_WAIT}
         fi
       done
+      fi
       DDIR=/qdata/dd
       rm -rf $\${DDIR}
       mkdir -p $\${DDIR}
@@ -321,6 +323,19 @@ x-quorum-def:
     - -c
     - |
       UDS_WAIT=10
+      if [ \\"$\${PRIVATE_CONFIG}\\" != \\"ignore\\" ]; then
+      for i in $$(seq 1 100)
+      do
+        set -e
+        if [ -S $\${PRIVATE_CONFIG} ] && \\\\
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:9000/upcheck)\\" ];
+        then break
+        else
+          echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
+          sleep $\${UDS_WAIT}
+        fi
+      done
+      fi
       DDIR=/qdata/dd
       rm -rf $\${DDIR}
       mkdir -p $\${DDIR}

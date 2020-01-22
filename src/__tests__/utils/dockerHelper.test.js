@@ -1,7 +1,7 @@
 import { createDirectory, isTessera } from '../../utils/networkCreator'
 import { createQuickstartConfig } from '../../model/NetworkConfig'
-import { copyFile, writeFile, readFileToString } from '../../utils/fileUtils'
-import { buildDockerCompose, createDockerCompose, formatEntrypoint } from '../../utils/dockerHelper'
+import { copyFile, writeFile, readFileToString, formatNewLine } from '../../utils/fileUtils'
+import { buildDockerCompose, createDockerCompose } from '../../utils/dockerHelper'
 
 jest.mock('../../utils/fileUtils')
 jest.mock('../../utils/networkCreator')
@@ -71,12 +71,13 @@ networks:
 volumes:
   "vol1":
   "cakeshopvol":`
-    const expected = "definitionstessera" + services
+    const expected = "quorumDefinitions\ntesseraDefinitions" + services
 
     isTessera.mockReturnValueOnce(true)
     readFileToString.mockReturnValueOnce("definitions")
-    readFileToString.mockReturnValueOnce("entrypoint")
     readFileToString.mockReturnValueOnce("tessera")
+    formatNewLine.mockReturnValueOnce("quorumDefinitions\n")
+    formatNewLine.mockReturnValueOnce("tesseraDefinitions\n")
 
     expect(buildDockerCompose(config)).toEqual(expected)
   })
@@ -111,11 +112,11 @@ networks:
 volumes:
   "vol1":
   "cakeshopvol":`
-    const expected = "definitions" + services
+    const expected = "quorumDefinitions" + services
 
     isTessera.mockReturnValueOnce(false)
-    readFileToString.mockReturnValueOnce("definitions\n")
-    readFileToString.mockReturnValueOnce("entrypoint")
+    readFileToString.mockReturnValueOnce("definitions")
+    formatNewLine.mockReturnValueOnce("quorumDefinitions\n")
 
     expect(buildDockerCompose(config)).toEqual(expected)
   })

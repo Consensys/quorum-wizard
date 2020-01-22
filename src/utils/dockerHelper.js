@@ -7,7 +7,7 @@ import {
   removeFolder,
   writeFile,
   writeJsonFile,
-  formatEntrypoint
+  formatNewLine
 } from './fileUtils'
 import { isTessera, createDirectory } from './networkCreator'
 import { generateKeys } from './keyGen'
@@ -18,12 +18,8 @@ export function buildDockerCompose(config) {
   const hasTessera = isTessera(config)
   const hasCakeshop = false
 
-  let quorumDefinitions = readFileToString(join(process.cwd(), 'lib/docker-compose-definitions-quorum.yml'))
-  const quorumEntrypoint = hasTessera ? readFileToString(join(process.cwd(), 'lib/docker-quorum-tessera-entrypoint.yml')) :
-    readFileToString(join(process.cwd(), 'lib/docker-quorum-entrypoint.yml'))
-  quorumDefinitions = [quorumDefinitions, formatEntrypoint(quorumEntrypoint)].join('')
-
-  const tesseraDefinitions = hasTessera ? readFileToString(join(process.cwd(), 'lib/docker-compose-definitions-tessera.yml'))+'\n' : ""
+  const quorumDefinitions = readFileToString(join(process.cwd(), 'lib/docker-compose-definitions-quorum.yml'))
+  const tesseraDefinitions = hasTessera ? readFileToString(join(process.cwd(), 'lib/docker-compose-definitions-tessera.yml')) : ""
 
   let services = config.nodes.map((node, i) => {
     let allServices = buildNodeService(node, i, hasTessera)
@@ -35,7 +31,7 @@ export function buildDockerCompose(config) {
     }
     return allServices
   })
-  return [quorumDefinitions, tesseraDefinitions, 'services:', services.join(""), buildEndService(config)].join("")
+  return [formatNewLine(quorumDefinitions), formatNewLine(tesseraDefinitions), "services:", services.join(""), buildEndService(config)].join("")
 }
 
 export function createDockerCompose(config) {
