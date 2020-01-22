@@ -22,7 +22,9 @@ export function buildDockerCompose(config) {
   const quorumEntrypoint = hasTessera ? readFileToString(join(process.cwd(), 'lib/docker-quorum-tessera-entrypoint.yml')) :
     readFileToString(join(process.cwd(), 'lib/docker-quorum-entrypoint.yml'))
   quorumDefinitions = [quorumDefinitions, formatEntrypoint(quorumEntrypoint)].join('')
+
   const tesseraDefinitions = hasTessera ? readFileToString(join(process.cwd(), 'lib/docker-compose-definitions-tessera.yml'))+'\n' : ""
+
   let services = config.nodes.map((node, i) => {
     let allServices = buildNodeService(node, i, hasTessera)
     if(hasTessera) {

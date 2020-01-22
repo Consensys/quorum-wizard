@@ -1,4 +1,4 @@
-import { createDirectory } from '../../utils/networkCreator'
+import { createDirectory, isTessera } from '../../utils/networkCreator'
 import { createQuickstartConfig } from '../../model/NetworkConfig'
 import { copyFile, writeFile, readFileToString } from '../../utils/fileUtils'
 import { buildDockerCompose, createDockerCompose, formatEntrypoint } from '../../utils/dockerHelper'
@@ -16,6 +16,7 @@ describe('generates docker-compose directory', () => {
         initStart: [],
         netPath: "test",
       })
+    isTessera.mockReturnValueOnce(true)
     readFileToString.mockReturnValueOnce("test")
     createDockerCompose(config)
 
@@ -71,6 +72,8 @@ volumes:
   "vol1":
   "cakeshopvol":`
     const expected = "definitionstessera" + services
+
+    isTessera.mockReturnValueOnce(true)
     readFileToString.mockReturnValueOnce("definitions")
     readFileToString.mockReturnValueOnce("entrypoint")
     readFileToString.mockReturnValueOnce("tessera")
@@ -109,6 +112,8 @@ volumes:
   "vol1":
   "cakeshopvol":`
     const expected = "definitions" + services
+
+    isTessera.mockReturnValueOnce(false)
     readFileToString.mockReturnValueOnce("definitions\n")
     readFileToString.mockReturnValueOnce("entrypoint")
 

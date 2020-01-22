@@ -22,5 +22,3 @@ x-quorum-def:
     start_period: 5s
   labels:
     com.quorum.consensus: ${QUORUM_CONSENSUS:-istanbul}
-
-    

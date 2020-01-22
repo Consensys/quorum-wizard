@@ -116,5 +116,3 @@ x-tx-manager-def:
           exit 1
           ;;
       esac
-
-      
