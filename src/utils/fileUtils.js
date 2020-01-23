@@ -36,3 +36,7 @@ export function copyFile (src, dest) {
 export function readFileToString (file) {
   return fs.readFileSync(file, 'utf8').trim()
 }
+
+export function formatNewLine(file) {
+  return file !== "" ? file+'\n' : file
+}

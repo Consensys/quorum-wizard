@@ -1,7 +1,7 @@
-import { createDirectory } from '../../utils/networkCreator'
+import { createDirectory, isTessera } from '../../utils/networkCreator'
 import { createQuickstartConfig } from '../../model/NetworkConfig'
-import { copyFile, writeFile, readFileToString } from '../../utils/fileUtils'
-import { buildDockerComposeWithTessera, buildDockerComposeNoTessera, createDockerCompose } from '../../utils/dockerHelper'
+import { copyFile, writeFile, readFileToString, formatNewLine } from '../../utils/fileUtils'
+import { buildDockerCompose, createDockerCompose } from '../../utils/dockerHelper'
 
 jest.mock('../../utils/fileUtils')
 jest.mock('../../utils/networkCreator')
@@ -16,6 +16,8 @@ describe('generates docker-compose directory', () => {
         initStart: [],
         netPath: "test",
       })
+    isTessera.mockReturnValueOnce(true)
+    readFileToString.mockReturnValueOnce("test")
     createDockerCompose(config)
 
     expect(writeFile).toBeCalledTimes(3)
@@ -28,6 +30,7 @@ describe('generates docker-compose script details', () => {
 
     let config = createQuickstartConfig('1', 'raft', 'tessera', 'bash')
     const services = `
+services:
   node1:
     << : *quorum-def
     hostname: node1
@@ -57,17 +60,6 @@ describe('generates docker-compose script details', () => {
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
-#  cakeshop:
-#    << : *cakeshop-def
-#    hostname: cakeshop
-#    ports:
-#      - "8999:8999"
-#    volumes:
-#      - cakeshopvol:/qdata
-#      - ./qdata:/examples:ro
-#    networks:
-#      quorum-examples-net:
-#        ipv4_address: 172.16.239.186
 networks:
   quorum-examples-net:
     name: quorum-examples-net
@@ -79,16 +71,22 @@ networks:
 volumes:
   "vol1":
   "cakeshopvol":`
-    const expected = "definitions" + services
-    readFileToString.mockReturnValueOnce("definitions")
+    const expected = "quorumDefinitions\ntesseraDefinitions" + services
 
-    expect(buildDockerComposeWithTessera(config)).toEqual(expected)
+    isTessera.mockReturnValueOnce(true)
+    readFileToString.mockReturnValueOnce("definitions")
+    readFileToString.mockReturnValueOnce("tessera")
+    formatNewLine.mockReturnValueOnce("quorumDefinitions\n")
+    formatNewLine.mockReturnValueOnce("tesseraDefinitions\n")
+
+    expect(buildDockerCompose(config)).toEqual(expected)
   })
 
   it('creates docker-compose script given config details', () => {
 
     let config = createQuickstartConfig('1', 'raft', 'none', 'bash')
     const services = `
+services:
   node1:
     << : *quorum-def
     hostname: node1
@@ -103,17 +101,6 @@ volumes:
     networks:
       quorum-examples-net:
         ipv4_address: 172.16.239.11
-#  cakeshop:
-#    << : *cakeshop-def
-#    hostname: cakeshop
-#    ports:
-#      - "8999:8999"
-#    volumes:
-#      - cakeshopvol:/qdata
-#      - ./qdata:/examples:ro
-#    networks:
-#      quorum-examples-net:
-#        ipv4_address: 172.16.239.186
 networks:
   quorum-examples-net:
     name: quorum-examples-net
@@ -125,9 +112,12 @@ networks:
 volumes:
   "vol1":
   "cakeshopvol":`
-    const expected = "definitions" + services
-    readFileToString.mockReturnValueOnce("definitions")
+    const expected = "quorumDefinitions" + services
 
-    expect(buildDockerComposeNoTessera(config)).toEqual(expected)
+    isTessera.mockReturnValueOnce(false)
+    readFileToString.mockReturnValueOnce("definitions")
+    formatNewLine.mockReturnValueOnce("quorumDefinitions\n")
+
+    expect(buildDockerCompose(config)).toEqual(expected)
   })
 })

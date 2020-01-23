@@ -6,33 +6,36 @@ import {
   readFileToString,
   removeFolder,
   writeFile,
-  writeJsonFile
+  writeJsonFile,
+  formatNewLine
 } from './fileUtils'
 import { isTessera, createDirectory } from './networkCreator'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 const yaml = require('js-yaml')
 
-export function buildDockerComposeWithTessera (config) {
-  const definitions = readFileToString(join(process.cwd(), 'lib/docker-compose-definitions-tessera.yml'))
-  let services = config.nodes.map((node, i) =>
-    [buildNodeService(node, i, true), buildTesseraService(node, i)].join(""))
+export function buildDockerCompose(config) {
+  const hasTessera = isTessera(config)
+  const hasCakeshop = false
 
-  return [definitions, services.join(""), buildEndService(config)].join("")
-}
+  const quorumDefinitions = readFileToString(join(process.cwd(), 'lib/docker-compose-definitions-quorum.yml'))
+  const tesseraDefinitions = hasTessera ? readFileToString(join(process.cwd(), 'lib/docker-compose-definitions-tessera.yml')) : ""
 
-export function buildDockerComposeNoTessera (config) {
-  const definitions = readFileToString(join(process.cwd(), 'lib/docker-compose-definitions.yml'))
-
-  let services = config.nodes.map((node, i) =>
-    buildNodeService(node, i, false))
-
-  return [definitions, services.join(""), buildEndService(config)].join("")
+  let services = config.nodes.map((node, i) => {
+    let allServices = buildNodeService(node, i, hasTessera)
+    if(hasTessera) {
+      allServices = [allServices, buildTesseraService(node, i)].join("")
+    }
+    if(hasCakeshop) {
+      allServices = [allServices, buildCakeshopService(config)].join("")
+    }
+    return allServices
+  })
+  return [formatNewLine(quorumDefinitions), formatNewLine(tesseraDefinitions), "services:", services.join(""), buildEndService(config)].join("")
 }
 
 export function createDockerCompose(config) {
-  const file = isTessera(config) ?
-    buildDockerComposeWithTessera(config) : buildDockerComposeNoTessera(config)
+  const file = buildDockerCompose(config)
 
   const commands = createDirectory(config)
   const networkPath = commands.netPath
@@ -92,19 +95,23 @@ function buildTesseraService(node, i) {
       - NODE_ID=${i + 1}`
 }
 
+function buildCakeshopService(config) {
+  return `
+  cakeshop:
+    << : *cakeshop-def
+    hostname: cakeshop
+    ports:
+      - "8999:8999"
+    volumes:
+      - cakeshopvol:/qdata
+      - ./qdata:/examples:ro
+    networks:
+      quorum-examples-net:
+        ipv4_address: 172.16.239.186`
+}
+
 function buildEndService(config) {
   return `
-#  cakeshop:
-#    << : *cakeshop-def
-#    hostname: cakeshop
-#    ports:
-#      - "8999:8999"
-#    volumes:
-#      - cakeshopvol:/qdata
-#      - ./qdata:/examples:ro
-#    networks:
-#      quorum-examples-net:
-#        ipv4_address: 172.16.239.186
 networks:
   quorum-examples-net:
     name: quorum-examples-net
