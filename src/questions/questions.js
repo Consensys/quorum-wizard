@@ -50,3 +50,13 @@ export const DEPLOYMENT_TYPE = {
     // 'vagrant',
   ]
 }
+
+export const CAKESHOP = {
+  type: 'list',
+  name: 'cakeshop',
+  message: 'Do you want to include cakeshop?',
+  choices: [
+    'yes',
+    'no',
+  ]
+}

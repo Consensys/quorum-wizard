@@ -117,6 +117,10 @@ export function isTessera (config) {
   return config.network.transactionManager === 'tessera'
 }
 
+export function includeCakeshop(config) {
+  return config.network.cakeshop === 'yes'
+}
+
 function createPeerList (nodes, transactionManager) {
   if (transactionManager !== 'tessera') {
     return []

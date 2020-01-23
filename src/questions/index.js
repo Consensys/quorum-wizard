@@ -5,30 +5,33 @@ import {
   CONSENSUS_MODE,
   DEPLOYMENT_TYPE,
   NUMBER_NODES,
-  TRANSACTION_MANAGER
+  TRANSACTION_MANAGER,
+  CAKESHOP
 } from './questions'
 
 import inquirer from 'inquirer'
 
 export async function quickstart () {
-  const { numberNodes, consensus, deployment, transactionManager } = await inquirer.prompt([
+  const { numberNodes, consensus, deployment, transactionManager, cakeshop } = await inquirer.prompt([
     NUMBER_NODES,
     CONSENSUS_MODE,
     TRANSACTION_MANAGER,
-    DEPLOYMENT_TYPE
+    DEPLOYMENT_TYPE,
+    CAKESHOP
   ])
-  const config = createQuickstartConfig(numberNodes, consensus, transactionManager, deployment)
+  const config = createQuickstartConfig(numberNodes, consensus, transactionManager, deployment, cakeshop)
   buildNetwork(config, deployment)
 }
 
 export async function customize () {
-  const { numberNodes, consensus, deployment, transactionManager } = await inquirer.prompt([
+  const { numberNodes, consensus, deployment, transactionManager, cakeshop } = await inquirer.prompt([
     NUMBER_NODES,
     CONSENSUS_MODE,
     TRANSACTION_MANAGER,
-    DEPLOYMENT_TYPE
+    DEPLOYMENT_TYPE,
+    CAKESHOP
   ])
-  const config = createCustomConfig(numberNodes, consensus, transactionManager, deployment)
+  const config = createCustomConfig(numberNodes, consensus, transactionManager, deployment, cakeshop)
   buildNetwork(config, deployment)
 }
 

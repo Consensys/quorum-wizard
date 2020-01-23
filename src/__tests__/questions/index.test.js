@@ -17,7 +17,8 @@ const QUICKSTART_CONFIG = {
   numberNodes: '5',
   consensus: 'istanbul',
   transactionManager: 'tessera',
-  deployment: 'bash'
+  deployment: 'bash',
+  cakeshop: 'no'
 }
 
 test('placeholder', async () => {
@@ -32,7 +33,8 @@ test('placeholder', async () => {
     QUICKSTART_CONFIG.numberNodes,
     QUICKSTART_CONFIG.consensus,
     QUICKSTART_CONFIG.transactionManager,
-    QUICKSTART_CONFIG.deployment
+    QUICKSTART_CONFIG.deployment,
+    QUICKSTART_CONFIG.cakeshop
   )
   expect(networkCreator.createDirectory).toHaveBeenCalledWith(fakeConfig)
   expect(writeFile).toBeCalledWith('test/start.sh', expect.any(String), true)

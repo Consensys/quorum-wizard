@@ -18,6 +18,9 @@ export function buildBashScript(config) {
     waitForTesseraNodesCommand(config),
     commands.gethStart,
   ]
+
+  //add cakeshop details here and combine into start script
+
   return {
     startScript: startScript.join('\n'),
     initCommands: commands.initStart,
@@ -32,9 +35,12 @@ export function buildBash(config) {
 
   writeFile(join(networkPath, 'start.sh'), bashDetails.startScript, true)
   copyFile(join(process.cwd(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
+
   copyFile(join(process.cwd(), 'lib/runscript.sh'), join(networkPath, 'runscript.sh'))
   copyFile(join(process.cwd(), 'lib/public-contract.js'), join(networkPath, 'public-contract.js'))
   copyFile(join(process.cwd(), 'lib/private-contract.js'), join(networkPath, 'private-contract.js'))
+
+  //copy over cakeshop files
 
   bashDetails.initCommands.forEach((command) => {
     // TODO figure out the safest way to run shell commands
@@ -46,8 +52,6 @@ export function buildBash(config) {
     })
   })
 }
-
-
 
 export function createGethStartCommand (config, node, passwordDestination, nodeNumber, tmIpcLocation) {
   const { verbosity, id, consensus } = config.network
@@ -116,4 +120,8 @@ done
 
 echo "All Tessera nodes started"
 `
+}
+
+export function createCakeshopStartCommand() {
+
 }

@@ -9,29 +9,31 @@ import {
   writeJsonFile,
   formatNewLine
 } from './fileUtils'
-import { isTessera, createDirectory } from './networkCreator'
+import { isTessera, includeCakeshop, createDirectory } from './networkCreator'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
+import { buildCakeshopDir } from './cakeshopHelper'
 const yaml = require('js-yaml')
 
 export function buildDockerCompose(config) {
   const hasTessera = isTessera(config)
-  const hasCakeshop = false
+  const hasCakeshop = includeCakeshop(config)
 
   const quorumDefinitions = readFileToString(join(process.cwd(), 'lib/docker-compose-definitions-quorum.yml'))
   const tesseraDefinitions = hasTessera ? readFileToString(join(process.cwd(), 'lib/docker-compose-definitions-tessera.yml')) : ""
+  const cakeshopDefinitions = hasCakeshop ? readFileToString(join(process.cwd(), 'lib/docker-compose-definitions-cakeshop.yml')) : ""
 
   let services = config.nodes.map((node, i) => {
     let allServices = buildNodeService(node, i, hasTessera)
     if(hasTessera) {
       allServices = [allServices, buildTesseraService(node, i)].join("")
     }
-    if(hasCakeshop) {
-      allServices = [allServices, buildCakeshopService(config)].join("")
-    }
     return allServices
   })
-  return [formatNewLine(quorumDefinitions), formatNewLine(tesseraDefinitions), "services:", services.join(""), buildEndService(config)].join("")
+  if(hasCakeshop) {
+    services = [services.join(""), buildCakeshopService(config)]
+  }
+  return [formatNewLine(quorumDefinitions), formatNewLine(tesseraDefinitions), formatNewLine(cakeshopDefinitions), "services:", services.join(""), buildEndService(config)].join("")
 }
 
 export function createDockerCompose(config) {
@@ -40,6 +42,10 @@ export function createDockerCompose(config) {
   const commands = createDirectory(config)
   const networkPath = commands.netPath
   const qdata = join(networkPath, 'qdata')
+
+  if(includeCakeshop(config)) {
+    buildCakeshopDir(config, qdata)
+  }
 
   let startCommands = `QUORUM_CONSENSUS=${config.network.consensus} docker-compose up -d`
 
