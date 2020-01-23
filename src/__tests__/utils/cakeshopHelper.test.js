@@ -15,7 +15,7 @@ describe('creates a cakeshop directory structure for bash', () => {
     buildCakeshopDir(config, createNetPath(config, 'qdata'))
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/cakeshop'))
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/cakeshop/local'))
-    expect(copyFile).toBeCalledWith(createPath('7nodes/cakeshop', 'cakeshop.json'), createNetPath(config, 'qdata/cakeshop/local','cakeshop.json'))
+    expect(copyFile).toBeCalledWith(createPath('7nodes/cakeshop', 'cakeshop_bash.json'), createNetPath(config, 'qdata/cakeshop/local','cakeshop.json'))
     expect(copyFile).toBeCalledWith(createPath('lib', 'cakeshop_application.properties.template'), createNetPath(config, 'qdata/cakeshop/local','application.properties'))
   })
 })
@@ -26,7 +26,7 @@ describe('creates a cakeshop directory structure for docker', () => {
 
     buildCakeshopDir(config, createNetPath(config, 'qdata'))
     expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/cakeshop`))
-    expect(copyFile).toBeCalledWith(createPath('7nodes/cakeshop', 'cakeshop-docker.json'), createNetPath(config, 'qdata/cakeshop','cakeshop-docker.json'))
+    expect(copyFile).toBeCalledWith(createPath('7nodes/cakeshop', 'cakeshop_docker-compose.json'), createNetPath(config, 'qdata/cakeshop','cakeshop.json'))
     expect(copyFile).toBeCalledWith(createPath('lib', 'cakeshop_application.properties.template'), createNetPath(config, 'qdata/cakeshop','application.properties'))
   })
 })

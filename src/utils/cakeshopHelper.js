@@ -1,25 +1,31 @@
 import { join } from 'path'
 import {
   copyFile,
-  createFolder
+  createFolder,
+  writeJsonFile
 } from './fileUtils'
+import { generateCakeshopConfig } from '../model/CakeshopConfig'
 
 export function buildCakeshopDir(config, qdata) {
   const configPath = join(process.cwd(), config.network.configDir)
   const cakeshopFolder = join(configPath, 'cakeshop')
   let cakeshopDir = join(qdata, 'cakeshop')
   createFolder(cakeshopDir)
-  if(config.network.deployment === 'docker-compose') {
-    copyFile(join(cakeshopFolder, 'cakeshop-docker.json'), join(cakeshopDir, 'cakeshop-docker.json'))
-  } else if (config.network.deployment === 'bash') {
+  if(config.network.configDir !== '7nodes') {
+    generateCakeshopFiles(config, cakeshopFolder)
+  }
+  const deployment = config.network.deployment
+  if (deployment === 'bash') {
     cakeshopDir = join(cakeshopDir, 'local')
     createFolder(cakeshopDir)
-    copyFile(join(cakeshopFolder, 'cakeshop.json'), join(cakeshopDir, 'cakeshop.json'))
   }
+  copyFile(join(cakeshopFolder, `cakeshop_${deployment}.json`), join(cakeshopDir, `cakeshop.json`))
   copyFile(join(process.cwd(), 'lib/cakeshop_application.properties.template'), join(cakeshopDir, 'application.properties'))
 }
 
-export function generateCakeshopFiles(config, configPath) {
+export function generateCakeshopFiles(config, cakeshopFolder) {
+  createFolder(cakeshopFolder)
+  writeJsonFile(cakeshopFolder, `cakeshop_${config.network.deployment}.json`, generateCakeshopConfig(config))
 
 }
 

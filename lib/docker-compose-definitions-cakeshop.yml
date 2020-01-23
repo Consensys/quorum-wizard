@@ -18,7 +18,7 @@ x-cakeshop-def:
       rm -rf $${DDIR}
       mkdir -p $${DDIR}
       DOCKER_IMAGE="${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}"
-      cp /examples/cakeshop/application.properties.template $${DDIR}/application.properties
-      cp /examples/cakeshop/cakeshop-docker.json $${DDIR}/cakeshop.json
+      cp /examples/cakeshop/application.properties $${DDIR}/application.properties
+      cp /examples/cakeshop/cakeshop.json $${DDIR}/cakeshop.json
       java -Xms128M -Xmx128M -Dcakeshop.config.dir=/qdata/cakeshop -Dlogging.path=/qdata/logs/cakeshop -jar /opt/cakeshop/cakeshop.war
       ;;
