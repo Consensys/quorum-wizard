@@ -35,6 +35,7 @@ export function createDirectory (config) {
   if(config.network.generateKeys) {
       generateKeys(config, configPath)
       generateConsensusConfig(configPath, config.network.consensus, config.nodes)
+      //generateCakeshop
   }
 
   const staticNodes = createStaticNodes(config.nodes, config.network.consensus, config.network.configDir)
