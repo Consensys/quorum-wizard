@@ -27,7 +27,7 @@ describe('creates a cakeshop directory structure for docker', () => {
     let config = createQuickstartConfig('5', 'raft', 'tessera', 'docker-compose' ,'yes')
 
     buildCakeshopDir(config, createNetPath(config, 'qdata'))
-    expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/cakeshop`))
+    expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/cakeshop'))
     expect(copyFile).toBeCalledWith(createPath('7nodes/cakeshop', 'cakeshop_docker-compose.json'), createNetPath(config, 'qdata/cakeshop','cakeshop.json'))
     expect(copyFile).toBeCalledWith(createPath('lib', 'cakeshop_application.properties.template'), createNetPath(config, 'qdata/cakeshop','application.properties'))
   })

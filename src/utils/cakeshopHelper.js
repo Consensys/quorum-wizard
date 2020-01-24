@@ -19,7 +19,7 @@ export function buildCakeshopDir(config, qdata) {
     cakeshopDir = join(cakeshopDir, 'local')
     createFolder(cakeshopDir)
   }
-  copyFile(join(cakeshopFolder, `cakeshop_${deployment}.json`), join(cakeshopDir, `cakeshop.json`))
+  copyFile(join(cakeshopFolder, `cakeshop_${deployment}.json`), join(cakeshopDir, 'cakeshop.json'))
   copyFile(join(process.cwd(), 'lib/cakeshop_application.properties.template'), join(cakeshopDir, 'application.properties'))
 }
 
