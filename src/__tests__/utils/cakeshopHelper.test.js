@@ -2,9 +2,11 @@ import { join } from 'path'
 import { createQuickstartConfig } from '../../model/NetworkConfig'
 import {
   copyFile,
-  createFolder
+  createFolder,
+  writeJsonFile
 } from '../../utils/fileUtils'
-import { buildCakeshopDir } from '../../utils/cakeshopHelper'
+import { buildCakeshopDir, generateCakeshopFiles } from '../../utils/cakeshopHelper'
+import { anything } from 'expect'
 
 jest.mock('../../utils/fileUtils')
 
@@ -28,6 +30,28 @@ describe('creates a cakeshop directory structure for docker', () => {
     expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/cakeshop`))
     expect(copyFile).toBeCalledWith(createPath('7nodes/cakeshop', 'cakeshop_docker-compose.json'), createNetPath(config, 'qdata/cakeshop','cakeshop.json'))
     expect(copyFile).toBeCalledWith(createPath('lib', 'cakeshop_application.properties.template'), createNetPath(config, 'qdata/cakeshop','application.properties'))
+  })
+})
+
+describe('generates custom cakeshop files', () => {
+  it('creates cakeshop json file with ports for bash', () => {
+    let config = createQuickstartConfig('5', 'raft', 'tessera', 'bash' ,'yes')
+
+    generateCakeshopFiles(config, createNetPath(config, 'cakeshop'))
+    expect(createFolder).toBeCalledWith(createNetPath(config, 'cakeshop'))
+    expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'cakeshop'), 'cakeshop_bash.json', anything())
+
+  })
+})
+
+describe('generates custom cakeshop files', () => {
+  it('creates cakeshop json file with ports for docker-compose', () => {
+    let config = createQuickstartConfig('5', 'raft', 'tessera', 'docker-compose' ,'yes')
+
+    generateCakeshopFiles(config, createNetPath(config, 'cakeshop'))
+    expect(createFolder).toBeCalledWith(createNetPath(config, 'cakeshop'))
+    expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'cakeshop'), 'cakeshop_docker-compose.json', anything())
+
   })
 })
 

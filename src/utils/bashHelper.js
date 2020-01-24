@@ -125,7 +125,3 @@ done
 echo "All Tessera nodes started"
 `
 }
-
-export function createCakeshopStartCommand() {
-
-}
