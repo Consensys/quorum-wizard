@@ -21,7 +21,7 @@ jest.mock('../../utils/fileUtils')
 describe('creates a bash network', () => {
   it('rejects invalid network names', () => {
     const names = [ '', '.', '..', '\0', '/']
-    let config = createQuickstartConfig('5', 'raft', 'tessera', 'bash', 'no')
+    let config = createQuickstartConfig('5', 'raft', 'tessera', 'bash', false)
     names.forEach((name) => {
       config.network.name = name
       expect(() => createDirectory(config)).toThrow(Error)
@@ -29,7 +29,7 @@ describe('creates a bash network', () => {
   })
 
   it('Creates the correct directory structure and moves files in', () => {
-    let config = createQuickstartConfig('5', 'raft', 'tessera', 'bash', 'no')
+    let config = createQuickstartConfig('5', 'raft', 'tessera', 'bash', false)
     const commands = createDirectory(config)
     expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/logs`), true)
     expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', config)
@@ -59,7 +59,7 @@ describe('creates a bash network', () => {
 describe('creates a docker network', () => {
   it('rejects invalid network names', () => {
     const names = [ '', '.', '..', '\0', '/']
-    let config = createQuickstartConfig('5', 'raft', 'tessera', 'docker-compose', 'no')
+    let config = createQuickstartConfig('5', 'raft', 'tessera', 'docker-compose', false)
     names.forEach((name) => {
       config.network.name = name
       expect(() => createDirectory(config)).toThrow(Error)
@@ -67,7 +67,7 @@ describe('creates a docker network', () => {
   })
 
   it('Creates the correct directory structure and moves files in', () => {
-    let config = createQuickstartConfig('5', 'raft', 'tessera', 'docker-compose', 'no')
+    let config = createQuickstartConfig('5', 'raft', 'tessera', 'docker-compose', false)
     const commands = createDirectory(config)
     expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/logs`), true)
     expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', config)

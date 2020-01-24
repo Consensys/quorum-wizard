@@ -120,7 +120,7 @@ export function isTessera (config) {
 }
 
 export function includeCakeshop(config) {
-  return config.network.cakeshop === 'yes'
+  return config.network.cakeshop
 }
 
 function createPeerList (nodes, transactionManager) {

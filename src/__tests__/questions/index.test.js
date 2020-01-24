@@ -18,7 +18,7 @@ const QUICKSTART_CONFIG = {
   consensus: 'istanbul',
   transactionManager: 'tessera',
   deployment: 'bash',
-  cakeshop: 'no'
+  cakeshop: false
 }
 
 test('placeholder', async () => {

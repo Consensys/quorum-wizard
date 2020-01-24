@@ -9,21 +9,21 @@ test('creates 7nodes istanbul config', () => {
 })
 
 test('creates 5nodes raft no-TM config', () => {
-  const config = createQuickstartConfig('5', 'raft', 'none', 'bash', 'no')
+  const config = createQuickstartConfig('5', 'raft', 'none', 'bash', false)
   expect(config).toMatchSnapshot()
 })
 
 test('creates 6nodes raft custom config', () => {
-  const config = createCustomConfig('6', 'raft', 'tessera', 'bash', 'no')
+  const config = createCustomConfig('6', 'raft', 'tessera', 'bash', false)
   expect(config).toMatchSnapshot()
 })
 
 test('creates 7nodes istanbul no-TM custom config', () => {
-  const config = createCustomConfig('7', 'istanbul', 'none', 'bash', 'no')
+  const config = createCustomConfig('7', 'istanbul', 'none', 'bash', false)
   expect(config).toMatchSnapshot()
 })
 
 test('creates 7nodes istanbul cakeshop config', () => {
-  const config = createQuickstartConfig('7', 'istanbul', 'tessera', 'bash', 'yes')
+  const config = createQuickstartConfig('7', 'istanbul', 'tessera', 'bash', false)
   expect(config).toMatchSnapshot()
 })

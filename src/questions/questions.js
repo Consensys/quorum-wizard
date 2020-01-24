@@ -52,11 +52,8 @@ export const DEPLOYMENT_TYPE = {
 }
 
 export const CAKESHOP = {
-  type: 'list',
+  type: 'confirm',
   name: 'cakeshop',
   message: 'Do you want to include cakeshop?',
-  choices: [
-    'yes',
-    'no',
-  ]
+  default: false
 }

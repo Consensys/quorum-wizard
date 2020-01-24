@@ -12,7 +12,7 @@ jest.mock('../../utils/fileUtils')
 
 describe('creates a cakeshop directory structure for bash', () => {
   it('creates directory structure for cakeshop files and moves them in', () => {
-    let config = createQuickstartConfig('5', 'raft', 'tessera', 'bash' ,'yes')
+    let config = createQuickstartConfig('5', 'raft', 'tessera', 'bash' , true)
 
     buildCakeshopDir(config, createNetPath(config, 'qdata'))
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/cakeshop'))
@@ -24,7 +24,7 @@ describe('creates a cakeshop directory structure for bash', () => {
 
 describe('creates a cakeshop directory structure for docker', () => {
   it('creates directory structure for cakeshop files and moves them in', () => {
-    let config = createQuickstartConfig('5', 'raft', 'tessera', 'docker-compose' ,'yes')
+    let config = createQuickstartConfig('5', 'raft', 'tessera', 'docker-compose' , true)
 
     buildCakeshopDir(config, createNetPath(config, 'qdata'))
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/cakeshop'))
@@ -35,7 +35,7 @@ describe('creates a cakeshop directory structure for docker', () => {
 
 describe('generates custom cakeshop files', () => {
   it('creates cakeshop json file with ports for bash', () => {
-    let config = createQuickstartConfig('5', 'raft', 'tessera', 'bash' ,'yes')
+    let config = createQuickstartConfig('5', 'raft', 'tessera', 'bash' , true)
 
     generateCakeshopFiles(config, createNetPath(config, 'cakeshop'))
     expect(createFolder).toBeCalledWith(createNetPath(config, 'cakeshop'))
@@ -46,7 +46,7 @@ describe('generates custom cakeshop files', () => {
 
 describe('generates custom cakeshop files', () => {
   it('creates cakeshop json file with ports for docker-compose', () => {
-    let config = createQuickstartConfig('5', 'raft', 'tessera', 'docker-compose' ,'yes')
+    let config = createQuickstartConfig('5', 'raft', 'tessera', 'docker-compose' , true)
 
     generateCakeshopFiles(config, createNetPath(config, 'cakeshop'))
     expect(createFolder).toBeCalledWith(createNetPath(config, 'cakeshop'))
