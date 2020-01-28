@@ -8,26 +8,10 @@ import {
 import { generateCakeshopConfig } from '../model/CakeshopConfig'
 
 export function buildCakeshopDir(config, qdata) {
-  const configPath = join(cwd(), config.network.configDir)
-  const cakeshopFolder = join(configPath, 'cakeshop')
-  let cakeshopDir = join(qdata, 'cakeshop')
-  createFolder(cakeshopDir)
-  if(config.network.configDir !== '7nodes') {
-    generateCakeshopFiles(config, cakeshopFolder)
-  }
-  const deployment = config.network.deployment
-  if (deployment === 'bash') {
-    cakeshopDir = join(cakeshopDir, 'local')
-    createFolder(cakeshopDir)
-  }
-  copyFile(join(cakeshopFolder, `cakeshop_${deployment}.json`), join(cakeshopDir, 'cakeshop.json'))
+  const cakeshopDir = join(qdata, 'cakeshop', 'local')
+  createFolder(cakeshopDir, true)
+  writeJsonFile(cakeshopDir, 'cakeshop.json', generateCakeshopConfig(config))
   copyFile(join(cwd(), 'lib/cakeshop_application.properties.template'), join(cakeshopDir, 'application.properties'))
-}
-
-export function generateCakeshopFiles(config, cakeshopFolder) {
-  createFolder(cakeshopFolder)
-  writeJsonFile(cakeshopFolder, `cakeshop_${config.network.deployment}.json`, generateCakeshopConfig(config))
-
 }
 
 export function generateCakeshopScript(qdata) {
