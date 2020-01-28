@@ -16,7 +16,7 @@ export function writeFile (filePath, contents, executable = false) {
 export function removeFolder (networkPath = '') {
   if (networkPath === '' ||
     networkPath === '/' ||
-    networkPath.indexOf(process.cwd()) !== 0) {
+    networkPath.indexOf(cwd()) !== 0) {
     throw new Error('Tried to remove folder outside of working directory')
   }
 
@@ -39,4 +39,8 @@ export function readFileToString (file) {
 
 export function formatNewLine(file) {
   return file !== "" ? file+'\n' : file
+}
+
+export function cwd() {
+  return process.cwd()
 }

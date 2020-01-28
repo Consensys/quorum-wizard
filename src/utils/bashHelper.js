@@ -1,13 +1,10 @@
-import { createDirectory, isTessera, networkFolder, includeCakeshop } from './networkCreator'
+import { createDirectory, isTessera, includeCakeshop } from './networkCreator'
 import {
   copyFile,
-  createFolder,
-  readFileToString,
-  removeFolder,
+  cwd,
   writeFile,
-  writeJsonFile,
 } from './fileUtils'
-import { join, normalize } from 'path'
+import { join } from 'path'
 import { execute } from './execUtils'
 import { buildCakeshopDir, generateCakeshopScript, waitForCakeshopCommand } from './cakeshopHelper'
 
@@ -40,11 +37,11 @@ export function buildBash(config) {
   }
 
   writeFile(join(networkPath, 'start.sh'), bashDetails.startScript, true)
-  copyFile(join(process.cwd(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
+  copyFile(join(cwd(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
 
-  copyFile(join(process.cwd(), 'lib/runscript.sh'), join(networkPath, 'runscript.sh'))
-  copyFile(join(process.cwd(), 'lib/public-contract.js'), join(networkPath, 'public-contract.js'))
-  copyFile(join(process.cwd(), 'lib/private-contract.js'), join(networkPath, 'private-contract.js'))
+  copyFile(join(cwd(), 'lib/runscript.sh'), join(networkPath, 'runscript.sh'))
+  copyFile(join(cwd(), 'lib/public-contract.js'), join(networkPath, 'public-contract.js'))
+  copyFile(join(cwd(), 'lib/private-contract.js'), join(networkPath, 'private-contract.js'))
 
   bashDetails.initCommands.forEach((command) => {
     // TODO figure out the safest way to run shell commands

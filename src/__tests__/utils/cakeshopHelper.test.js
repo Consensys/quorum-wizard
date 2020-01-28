@@ -3,12 +3,15 @@ import { createQuickstartConfig } from '../../model/NetworkConfig'
 import {
   copyFile,
   createFolder,
-  writeJsonFile
+  cwd,
+  writeJsonFile,
 } from '../../utils/fileUtils'
 import { buildCakeshopDir, generateCakeshopFiles } from '../../utils/cakeshopHelper'
 import { anything } from 'expect'
+import { TEST_CWD } from '../testHelper'
 
 jest.mock('../../utils/fileUtils')
+cwd.mockReturnValue(TEST_CWD)
 
 describe('creates a cakeshop directory structure for bash', () => {
   it('creates directory structure for cakeshop files and moves them in', () => {
@@ -56,9 +59,9 @@ describe('generates custom cakeshop files', () => {
 })
 
 function createPath(...relativePaths) {
-  return join(process.cwd(), ...relativePaths)
+  return join(cwd(), ...relativePaths)
 }
 
 function createNetPath(config, ...relativePaths) {
-  return join(process.cwd(), 'network', config.network.name, ...relativePaths)
+  return join(cwd(), 'network', config.network.name, ...relativePaths)
 }

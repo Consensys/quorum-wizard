@@ -2,16 +2,19 @@ import inquirer from 'inquirer'
 import { quickstart } from '../../questions'
 import * as NetworkConfig from '../../model/NetworkConfig'
 import * as networkCreator from '../../utils/networkCreator'
-import { copyFile, writeFile, readFileToString } from '../../utils/fileUtils'
-import { join } from 'path'
-import { anything } from 'expect'
-import { execute } from '../../utils/execUtils'
+import {
+  copyFile,
+  writeFile,
+  cwd,
+} from '../../utils/fileUtils'
+import { TEST_CWD } from '../testHelper'
 
 jest.mock('inquirer')
 jest.mock('../../model/NetworkConfig')
 jest.mock('../../utils/networkCreator')
 jest.mock('../../utils/fileUtils')
 jest.mock('../../utils/execUtils')
+cwd.mockReturnValue(TEST_CWD)
 
 const QUICKSTART_CONFIG = {
   numberNodes: '5',
