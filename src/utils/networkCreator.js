@@ -33,13 +33,24 @@ export function createDirectory (config) {
   writeJsonFile(networkPath, 'config.json', config)
 
   const configPath = join(process.cwd(), config.network.configDir)
-  if(config.network.generateKeys) {
-      generateKeys(config, configPath)
-      generateConsensusConfig(configPath, config.network.consensus, config.nodes)
-      generateCakeshopConfig(config, configPath)
+  createFolder(configPath, true)
+  let keyPath = join(process.cwd(), '7nodes')
+  //if user selected to customize some parts
+  if(config.network.custom) {
+    //key generation, else use given 7nodes keys
+    if(config.network.generateKeys) {
+        generateKeys(config, configPath)
+        keyPath = configPath
+    }
+    //if user supplied genesis file location use that
+    if(config.network.genesisFile !== 'none') {
+      copyFile(config.network.genesisFile, join(configPath, `${config.network.consensus}-genesis.json`))
+    } else { //else generate consensus file based on custom configs
+      generateConsensusConfig(configPath, keyPath, config.network.consensus, config.nodes, config.network.networkId)
+    }
   }
 
-  const staticNodes = createStaticNodes(config.nodes, config.network.consensus, config.network.configDir)
+  const staticNodes = createStaticNodes(config.nodes, config.network.consensus, keyPath)
   const peerList = createPeerList(config.nodes, config.network.transactionManager)
   const initCommands = []
   const startCommands = []
@@ -47,7 +58,7 @@ export function createDirectory (config) {
 
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
-    const keyFolder = join(configPath, `key${nodeNumber}`)
+    const keyFolder = join(keyPath, `key${nodeNumber}`)
     const quorumDir = join(qdata, `dd${nodeNumber}`)
     const gethDir = join(quorumDir, 'geth')
     const keyDir = join(quorumDir, 'keystore')
@@ -61,7 +72,6 @@ export function createDirectory (config) {
 
     writeJsonFile(quorumDir, 'permissioned-nodes.json', staticNodes)
     writeJsonFile(quorumDir, 'static-nodes.json', staticNodes)
-    copyFile(normalize(config.network.genesisFile), genesisDestination)
     copyFile(join(keyFolder, 'key'), join(keyDir, 'key'))
     copyFile(join(keyFolder, 'nodekey'), join(gethDir, 'nodekey'))
     copyFile(join(keyFolder, 'password.txt'), passwordDestination)

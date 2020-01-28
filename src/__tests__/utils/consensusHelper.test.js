@@ -20,7 +20,7 @@ describe('generates accounts for genesis', () => {
     .mockReturnValueOnce('{"address":"0fe3fd1414001b295da621e30698462df06eaad2"}')
     .mockReturnValueOnce('{"address":"8aef5fa7f18ffda8fa98016ec27562ea33743f18"}')
 
-    expect(generateAccounts(nodes, 'testDir')).toEqual(expected)
+    expect(generateAccounts(nodes, 'keyPath')).toEqual(expected)
   })
 })
 
@@ -39,7 +39,7 @@ describe('generates extraData for istanbul genesis', () => {
     .mockReturnValueOnce("0x49C1488d2f8Abf1D7AB0a08f2E1308369fDDFbfE")
     .mockReturnValueOnce("0x1760F90FF74aD4d8BBF536D01Fc0afb879c3dCf0")
 
-    generateExtraData(nodes, 'testDir')
+    generateExtraData(nodes, 'testDir', 'keyPath')
     expect(writeFile).toBeCalledWith(join('testDir', 'istanbul.toml'), expect.anything(), false)
     expect(executeSync).toBeCalledTimes(1)
 

@@ -12,12 +12,14 @@ export function createQuickstartConfig (numberNodes, consensus, transactionManag
       configDir: `7nodes`,
       deployment: deployment,
       cakeshop: cakeshop,
+      custom: false,
     },
     nodes: generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop)
   }
 }
 
-export function createCustomConfig (numberNodes, consensus, transactionManager, deployment, cakeshop) {
+export function createCustomConfig (numberNodes, consensus, transactionManager, deployment, cakeshop,
+  keyGeneration, networkId, genesisLocation, defaultPorts, nodes) {
   return {
     network: {
       name: `${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}`,
@@ -26,14 +28,17 @@ export function createCustomConfig (numberNodes, consensus, transactionManager, 
       transactionManager: transactionManager,
       id: 10,
       permissioned: true,
-      genesisFile: `7nodes/${consensus}-genesis.json`,
-      generateKeys: true,
+      genesisFile: genesisLocation,
+      generateKeys: keyGeneration,
       configDir: `network/${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}/generated`,
       passwordFile: '7nodes/key1/password.txt',
       deployment: deployment,
       cakeshop: cakeshop,
+      networkId: networkId,
+      custom: true,
+      defaultPorts: defaultPorts,
      },
-     nodes: generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop)
+     nodes: defaultPorts ? generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop) : nodes
    }
  }
 

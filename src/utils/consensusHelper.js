@@ -7,12 +7,12 @@ import { join } from 'path'
 import { executeSync } from './execUtils'
 import { nodekeyToAccount } from './web3Helper'
 
-export function generateAccounts(nodes, configDir) {
+export function generateAccounts(nodes, keyPath) {
   const numNodes = nodes.length
   var accounts = {}
   for (let i = 0; i < parseInt(numNodes, 10); i++) {
     const numNode = i + 1
-    const keyDir = join(configDir, `key${numNode}`)
+    const keyDir = join(keyPath, `key${numNode}`)
     const keyString = readFileToString(join(keyDir, 'key'))
     const key = `0x${JSON.parse(keyString).address}`
     accounts[key] = {balance : '1000000000000000000000000000'}
@@ -20,11 +20,11 @@ export function generateAccounts(nodes, configDir) {
   return accounts
 }
 
-export function generateExtraData(nodes, configDir) {
+export function generateExtraData(nodes, configDir, keyPath) {
   var configLines = ['vanity = \"0x00\"']
   const validators = nodes.map((node, i) => {
     const nodeNumber = i + 1
-    const keyDir = join(configDir, `key${nodeNumber}`)
+    const keyDir = join(keyPath, `key${nodeNumber}`)
     return nodekeyToAccount(`0x${readFileToString(join(keyDir, 'nodekey'))}`)
   })
   configLines.push(`validators = ${JSON.stringify(validators)}`)

@@ -11,7 +11,7 @@ export function buildCakeshopDir(config, qdata) {
   const cakeshopFolder = join(configPath, 'cakeshop')
   let cakeshopDir = join(qdata, 'cakeshop')
   createFolder(cakeshopDir)
-  if(config.network.configDir !== '7nodes') {
+  if(!config.network.defaultPorts) {
     generateCakeshopFiles(config, cakeshopFolder)
   }
   const deployment = config.network.deployment

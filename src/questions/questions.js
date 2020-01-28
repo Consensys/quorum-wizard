@@ -1,5 +1,6 @@
 import { validateNumberStringInRange } from '../utils/questionUtils'
 
+
 export const INITIAL_MODE = {
   type: 'list',
   name: 'mode',
@@ -56,4 +57,32 @@ export const CAKESHOP = {
   name: 'cakeshop',
   message: 'Do you want to include cakeshop?',
   default: false
+}
+
+export const KEY_GENERATION = {
+  type: 'confirm',
+  name: 'generateKeys',
+  message: 'Would you like to generate key',
+  default: false
+}
+
+export const NETWORK_ID = {
+  type: 'input',
+  name: 'networkId',
+  message: 'Custom network id?',
+  default: '10',
+}
+
+export const GENESIS_LOCATION = {
+  type: 'input', // bug with number type when invalid, can't delete old value
+  name: 'genesisLocation',
+  message: 'Genesis file location',
+  default: 'none',
+}
+
+export const DEFAULT_PORTS = {
+  type: 'confirm',
+  name: 'defaultPorts',
+  message: 'Use default ip/ports for all nodes?',
+  default: true
 }
