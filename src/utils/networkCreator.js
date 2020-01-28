@@ -14,6 +14,7 @@ import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
 import { isBash } from '../model/NetworkConfig'
 import { createGethStartCommand, createTesseraStartCommand, waitForTesseraNodesCommand } from './bashHelper'
+import { generateCakeshopConfig } from '../model/CakeshopConfig'
 
 export function createDirectory (config) {
   // https://nodejs.org/en/knowledge/file-system/security/introduction/
@@ -35,6 +36,7 @@ export function createDirectory (config) {
   if(config.network.generateKeys) {
       generateKeys(config, configPath)
       generateConsensusConfig(configPath, config.network.consensus, config.nodes)
+      generateCakeshopConfig(config, configPath)
   }
 
   const staticNodes = createStaticNodes(config.nodes, config.network.consensus, config.network.configDir)
@@ -115,6 +117,10 @@ export function createStaticNodes (nodes, consensus, configDir) {
 
 export function isTessera (config) {
   return config.network.transactionManager === 'tessera'
+}
+
+export function includeCakeshop(config) {
+  return config.network.cakeshop
 }
 
 function createPeerList (nodes, transactionManager) {

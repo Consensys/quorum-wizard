@@ -1,4 +1,4 @@
-import { createDirectory, isTessera, networkFolder } from './networkCreator'
+import { createDirectory, isTessera, networkFolder, includeCakeshop } from './networkCreator'
 import {
   copyFile,
   createFolder,
@@ -9,15 +9,20 @@ import {
 } from './fileUtils'
 import { join, normalize } from 'path'
 import { execute } from './execUtils'
+import { buildCakeshopDir, generateCakeshopScript, waitForCakeshopCommand } from './cakeshopHelper'
 
 export function buildBashScript(config) {
   const commands = createDirectory(config)
+
+  const cakeshopStart = includeCakeshop(config) ? [generateCakeshopScript(), waitForCakeshopCommand()].join("") : ""
 
   const startScript = [
     commands.tesseraStart,
     waitForTesseraNodesCommand(config),
     commands.gethStart,
+    cakeshopStart
   ]
+
   return {
     startScript: startScript.join('\n'),
     initCommands: commands.initStart,
@@ -30,8 +35,13 @@ export function buildBash(config) {
   const bashDetails = buildBashScript(config)
   const networkPath = bashDetails.networkPath
 
+  if(includeCakeshop(config)) {
+    buildCakeshopDir(config, join(networkPath, 'qdata'))
+  }
+
   writeFile(join(networkPath, 'start.sh'), bashDetails.startScript, true)
   copyFile(join(process.cwd(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
+
   copyFile(join(process.cwd(), 'lib/runscript.sh'), join(networkPath, 'runscript.sh'))
   copyFile(join(process.cwd(), 'lib/public-contract.js'), join(networkPath, 'public-contract.js'))
   copyFile(join(process.cwd(), 'lib/private-contract.js'), join(networkPath, 'private-contract.js'))
@@ -46,8 +56,6 @@ export function buildBash(config) {
     })
   })
 }
-
-
 
 export function createGethStartCommand (config, node, passwordDestination, nodeNumber, tmIpcLocation) {
   const { verbosity, id, consensus } = config.network

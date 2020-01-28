@@ -9,7 +9,7 @@ jest.mock('../../utils/networkCreator')
 describe('generates docker-compose directory', () => {
   it('given docker details builds files to run docker', () => {
 
-    let config = createQuickstartConfig('5', 'raft', 'tessera', 'bash')
+    let config = createQuickstartConfig('5', 'raft', 'tessera', 'bash', false)
 
     createDirectory.mockReturnValueOnce({tesseraStart:  "",
         gethStart: "",
@@ -28,7 +28,7 @@ describe('generates docker-compose directory', () => {
 describe('generates docker-compose script details', () => {
   it('creates docker-compose script given config details', () => {
 
-    let config = createQuickstartConfig('1', 'raft', 'tessera', 'bash')
+    let config = createQuickstartConfig('1', 'raft', 'tessera', 'bash', false)
     const services = `
 services:
   node1:
@@ -84,7 +84,7 @@ volumes:
 
   it('creates docker-compose script given config details', () => {
 
-    let config = createQuickstartConfig('1', 'raft', 'none', 'bash')
+    let config = createQuickstartConfig('1', 'raft', 'none', 'bash', false)
     const services = `
 services:
   node1:

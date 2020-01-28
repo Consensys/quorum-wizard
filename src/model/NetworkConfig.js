@@ -1,4 +1,4 @@
-export function createQuickstartConfig (numberNodes, consensus, transactionManager, deployment) {
+export function createQuickstartConfig (numberNodes, consensus, transactionManager, deployment, cakeshop) {
   return {
     network: {
       name: `${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}`,
@@ -11,12 +11,13 @@ export function createQuickstartConfig (numberNodes, consensus, transactionManag
       generateKeys: false,
       configDir: `7nodes`,
       deployment: deployment,
+      cakeshop: cakeshop,
     },
-    nodes: generateNodeConfigs(numberNodes, transactionManager, deployment)
+    nodes: generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop)
   }
 }
 
-export function createCustomConfig (numberNodes, consensus, transactionManager, deployment) {
+export function createCustomConfig (numberNodes, consensus, transactionManager, deployment, cakeshop) {
   return {
     network: {
       name: `${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}`,
@@ -30,12 +31,13 @@ export function createCustomConfig (numberNodes, consensus, transactionManager, 
       configDir: `network/${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}/generated`,
       passwordFile: '7nodes/key1/password.txt',
       deployment: deployment,
+      cakeshop: cakeshop,
      },
-     nodes: generateNodeConfigs(numberNodes, transactionManager, deployment)
+     nodes: generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop)
    }
  }
 
-function isDocker (deployment) {
+export function isDocker (deployment) {
   return deployment === 'docker-compose'
 }
 

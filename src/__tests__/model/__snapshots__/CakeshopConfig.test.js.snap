@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`creates 3nodes istanbul bash no tessera cakeshop 1`] = `
+Array [
+  Object {
+    "name": "node1",
+    "rpcUrl": "http://localhost:22000",
+    "transactionManagerUrl": "",
+  },
+  Object {
+    "name": "node2",
+    "rpcUrl": "http://localhost:22001",
+    "transactionManagerUrl": "",
+  },
+  Object {
+    "name": "node3",
+    "rpcUrl": "http://localhost:22002",
+    "transactionManagerUrl": "",
+  },
+]
+`;
+
+exports[`creates 3nodes istanbul bash tessera cakeshop 1`] = `
+Array [
+  Object {
+    "name": "node1",
+    "rpcUrl": "http://localhost:22000",
+    "transactionManagerUrl": "http://localhost:9081/partyinfo/keys",
+  },
+  Object {
+    "name": "node2",
+    "rpcUrl": "http://localhost:22001",
+    "transactionManagerUrl": "http://localhost:9082/partyinfo/keys",
+  },
+  Object {
+    "name": "node3",
+    "rpcUrl": "http://localhost:22002",
+    "transactionManagerUrl": "http://localhost:9083/partyinfo/keys",
+  },
+]
+`;
+
+exports[`creates 3nodes raft dockerFile no tessera cakeshop 1`] = `
+Array [
+  Object {
+    "name": "node1",
+    "rpcUrl": "http://host.docker.internal:22000",
+    "transactionManagerUrl": "",
+  },
+  Object {
+    "name": "node2",
+    "rpcUrl": "http://host.docker.internal:22001",
+    "transactionManagerUrl": "",
+  },
+  Object {
+    "name": "node3",
+    "rpcUrl": "http://host.docker.internal:22002",
+    "transactionManagerUrl": "",
+  },
+]
+`;
+
+exports[`creates 3nodes raft dockerFile tessera cakeshop 1`] = `
+Array [
+  Object {
+    "name": "node1",
+    "rpcUrl": "http://host.docker.internal:22000",
+    "transactionManagerUrl": "http://host.docker.internal:9081/partyinfo/keys",
+  },
+  Object {
+    "name": "node2",
+    "rpcUrl": "http://host.docker.internal:22001",
+    "transactionManagerUrl": "http://host.docker.internal:9082/partyinfo/keys",
+  },
+  Object {
+    "name": "node3",
+    "rpcUrl": "http://host.docker.internal:22002",
+    "transactionManagerUrl": "http://host.docker.internal:9083/partyinfo/keys",
+  },
+]
+`;
