@@ -1,10 +1,18 @@
 import { createDirectory, isTessera } from '../../utils/networkCreator'
 import { createQuickstartConfig } from '../../model/NetworkConfig'
-import { copyFile, writeFile, readFileToString, formatNewLine } from '../../utils/fileUtils'
+import {
+  copyFile,
+  writeFile,
+  readFileToString,
+  formatNewLine,
+  cwd,
+} from '../../utils/fileUtils'
 import { buildDockerCompose, createDockerCompose } from '../../utils/dockerHelper'
+import { TEST_CWD } from '../testHelper'
 
 jest.mock('../../utils/fileUtils')
 jest.mock('../../utils/networkCreator')
+cwd.mockReturnValue(TEST_CWD)
 
 describe('generates docker-compose directory', () => {
   it('given docker details builds files to run docker', () => {
