@@ -1,5 +1,10 @@
 import { buildBashScript } from '../../utils/bashHelper'
 import { createQuickstartConfig, createCustomConfig } from '../../model/NetworkConfig'
+import { cwd, readFileToString } from '../../utils/fileUtils'
+import { TEST_CWD } from '../testHelper'
+
+jest.mock('../../utils/fileUtils')
+cwd.mockReturnValue(TEST_CWD)
 
 test('creates 3nodes raft bash tessera', () => {
   const config = createQuickstartConfig('3', 'raft', 'tessera', 'bash', false)
@@ -14,12 +19,12 @@ test('creates 3nodes raft bash tessera cakeshop', () => {
 })
 
 test('creates 3nodes raft bash tessera custom', () => {
-  const config = createCustomConfig('3', 'raft', 'tessera', 'bash', false, false, 10, 'none', true, [])
+  const config = createCustomConfig('3', 'raft', 'tessera', 'bash', false, false, 10, `${process.cwd()}/7nodes/raft-genesis.json`, true, [])
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
 })
 
-test('creates 2nodes raft bash tessera cakeshop custom ports', () => {
+test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
   let nodes = [
     {
       quorum: {
@@ -51,7 +56,7 @@ test('creates 2nodes raft bash tessera cakeshop custom ports', () => {
         enclavePort: '5182',
       }
     }]
-  const config = createCustomConfig('2', 'raft', 'tessera', 'bash', true, false, 10, 'none', false, nodes)
+  const config = createCustomConfig('2', 'istanbul', 'tessera', 'bash', true, false, 10, `${process.cwd()}/7nodes/istanbul-genesis.json`, false, nodes)
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
 })

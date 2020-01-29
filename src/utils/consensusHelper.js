@@ -12,6 +12,7 @@ export function generateAccounts(nodes, keyPath) {
   var accounts = {}
   for (let i = 0; i < parseInt(numNodes, 10); i++) {
     const numNode = i + 1
+
     const keyDir = join(keyPath, `key${numNode}`)
     const keyString = readFileToString(join(keyDir, 'key'))
     const key = `0x${JSON.parse(keyString).address}`

@@ -8,15 +8,16 @@ import {
 import {
   copyFile,
   createFolder,
+  cwd,
   readFileToString,
-  writeFile,
   writeJsonFile
 } from '../../utils/fileUtils'
-import { execute } from '../../utils/execUtils'
 import { anything } from 'expect'
+import { TEST_CWD } from '../testHelper'
 
 jest.mock('../../utils/execUtils')
 jest.mock('../../utils/fileUtils')
+cwd.mockReturnValue(TEST_CWD)
 
 describe('creates a bash network', () => {
   it('rejects invalid network names', () => {
@@ -127,9 +128,9 @@ describe('creates static nodes json', () => {
 })
 
 function createPath(...relativePaths) {
-  return join(process.cwd(), ...relativePaths)
+  return join(cwd(), ...relativePaths)
 }
 
 function createNetPath(config, ...relativePaths) {
-  return join(process.cwd(), 'network', config.network.name, ...relativePaths)
+  return join(cwd(), 'network', config.network.name, ...relativePaths)
 }

@@ -7,7 +7,8 @@ import {
   removeFolder,
   writeFile,
   writeJsonFile,
-  formatNewLine
+  formatNewLine,
+  cwd,
 } from './fileUtils'
 import { isTessera, includeCakeshop, createDirectory } from './networkCreator'
 import { generateKeys } from './keyGen'
@@ -19,9 +20,9 @@ export function buildDockerCompose(config) {
   const hasTessera = isTessera(config)
   const hasCakeshop = includeCakeshop(config)
 
-  const quorumDefinitions = readFileToString(join(process.cwd(), 'lib/docker-compose-definitions-quorum.yml'))
-  const tesseraDefinitions = hasTessera ? readFileToString(join(process.cwd(), 'lib/docker-compose-definitions-tessera.yml')) : ""
-  const cakeshopDefinitions = hasCakeshop ? readFileToString(join(process.cwd(), 'lib/docker-compose-definitions-cakeshop.yml')) : ""
+  const quorumDefinitions = readFileToString(join(cwd(), 'lib/docker-compose-definitions-quorum.yml'))
+  const tesseraDefinitions = hasTessera ? readFileToString(join(cwd(), 'lib/docker-compose-definitions-tessera.yml')) : ""
+  const cakeshopDefinitions = hasCakeshop ? readFileToString(join(cwd(), 'lib/docker-compose-definitions-cakeshop.yml')) : ""
 
   let services = config.nodes.map((node, i) => {
     let allServices = buildNodeService(node, i, hasTessera)
@@ -53,9 +54,9 @@ export function createDockerCompose(config) {
   writeFile(join(networkPath, 'start.sh'), startCommands, true)
   writeFile(join(networkPath, 'stop.sh'), 'docker-compose down', true)
 
-  copyFile(join(process.cwd(), 'lib/runscript.sh'), join(qdata, 'runscript.sh'))
-  copyFile(join(process.cwd(), 'lib/public-contract.js'), join(qdata, 'public-contract.js'))
-  copyFile(join(process.cwd(), 'lib/private-contract.js'), join(qdata, 'private-contract.js'))
+  copyFile(join(cwd(), 'lib/runscript.sh'), join(qdata, 'runscript.sh'))
+  copyFile(join(cwd(), 'lib/public-contract.js'), join(qdata, 'public-contract.js'))
+  copyFile(join(cwd(), 'lib/private-contract.js'), join(qdata, 'private-contract.js'))
 
 }
 

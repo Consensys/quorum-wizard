@@ -1,12 +1,11 @@
 import { join, normalize } from 'path'
-import { execute } from './execUtils'
 import sanitize from 'sanitize-filename'
 import {
   copyFile,
   createFolder,
+  cwd,
   readFileToString,
   removeFolder,
-  writeFile,
   writeJsonFile,
 } from './fileUtils'
 import { generateKeys } from './keyGen'
@@ -24,7 +23,7 @@ export function createDirectory (config) {
     throw new Error('Network name was empty or contained invalid characters')
   }
 
-  const networkPath = join(process.cwd(), 'network', networkFolderName)
+  const networkPath = join(cwd(), 'network', networkFolderName)
   removeFolder(networkPath)
 
   const qdata = join(networkPath, 'qdata')
@@ -32,9 +31,9 @@ export function createDirectory (config) {
   createFolder(logs, true)
   writeJsonFile(networkPath, 'config.json', config)
 
-  const configPath = join(process.cwd(), config.network.configDir)
+  const configPath = join(cwd(), config.network.configDir)
   createFolder(configPath, true)
-  let keyPath = join(process.cwd(), '7nodes')
+  let keyPath = join(cwd(), '7nodes')
   //if user selected to customize some parts
   if(config.network.custom) {
     //key generation, else use given 7nodes keys

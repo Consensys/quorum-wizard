@@ -2,11 +2,12 @@ import inquirer from 'inquirer'
 import { quickstart, customize } from '../../questions'
 import * as NetworkConfig from '../../model/NetworkConfig'
 import * as networkCreator from '../../utils/networkCreator'
-import { copyFile, writeFile, readFileToString } from '../../utils/fileUtils'
+import { copyFile, writeFile, readFileToString, cwd } from '../../utils/fileUtils'
 import { join } from 'path'
 import { anything } from 'expect'
 import { execute } from '../../utils/execUtils'
 import * as prompt from '../../utils/promptHelper'
+import { TEST_CWD } from '../testHelper'
 
 jest.mock('inquirer')
 jest.mock('../../model/NetworkConfig')
@@ -14,6 +15,7 @@ jest.mock('../../utils/networkCreator')
 jest.mock('../../utils/fileUtils')
 jest.mock('../../utils/execUtils')
 jest.mock('../../utils/promptHelper')
+cwd.mockReturnValue(TEST_CWD)
 
 const QUICKSTART_CONFIG = {
   numberNodes: '5',
@@ -53,10 +55,10 @@ test('placeholder', async () => {
   )
   expect(networkCreator.createDirectory).toHaveBeenCalledWith(fakeConfig)
   expect(writeFile).toBeCalledWith('test/start.sh', expect.any(String), true)
-  expect(copyFile).toBeCalledWith(join(process.cwd(), 'lib/stop.sh'), "test/stop.sh")
-  expect(copyFile).toBeCalledWith(join(process.cwd(), 'lib/runscript.sh'), "test/runscript.sh")
-  expect(copyFile).toBeCalledWith(join(process.cwd(), 'lib/public-contract.js'), "test/public-contract.js")
-  expect(copyFile).toBeCalledWith(join(process.cwd(), 'lib/private-contract.js'), "test/private-contract.js")
+  expect(copyFile).toBeCalledWith(join(cwd(), 'lib/stop.sh'), "test/stop.sh")
+  expect(copyFile).toBeCalledWith(join(cwd(), 'lib/runscript.sh'), "test/runscript.sh")
+  expect(copyFile).toBeCalledWith(join(cwd(), 'lib/public-contract.js'), "test/public-contract.js")
+  expect(copyFile).toBeCalledWith(join(cwd(), 'lib/private-contract.js'), "test/private-contract.js")
 
 })
 
@@ -85,8 +87,8 @@ test('customize', async () => {
   expect(networkCreator.createDirectory).toHaveBeenCalledWith(fakeConfig)
   expect(writeFile).toBeCalledWith('test/start.sh', expect.any(String), true)
 
-  expect(copyFile).toBeCalledWith(join(process.cwd(), 'lib/runscript.sh'), "test/runscript.sh")
-  expect(copyFile).toBeCalledWith(join(process.cwd(), 'lib/public-contract.js'), "test/public-contract.js")
-  expect(copyFile).toBeCalledWith(join(process.cwd(), 'lib/private-contract.js'), "test/private-contract.js")
+  expect(copyFile).toBeCalledWith(join(cwd(), 'lib/runscript.sh'), "test/runscript.sh")
+  expect(copyFile).toBeCalledWith(join(cwd(), 'lib/public-contract.js'), "test/public-contract.js")
+  expect(copyFile).toBeCalledWith(join(cwd(), 'lib/private-contract.js'), "test/private-contract.js")
 
 })
