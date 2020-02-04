@@ -38,8 +38,8 @@ export function createDirectory (config) {
   if(config.network.custom) {
     //key generation, else use given 7nodes keys
     if(config.network.generateKeys) {
-        generateKeys(config, configPath)
-        keyPath = configPath
+      generateKeys(config, configPath)
+      keyPath = configPath
     }
     //if user supplied genesis file location use that
     if(config.network.genesisFile !== 'none') {

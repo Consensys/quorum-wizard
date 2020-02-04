@@ -39,7 +39,7 @@ export async function customize () {
     CAKESHOP
   ])
 
-  const { keyGeneration, networkId, genesisLocation, defaultPorts } = await inquirer.prompt([
+  const { generateKeys, networkId, genesisLocation, defaultPorts } = await inquirer.prompt([
     KEY_GENERATION,
     NETWORK_ID,
     GENESIS_LOCATION,
@@ -49,7 +49,7 @@ export async function customize () {
   let nodes = !defaultPorts ? await getPorts(numberNodes, deployment, transactionManager === 'tessera') : []
 
   const config = createCustomConfig(numberNodes, consensus, transactionManager, deployment, cakeshop,
-    keyGeneration, networkId, genesisLocation, defaultPorts, nodes)
+    generateKeys, networkId, genesisLocation, defaultPorts, nodes)
   buildNetwork(config, deployment)
 }
 
