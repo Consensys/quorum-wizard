@@ -19,15 +19,10 @@ const QUICKSTART_CONFIG = {
 }
 
 const CUSTOM_CONFIG = {
-  numberNodes: '5',
-  consensus: 'raft',
-  transactionManager: 'none',
-  deployment: 'docker-compose',
-  cakeshop: false,
-  keyGeneration: false,
+  generateKeys: false,
   networkId: 10,
   genesisLocation: 'testDir',
-  defaultPorts: false,
+  customizePorts: true,
   nodes: ['nodes']
 }
 

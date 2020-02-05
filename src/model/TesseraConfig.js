@@ -1,4 +1,4 @@
-export function createConfig (DDIR, i, serverPortThirdParty, serverPortP2P, peerList) {
+export function createConfig (DDIR, i, ip, serverPortThirdParty, serverPortP2P, peerList) {
   return {
     'useWhiteList': false,
     'jdbc': {
@@ -11,7 +11,7 @@ export function createConfig (DDIR, i, serverPortThirdParty, serverPortP2P, peer
       {
         'app': 'ThirdParty',
         'enabled': true,
-        'serverAddress': `http://localhost:${serverPortThirdParty}`,
+        'serverAddress': `http://${ip}:${serverPortThirdParty}`,
         'cors': {
           'allowedMethods': ['GET', 'OPTIONS'],
           'allowedOrigins': ['*']
@@ -27,7 +27,7 @@ export function createConfig (DDIR, i, serverPortThirdParty, serverPortP2P, peer
       {
         'app': 'P2P',
         'enabled': true,
-        'serverAddress': `http://localhost:${serverPortP2P}`,
+        'serverAddress': `http://${ip}:${serverPortP2P}`,
         'sslConfig': {
           'tls': 'OFF',
           'generateKeyStoreIfNotExisted': true,

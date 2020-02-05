@@ -11,7 +11,7 @@ export async function getPorts(numberNodes, deployment, hasTessera) {
       {name: 'raftPort', message: 'raftPort', initial: numToString(50401+i)}
     ]
     const tesseraInfo = [
-        {name: 'ip', message: 'ip', initial: deployment === 'docker-compose' ? `172.16.239.1${i+1}` : '127.0.0.1'},
+        {name: 'ip', message: 'ip', initial: deployment === 'docker-compose' ? `172.16.239.10${i+1}` : '127.0.0.1'},
         {name: 'thirdPartyPort', message: 'thirdPartyPort', initial: numToString(9081+i)},
         {name: 'p2pPort', message: 'p2pPort', initial: numToString(9001+i)},
         {name: 'enclavePort', message: 'enclavePort', initial: numToString(9180+i)}

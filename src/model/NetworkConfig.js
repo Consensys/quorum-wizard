@@ -35,7 +35,7 @@ export function createCustomConfig (answers) {
     keyGeneration,
     networkId,
     genesisLocation,
-    defaultPorts,
+    customizePorts,
     nodes
   } = answers
   return {
@@ -54,9 +54,9 @@ export function createCustomConfig (answers) {
       cakeshop: cakeshop,
       networkId: networkId,
       custom: true,
-      defaultPorts: defaultPorts,
+      customizePorts: customizePorts,
     },
-    nodes: defaultPorts ? generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop) : nodes
+    nodes: customizePorts ? nodes : generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop)
   }
 }
 
