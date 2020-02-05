@@ -79,6 +79,17 @@ export function createTesseraStartCommand (config, node, nodeNumber, tmDir, logD
   return CMD
 }
 
+function checkTesseraUpcheck(nodes) {
+  return nodes.map((node, i) => {
+    return `
+    result${i+1}=$(curl -s http://${node.tm.ip}:${node.tm.p2pPort}/upcheck)
+    if [ ! "\${result${i+1}}" == "I'm up!" ]; then
+        echo "Node ${i+1} is not yet listening on http"
+        DOWN=true
+    fi`
+  })
+}
+
 export function waitForTesseraNodesCommand (config) {
   if(!isTessera(config)) {
     return ''
@@ -97,17 +108,11 @@ while \${DOWN}; do
             echo "Node \${i} is not yet listening on tm.ipc"
             DOWN=true
         fi
-
-        set +e
-        #NOTE: if using https, change the scheme
-        #NOTE: if using the IP whitelist, change the host to an allowed host
-        result=$(curl -s http://localhost:900\${i}/upcheck)
-        set -e
-        if [ ! "\${result}" == "I'm up!" ]; then
-            echo "Node \${i} is not yet listening on http"
-            DOWN=true
-        fi
     done
+    set +e
+    #NOTE: if using https, change the scheme
+    #NOTE: if using the IP whitelist, change the host to an allowed host
+    ${checkTesseraUpcheck(config.nodes).join('')}
 
     k=$((k - 1))
     if [ \${k} -le 0 ]; then

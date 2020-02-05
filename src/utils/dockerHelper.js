@@ -65,6 +65,7 @@ function buildNodeService(node, i, hasTessera) {
     `depends_on:
       - txmanager${i + 1}
     environment:
+      - TMHOST=${node.tm.ip}
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc` :
     `environment:
       - PRIVATE_CONFIG=ignore`
@@ -82,7 +83,7 @@ function buildNodeService(node, i, hasTessera) {
       - NODE_ID=${i + 1}
     networks:
       quorum-examples-net:
-        ipv4_address: 172.16.239.1${i + 1}`
+        ipv4_address: ${node.quorum.ip}`
 }
 
 function buildTesseraService(node, i) {
@@ -97,7 +98,7 @@ function buildTesseraService(node, i) {
       - ./qdata:/examples:ro
     networks:
       quorum-examples-net:
-        ipv4_address: 172.16.239.10${i + 1}
+        ipv4_address: ${node.tm.ip}
     environment:
       - NODE_ID=${i + 1}`
 }

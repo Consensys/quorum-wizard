@@ -19,7 +19,7 @@ export function createQuickstartConfig (numberNodes, consensus, transactionManag
 }
 
 export function createCustomConfig (numberNodes, consensus, transactionManager, deployment, cakeshop,
-  keyGeneration, networkId, genesisLocation, defaultPorts, nodes) {
+  keyGeneration, networkId, genesisLocation, customizePorts, nodes) {
   return {
     network: {
       name: `${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}`,
@@ -36,9 +36,9 @@ export function createCustomConfig (numberNodes, consensus, transactionManager, 
       cakeshop: cakeshop,
       networkId: networkId,
       custom: true,
-      defaultPorts: defaultPorts,
+      customizePorts: customizePorts,
      },
-     nodes: defaultPorts ? generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop) : nodes
+     nodes: customizePorts ? nodes : generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop)
    }
  }
 

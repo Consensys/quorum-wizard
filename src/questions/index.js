@@ -11,7 +11,7 @@ import {
   KEY_GENERATION,
   NETWORK_ID,
   GENESIS_LOCATION,
-  DEFAULT_PORTS
+  CUSTOMIZE_PORTS
 } from './questions'
 
 import inquirer from 'inquirer'
@@ -39,17 +39,18 @@ export async function customize () {
     CAKESHOP
   ])
 
-  const { generateKeys, networkId, genesisLocation, defaultPorts } = await inquirer.prompt([
+  const { generateKeys, networkId, genesisLocation, customizePorts } = await inquirer.prompt([
     KEY_GENERATION,
     NETWORK_ID,
     GENESIS_LOCATION,
-    DEFAULT_PORTS
+    CUSTOMIZE_PORTS
   ])
-
-  let nodes = !defaultPorts ? await getPorts(numberNodes, deployment, transactionManager === 'tessera') : []
+  
+  const portPrompt = customizePorts  && (deployment === 'bash')
+  let nodes = portPrompt ? await getPorts(numberNodes, deployment, transactionManager === 'tessera') : []
 
   const config = createCustomConfig(numberNodes, consensus, transactionManager, deployment, cakeshop,
-    generateKeys, networkId, genesisLocation, defaultPorts, nodes)
+    generateKeys, networkId, genesisLocation, portPrompt, nodes)
   buildNetwork(config, deployment)
 }
 
