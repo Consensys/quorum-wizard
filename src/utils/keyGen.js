@@ -4,6 +4,7 @@ import { executeSync } from './execUtils'
 import { createFolder, copyFile } from './fileUtils'
 
 export function generateKeys(config, keyPath) {
+  console.log(`Generating ${config.nodes.length} keys..`)
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
     const keyDir = join(keyPath, `key${nodeNumber}`)
@@ -11,7 +12,8 @@ export function generateKeys(config, keyPath) {
     copyFile(config.network.passwordFile, join(keyDir, 'password.txt'))
 
     doExec(keyDir, config.network.transactionManager === 'tessera')
-    })
+  })
+  console.log('Keys were generated')
 }
 
 function doExec(keyDir, isTessera) {

@@ -32,7 +32,7 @@ export function createCustomConfig (answers) {
     transactionManager,
     deployment,
     cakeshop,
-    keyGeneration,
+    generateKeys,
     networkId,
     genesisLocation,
     customizePorts,
@@ -48,7 +48,7 @@ export function createCustomConfig (answers) {
       id: 10,
       permissioned: true,
       genesisFile: genesisLocation,
-      generateKeys: keyGeneration,
+      generateKeys: generateKeys,
       configDir: `network/${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}/generated`,
       passwordFile: '7nodes/key1/password.txt',
       deployment: deployment,
@@ -57,7 +57,7 @@ export function createCustomConfig (answers) {
       custom: true,
       customizePorts: customizePorts,
      },
-     nodes: customizePorts ? nodes : generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop),
+     nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop),
      dockerCustom: dockerCustom
    }
  }

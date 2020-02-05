@@ -44,7 +44,7 @@ export async function customize () {
     CUSTOMIZE_PORTS
   ])
 
-  let nodes = ((customAnswers.customizePorts && commonAnswers.deployment === 'bash') || ommonAnswers.deployment === 'docker-compose') ?
+  let nodes = (customAnswers.customizePorts && commonAnswers.deployment === 'bash') ?
     await getCustomizedBashNodes(commonAnswers.numberNodes, commonAnswers.transactionManager === 'tessera') : []
 
   let dockerConfig = (customAnswers.customizePorts && commonAnswers.deployment === 'docker-compose') ?
