@@ -1,7 +1,7 @@
-import { createQuickstartConfig, createCustomConfig } from '../model/NetworkConfig'
+import { createQuickstartConfig, createCustomConfig, generateNodeConfigs } from '../model/NetworkConfig'
 import { buildBash } from '../utils/bashHelper'
 import { createDockerCompose } from '../utils/dockerHelper'
-import { getPorts } from '../utils/promptHelper'
+import { getCustomizedBashNodes, getCustomizedDockerPorts } from '../utils/promptHelper'
 import {
   CONSENSUS_MODE,
   DEPLOYMENT_TYPE,
@@ -45,12 +45,17 @@ export async function customize () {
     GENESIS_LOCATION,
     CUSTOMIZE_PORTS
   ])
-  
-  const portPrompt = customizePorts  && (deployment === 'bash')
-  let nodes = portPrompt ? await getPorts(numberNodes, deployment, transactionManager === 'tessera') : []
+
+  let nodes = (customizePorts && deployment === 'bash') ?
+    await getCustomizedBashNodes(numberNodes, transactionManager === 'tessera') :
+    generateNodeConfigs (numberNodes, transactionManager, deployment, cakeshop)
+
+  let dockerConfig = (customizePorts && deployment === 'docker-compose') ?
+    await getCustomizedDockerPorts(transactionManager === 'tessera') : undefined
 
   const config = createCustomConfig(numberNodes, consensus, transactionManager, deployment, cakeshop,
-    generateKeys, networkId, genesisLocation, portPrompt, nodes)
+    generateKeys, networkId, genesisLocation, nodes, dockerConfig)
+
   buildNetwork(config, deployment)
 }
 
