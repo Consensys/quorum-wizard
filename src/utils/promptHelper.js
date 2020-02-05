@@ -1,6 +1,6 @@
 const { Form } = require('enquirer')
 
-export async function getCustomizedBashPorts(numberNodes, hasTessera) {
+export async function getCustomizedBashNodes(numberNodes, hasTessera) {
   const nodes = []
   for (let i = 0; i < parseInt(numberNodes, 10); i++) {
     const quorumInfo = [

@@ -1,25 +1,48 @@
 import { buildBashScript } from '../../utils/bashHelper'
-import { createQuickstartConfig, createCustomConfig } from '../../model/NetworkConfig'
-import { cwd, readFileToString } from '../../utils/fileUtils'
+import { createCustomConfig, createQuickstartConfig } from '../../model/NetworkConfig'
+import { cwd } from '../../utils/fileUtils'
 import { TEST_CWD } from '../testHelper'
 
 jest.mock('../../utils/fileUtils')
 cwd.mockReturnValue(TEST_CWD)
 
 test('creates 3nodes raft bash tessera', () => {
-  const config = createQuickstartConfig('3', 'raft', 'tessera', 'bash', false)
+  const config = createQuickstartConfig({
+    numberNodes: '3',
+    consensus: 'raft',
+    transactionManager: 'tessera',
+    deployment: 'bash',
+    cakeshop: false
+  })
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
 })
 
 test('creates 3nodes raft bash tessera cakeshop', () => {
-  const config = createQuickstartConfig('3', 'raft', 'tessera', 'bash', true)
+  const config = createQuickstartConfig({
+    numberNodes: '3',
+    consensus: 'raft',
+    transactionManager: 'tessera',
+    deployment: 'bash',
+    cakeshop: true
+  })
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
 })
 
 test('creates 3nodes raft bash tessera custom', () => {
-  const config = createCustomConfig('3', 'raft', 'tessera', 'bash', false, false, 10, `${process.cwd()}/7nodes/raft-genesis.json`, false, [])
+  const config = createCustomConfig({
+    numberNodes: '3',
+    consensus: 'raft',
+    transactionManager: 'tessera',
+    deployment: 'bash',
+    cakeshop: false,
+    keyGeneration: false,
+    networkId: 10,
+    genesisLocation: `${process.cwd()}/7nodes/raft-genesis.json`,
+    customizePorts: false,
+    nodes: []
+  })
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
 })
@@ -56,7 +79,18 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
         enclavePort: '5182',
       }
     }]
-  const config = createCustomConfig('2', 'istanbul', 'tessera', 'bash', true, false, 10, `${process.cwd()}/7nodes/istanbul-genesis.json`, true, nodes)
+  const config = createCustomConfig({
+    numberNodes: '2',
+    consensus: 'istanbul',
+    transactionManager: 'tessera',
+    deployment: 'bash',
+    cakeshop: true,
+    keyGeneration: false,
+    networkId: 10,
+    genesisLocation: `${process.cwd()}/7nodes/istanbul-genesis.json`,
+    customizePorts: true,
+    nodes: nodes
+  })
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
 })

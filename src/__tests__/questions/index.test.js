@@ -1,21 +1,14 @@
-import inquirer from 'inquirer'
-import { quickstart, customize } from '../../questions'
-import * as NetworkConfig from '../../model/NetworkConfig'
-import * as networkCreator from '../../utils/networkCreator'
-import { copyFile, writeFile, readFileToString, cwd } from '../../utils/fileUtils'
-import { join } from 'path'
-import { anything } from 'expect'
-import { execute } from '../../utils/execUtils'
-import * as prompt from '../../utils/promptHelper'
-import { TEST_CWD } from '../testHelper'
+import { createQuickstartConfig, createCustomConfig } from '../../model/NetworkConfig'
+import { customize, quickstart } from '../../questions'
+import { buildBash } from '../../utils/bashHelper'
+import { prompt } from 'inquirer'
+import { getCustomizedBashNodes } from '../../utils/promptHelper'
 
 jest.mock('inquirer')
 jest.mock('../../model/NetworkConfig')
-jest.mock('../../utils/networkCreator')
-jest.mock('../../utils/fileUtils')
-jest.mock('../../utils/execUtils')
+jest.mock('../../utils/bashHelper')
+jest.mock('../../utils/dockerHelper')
 jest.mock('../../utils/promptHelper')
-cwd.mockReturnValue(TEST_CWD)
 
 const QUICKSTART_CONFIG = {
   numberNodes: '5',
@@ -35,55 +28,28 @@ const CUSTOM_CONFIG = {
 
 test('placeholder', async () => {
   const fakeConfig = { test: 'test' }
-  const fakeCommands = {tesseraStart: 'test', gethStart: 'test', initStart: ['test'],netPath: 'test',}
-  NetworkConfig.createQuickstartConfig.mockReturnValue(fakeConfig)
-  inquirer.prompt.mockResolvedValue(QUICKSTART_CONFIG)
-  networkCreator.createDirectory.mockReturnValue(fakeCommands)
+  prompt.mockResolvedValue(QUICKSTART_CONFIG)
+  createQuickstartConfig.mockReturnValue(fakeConfig)
   await quickstart()
-  expect(NetworkConfig.createQuickstartConfig)
-  .toHaveBeenCalledWith(
-    QUICKSTART_CONFIG.numberNodes,
-    QUICKSTART_CONFIG.consensus,
-    QUICKSTART_CONFIG.transactionManager,
-    QUICKSTART_CONFIG.deployment,
-    QUICKSTART_CONFIG.cakeshop
-  )
-  expect(networkCreator.createDirectory).toHaveBeenCalledWith(fakeConfig)
-  expect(writeFile).toBeCalledWith('test/start.sh', expect.any(String), true)
-  expect(copyFile).toBeCalledWith(join(cwd(), 'lib/stop.sh'), "test/stop.sh")
-  expect(copyFile).toBeCalledWith(join(cwd(), 'lib/runscript.sh'), "test/runscript.sh")
-  expect(copyFile).toBeCalledWith(join(cwd(), 'lib/public-contract.js'), "test/public-contract.js")
-  expect(copyFile).toBeCalledWith(join(cwd(), 'lib/private-contract.js'), "test/private-contract.js")
-
+  expect(createQuickstartConfig)
+    .toHaveBeenCalledWith(QUICKSTART_CONFIG)
+  expect(buildBash).toHaveBeenCalledWith(fakeConfig)
 })
 
 test('customize', async () => {
   const fakeConfig = { test: 'test' }
   const fakeCommands = {tesseraStart: 'test', gethStart: 'test', initStart: ['test'],netPath: 'test',}
-  NetworkConfig.createCustomConfig.mockReturnValue(fakeConfig)
-  inquirer.prompt.mockResolvedValueOnce(QUICKSTART_CONFIG)
-  inquirer.prompt.mockResolvedValueOnce(CUSTOM_CONFIG)
-  prompt.getPorts.mockReturnValueOnce(['nodes'])
-  networkCreator.createDirectory.mockReturnValue(fakeCommands)
+  createCustomConfig.mockReturnValue(fakeConfig)
+  prompt.mockResolvedValueOnce(QUICKSTART_CONFIG)
+  prompt.mockResolvedValueOnce(CUSTOM_CONFIG)
+  getCustomizedBashNodes.mockReturnValueOnce(['nodes'])
   await customize()
-  expect(NetworkConfig.createCustomConfig)
-  .toHaveBeenCalledWith(
-    QUICKSTART_CONFIG.numberNodes,
-    QUICKSTART_CONFIG.consensus,
-    QUICKSTART_CONFIG.transactionManager,
-    QUICKSTART_CONFIG.deployment,
-    QUICKSTART_CONFIG.cakeshop,
-    CUSTOM_CONFIG.generateKeys,
-    CUSTOM_CONFIG.networkId,
-    CUSTOM_CONFIG.genesisLocation,
-    CUSTOM_CONFIG.customizePorts,
-    CUSTOM_CONFIG.nodes
-  )
-  expect(networkCreator.createDirectory).toHaveBeenCalledWith(fakeConfig)
-  expect(writeFile).toBeCalledWith('test/start.sh', expect.any(String), true)
+  let combinedAnswers = {
+    ...QUICKSTART_CONFIG,
+    ...CUSTOM_CONFIG,
+    nodes: ['nodes'],
+  }
+  expect(createCustomConfig).toHaveBeenCalledWith(combinedAnswers)
 
-  expect(copyFile).toBeCalledWith(join(cwd(), 'lib/runscript.sh'), "test/runscript.sh")
-  expect(copyFile).toBeCalledWith(join(cwd(), 'lib/public-contract.js'), "test/public-contract.js")
-  expect(copyFile).toBeCalledWith(join(cwd(), 'lib/private-contract.js'), "test/private-contract.js")
-
+  expect(buildBash).toHaveBeenCalledWith(fakeConfig)
 })

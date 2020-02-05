@@ -15,7 +15,13 @@ cwd.mockReturnValue(TEST_CWD)
 
 describe('creates a cakeshop directory structure for bash', () => {
   it('creates directory structure for cakeshop files and moves them in', () => {
-    let config = createQuickstartConfig('5', 'raft', 'tessera', 'bash' , true)
+    let config = createQuickstartConfig({
+      numberNodes: '5',
+      consensus: 'raft',
+      transactionManager: 'tessera',
+      deployment: 'bash',
+      cakeshop: true
+    })
 
     buildCakeshopDir(config, createNetPath(config, 'qdata'))
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/cakeshop/local'), true)

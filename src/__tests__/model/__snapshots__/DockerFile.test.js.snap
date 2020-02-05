@@ -14,9 +14,6 @@ x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
   image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.4.0}\\"
-  expose:
-    - \\"21000\\"
-    - \\"50400\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
     interval: 3s
@@ -35,7 +32,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off $\${TMHOST}:9000/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:9000/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -72,12 +69,12 @@ x-quorum-def:
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
         \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+  expose:
+    - \\"31000\\"
+    - \\"30400\\"
 x-tx-manager-def:
   &tx-manager-def
   image: \\"\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
-  expose:
-    - \\"9000\\"
-    - \\"9080\\"
   restart: \\"no\\"
   healthcheck:
     test: [\\"CMD-SHELL\\", \\"[ -S /qdata/tm/tm.ipc ] || exit 1\\"]
@@ -190,6 +187,9 @@ x-tx-manager-def:
           exit 1
           ;;
       esac
+  expose:
+    - \\"3000\\"
+    - \\"3080\\"
 x-cakeshop-def:
   &cakeshop-def
   image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}\\"
@@ -226,7 +226,6 @@ services:
     depends_on:
       - txmanager1
     environment:
-      - TMHOST=172.16.239.101
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
@@ -236,7 +235,7 @@ services:
     << : *tx-manager-def
     hostname: txmanager1
     ports:
-      - \\"5081:9080\\"
+      - \\"5081:3080\\"
     volumes:
       - vol1:/qdata
       - ./qdata:/examples:ro
@@ -256,7 +255,6 @@ services:
     depends_on:
       - txmanager2
     environment:
-      - TMHOST=172.16.239.102
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=2
     networks:
@@ -266,7 +264,7 @@ services:
     << : *tx-manager-def
     hostname: txmanager2
     ports:
-      - \\"5082:9080\\"
+      - \\"5082:3080\\"
     volumes:
       - vol2:/qdata
       - ./qdata:/examples:ro
@@ -314,9 +312,6 @@ x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
   image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.4.0}\\"
-  expose:
-    - \\"21000\\"
-    - \\"50400\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
     interval: 3s
@@ -335,7 +330,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off $\${TMHOST}:9000/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:9000/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -372,12 +367,12 @@ x-quorum-def:
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
         \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+  expose:
+    - \\"21000\\"
+    - \\"50400\\"
 x-tx-manager-def:
   &tx-manager-def
   image: \\"\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
-  expose:
-    - \\"9000\\"
-    - \\"9080\\"
   restart: \\"no\\"
   healthcheck:
     test: [\\"CMD-SHELL\\", \\"[ -S /qdata/tm/tm.ipc ] || exit 1\\"]
@@ -490,6 +485,9 @@ x-tx-manager-def:
           exit 1
           ;;
       esac
+  expose:
+    - \\"9000\\"
+    - \\"9080\\"
 services:
   node1:
     << : *quorum-def
@@ -502,7 +500,6 @@ services:
     depends_on:
       - txmanager1
     environment:
-      - TMHOST=172.16.239.101
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
@@ -532,7 +529,6 @@ services:
     depends_on:
       - txmanager2
     environment:
-      - TMHOST=172.16.239.102
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=2
     networks:
@@ -562,7 +558,6 @@ services:
     depends_on:
       - txmanager3
     environment:
-      - TMHOST=172.16.239.103
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=3
     networks:
@@ -610,9 +605,6 @@ x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
   image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.4.0}\\"
-  expose:
-    - \\"21000\\"
-    - \\"50400\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
     interval: 3s
@@ -631,7 +623,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off $\${TMHOST}:9000/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:9000/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -668,12 +660,12 @@ x-quorum-def:
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
         \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+  expose:
+    - \\"21000\\"
+    - \\"50400\\"
 x-tx-manager-def:
   &tx-manager-def
   image: \\"\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
-  expose:
-    - \\"9000\\"
-    - \\"9080\\"
   restart: \\"no\\"
   healthcheck:
     test: [\\"CMD-SHELL\\", \\"[ -S /qdata/tm/tm.ipc ] || exit 1\\"]
@@ -786,6 +778,9 @@ x-tx-manager-def:
           exit 1
           ;;
       esac
+  expose:
+    - \\"9000\\"
+    - \\"9080\\"
 x-cakeshop-def:
   &cakeshop-def
   image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}\\"
@@ -822,7 +817,6 @@ services:
     depends_on:
       - txmanager1
     environment:
-      - TMHOST=172.16.239.101
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
@@ -852,7 +846,6 @@ services:
     depends_on:
       - txmanager2
     environment:
-      - TMHOST=172.16.239.102
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=2
     networks:
@@ -882,7 +875,6 @@ services:
     depends_on:
       - txmanager3
     environment:
-      - TMHOST=172.16.239.103
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=3
     networks:
@@ -941,9 +933,6 @@ x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
   image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.4.0}\\"
-  expose:
-    - \\"21000\\"
-    - \\"50400\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
     interval: 3s
@@ -962,7 +951,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off $\${TMHOST}:9000/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:9000/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -999,12 +988,12 @@ x-quorum-def:
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
         \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+  expose:
+    - \\"21000\\"
+    - \\"50400\\"
 x-tx-manager-def:
   &tx-manager-def
   image: \\"\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
-  expose:
-    - \\"9000\\"
-    - \\"9080\\"
   restart: \\"no\\"
   healthcheck:
     test: [\\"CMD-SHELL\\", \\"[ -S /qdata/tm/tm.ipc ] || exit 1\\"]
@@ -1117,6 +1106,9 @@ x-tx-manager-def:
           exit 1
           ;;
       esac
+  expose:
+    - \\"9000\\"
+    - \\"9080\\"
 services:
   node1:
     << : *quorum-def
@@ -1129,7 +1121,6 @@ services:
     depends_on:
       - txmanager1
     environment:
-      - TMHOST=172.16.239.101
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
@@ -1159,7 +1150,6 @@ services:
     depends_on:
       - txmanager2
     environment:
-      - TMHOST=172.16.239.102
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=2
     networks:
@@ -1189,7 +1179,6 @@ services:
     depends_on:
       - txmanager3
     environment:
-      - TMHOST=172.16.239.103
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=3
     networks:
@@ -1237,9 +1226,6 @@ x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
   image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.4.0}\\"
-  expose:
-    - \\"21000\\"
-    - \\"50400\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
     interval: 3s
@@ -1258,7 +1244,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off $\${TMHOST}:9000/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:9000/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1295,6 +1281,9 @@ x-quorum-def:
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
         \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+  expose:
+    - \\"21000\\"
+    - \\"50400\\"
 x-cakeshop-def:
   &cakeshop-def
   image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}\\"
@@ -1432,9 +1421,6 @@ x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
   image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.4.0}\\"
-  expose:
-    - \\"21000\\"
-    - \\"50400\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
     interval: 3s
@@ -1453,7 +1439,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off $\${TMHOST}:9000/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:9000/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1490,6 +1476,9 @@ x-quorum-def:
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
         \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+  expose:
+    - \\"21000\\"
+    - \\"50400\\"
 services:
   node1:
     << : *quorum-def

@@ -1,4 +1,11 @@
-export function createQuickstartConfig (numberNodes, consensus, transactionManager, deployment, cakeshop) {
+export function createQuickstartConfig (answers) {
+  const {
+    numberNodes,
+    consensus,
+    transactionManager,
+    deployment,
+    cakeshop
+  } = answers
   return {
     network: {
       name: `${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}`,
@@ -18,8 +25,20 @@ export function createQuickstartConfig (numberNodes, consensus, transactionManag
   }
 }
 
-export function createCustomConfig (numberNodes, consensus, transactionManager, deployment, cakeshop,
-  keyGeneration, networkId, genesisLocation, nodes, dockerCustom) {
+export function createCustomConfig (answers) {
+  const {
+    numberNodes,
+    consensus,
+    transactionManager,
+    deployment,
+    cakeshop,
+    keyGeneration,
+    networkId,
+    genesisLocation,
+    customizePorts,
+    nodes,
+    dockerCustom
+  } = answers
   return {
     network: {
       name: `${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}`,
@@ -36,8 +55,9 @@ export function createCustomConfig (numberNodes, consensus, transactionManager, 
       cakeshop: cakeshop,
       networkId: networkId,
       custom: true,
+      customizePorts: customizePorts,
      },
-     nodes: nodes,
+     nodes: customizePorts ? nodes : generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop),
      dockerCustom: dockerCustom
    }
  }
@@ -59,16 +79,16 @@ export function generateNodeConfigs (numberNodes, transactionManager, deployment
   for (let i = 0; i < parseInt(numberNodes, 10); i++) {
     const node = {
       quorum: {
-        ip: isDocker(deployment) ? `172.16.239.1${i+1}` : '127.0.0.1',
+        ip: isDocker(deployment) ? `172.16.239.1${i + 1}` : '127.0.0.1',
         devP2pPort: devP2pPort + i,
         rpcPort: rpcPort + i,
         wsPort: wsPort + i,
         raftPort: raftPort + i,
       },
     }
-    if(transactionManager === 'tessera') {
+    if (transactionManager === 'tessera') {
       node.tm = {
-        ip: isDocker(deployment) ? `172.16.239.10${i+1}` : '127.0.0.1',
+        ip: isDocker(deployment) ? `172.16.239.10${i + 1}` : '127.0.0.1',
         thirdPartyPort: thirdPartyPort + i,
         p2pPort: p2pPort + i,
         enclavePort: enclavePort + i,

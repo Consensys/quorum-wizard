@@ -17,21 +17,19 @@ import {
 import inquirer from 'inquirer'
 
 export async function quickstart () {
-  const { numberNodes, consensus, deployment, transactionManager, cakeshop } = await inquirer.prompt([
+  const answers = await inquirer.prompt([
     NUMBER_NODES,
     CONSENSUS_MODE,
     TRANSACTION_MANAGER,
     DEPLOYMENT_TYPE,
     CAKESHOP
   ])
-
-  const config = createQuickstartConfig(numberNodes, consensus, transactionManager, deployment, cakeshop)
-
-  buildNetwork(config, deployment)
+  const config = createQuickstartConfig(answers)
+  buildNetwork(config, answers.deployment)
 }
 
 export async function customize () {
-  const { numberNodes, consensus, deployment, transactionManager, cakeshop } = await inquirer.prompt([
+  const commonAnswers = await inquirer.prompt([
     NUMBER_NODES,
     CONSENSUS_MODE,
     TRANSACTION_MANAGER,
@@ -39,24 +37,28 @@ export async function customize () {
     CAKESHOP
   ])
 
-  const { generateKeys, networkId, genesisLocation, customizePorts } = await inquirer.prompt([
+  const customAnswers = await inquirer.prompt([
     KEY_GENERATION,
     NETWORK_ID,
     GENESIS_LOCATION,
     CUSTOMIZE_PORTS
   ])
 
-  let nodes = (customizePorts && deployment === 'bash') ?
-    await getCustomizedBashNodes(numberNodes, transactionManager === 'tessera') :
-    generateNodeConfigs (numberNodes, transactionManager, deployment, cakeshop)
+  let nodes = ((customAnswers.customizePorts && commonAnswers.deployment === 'bash') || ommonAnswers.deployment === 'docker-compose') ?
+    await getCustomizedBashNodes(commonAnswers.numberNodes, commonAnswers.transactionManager === 'tessera') : []
 
-  let dockerConfig = (customizePorts && deployment === 'docker-compose') ?
-    await getCustomizedDockerPorts(transactionManager === 'tessera') : undefined
+  let dockerConfig = (customAnswers.customizePorts && commonAnswers.deployment === 'docker-compose') ?
+    await getCustomizedDockerPorts(commonAnswers.transactionManager === 'tessera') : undefined
 
-  const config = createCustomConfig(numberNodes, consensus, transactionManager, deployment, cakeshop,
-    generateKeys, networkId, genesisLocation, nodes, dockerConfig)
+    const answers = {
+      ...commonAnswers,
+      ...customAnswers,
+      nodes,
+      dockerConfig
+    }
+  const config = createCustomConfig(answers)
 
-  buildNetwork(config, deployment)
+  buildNetwork(config, answers.deployment)
 }
 
 function buildNetwork(config, deployment) {

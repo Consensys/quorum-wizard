@@ -23,7 +23,7 @@ export function buildDockerCompose(config) {
   const quorumDefinitions = readFileToString(join(cwd(), 'lib/docker-compose-definitions-quorum.yml'))
   const quorumExposedPorts = createCustomQuorumPorts(config.dockerCustom)
   const tesseraDefinitions = hasTessera ? readFileToString(join(cwd(), 'lib/docker-compose-definitions-tessera.yml')) : ""
-  const tesseraExposedPorts =createCustomTesseraPorts(config.dockerCustom)
+  const tesseraExposedPorts = hasTessera ? createCustomTesseraPorts(config.dockerCustom) : ""
   const cakeshopDefinitions = hasCakeshop ? readFileToString(join(cwd(), 'lib/docker-compose-definitions-cakeshop.yml')) : ""
 
   let services = config.nodes.map((node, i) => {
