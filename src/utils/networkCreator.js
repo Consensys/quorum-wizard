@@ -1,19 +1,11 @@
-import { join, normalize } from 'path'
+import { join } from 'path'
 import sanitize from 'sanitize-filename'
-import {
-  copyFile,
-  createFolder,
-  cwd,
-  readFileToString,
-  removeFolder,
-  writeJsonFile,
-} from './fileUtils'
+import { copyFile, createFolder, cwd, readFileToString, removeFolder, writeJsonFile, } from './fileUtils'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
-import { isBash } from '../model/NetworkConfig'
-import { createGethStartCommand, createTesseraStartCommand, waitForTesseraNodesCommand } from './bashHelper'
-import { generateCakeshopConfig } from '../model/CakeshopConfig'
+import { isTessera } from '../model/NetworkConfig'
+import { createGethStartCommand, createTesseraStartCommand } from './bashHelper'
 import { pathToGethBinary } from './binaryHelper'
 
 export function createDirectory (config) {
@@ -86,6 +78,7 @@ export function createDirectory (config) {
     }
 
     if (config.network.deployment === 'bash') {
+      // TODO make this use the BIN_GETH env variable
       const initCommand = `cd ${networkPath} && ${pathToGethBinary(config.network.gethBinary)} --datadir ${quorumDir} init ${genesisDestination}`
       initCommands.push(initCommand)
 
@@ -123,10 +116,6 @@ export function createStaticNodes (nodes, consensus, configDir) {
     }
     return enodeAddress
   })
-}
-
-export function isTessera (config) {
-  return config.network.transactionManager !== 'none'
 }
 
 export function includeCakeshop(config) {

@@ -110,3 +110,7 @@ export function generateNodeConfigs (numberNodes, transactionManager, deployment
   }
   return nodes
 }
+
+export function isTessera (config) {
+  return config.network.transactionManager !== 'none'
+}
