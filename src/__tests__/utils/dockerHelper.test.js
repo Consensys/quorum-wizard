@@ -17,7 +17,13 @@ cwd.mockReturnValue(TEST_CWD)
 describe('generates docker-compose directory', () => {
   it('given docker details builds files to run docker', () => {
 
-    let config = createQuickstartConfig('5', 'raft', 'tessera', 'docker-compose', false)
+    let config = createQuickstartConfig({
+      numberNodes: '5',
+      consensus: 'raft',
+      transactionManager: 'tessera',
+      deployment: 'docker-compose',
+      cakeshop: false
+    })
 
     createDirectory.mockReturnValueOnce({tesseraStart:  "",
         gethStart: "",
@@ -37,7 +43,13 @@ describe('generates docker-compose directory', () => {
 describe('generates docker-compose script details', () => {
   it('creates docker-compose script with quorum and tessera', () => {
 
-    let config = createQuickstartConfig('1', 'raft', 'tessera', 'docker-compose', false)
+    let config = createQuickstartConfig({
+      numberNodes: '1',
+      consensus: 'raft',
+      transactionManager: 'tessera',
+      deployment: 'docker-compose',
+      cakeshop: false
+    })
     const services = `
 services:
   node1:
@@ -94,7 +106,13 @@ volumes:
 
   it('creates docker-compose script just quorum', () => {
 
-    let config = createQuickstartConfig('1', 'raft', 'none', 'docker-compose', false)
+    let config = createQuickstartConfig({
+      numberNodes: '1',
+      consensus: 'raft',
+      transactionManager: 'none',
+      deployment: 'docker-compose',
+      cakeshop: false
+    })
     const services = `
 services:
   node1:
@@ -134,7 +152,13 @@ volumes:
 
   it('creates docker-compose script with quorum and cakeshop', () => {
 
-    let config = createQuickstartConfig('1', 'raft', 'none', 'docker-compose', true)
+    const config = createQuickstartConfig({
+      numberNodes: '1',
+      consensus: 'raft',
+      transactionManager: 'none',
+      deployment: 'docker-compose',
+      cakeshop: true
+    })
     const services = `
 services:
   node1:
@@ -187,7 +211,13 @@ volumes:
 
   it('creates docker-compose script with quorum, tessera and cakeshop', () => {
 
-    let config = createQuickstartConfig('1', 'raft', 'tessera', 'docker-compose', true)
+    const config = createQuickstartConfig({
+      numberNodes: '1',
+      consensus: 'raft',
+      transactionManager: 'tessera',
+      deployment: 'docker-compose',
+      cakeshop: true
+    })
     const services = `
 services:
   node1:

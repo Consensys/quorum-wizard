@@ -17,21 +17,19 @@ import {
 import inquirer from 'inquirer'
 
 export async function quickstart () {
-  const { numberNodes, consensus, deployment, transactionManager, cakeshop } = await inquirer.prompt([
+  const answers = await inquirer.prompt([
     NUMBER_NODES,
     CONSENSUS_MODE,
     TRANSACTION_MANAGER,
     DEPLOYMENT_TYPE,
     CAKESHOP
   ])
-
-  const config = createQuickstartConfig(numberNodes, consensus, transactionManager, deployment, cakeshop)
-
-  buildNetwork(config, deployment)
+  const config = createQuickstartConfig(answers)
+  buildNetwork(config, answers.deployment)
 }
 
 export async function customize () {
-  const { numberNodes, consensus, deployment, transactionManager, cakeshop } = await inquirer.prompt([
+  const commonAnswers = await inquirer.prompt([
     NUMBER_NODES,
     CONSENSUS_MODE,
     TRANSACTION_MANAGER,
@@ -39,18 +37,22 @@ export async function customize () {
     CAKESHOP
   ])
 
-  const { generateKeys, networkId, genesisLocation, defaultPorts } = await inquirer.prompt([
+  const customAnswers = await inquirer.prompt([
     KEY_GENERATION,
     NETWORK_ID,
     GENESIS_LOCATION,
     DEFAULT_PORTS
   ])
 
-  let nodes = !defaultPorts ? await getPorts(numberNodes, deployment, transactionManager === 'tessera') : []
+  let nodes = !commonAnswers.defaultPorts ? await getPorts(commonAnswers.numberNodes, commonAnswers.deployment, commonAnswers.transactionManager === 'tessera') : []
 
-  const config = createCustomConfig(numberNodes, consensus, transactionManager, deployment, cakeshop,
-    generateKeys, networkId, genesisLocation, defaultPorts, nodes)
-  buildNetwork(config, deployment)
+  const answers = {
+    ...commonAnswers,
+    ...customAnswers,
+    nodes
+  }
+  const config = createCustomConfig(answers)
+  buildNetwork(config, answers.deployment)
 }
 
 function buildNetwork(config, deployment) {
