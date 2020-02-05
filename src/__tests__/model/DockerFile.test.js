@@ -60,7 +60,8 @@ test('creates 3nodes raft docker tessera custom', () => {
     networkId: 10,
     genesisLocation: 'none',
     customizePorts: false,
-    nodes: []
+    nodes: [],
+    dockerCustom: undefined
   })
   const docker = buildDockerCompose(config)
   expect(docker).toMatchSnapshot()

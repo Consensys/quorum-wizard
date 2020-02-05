@@ -68,7 +68,9 @@ test('creates 6nodes raft custom config', () => {
     keyGeneration: true,
     networkId: 10,
     genesisLocation: '',
-    customizePorts: false
+    customizePorts: false,
+    nodes: [],
+    dockerCustom: undefined
   })
   expect(config).toMatchSnapshot()
 })
@@ -83,7 +85,9 @@ test('creates 7nodes istanbul no-TM custom config', () => {
     keyGeneration: true,
     networkId: 12,
     genesisLocation: '',
-    customizePorts: false
+    customizePorts: false,
+    nodes: [],
+    dockerCustom: undefined
   })
   expect(config).toMatchSnapshot()
 })
