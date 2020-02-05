@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`creates 2nodes istanbul bash tessera cakeshop custom ports 1`] = `
-"BIN_GETH=bin/geth
-BIN_TESSERA=bin/tessera-app.jar
-BIN_CAKESHOP=bin/cakeshop.war
+"BIN_GETH=/current/working/dir/bin/quorum/2.4.0/geth
+BIN_TESSERA=/current/working/dir/bin/tessera/0.10.2/tessera-app.jar
+BIN_CAKESHOP=/current/working/dir/bin/cakeshop/0.11.0-RC2/cakeshop.war
 
 java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/c1/tessera-config-09-1.json >> /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/logs/tessera1.log 2>&1 &
 java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/c2/tessera-config-09-2.json >> /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/logs/tessera2.log 2>&1 &
@@ -78,8 +78,8 @@ java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -ja
 `;
 
 exports[`creates 3nodes raft bash tessera 1`] = `
-"BIN_GETH=bin/geth
-BIN_TESSERA=bin/tessera-app.jar
+"BIN_GETH=/current/working/dir/bin/quorum/2.4.0/geth
+BIN_TESSERA=/current/working/dir/bin/tessera/0.10.2/tessera-app.jar
 
 java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tessera-config-09-1.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera1.log 2>&1 &
 java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tessera-config-09-2.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera2.log 2>&1 &
@@ -136,9 +136,9 @@ PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/t
 `;
 
 exports[`creates 3nodes raft bash tessera cakeshop 1`] = `
-"BIN_GETH=bin/geth
-BIN_TESSERA=bin/tessera-app.jar
-BIN_CAKESHOP=bin/cakeshop.war
+"BIN_GETH=/current/working/dir/bin/quorum/2.4.0/geth
+BIN_TESSERA=/current/working/dir/bin/tessera/0.10.2/tessera-app.jar
+BIN_CAKESHOP=/current/working/dir/bin/cakeshop/0.11.0-RC2/cakeshop.war
 
 java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tessera-config-09-1.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera1.log 2>&1 &
 java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tessera-config-09-2.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera2.log 2>&1 &
@@ -220,8 +220,8 @@ java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -ja
 `;
 
 exports[`creates 3nodes raft bash tessera custom 1`] = `
-"BIN_GETH=bin/geth
-BIN_TESSERA=bin/tessera-app.jar
+"BIN_GETH=/current/working/dir/bin/quorum/2.4.0/geth
+BIN_TESSERA=/current/working/dir/bin/tessera/0.10.2/tessera-app.jar
 
 java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tessera-config-09-1.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera1.log 2>&1 &
 java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tessera-config-09-2.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera2.log 2>&1 &

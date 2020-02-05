@@ -1,4 +1,4 @@
-import { copyFile, createFolder, cwd, exists } from './fileUtils'
+import { createFolder, cwd, exists } from './fileUtils'
 import { basename, join } from 'path'
 import { createWriteStream } from 'fs'
 import axios from 'axios'
@@ -18,15 +18,20 @@ export function getPlatformSpecificUrl ({ url }) {
   return platformUrl
 }
 
-async function downloadIfMissing (version, binaryInfo) {
-  let binDir = join(cwd(), 'bin', version)
+async function downloadIfMissing (name, version) {
+  if(BINARIES[name] === undefined || BINARIES[name][version] === undefined) {
+    throw new Error(`Could not find binary info entry for ${name} ${version}`)
+  }
+  let binDir = join(cwd(), 'bin', name, version)
   if (!exists(binDir)) {
     createFolder(binDir, true)
-    console.log(`Downloading ${binaryInfo.name} ${version}...`)
+    console.log(`Downloading ${name} ${version}...`)
 
+    const binaryInfo = BINARIES[name][version]
     const url = getPlatformSpecificUrl(binaryInfo)
-    const response = await axios.get({
+    const response = await axios({
       url: url,
+      method: 'GET',
       responseType: 'stream',
     })
 
@@ -67,34 +72,26 @@ async function downloadIfMissing (version, binaryInfo) {
       })
     }
   } else {
-    // console.log('Binary already exists at', binDir)
+    console.log('Using cached binary at:', binDir)
   }
 }
 
-export async function downloadAndCopyBinaries (config, networkPath) {
-
-  createFolder(join(networkPath, 'bin'))
-
-  let gethVersion = config.network.gethBinary
-  if (gethVersion !== 'PATH') {
-    let gethBinaryInfo = geth[gethVersion]
-    await downloadIfMissing(gethVersion, gethBinaryInfo)
-    copyFile(join(cwd(), 'bin', gethVersion, gethBinaryInfo.name), join(networkPath, 'bin', gethBinaryInfo.name))
+export async function downloadAndCopyBinaries (config) {
+  let quorumVersion = config.network.gethBinary
+  if (quorumVersion !== 'PATH') {
+    await downloadIfMissing('quorum', quorumVersion)
   }
   let tesseraVersion = config.network.transactionManager
   if (tesseraVersion !== 'PATH') {
-    let tesseraBinaryInfo = tessera[tesseraVersion]
-    await downloadIfMissing(tesseraVersion, tesseraBinaryInfo)
-    copyFile(join(cwd(), 'bin', tesseraVersion, tesseraBinaryInfo.name), join(networkPath, 'bin', tesseraBinaryInfo.name))
+    await downloadIfMissing('tessera', tesseraVersion)
   }
 
   if (config.network.cakeshop) {
-    await downloadIfMissing('cakeshop', cakeshop)
-    copyFile(join(cwd(), 'bin', 'cakeshop', cakeshop.name), join(networkPath, 'bin', cakeshop.name))
+    await downloadIfMissing('cakeshop', '0.11.0-RC2')
   }
 
   if (config.network.generateKeys) {
-    await downloadIfMissing('bootnode', bootnode)
+    await downloadIfMissing('bootnode', 'geth1.8.27')
   }
 }
 
@@ -120,7 +117,7 @@ export function getGethOnPath () {
 }
 
 export function getDownloadableGethChoices () {
-  return Object.entries(geth).map((entry) => {
+  return Object.entries(BINARIES.quorum).map((entry) => {
     const key = entry[0]
     const binaryInfo = entry[1]
     return {
@@ -131,7 +128,7 @@ export function getDownloadableGethChoices () {
 }
 
 export function getDownloadableTesseraChoices () {
-  return Object.entries(tessera).map((entry) => {
+  return Object.entries(BINARIES.tessera).map((entry) => {
     const key = entry[0]
     const binaryInfo = entry[1]
     return {
@@ -157,7 +154,8 @@ export function pathToGethBinary (gethBinary) {
   if (gethBinary === 'PATH') {
     return 'geth'
   } else {
-    return 'bin/geth'
+    const info = BINARIES.quorum[gethBinary]
+    return join(cwd(), 'bin', 'quorum', gethBinary, info.name)
   }
 }
 
@@ -165,50 +163,64 @@ export function pathToTesseraJar (transactionManager) {
   if (transactionManager === 'PATH') {
     return '$TESSERA_JAR'
   } else {
-    return `bin/${tessera[transactionManager].name}`
+    const info = BINARIES.tessera[transactionManager]
+    return join(cwd(), 'bin', 'tessera', transactionManager, info.name)
   }
 }
 
 export function pathToCakeshop () {
-  return 'bin/cakeshop.war'
+  const info = BINARIES.cakeshop['0.11.0-RC2']
+  return join(cwd(), 'bin', 'cakeshop', '0.11.0-RC2', info.name)
 }
 
-const geth = {
-  '2.4.0': {
-    name: 'geth',
-    url: {
-      darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.4.0/geth_v2.4.0_darwin_amd64.tar.gz',
-      linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.4.0/geth_v2.4.0_linux_amd64.tar.gz',
+export function pathToBootnode () {
+  const info = BINARIES.bootnode['geth1.8.27']
+  return join(cwd(), 'bin', 'bootnode', 'geth1.8.27', info.name)
+}
+
+
+const BINARIES = {
+  quorum: {
+    '2.4.0': {
+      name: 'geth',
+      url: {
+        darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.4.0/geth_v2.4.0_darwin_amd64.tar.gz',
+        linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.4.0/geth_v2.4.0_linux_amd64.tar.gz',
+      },
+      type: 'tar.gz',
+      files: [
+        'geth',
+      ],
     },
-    type: 'tar.gz',
-    files: [
-      'geth',
-    ],
   },
-}
 
-const tessera = {
-  '0.10.2': {
-    name: 'tessera-app.jar',
-    url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.2/tessera-app-0.10.2-app.jar',
-    type: 'jar',
+  tessera: {
+    '0.10.2': {
+      name: 'tessera-app.jar',
+      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.2/tessera-app-0.10.2-app.jar',
+      type: 'jar',
+    },
   },
-}
 
-const cakeshop = {
-  name: 'cakeshop.war',
-  url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0-RC2/cakeshop-0.11.0-RC2.war',
-  type: 'war',
-}
-
-const bootnode = {
-  name: 'bootnode',
-  url: {
-    darwin: 'https://gethstore.blob.core.windows.net/builds/geth-alltools-darwin-amd64-1.8.27-4bcc0a37.tar.gz',
-    linux: 'https://gethstore.blob.core.windows.net/builds/geth-alltools-linux-amd64-1.8.27-4bcc0a37.tar.gz',
+  cakeshop: {
+    '0.11.0-RC2': {
+      name: 'cakeshop.war',
+      url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0-RC2/cakeshop-0.11.0-RC2.war',
+      type: 'war',
+    }
   },
-  type: 'tar.gz',
-  files: [
-    'bootnode',
-  ],
+
+  bootnode: {
+    'geth1.8.27': {
+      name: 'bootnode',
+      url: {
+        darwin: 'https://gethstore.blob.core.windows.net/builds/geth-alltools-darwin-amd64-1.8.27-4bcc0a37.tar.gz',
+        linux: 'https://gethstore.blob.core.windows.net/builds/geth-alltools-linux-amd64-1.8.27-4bcc0a37.tar.gz',
+      },
+      type: 'tar.gz',
+      files: [
+        'bootnode',
+      ],
+    }
+  }
 }

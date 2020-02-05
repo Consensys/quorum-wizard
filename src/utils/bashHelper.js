@@ -43,7 +43,7 @@ export async function buildBash(config) {
     buildCakeshopDir(config, join(networkPath, 'qdata'))
   }
 
-  await downloadAndCopyBinaries(config, networkPath)
+  await downloadAndCopyBinaries(config)
   writeFile(join(networkPath, 'start.sh'), bashDetails.startScript, true)
   copyFile(join(cwd(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
 

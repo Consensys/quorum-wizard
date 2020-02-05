@@ -1,27 +1,35 @@
 import {
   getGethOnPath,
   getPlatformSpecificUrl,
-  getTesseraOnPath, pathToCakeshop, pathToGethBinary, pathToTesseraJar,
+  getTesseraOnPath, pathToBootnode, pathToCakeshop, pathToGethBinary, pathToTesseraJar,
 } from '../../utils/binaryHelper'
 import { executeSync } from '../../utils/execUtils'
+import { cwd } from '../../utils/fileUtils'
+import { join } from 'path'
+import { TEST_CWD } from '../testHelper'
 
 jest.mock('../../utils/execUtils')
+jest.mock('../../utils/fileUtils')
+cwd.mockReturnValue(TEST_CWD)
 
 describe('Chooses the right paths to the binaries', () => {
   it('Calls geth binary directly if on path', () => {
     expect(pathToGethBinary("PATH")).toEqual("geth")
   })
   it('Calls geth binary in bin folder', () => {
-    expect(pathToGethBinary("2.4.0")).toEqual("bin/geth")
+    expect(pathToGethBinary("2.4.0")).toEqual(join(cwd(), "bin/quorum/2.4.0/geth"))
   })
   it('Calls tessera using $TESSERA_JAR', () => {
     expect(pathToTesseraJar("PATH")).toEqual("$TESSERA_JAR")
   })
   it('Calls tessera using bin folder jar', () => {
-    expect(pathToTesseraJar("0.10.2")).toEqual("bin/tessera-app.jar")
+    expect(pathToTesseraJar("0.10.2")).toEqual(join(cwd(), "bin/tessera/0.10.2/tessera-app.jar"))
   })
   it('Calls cakeshop using bin folder war', () => {
-    expect(pathToCakeshop()).toEqual("bin/cakeshop.war")
+    expect(pathToCakeshop()).toEqual(join(cwd(), "bin/cakeshop/0.11.0-RC2/cakeshop.war"))
+  })
+  it('Calls bootnode using bin folder', () => {
+    expect(pathToBootnode()).toEqual(join(cwd(), "bin/bootnode/geth1.8.27/bootnode"))
   })
 })
 
