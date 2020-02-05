@@ -29,21 +29,21 @@ test('creates 7nodes istanbul cakeshop config', () => {
 })
 
 test('creates 6nodes raft custom config', () => {
-  const config = createCustomConfig('6', 'raft', 'tessera', 'bash', false, true, 10, '', true)
+  const config = createCustomConfig('6', 'raft', 'tessera', 'bash', false, true, 10, '', false)
   expect(config).toMatchSnapshot()
 })
 
 test('creates 7nodes istanbul no-TM custom config', () => {
-  const config = createCustomConfig('7', 'istanbul', 'none', 'bash', false, true, 12, '', true)
+  const config = createCustomConfig('7', 'istanbul', 'none', 'bash', false, true, 12, '', false)
   expect(config).toMatchSnapshot()
 })
 
 test('creates 6nodes raft custom docker config', () => {
-  const config = createCustomConfig('6', 'raft', 'tessera', 'docker-compose', false, true, 10, 'testDir', true)
+  const config = createCustomConfig('6', 'raft', 'tessera', 'docker-compose', false, true, 10, 'testDir', false)
   expect(config).toMatchSnapshot()
 })
 
 test('creates 7nodes istanbul no-TM custom docker config', () => {
-  const config = createCustomConfig('7', 'istanbul', 'none', 'docker-compose', false, false, 10, '', true)
+  const config = createCustomConfig('7', 'istanbul', 'none', 'docker-compose', false, false, 10, '', false)
   expect(config).toMatchSnapshot()
 })

@@ -26,15 +26,10 @@ const QUICKSTART_CONFIG = {
 }
 
 const CUSTOM_CONFIG = {
-  numberNodes: '5',
-  consensus: 'raft',
-  transactionManager: 'none',
-  deployment: 'docker-compose',
-  cakeshop: false,
-  keyGeneration: false,
+  generateKeys: false,
   networkId: 10,
   genesisLocation: 'testDir',
-  defaultPorts: false,
+  customizePorts: true,
   nodes: ['nodes']
 }
 
@@ -78,10 +73,10 @@ test('customize', async () => {
     QUICKSTART_CONFIG.transactionManager,
     QUICKSTART_CONFIG.deployment,
     QUICKSTART_CONFIG.cakeshop,
-    CUSTOM_CONFIG.keyGeneration,
+    CUSTOM_CONFIG.generateKeys,
     CUSTOM_CONFIG.networkId,
     CUSTOM_CONFIG.genesisLocation,
-    CUSTOM_CONFIG.defaultPorts,
+    CUSTOM_CONFIG.customizePorts,
     CUSTOM_CONFIG.nodes
   )
   expect(networkCreator.createDirectory).toHaveBeenCalledWith(fakeConfig)

@@ -19,7 +19,7 @@ test('creates 3nodes raft bash tessera cakeshop', () => {
 })
 
 test('creates 3nodes raft bash tessera custom', () => {
-  const config = createCustomConfig('3', 'raft', 'tessera', 'bash', false, false, 10, `${process.cwd()}/7nodes/raft-genesis.json`, true, [])
+  const config = createCustomConfig('3', 'raft', 'tessera', 'bash', false, false, 10, `${process.cwd()}/7nodes/raft-genesis.json`, false, [])
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
 })
@@ -56,7 +56,7 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
         enclavePort: '5182',
       }
     }]
-  const config = createCustomConfig('2', 'istanbul', 'tessera', 'bash', true, false, 10, `${process.cwd()}/7nodes/istanbul-genesis.json`, false, nodes)
+  const config = createCustomConfig('2', 'istanbul', 'tessera', 'bash', true, false, 10, `${process.cwd()}/7nodes/istanbul-genesis.json`, true, nodes)
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
 })
