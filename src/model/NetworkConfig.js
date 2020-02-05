@@ -68,7 +68,7 @@ export function generateNodeConfigs (numberNodes, transactionManager, deployment
     }
     if(transactionManager === 'tessera') {
       node.tm = {
-        ip: isDocker(deployment) ? `172.16.239.1${i+1}` : '127.0.0.1',
+        ip: isDocker(deployment) ? `172.16.239.10${i+1}` : '127.0.0.1',
         thirdPartyPort: thirdPartyPort + i,
         p2pPort: p2pPort + i,
         enclavePort: enclavePort + i,
