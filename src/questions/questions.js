@@ -1,4 +1,8 @@
 import { validateNumberStringInRange } from '../utils/questionUtils'
+import {
+  getDownloadableGethChoices, getDownloadableTesseraChoices,
+  getGethOnPath, getTesseraOnPath,
+} from '../utils/binaryHelper'
 
 
 export const INITIAL_MODE = {
@@ -30,14 +34,18 @@ export const CONSENSUS_MODE = {
   ]
 }
 
+export const GETH_BINARY = {
+  type: 'list',
+  name: 'gethBinary',
+  message: 'Which geth binary?',
+  choices: () => getDownloadableGethChoices().concat(getGethOnPath()),
+}
+
 export const TRANSACTION_MANAGER = {
   type: 'list',
   name: 'transactionManager',
   message: 'Which private transaction manager?',
-  choices: [
-    'tessera',
-    'none',
-  ]
+  choices: () => getDownloadableTesseraChoices().concat(getTesseraOnPath(), ['none'])
 }
 
 export const DEPLOYMENT_TYPE = {

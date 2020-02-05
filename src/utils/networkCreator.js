@@ -14,6 +14,7 @@ import { createConfig } from '../model/TesseraConfig'
 import { isBash } from '../model/NetworkConfig'
 import { createGethStartCommand, createTesseraStartCommand, waitForTesseraNodesCommand } from './bashHelper'
 import { generateCakeshopConfig } from '../model/CakeshopConfig'
+import { pathToGethBinary } from './binaryHelper'
 
 export function createDirectory (config) {
   // https://nodejs.org/en/knowledge/file-system/security/introduction/
@@ -85,7 +86,7 @@ export function createDirectory (config) {
     }
 
     if (config.network.deployment === 'bash') {
-      const initCommand = `cd ${networkPath} && geth --datadir ${quorumDir} init ${genesisDestination}`
+      const initCommand = `cd ${networkPath} && ${pathToGethBinary(config.network.gethBinary)} --datadir ${quorumDir} init ${genesisDestination}`
       initCommands.push(initCommand)
 
       let tmIpcLocation = isTessera(config) ? join(tmDir, 'tm.ipc') : 'ignore'
@@ -125,7 +126,7 @@ export function createStaticNodes (nodes, consensus, configDir) {
 }
 
 export function isTessera (config) {
-  return config.network.transactionManager === 'tessera'
+  return config.network.transactionManager !== 'none'
 }
 
 export function includeCakeshop(config) {
@@ -133,7 +134,7 @@ export function includeCakeshop(config) {
 }
 
 function createPeerList (nodes, transactionManager) {
-  if (transactionManager !== 'tessera') {
+  if (transactionManager === 'none') {
     return []
   }
   return nodes.map((node) => ({

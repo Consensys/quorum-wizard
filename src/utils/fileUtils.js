@@ -20,7 +20,7 @@ export function removeFolder (networkPath = '') {
     throw new Error('Tried to remove folder outside of working directory')
   }
 
-  if(fs.existsSync(networkPath)) {
+  if(exists(networkPath)) {
     fs.removeSync(networkPath)
   }
 }
@@ -43,4 +43,8 @@ export function formatNewLine(file) {
 
 export function cwd() {
   return process.cwd()
+}
+
+export function exists(path) {
+  return fs.existsSync(path)
 }

@@ -7,6 +7,11 @@ import {
 import { join } from 'path'
 import { execute } from './execUtils'
 import { buildCakeshopDir, generateCakeshopScript, waitForCakeshopCommand } from './cakeshopHelper'
+import {
+  downloadAndCopyBinaries,
+  pathToGethBinary,
+  pathToTesseraJar,
+} from './binaryHelper'
 
 export function buildBashScript(config) {
   const commands = createDirectory(config)
@@ -26,7 +31,7 @@ export function buildBashScript(config) {
   }
 }
 
-export function buildBash(config) {
+export async function buildBash(config) {
 
   const bashDetails = buildBashScript(config)
   const networkPath = bashDetails.networkPath
@@ -35,6 +40,7 @@ export function buildBash(config) {
     buildCakeshopDir(config, join(networkPath, 'qdata'))
   }
 
+  await downloadAndCopyBinaries(config, networkPath)
   writeFile(join(networkPath, 'start.sh'), bashDetails.startScript, true)
   copyFile(join(cwd(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
 
@@ -62,13 +68,13 @@ export function createGethStartCommand (config, node, passwordDestination, nodeN
     `--raft --raftport ${raftPort}` :
     `--istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1`
 
-  return `PRIVATE_CONFIG=${tmIpcLocation} nohup geth --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --verbosity ${verbosity} --networkid ${id} --rpcport ${rpcPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
+  return `PRIVATE_CONFIG=${tmIpcLocation} nohup ${pathToGethBinary(config.network.gethBinary)} --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --verbosity ${verbosity} --networkid ${id} --rpcport ${rpcPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
 }
 
 export function createTesseraStartCommand (config, node, nodeNumber, tmDir, logDir) {
   // `rm -f ${tmDir}/tm.ipc`
 
-  const tesseraJar = '$TESSERA_JAR' // require env variable to be set for now
+  const tesseraJar = pathToTesseraJar(config.network.transactionManager) // require env variable to be set for now
   let DEBUG = ''
   if (config.network.remoteDebug) {
     DEBUG = '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=500$i -Xdebug'

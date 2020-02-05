@@ -8,6 +8,7 @@ import { TEST_CWD } from '../testHelper'
 jest.mock('../../utils/networkCreator')
 jest.mock('../../utils/fileUtils')
 jest.mock('../../utils/execUtils')
+jest.mock('../../utils/binaryHelper')
 cwd.mockReturnValue(TEST_CWD)
 
 describe('generates bash script details', () => {
@@ -20,7 +21,7 @@ describe('generates bash script details', () => {
     let config = createQuickstartConfig({
       numberNodes: '5',
       consensus: 'raft',
-      transactionManager: 'tessera',
+      transactionManager: '0.10.2',
       deployment: 'bash',
       cakeshop: false
     })
@@ -34,11 +35,11 @@ describe('generates bash script details', () => {
 })
 
 describe('builds bash directory', () => {
-  it('given bash details builds files to run bash', () => {
+  it('given bash details builds files to run bash', async () => {
     let config = createQuickstartConfig({
       numberNodes: '5',
       consensus: 'raft',
-      transactionManager: 'tessera',
+      transactionManager: '0.10.2',
       deployment: 'bash',
       cakeshop: false
     })
@@ -47,7 +48,7 @@ describe('builds bash directory', () => {
         initStart: ['1', '2', '3', '4', '5'],
         netPath: "test",
       })
-    buildBash()
+    await buildBash()
 
     expect(writeFile).toBeCalledWith('test/start.sh', expect.any(String), true)
     expect(copyFile).toBeCalledTimes(4)

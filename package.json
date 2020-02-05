@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/QuorumEngineering/quorum-creator#readme",
   "dependencies": {
-    "@babel/runtime": "^7.7.7",
+    "@babel/runtime": "^7.8.3",
+    "axios": "^0.19.2",
     "enquirer": "^2.3.4",
     "fs-extra": "^8.1.0",
     "inquirer": "^7.0.0",
@@ -28,15 +29,16 @@
     "merge-files": "^0.1.2",
     "sanitize-filename": "^1.6.3",
     "source-map-support": "^0.5.16",
+    "tar-fs": "^2.0.0",
     "web3": "^1.2.4"
   },
   "devDependencies": {
-    "@babel/cli": "^7.7.5",
-    "@babel/core": "^7.7.5",
-    "@babel/plugin-transform-modules-commonjs": "^7.7.5",
-    "@babel/plugin-transform-runtime": "^7.7.6",
-    "@babel/preset-env": "^7.7.6",
-    "babel-jest": "^24.9.0",
-    "jest": "^24.9.0"
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/plugin-transform-modules-commonjs": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "babel-jest": "^25.1.0",
+    "jest": "^25.1.0"
   }
 }

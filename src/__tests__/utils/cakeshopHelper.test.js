@@ -18,7 +18,7 @@ describe('creates a cakeshop directory structure for bash', () => {
     let config = createQuickstartConfig({
       numberNodes: '5',
       consensus: 'raft',
-      transactionManager: 'tessera',
+      transactionManager: '0.10.2',
       deployment: 'bash',
       cakeshop: true
     })

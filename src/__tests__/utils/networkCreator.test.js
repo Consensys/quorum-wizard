@@ -25,7 +25,8 @@ describe('creates a bash network', () => {
     let config = createQuickstartConfig({
       numberNodes: '5',
       consensus: 'raft',
-      transactionManager: 'tessera',
+      gethBinary: '2.4.0',
+      transactionManager: '0.10.2',
       deployment: 'bash',
       cakeshop: false
     })
@@ -39,7 +40,8 @@ describe('creates a bash network', () => {
     let config = createQuickstartConfig({
       numberNodes: '5',
       consensus: 'raft',
-      transactionManager: 'tessera',
+      gethBinary: '2.4.0',
+      transactionManager: '0.10.2',
       deployment: 'bash',
       cakeshop: false
     })
@@ -75,7 +77,8 @@ describe('creates a docker network', () => {
     let config = createQuickstartConfig({
       numberNodes: '5',
       consensus: 'raft',
-      transactionManager: 'tessera',
+      gethBinary: '2.4.0',
+      transactionManager: '0.10.2',
       deployment: 'docker-compose',
       cakeshop: false
     })
@@ -89,7 +92,8 @@ describe('creates a docker network', () => {
     let config = createQuickstartConfig({
       numberNodes: '5',
       consensus: 'raft',
-      transactionManager: 'tessera',
+      gethBinary: '2.4.0',
+      transactionManager: '0.10.2',
       deployment: 'docker-compose',
       cakeshop: false
     })

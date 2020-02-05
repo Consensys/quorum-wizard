@@ -13,7 +13,8 @@ jest.mock('../../utils/promptHelper')
 const QUICKSTART_CONFIG = {
   numberNodes: '5',
   consensus: 'istanbul',
-  transactionManager: 'tessera',
+  gethBinary: '2.4.0',
+  transactionManager: '0.10.2',
   deployment: 'bash',
   cakeshop: false
 }
@@ -37,7 +38,7 @@ test('placeholder', async () => {
   createQuickstartConfig.mockReturnValue(fakeConfig)
   await quickstart()
   expect(createQuickstartConfig)
-    .toHaveBeenCalledWith(QUICKSTART_CONFIG)
+  .toHaveBeenCalledWith(QUICKSTART_CONFIG)
   expect(buildBash).toHaveBeenCalledWith(fakeConfig)
 })
 

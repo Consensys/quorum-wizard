@@ -8,6 +8,7 @@ import {
   NUMBER_NODES,
   TRANSACTION_MANAGER,
   CAKESHOP,
+  GETH_BINARY,
   KEY_GENERATION,
   NETWORK_ID,
   GENESIS_LOCATION,
@@ -20,18 +21,20 @@ export async function quickstart () {
   const answers = await inquirer.prompt([
     NUMBER_NODES,
     CONSENSUS_MODE,
+    GETH_BINARY,
     TRANSACTION_MANAGER,
     DEPLOYMENT_TYPE,
     CAKESHOP
   ])
   const config = createQuickstartConfig(answers)
-  buildNetwork(config, answers.deployment)
+  await buildNetwork(config, answers.deployment)
 }
 
 export async function customize () {
   const commonAnswers = await inquirer.prompt([
     NUMBER_NODES,
     CONSENSUS_MODE,
+    GETH_BINARY,
     TRANSACTION_MANAGER,
     DEPLOYMENT_TYPE,
     CAKESHOP
@@ -44,7 +47,7 @@ export async function customize () {
     DEFAULT_PORTS
   ])
 
-  let nodes = !commonAnswers.defaultPorts ? await getPorts(commonAnswers.numberNodes, commonAnswers.deployment, commonAnswers.transactionManager === 'tessera') : []
+  let nodes = !commonAnswers.defaultPorts ? await getPorts(commonAnswers.numberNodes, commonAnswers.deployment, commonAnswers.transactionManager !== 'none') : []
 
   const answers = {
     ...commonAnswers,
@@ -52,12 +55,12 @@ export async function customize () {
     nodes
   }
   const config = createCustomConfig(answers)
-  buildNetwork(config, answers.deployment)
+  await buildNetwork(config, answers.deployment)
 }
 
-function buildNetwork(config, deployment) {
+async function buildNetwork(config, deployment) {
   if (deployment === 'bash') {
-    buildBash(config)
+    await buildBash(config)
   } else if (deployment === 'docker-compose') {
     createDockerCompose(config)
   }

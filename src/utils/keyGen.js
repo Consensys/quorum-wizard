@@ -2,6 +2,8 @@ import fs from 'fs'
 import { join } from 'path'
 import { executeSync } from './execUtils'
 import { createFolder, copyFile } from './fileUtils'
+import { isTessera } from './networkCreator'
+import { pathToGethBinary, pathToTesseraJar } from './binaryHelper'
 
 export function generateKeys(config, keyPath) {
   config.nodes.forEach((node, i) => {
@@ -10,24 +12,19 @@ export function generateKeys(config, keyPath) {
     createFolder(keyDir, true)
     copyFile(config.network.passwordFile, join(keyDir, 'password.txt'))
 
-    doExec(keyDir, config.network.transactionManager === 'tessera')
+    doExec(keyDir, config)
     })
 }
 
-function doExec(keyDir, isTessera) {
-  let cmd = `cd ${keyDir} && geth account new --keystore ${keyDir} --password password.txt
+function doExec(keyDir, config) {
+  let cmd = `cd ${keyDir} && ${pathToGethBinary(config.network.gethBinary)} account new --keystore ${keyDir} --password password.txt
   bootnode -genkey=nodekey
   bootnode --nodekey=nodekey --writeaddress > enode
   find . -type f -name 'UTC*' -execdir mv {} key ';'
   `
-  if(isTessera) {
-    cmd += 'java -jar $TESSERA_JAR -keygen -filename tm'
+  if(isTessera(config)) {
+    cmd += `java -jar ${pathToTesseraJar(config.network.transactionManager)} -keygen -filename tm`
   }
 
-  executeSync(cmd, function(err, stdout, stderr) {
-    if (e instanceof Error) {
-      console.error(e)
-      throw e
-    }
-  })
+  executeSync(cmd)
 }

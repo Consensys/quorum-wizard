@@ -34,11 +34,6 @@ export function generateExtraData(nodes, configDir, keyPath) {
   writeFile(istanbulConfigFile, configLines.join("\n"), false)
 
   let extraDataCmd = `cd ${configDir} && istanbul extra encode --config ${istanbulConfigFile} | awk '{print $4}' > extraData`
-  executeSync(extraDataCmd, function(err, stdout, stderr) {
-    if (e instanceof Error) {
-      console.error(e)
-      throw e
-    }
-  })
+  executeSync(extraDataCmd)
   return readFileToString(join(configDir, 'extraData'))
 }

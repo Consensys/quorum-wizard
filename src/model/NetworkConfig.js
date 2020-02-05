@@ -4,13 +4,15 @@ export function createQuickstartConfig (answers) {
     consensus,
     transactionManager,
     deployment,
-    cakeshop
+    cakeshop,
+    gethBinary
   } = answers
   return {
     network: {
-      name: `${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}`,
+      name: createNetworkFolderName(answers),
       verbosity: 5,
       consensus: consensus,
+      gethBinary: gethBinary,
       transactionManager: transactionManager,
       id: 10,
       permissioned: true,
@@ -32,23 +34,26 @@ export function createCustomConfig (answers) {
     transactionManager,
     deployment,
     cakeshop,
+    gethBinary,
     keyGeneration,
     networkId,
     genesisLocation,
     defaultPorts,
     nodes
   } = answers
+  let networkFolder = createNetworkFolderName(answers)
   return {
     network: {
-      name: `${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}`,
+      name: networkFolder,
       verbosity: 5,
       consensus: consensus,
+      gethBinary: gethBinary,
       transactionManager: transactionManager,
       id: 10,
       permissioned: true,
       genesisFile: genesisLocation,
       generateKeys: keyGeneration,
-      configDir: `network/${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}/generated`,
+      configDir: `network/${networkFolder}/generated`,
       passwordFile: '7nodes/key1/password.txt',
       deployment: deployment,
       cakeshop: cakeshop,
@@ -58,6 +63,15 @@ export function createCustomConfig (answers) {
     },
     nodes: defaultPorts ? generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop) : nodes
   }
+}
+
+function createNetworkFolderName (answers) {
+  const {numberNodes, consensus, transactionManager, deployment} = answers
+
+  let transactionManagerName = transactionManager === 'none'
+    ? ''
+    : 'tessera-'
+  return `${numberNodes}-nodes-${consensus}-${transactionManagerName}${deployment}`
 }
 
 export function isDocker (deployment) {
@@ -84,7 +98,7 @@ export function generateNodeConfigs (numberNodes, transactionManager, deployment
         raftPort: raftPort + i,
       },
     }
-    if (transactionManager === 'tessera') {
+    if(transactionManager !== 'none') {
       node.tm = {
         ip: isDocker(deployment) ? `172.16.239.10${i + 1}` : '127.0.0.1',
         thirdPartyPort: thirdPartyPort + i,
