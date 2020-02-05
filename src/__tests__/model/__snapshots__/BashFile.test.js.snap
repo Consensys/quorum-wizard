@@ -16,17 +16,21 @@ while \${DOWN}; do
             echo \\"Node \${i} is not yet listening on tm.ipc\\"
             DOWN=true
         fi
-
-        set +e
-        #NOTE: if using https, change the scheme
-        #NOTE: if using the IP whitelist, change the host to an allowed host
-        result=$(curl -s http://localhost:900\${i}/upcheck)
-        set -e
-        if [ ! \\"\${result}\\" == \\"I'm up!\\" ]; then
-            echo \\"Node \${i} is not yet listening on http\\"
-            DOWN=true
-        fi
     done
+    set +e
+    #NOTE: if using https, change the scheme
+    #NOTE: if using the IP whitelist, change the host to an allowed host
+    
+    result1=$(curl -s http://127.0.0.1:5001/upcheck)
+    if [ ! \\"\${result1}\\" == \\"I'm up!\\" ]; then
+        echo \\"Node 1 is not yet listening on http\\"
+        DOWN=true
+    fi
+    result2=$(curl -s http://127.0.0.1:5002/upcheck)
+    if [ ! \\"\${result2}\\" == \\"I'm up!\\" ]; then
+        echo \\"Node 2 is not yet listening on http\\"
+        DOWN=true
+    fi
 
     k=$((k - 1))
     if [ \${k} -le 0 ]; then
@@ -86,17 +90,26 @@ while \${DOWN}; do
             echo \\"Node \${i} is not yet listening on tm.ipc\\"
             DOWN=true
         fi
-
-        set +e
-        #NOTE: if using https, change the scheme
-        #NOTE: if using the IP whitelist, change the host to an allowed host
-        result=$(curl -s http://localhost:900\${i}/upcheck)
-        set -e
-        if [ ! \\"\${result}\\" == \\"I'm up!\\" ]; then
-            echo \\"Node \${i} is not yet listening on http\\"
-            DOWN=true
-        fi
     done
+    set +e
+    #NOTE: if using https, change the scheme
+    #NOTE: if using the IP whitelist, change the host to an allowed host
+    
+    result1=$(curl -s http://127.0.0.1:9001/upcheck)
+    if [ ! \\"\${result1}\\" == \\"I'm up!\\" ]; then
+        echo \\"Node 1 is not yet listening on http\\"
+        DOWN=true
+    fi
+    result2=$(curl -s http://127.0.0.1:9002/upcheck)
+    if [ ! \\"\${result2}\\" == \\"I'm up!\\" ]; then
+        echo \\"Node 2 is not yet listening on http\\"
+        DOWN=true
+    fi
+    result3=$(curl -s http://127.0.0.1:9003/upcheck)
+    if [ ! \\"\${result3}\\" == \\"I'm up!\\" ]; then
+        echo \\"Node 3 is not yet listening on http\\"
+        DOWN=true
+    fi
 
     k=$((k - 1))
     if [ \${k} -le 0 ]; then
@@ -132,17 +145,26 @@ while \${DOWN}; do
             echo \\"Node \${i} is not yet listening on tm.ipc\\"
             DOWN=true
         fi
-
-        set +e
-        #NOTE: if using https, change the scheme
-        #NOTE: if using the IP whitelist, change the host to an allowed host
-        result=$(curl -s http://localhost:900\${i}/upcheck)
-        set -e
-        if [ ! \\"\${result}\\" == \\"I'm up!\\" ]; then
-            echo \\"Node \${i} is not yet listening on http\\"
-            DOWN=true
-        fi
     done
+    set +e
+    #NOTE: if using https, change the scheme
+    #NOTE: if using the IP whitelist, change the host to an allowed host
+    
+    result1=$(curl -s http://127.0.0.1:9001/upcheck)
+    if [ ! \\"\${result1}\\" == \\"I'm up!\\" ]; then
+        echo \\"Node 1 is not yet listening on http\\"
+        DOWN=true
+    fi
+    result2=$(curl -s http://127.0.0.1:9002/upcheck)
+    if [ ! \\"\${result2}\\" == \\"I'm up!\\" ]; then
+        echo \\"Node 2 is not yet listening on http\\"
+        DOWN=true
+    fi
+    result3=$(curl -s http://127.0.0.1:9003/upcheck)
+    if [ ! \\"\${result3}\\" == \\"I'm up!\\" ]; then
+        echo \\"Node 3 is not yet listening on http\\"
+        DOWN=true
+    fi
 
     k=$((k - 1))
     if [ \${k} -le 0 ]; then
@@ -203,17 +225,26 @@ while \${DOWN}; do
             echo \\"Node \${i} is not yet listening on tm.ipc\\"
             DOWN=true
         fi
-
-        set +e
-        #NOTE: if using https, change the scheme
-        #NOTE: if using the IP whitelist, change the host to an allowed host
-        result=$(curl -s http://localhost:900\${i}/upcheck)
-        set -e
-        if [ ! \\"\${result}\\" == \\"I'm up!\\" ]; then
-            echo \\"Node \${i} is not yet listening on http\\"
-            DOWN=true
-        fi
     done
+    set +e
+    #NOTE: if using https, change the scheme
+    #NOTE: if using the IP whitelist, change the host to an allowed host
+    
+    result1=$(curl -s http://127.0.0.1:9001/upcheck)
+    if [ ! \\"\${result1}\\" == \\"I'm up!\\" ]; then
+        echo \\"Node 1 is not yet listening on http\\"
+        DOWN=true
+    fi
+    result2=$(curl -s http://127.0.0.1:9002/upcheck)
+    if [ ! \\"\${result2}\\" == \\"I'm up!\\" ]; then
+        echo \\"Node 2 is not yet listening on http\\"
+        DOWN=true
+    fi
+    result3=$(curl -s http://127.0.0.1:9003/upcheck)
+    if [ ! \\"\${result3}\\" == \\"I'm up!\\" ]; then
+        echo \\"Node 3 is not yet listening on http\\"
+        DOWN=true
+    fi
 
     k=$((k - 1))
     if [ \${k} -le 0 ]; then

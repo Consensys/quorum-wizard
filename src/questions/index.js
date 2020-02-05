@@ -12,7 +12,7 @@ import {
   KEY_GENERATION,
   NETWORK_ID,
   GENESIS_LOCATION,
-  DEFAULT_PORTS
+  CUSTOMIZE_PORTS
 } from './questions'
 
 import inquirer from 'inquirer'
@@ -44,14 +44,16 @@ export async function customize () {
     KEY_GENERATION,
     NETWORK_ID,
     GENESIS_LOCATION,
-    DEFAULT_PORTS
+    CUSTOMIZE_PORTS
   ])
 
-  let nodes = !commonAnswers.defaultPorts ? await getPorts(commonAnswers.numberNodes, commonAnswers.deployment, commonAnswers.transactionManager !== 'none') : []
+  const portPrompt = customAnswers.customizePorts  && (commonAnswers.deployment === 'bash')
+  let nodes = portPrompt ? await getPorts(commonAnswers.numberNodes, commonAnswers.deployment, commonAnswers.transactionManager !== 'none') : []
 
   const answers = {
     ...commonAnswers,
     ...customAnswers,
+    customizePorts: portPrompt,
     nodes
   }
   const config = createCustomConfig(answers)

@@ -42,7 +42,7 @@ test('creates 3nodes raft bash tessera custom', () => {
     keyGeneration: false,
     networkId: 10,
     genesisLocation: `${process.cwd()}/7nodes/raft-genesis.json`,
-    defaultPorts: true,
+    customizePorts: false,
     nodes: []
   })
   const bash = buildBashScript(config).startScript
@@ -90,7 +90,7 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
     keyGeneration: false,
     networkId: 10,
     genesisLocation: `${process.cwd()}/7nodes/istanbul-genesis.json`,
-    defaultPorts: false,
+    customizePorts: true,
     nodes: nodes
   })
   const bash = buildBashScript(config).startScript

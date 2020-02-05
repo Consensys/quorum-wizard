@@ -88,9 +88,9 @@ export const GENESIS_LOCATION = {
   default: 'none',
 }
 
-export const DEFAULT_PORTS = {
+export const CUSTOMIZE_PORTS = {
   type: 'confirm',
-  name: 'defaultPorts',
-  message: 'Use default ip/ports for all nodes?',
-  default: true
+  name: 'customizePorts',
+  message: 'Would you like to customize node ports? No customization currently available for docker',
+  default: false
 }

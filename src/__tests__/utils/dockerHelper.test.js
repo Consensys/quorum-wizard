@@ -65,6 +65,7 @@ services:
     depends_on:
       - txmanager1
     environment:
+      - TMHOST=172.16.239.101
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
@@ -234,6 +235,7 @@ services:
     depends_on:
       - txmanager1
     environment:
+      - TMHOST=172.16.239.101
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:

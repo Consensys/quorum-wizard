@@ -79,7 +79,7 @@ export function createDirectory (config) {
     if(isTessera(config)) {
       copyFile(join(keyFolder, 'tm.key'), join(tmDir, 'tm.key'))
       copyFile(join(keyFolder, 'tm.pub'), join(tmDir, 'tm.pub'))
-      let tesseraConfig = createConfig(tmDir, nodeNumber,
+      let tesseraConfig = createConfig(tmDir, nodeNumber, node.tm.ip,
         node.tm.thirdPartyPort, node.tm.p2pPort, peerList)
       writeJsonFile(tmDir, `tessera-config-09-${nodeNumber}.json`,
         tesseraConfig)
