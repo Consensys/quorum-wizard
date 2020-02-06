@@ -29,7 +29,7 @@ describe('Chooses the right paths to the binaries', () => {
     expect(pathToCakeshop()).toEqual(join(cwd(), "bin/cakeshop/0.11.0-RC2/cakeshop.war"))
   })
   it('Calls bootnode using bin folder', () => {
-    expect(pathToBootnode()).toEqual(join(cwd(), "bin/bootnode/geth1.8.27/bootnode"))
+    expect(pathToBootnode()).toEqual(join(cwd(), "bin/bootnode/1.8.27/bootnode"))
   })
 })
 

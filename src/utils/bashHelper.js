@@ -36,6 +36,8 @@ export function buildBashScript(config) {
 
 export async function buildBash(config) {
 
+  await downloadAndCopyBinaries(config)
+
   const bashDetails = buildBashScript(config)
   const networkPath = bashDetails.networkPath
 
@@ -43,7 +45,6 @@ export async function buildBash(config) {
     buildCakeshopDir(config, join(networkPath, 'qdata'))
   }
 
-  await downloadAndCopyBinaries(config)
   writeFile(join(networkPath, 'start.sh'), bashDetails.startScript, true)
   copyFile(join(cwd(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
 

@@ -25,10 +25,10 @@ async function downloadIfMissing (name, version) {
   let binDir = join(cwd(), 'bin', name, version)
   if (!exists(binDir)) {
     createFolder(binDir, true)
-    console.log(`Downloading ${name} ${version}...`)
-
     const binaryInfo = BINARIES[name][version]
     const url = getPlatformSpecificUrl(binaryInfo)
+
+    console.log(`Downloading ${name} ${version} from ${url}...`)
     const response = await axios({
       url: url,
       method: 'GET',
@@ -90,8 +90,12 @@ export async function downloadAndCopyBinaries (config) {
     await downloadIfMissing('cakeshop', '0.11.0-RC2')
   }
 
+  if (config.network.consensus === 'istanbul') {
+    await downloadIfMissing('istanbul', '1.0.1')
+  }
+
   if (config.network.generateKeys) {
-    await downloadIfMissing('bootnode', 'geth1.8.27')
+    await downloadIfMissing('bootnode', '1.8.27')
   }
 }
 
@@ -173,9 +177,14 @@ export function pathToCakeshop () {
   return join(cwd(), 'bin', 'cakeshop', '0.11.0-RC2', info.name)
 }
 
+export function pathToIstanbulTools () {
+  const info = BINARIES.istanbul['1.0.1']
+  return join(cwd(), 'bin', 'istanbul', '1.0.1', info.name)
+}
+
 export function pathToBootnode () {
-  const info = BINARIES.bootnode['geth1.8.27']
-  return join(cwd(), 'bin', 'bootnode', 'geth1.8.27', info.name)
+  const info = BINARIES.bootnode['1.8.27']
+  return join(cwd(), 'bin', 'bootnode', '1.8.27', info.name)
 }
 
 
@@ -210,12 +219,26 @@ const BINARIES = {
     }
   },
 
+  istanbul: {
+    '1.0.1': {
+      name: 'istanbul',
+      url: {
+        darwin: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.1_darwin_amd64.tar.gz',
+        linux: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.1_linux_amd64.tar.gz',
+      },
+      type: 'tar.gz',
+      files: [
+        'istanbul',
+      ],
+    }
+  },
+
   bootnode: {
-    'geth1.8.27': {
+    '1.8.27': {
       name: 'bootnode',
       url: {
-        darwin: 'https://gethstore.blob.core.windows.net/builds/geth-alltools-darwin-amd64-1.8.27-4bcc0a37.tar.gz',
-        linux: 'https://gethstore.blob.core.windows.net/builds/geth-alltools-linux-amd64-1.8.27-4bcc0a37.tar.gz',
+        darwin: 'https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v1.8.27_darwin_amd64.tar.gz',
+        linux: 'https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v1.8.27_linux_amd64.tar.gz',
       },
       type: 'tar.gz',
       files: [
