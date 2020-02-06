@@ -17,7 +17,13 @@ describe('generates bash script details', () => {
       initCommands: ['1', '2', '3', '4', '5'],
       networkPath: 'testPath'
     }
-    let config = createQuickstartConfig('5', 'raft', 'tessera', 'bash', false)
+    let config = createQuickstartConfig({
+      numberNodes: '5',
+      consensus: 'raft',
+      transactionManager: 'tessera',
+      deployment: 'bash',
+      cakeshop: false
+    })
     createDirectory.mockReturnValueOnce({tesseraStart:  "startTessera",
         gethStart: "startGeth",
         initStart: ['1', '2', '3', '4', '5'],
@@ -29,7 +35,13 @@ describe('generates bash script details', () => {
 
 describe('builds bash directory', () => {
   it('given bash details builds files to run bash', () => {
-    let config = createQuickstartConfig('5', 'raft', 'tessera', 'bash', false)
+    let config = createQuickstartConfig({
+      numberNodes: '5',
+      consensus: 'raft',
+      transactionManager: 'tessera',
+      deployment: 'bash',
+      cakeshop: false
+    })
     createDirectory.mockReturnValueOnce({tesseraStart:  "startTessera",
         gethStart: "startGeth",
         initStart: ['1', '2', '3', '4', '5'],

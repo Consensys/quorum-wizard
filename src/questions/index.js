@@ -1,38 +1,64 @@
-import { createQuickstartConfig, createCustomConfig } from '../model/NetworkConfig'
+import { createQuickstartConfig, createCustomConfig, generateNodeConfigs } from '../model/NetworkConfig'
 import { buildBash } from '../utils/bashHelper'
 import { createDockerCompose } from '../utils/dockerHelper'
+import { getCustomizedBashNodes, getCustomizedDockerPorts } from '../utils/promptHelper'
 import {
   CONSENSUS_MODE,
   DEPLOYMENT_TYPE,
   NUMBER_NODES,
   TRANSACTION_MANAGER,
-  CAKESHOP
+  CAKESHOP,
+  KEY_GENERATION,
+  NETWORK_ID,
+  GENESIS_LOCATION,
+  CUSTOMIZE_PORTS
 } from './questions'
 
 import inquirer from 'inquirer'
 
 export async function quickstart () {
-  const { numberNodes, consensus, deployment, transactionManager, cakeshop } = await inquirer.prompt([
-    NUMBER_NODES,
+  const answers = await inquirer.prompt([
     CONSENSUS_MODE,
+    NUMBER_NODES,
     TRANSACTION_MANAGER,
     DEPLOYMENT_TYPE,
     CAKESHOP
   ])
-  const config = createQuickstartConfig(numberNodes, consensus, transactionManager, deployment, cakeshop)
-  buildNetwork(config, deployment)
+  const config = createQuickstartConfig(answers)
+  buildNetwork(config, answers.deployment)
 }
 
 export async function customize () {
-  const { numberNodes, consensus, deployment, transactionManager, cakeshop } = await inquirer.prompt([
-    NUMBER_NODES,
+  const commonAnswers = await inquirer.prompt([
     CONSENSUS_MODE,
+    NUMBER_NODES,
     TRANSACTION_MANAGER,
     DEPLOYMENT_TYPE,
     CAKESHOP
   ])
-  const config = createCustomConfig(numberNodes, consensus, transactionManager, deployment, cakeshop)
-  buildNetwork(config, deployment)
+
+  const customAnswers = await inquirer.prompt([
+    KEY_GENERATION,
+    NETWORK_ID,
+    GENESIS_LOCATION,
+    CUSTOMIZE_PORTS
+  ])
+
+  let nodes = (customAnswers.customizePorts && commonAnswers.deployment === 'bash') ?
+    await getCustomizedBashNodes(commonAnswers.numberNodes, commonAnswers.transactionManager === 'tessera') : []
+
+  let dockerCustom = (customAnswers.customizePorts && commonAnswers.deployment === 'docker-compose') ?
+    await getCustomizedDockerPorts(commonAnswers.transactionManager === 'tessera') : undefined
+
+    const answers = {
+      ...commonAnswers,
+      ...customAnswers,
+      nodes,
+      dockerCustom
+    }
+  const config = createCustomConfig(answers)
+
+  buildNetwork(config, answers.deployment)
 }
 
 function buildNetwork(config, deployment) {
@@ -41,4 +67,5 @@ function buildNetwork(config, deployment) {
   } else if (deployment === 'docker-compose') {
     createDockerCompose(config)
   }
+  console.log(`Quorum network details created. cd network/${config.network.name} and run start.sh to bring up your network`)
 }

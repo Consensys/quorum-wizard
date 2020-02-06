@@ -1,20 +1,14 @@
-import inquirer from 'inquirer'
-import { quickstart } from '../../questions'
-import * as NetworkConfig from '../../model/NetworkConfig'
-import * as networkCreator from '../../utils/networkCreator'
-import {
-  copyFile,
-  writeFile,
-  cwd,
-} from '../../utils/fileUtils'
-import { TEST_CWD } from '../testHelper'
+import { createQuickstartConfig, createCustomConfig } from '../../model/NetworkConfig'
+import { customize, quickstart } from '../../questions'
+import { buildBash } from '../../utils/bashHelper'
+import { prompt } from 'inquirer'
+import { getCustomizedBashNodes } from '../../utils/promptHelper'
 
 jest.mock('inquirer')
 jest.mock('../../model/NetworkConfig')
-jest.mock('../../utils/networkCreator')
-jest.mock('../../utils/fileUtils')
-jest.mock('../../utils/execUtils')
-cwd.mockReturnValue(TEST_CWD)
+jest.mock('../../utils/bashHelper')
+jest.mock('../../utils/dockerHelper')
+jest.mock('../../utils/promptHelper')
 
 const QUICKSTART_CONFIG = {
   numberNodes: '5',
@@ -24,22 +18,38 @@ const QUICKSTART_CONFIG = {
   cakeshop: false
 }
 
+const CUSTOM_CONFIG = {
+  generateKeys: false,
+  networkId: 10,
+  genesisLocation: 'testDir',
+  customizePorts: true,
+  nodes: ['nodes']
+}
+
 test('placeholder', async () => {
-  const fakeConfig = { test: 'test' }
-  const fakeCommands = {tesseraStart: 'test', gethStart: 'test', initStart: ['test'],netPath: 'test',}
-  NetworkConfig.createQuickstartConfig.mockReturnValue(fakeConfig)
-  inquirer.prompt.mockResolvedValue(QUICKSTART_CONFIG)
-  networkCreator.createDirectory.mockReturnValue(fakeCommands)
+  const fakeConfig = { network: {name: 'test'}}
+  prompt.mockResolvedValue(QUICKSTART_CONFIG)
+  createQuickstartConfig.mockReturnValue(fakeConfig)
   await quickstart()
-  expect(NetworkConfig.createQuickstartConfig)
-  .toHaveBeenCalledWith(
-    QUICKSTART_CONFIG.numberNodes,
-    QUICKSTART_CONFIG.consensus,
-    QUICKSTART_CONFIG.transactionManager,
-    QUICKSTART_CONFIG.deployment,
-    QUICKSTART_CONFIG.cakeshop
-  )
-  expect(networkCreator.createDirectory).toHaveBeenCalledWith(fakeConfig)
-  expect(writeFile).toBeCalledWith('test/start.sh', expect.any(String), true)
-  expect(copyFile).toBeCalledTimes(4)
+  expect(createQuickstartConfig)
+    .toHaveBeenCalledWith(QUICKSTART_CONFIG)
+  expect(buildBash).toHaveBeenCalledWith(fakeConfig)
+})
+
+test('customize', async () => {
+  const fakeConfig = { network: {name: 'test'}}
+  const fakeCommands = {tesseraStart: 'test', gethStart: 'test', initStart: ['test'],netPath: 'test',}
+  createCustomConfig.mockReturnValue(fakeConfig)
+  prompt.mockResolvedValueOnce(QUICKSTART_CONFIG)
+  prompt.mockResolvedValueOnce(CUSTOM_CONFIG)
+  getCustomizedBashNodes.mockReturnValueOnce(['nodes'])
+  await customize()
+  let combinedAnswers = {
+    ...QUICKSTART_CONFIG,
+    ...CUSTOM_CONFIG,
+    nodes: ['nodes'],
+  }
+  expect(createCustomConfig).toHaveBeenCalledWith(combinedAnswers)
+
+  expect(buildBash).toHaveBeenCalledWith(fakeConfig)
 })

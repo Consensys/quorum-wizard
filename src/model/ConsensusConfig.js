@@ -1,21 +1,21 @@
 import { writeJsonFile,} from '../utils/fileUtils'
 import {generateAccounts, generateExtraData } from '../utils/consensusHelper'
 
-export function generateConsensusConfig(configDir, consensus, nodes) {
-  return consensus === 'raft' ?  generateRaft(configDir, nodes) :
-  generateIstanbul(configDir, nodes)
+export function generateConsensusConfig(configDir, keyPath, consensus, nodes, networkId) {
+  return consensus === 'raft' ?  generateRaft(configDir, keyPath, nodes, networkId) :
+  generateIstanbul(configDir, keyPath, nodes, networkId)
 }
 
-function generateRaft(configDir, nodes) {
-  writeJsonFile(configDir, 'raft-genesis.json', generateRaftConfig(nodes, configDir))
+function generateRaft(configDir, keyPath, nodes, networkId) {
+  writeJsonFile(configDir, 'raft-genesis.json', generateRaftConfig(nodes, keyPath, networkId))
 }
 
-function generateIstanbul(configDir, nodes) {
-  writeJsonFile(configDir, 'istanbul-genesis.json', generateIstanbulConfig(nodes, configDir))
+function generateIstanbul(configDir, keyPath, nodes, networkId) {
+  writeJsonFile(configDir, 'istanbul-genesis.json', generateIstanbulConfig(nodes, configDir, keyPath, networkId))
 }
 
-export function generateRaftConfig(nodes, configDir) {
-  const alloc = generateAccounts(nodes, configDir)
+export function generateRaftConfig(nodes, keyPath, networkId) {
+  const alloc = generateAccounts(nodes, keyPath)
   return {
     alloc: alloc,
     coinbase: '0x0000000000000000000000000000000000000000',
@@ -23,7 +23,7 @@ export function generateRaftConfig(nodes, configDir) {
       homesteadBlock: 0,
       byzantiumBlock: 0,
       constantinopleBlock: 0,
-      chainId: 10,
+      chainId: parseInt(networkId),
       eip150Block: 0,
       eip155Block: 0,
       eip150Hash: '0x0000000000000000000000000000000000000000000000000000000000000000',
@@ -41,9 +41,9 @@ export function generateRaftConfig(nodes, configDir) {
   }
 }
 
-export function generateIstanbulConfig(nodes, configDir) {
-  const alloc = generateAccounts(nodes, configDir)
-  const extraData = generateExtraData(nodes, configDir)
+export function generateIstanbulConfig(nodes, configDir, keyPath, networkId) {
+  const alloc = generateAccounts(nodes, keyPath)
+  const extraData = generateExtraData(nodes, configDir, keyPath)
   return {
     alloc: alloc,
     coinbase: '0x0000000000000000000000000000000000000000',
@@ -51,7 +51,7 @@ export function generateIstanbulConfig(nodes, configDir) {
       homesteadBlock: 0,
       byzantiumBlock: 0,
       constantinopleBlock: 0,
-      chainId: 10,
+      chainId: parseInt(networkId),
       eip150Block: 0,
       eip155Block: 0,
       eip150Hash: '0x0000000000000000000000000000000000000000000000000000000000000000',

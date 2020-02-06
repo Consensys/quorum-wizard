@@ -12,7 +12,7 @@ test('creates 3nodes raft genesis', () => {
   generateAccounts
   .mockReturnValueOnce(JSON.parse(accts))
 
-  const genesis = generateRaftConfig(3, 'testDir')
+  const genesis = generateRaftConfig(3, 'keyPath', 10)
   expect(genesis).toMatchSnapshot()
 })
 
@@ -26,6 +26,6 @@ test('creates 5nodes istanbul genesis', () => {
   generateExtraData
   .mockReturnValueOnce('0x0000000000000000000000000000000000000000000000000000000000000000f8aff86994dea501aa3315db296f1ce0f7d264c6c812b2088a942da3b70ed4e94ad02641ef83d33727d86da41e78945a4a874f95cd8f0758dea8f6719cd686aedc30e994d34cb7199598f100f76eed6fdfe962b37a66b7dc9499fc6e8ac3f567ae9ee11559e0fa686513aa9e74b8410000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0')
 
-  const genesis = generateIstanbulConfig(5, 'testDir')
+  const genesis = generateIstanbulConfig(5, 'testDir', 'keyPath', 10)
   expect(genesis).toMatchSnapshot()
 })

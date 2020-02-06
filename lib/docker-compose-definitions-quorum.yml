@@ -11,9 +11,6 @@ x-quorum-def:
   &quorum-def
   restart: "on-failure"
   image: "${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.4.0}"
-  expose:
-    - "21000"
-    - "50400"
   healthcheck:
     test: ["CMD", "wget", "--spider", "--proxy", "off", "http://localhost:8545"]
     interval: 3s

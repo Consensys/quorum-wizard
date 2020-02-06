@@ -1,4 +1,11 @@
-export function createQuickstartConfig (numberNodes, consensus, transactionManager, deployment, cakeshop) {
+export function createQuickstartConfig (answers) {
+  const {
+    numberNodes,
+    consensus,
+    transactionManager,
+    deployment,
+    cakeshop
+  } = answers
   return {
     network: {
       name: `${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}`,
@@ -12,12 +19,26 @@ export function createQuickstartConfig (numberNodes, consensus, transactionManag
       configDir: `7nodes`,
       deployment: deployment,
       cakeshop: cakeshop,
+      custom: false,
     },
     nodes: generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop)
   }
 }
 
-export function createCustomConfig (numberNodes, consensus, transactionManager, deployment, cakeshop) {
+export function createCustomConfig (answers) {
+  const {
+    numberNodes,
+    consensus,
+    transactionManager,
+    deployment,
+    cakeshop,
+    generateKeys,
+    networkId,
+    genesisLocation,
+    customizePorts,
+    nodes,
+    dockerCustom
+  } = answers
   return {
     network: {
       name: `${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}`,
@@ -26,14 +47,18 @@ export function createCustomConfig (numberNodes, consensus, transactionManager, 
       transactionManager: transactionManager,
       id: 10,
       permissioned: true,
-      genesisFile: `7nodes/${consensus}-genesis.json`,
-      generateKeys: true,
+      genesisFile: genesisLocation,
+      generateKeys: generateKeys,
       configDir: `network/${numberNodes}-nodes-${consensus}-${transactionManager}-${deployment}/generated`,
       passwordFile: '7nodes/key1/password.txt',
       deployment: deployment,
       cakeshop: cakeshop,
+      networkId: networkId,
+      custom: true,
+      customizePorts: customizePorts,
      },
-     nodes: generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop)
+     nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop),
+     dockerCustom: dockerCustom
    }
  }
 
@@ -54,16 +79,16 @@ export function generateNodeConfigs (numberNodes, transactionManager, deployment
   for (let i = 0; i < parseInt(numberNodes, 10); i++) {
     const node = {
       quorum: {
-        ip: isDocker(deployment) ? `172.16.239.1${i+1}` : '127.0.0.1',
+        ip: isDocker(deployment) ? `172.16.239.1${i + 1}` : '127.0.0.1',
         devP2pPort: devP2pPort + i,
         rpcPort: rpcPort + i,
         wsPort: wsPort + i,
         raftPort: raftPort + i,
       },
     }
-    if(transactionManager === 'tessera') {
+    if (transactionManager === 'tessera') {
       node.tm = {
-        ip: isDocker(deployment) ? `172.16.239.1${i+1}` : '127.0.0.1',
+        ip: isDocker(deployment) ? `172.16.239.10${i + 1}` : '127.0.0.1',
         thirdPartyPort: thirdPartyPort + i,
         p2pPort: p2pPort + i,
         enclavePort: enclavePort + i,

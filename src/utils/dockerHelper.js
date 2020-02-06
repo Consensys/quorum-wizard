@@ -21,20 +21,47 @@ export function buildDockerCompose(config) {
   const hasCakeshop = includeCakeshop(config)
 
   const quorumDefinitions = readFileToString(join(cwd(), 'lib/docker-compose-definitions-quorum.yml'))
+  const quorumExposedPorts = createCustomQuorumPorts(config.dockerCustom)
   const tesseraDefinitions = hasTessera ? readFileToString(join(cwd(), 'lib/docker-compose-definitions-tessera.yml')) : ""
+  const tesseraExposedPorts = hasTessera ? createCustomTesseraPorts(config.dockerCustom) : ""
   const cakeshopDefinitions = hasCakeshop ? readFileToString(join(cwd(), 'lib/docker-compose-definitions-cakeshop.yml')) : ""
 
   let services = config.nodes.map((node, i) => {
     let allServices = buildNodeService(node, i, hasTessera)
     if(hasTessera) {
-      allServices = [allServices, buildTesseraService(node, i)].join("")
+      allServices = [allServices, buildTesseraService(node, i, config.dockerCustom)].join("")
     }
     return allServices
   })
   if(hasCakeshop) {
     services = [services.join(""), buildCakeshopService(config)]
   }
-  return [formatNewLine(quorumDefinitions), formatNewLine(tesseraDefinitions), formatNewLine(cakeshopDefinitions), "services:", services.join(""), buildEndService(config)].join("")
+
+  return [formatNewLine(quorumDefinitions), formatNewLine(quorumExposedPorts), formatNewLine(tesseraDefinitions), formatNewLine(tesseraExposedPorts), formatNewLine(cakeshopDefinitions), "services:", services.join(""), buildEndService(config)].join("")
+}
+
+function createCustomQuorumPorts(dockerConfig) {
+  if (dockerConfig === undefined){
+    return `  expose:
+    - "21000"
+    - "50400"`
+  } else {
+    return `  expose:
+    - "${dockerConfig.quorumRpcPort}"
+    - "${dockerConfig.quorumRaftPort}"`
+  }
+}
+
+function createCustomTesseraPorts(dockerConfig) {
+  if (dockerConfig === undefined){
+    return `  expose:
+    - "9000"
+    - "9080"`
+  } else {
+    return `  expose:
+    - "${dockerConfig.tesseraP2pPort}"
+    - "${dockerConfig.tesseraThirdPartyPort}"`
+  }
 }
 
 export function createDockerCompose(config) {
@@ -85,13 +112,14 @@ function buildNodeService(node, i, hasTessera) {
         ipv4_address: 172.16.239.1${i + 1}`
 }
 
-function buildTesseraService(node, i) {
+function buildTesseraService(node, i, docker) {
+  const port = docker === undefined ? '9080' : docker.tesseraThirdPartyPort
   return `
   txmanager${i + 1}:
     << : *tx-manager-def
     hostname: txmanager${i + 1}
     ports:
-      - "${node.tm.thirdPartyPort}:9080"
+      - "${node.tm.thirdPartyPort}:${port}"
     volumes:
       - vol${i + 1}:/qdata
       - ./qdata:/examples:ro
