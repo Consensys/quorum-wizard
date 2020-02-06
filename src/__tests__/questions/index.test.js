@@ -2,7 +2,7 @@ import { createQuickstartConfig, createCustomConfig } from '../../model/NetworkC
 import { customize, quickstart } from '../../questions'
 import { buildBash } from '../../utils/bashHelper'
 import { prompt } from 'inquirer'
-import { getPorts } from '../../utils/promptHelper'
+import { getCustomizedBashNodes } from '../../utils/promptHelper'
 
 jest.mock('inquirer')
 jest.mock('../../model/NetworkConfig')
@@ -28,7 +28,7 @@ const CUSTOM_CONFIG = {
 }
 
 test('placeholder', async () => {
-  const fakeConfig = { test: 'test' }
+  const fakeConfig = { network: {name: 'test'}}
   prompt.mockResolvedValue(QUICKSTART_CONFIG)
   createQuickstartConfig.mockReturnValue(fakeConfig)
   await quickstart()
@@ -38,12 +38,12 @@ test('placeholder', async () => {
 })
 
 test('customize', async () => {
-  const fakeConfig = { test: 'test' }
+  const fakeConfig = { network: {name: 'test'}}
   const fakeCommands = {tesseraStart: 'test', gethStart: 'test', initStart: ['test'],netPath: 'test',}
   createCustomConfig.mockReturnValue(fakeConfig)
   prompt.mockResolvedValueOnce(QUICKSTART_CONFIG)
   prompt.mockResolvedValueOnce(CUSTOM_CONFIG)
-  getPorts.mockReturnValueOnce(['nodes'])
+  getCustomizedBashNodes.mockReturnValueOnce(['nodes'])
   await customize()
   let combinedAnswers = {
     ...QUICKSTART_CONFIG,

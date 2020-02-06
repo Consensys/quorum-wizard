@@ -35,11 +35,12 @@ export function createCustomConfig (answers) {
     deployment,
     cakeshop,
     gethBinary,
-    keyGeneration,
+    generateKeys,
     networkId,
     genesisLocation,
     customizePorts,
-    nodes
+    nodes,
+    dockerCustom
   } = answers
   let networkFolder = createNetworkFolderName(answers)
   return {
@@ -52,7 +53,7 @@ export function createCustomConfig (answers) {
       id: 10,
       permissioned: true,
       genesisFile: genesisLocation,
-      generateKeys: keyGeneration,
+      generateKeys: generateKeys,
       configDir: `network/${networkFolder}/generated`,
       passwordFile: '7nodes/key1/password.txt',
       deployment: deployment,
@@ -60,10 +61,11 @@ export function createCustomConfig (answers) {
       networkId: networkId,
       custom: true,
       customizePorts: customizePorts,
-    },
-    nodes: customizePorts ? nodes : generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop)
-  }
-}
+     },
+     nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop),
+     dockerCustom: dockerCustom
+   }
+ }
 
 function createNetworkFolderName (answers) {
   const {numberNodes, consensus, transactionManager, deployment} = answers

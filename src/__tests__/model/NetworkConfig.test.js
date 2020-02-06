@@ -71,10 +71,12 @@ test('creates 6nodes raft custom config', () => {
     transactionManager: '0.10.2',
     deployment: 'bash',
     cakeshop: false,
-    keyGeneration: true,
+    generateKeys: true,
     networkId: 10,
     genesisLocation: '',
     customizePorts: false,
+    nodes: [],
+    dockerCustom: undefined
   })
   expect(config).toMatchSnapshot()
 })
@@ -87,10 +89,12 @@ test('creates 7nodes istanbul no-TM custom config', () => {
     transactionManager: 'none',
     deployment: 'bash',
     cakeshop: false,
-    keyGeneration: true,
+    generateKeys: true,
     networkId: 12,
     genesisLocation: '',
     customizePorts: false,
+    nodes: [],
+    dockerCustom: undefined
   })
   expect(config).toMatchSnapshot()
 })
@@ -103,10 +107,12 @@ test('creates 6nodes raft custom docker config', () => {
     transactionManager: '0.10.2',
     deployment: 'docker-compose',
     cakeshop: false,
-    keyGeneration: true,
+    generateKeys: true,
     networkId: 10,
     genesisLocation: 'testDir',
     customizePorts: false,
+    nodes: [],
+    dockerCustom: undefined
   })
   expect(config).toMatchSnapshot()
 })
@@ -119,10 +125,12 @@ test('creates 7nodes istanbul no-TM custom docker config', () => {
     transactionManager: 'none',
     deployment: 'docker-compose',
     cakeshop: false,
-    keyGeneration: false,
+    generateKeys: false,
     networkId: 10,
     genesisLocation: '',
     customizePorts: false,
+    nodes: [],
+    dockerCustom: undefined
   })
   expect(config).toMatchSnapshot()
 })

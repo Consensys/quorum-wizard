@@ -1,7 +1,7 @@
-import { createQuickstartConfig, createCustomConfig } from '../model/NetworkConfig'
+import { createQuickstartConfig, createCustomConfig, generateNodeConfigs } from '../model/NetworkConfig'
 import { buildBash } from '../utils/bashHelper'
 import { createDockerCompose } from '../utils/dockerHelper'
-import { getPorts } from '../utils/promptHelper'
+import { getCustomizedBashNodes, getCustomizedDockerPorts } from '../utils/promptHelper'
 import {
   CONSENSUS_MODE,
   DEPLOYMENT_TYPE,
@@ -19,8 +19,8 @@ import inquirer from 'inquirer'
 
 export async function quickstart () {
   const answers = await inquirer.prompt([
-    NUMBER_NODES,
     CONSENSUS_MODE,
+    NUMBER_NODES,
     GETH_BINARY,
     TRANSACTION_MANAGER,
     DEPLOYMENT_TYPE,
@@ -32,8 +32,8 @@ export async function quickstart () {
 
 export async function customize () {
   const commonAnswers = await inquirer.prompt([
-    NUMBER_NODES,
     CONSENSUS_MODE,
+    NUMBER_NODES,
     GETH_BINARY,
     TRANSACTION_MANAGER,
     DEPLOYMENT_TYPE,
@@ -47,16 +47,20 @@ export async function customize () {
     CUSTOMIZE_PORTS
   ])
 
-  const portPrompt = customAnswers.customizePorts  && (commonAnswers.deployment === 'bash')
-  let nodes = portPrompt ? await getPorts(commonAnswers.numberNodes, commonAnswers.deployment, commonAnswers.transactionManager !== 'none') : []
+  let nodes = (customAnswers.customizePorts && commonAnswers.deployment === 'bash') ?
+    await getCustomizedBashNodes(commonAnswers.numberNodes, commonAnswers.transactionManager !== 'none') : []
 
-  const answers = {
-    ...commonAnswers,
-    ...customAnswers,
-    customizePorts: portPrompt,
-    nodes
-  }
+  let dockerCustom = (customAnswers.customizePorts && commonAnswers.deployment === 'docker-compose') ?
+    await getCustomizedDockerPorts(commonAnswers.transactionManager === 'tessera') : undefined
+
+    const answers = {
+      ...commonAnswers,
+      ...customAnswers,
+      nodes,
+      dockerCustom
+    }
   const config = createCustomConfig(answers)
+
   await buildNetwork(config, answers.deployment)
 }
 
@@ -66,4 +70,5 @@ async function buildNetwork(config, deployment) {
   } else if (deployment === 'docker-compose') {
     createDockerCompose(config)
   }
+  console.log(`Quorum network details created. cd network/${config.network.name} and run start.sh to bring up your network`)
 }

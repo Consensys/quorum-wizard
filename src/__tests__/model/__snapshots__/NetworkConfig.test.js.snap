@@ -136,6 +136,7 @@ Object {
 
 exports[`creates 6nodes raft custom config 1`] = `
 Object {
+  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": false,
     "configDir": "network/6-nodes-raft-tessera-bash/generated",
@@ -251,6 +252,7 @@ Object {
 
 exports[`creates 6nodes raft custom docker config 1`] = `
 Object {
+  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": false,
     "configDir": "network/6-nodes-raft-tessera-docker-compose/generated",
@@ -747,6 +749,7 @@ Object {
 
 exports[`creates 7nodes istanbul no-TM custom config 1`] = `
 Object {
+  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": false,
     "configDir": "network/7-nodes-istanbul-bash/generated",
@@ -835,6 +838,7 @@ Object {
 
 exports[`creates 7nodes istanbul no-TM custom docker config 1`] = `
 Object {
+  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": false,
     "configDir": "network/7-nodes-istanbul-docker-compose/generated",

@@ -1,10 +1,10 @@
-import fs from 'fs'
 import { join } from 'path'
 import { executeSync } from './execUtils'
 import { createFolder, copyFile } from './fileUtils'
 import { isTessera } from '../model/NetworkConfig'
 
 export function generateKeys(config, keyPath) {
+  console.log(`Generating ${config.nodes.length} keys..`)
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
     const keyDir = join(keyPath, `key${nodeNumber}`)
@@ -12,7 +12,8 @@ export function generateKeys(config, keyPath) {
     copyFile(config.network.passwordFile, join(keyDir, 'password.txt'))
 
     doExec(keyDir, config)
-    })
+  })
+  console.log('Keys were generated')
 }
 
 function doExec(keyDir, config) {

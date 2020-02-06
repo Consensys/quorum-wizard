@@ -40,11 +40,12 @@ test('creates 3nodes raft bash tessera custom', () => {
     transactionManager: '0.10.2',
     deployment: 'bash',
     cakeshop: false,
-    keyGeneration: false,
+    generateKeys: false,
     networkId: 10,
     genesisLocation: `${process.cwd()}/7nodes/raft-genesis.json`,
     customizePorts: false,
-    nodes: []
+    nodes: [],
+    dockerCustom: undefined
   })
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
@@ -89,11 +90,12 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
     transactionManager: '0.10.2',
     deployment: 'bash',
     cakeshop: true,
-    keyGeneration: false,
+    generateKeys: false,
     networkId: 10,
     genesisLocation: `${process.cwd()}/7nodes/istanbul-genesis.json`,
     customizePorts: true,
-    nodes: nodes
+    nodes: nodes,
+    dockerCustom: undefined
   })
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
