@@ -1,5 +1,5 @@
 import { createDirectory, includeCakeshop } from '../../utils/networkCreator'
-import { createQuickstartConfig } from '../../model/NetworkConfig'
+import { createQuickstartConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
 import {
   copyFile,
   writeFile,
@@ -17,7 +17,7 @@ cwd.mockReturnValue(TEST_CWD)
 describe('generates docker-compose directory', () => {
   it('given docker details builds files to run docker', async () => {
 
-    let config = createQuickstartConfig({
+    let config = createReplica7NodesConfig({
       numberNodes: '5',
       consensus: 'raft',
       quorumVersion: '2.4.0',
@@ -36,14 +36,14 @@ describe('generates docker-compose directory', () => {
     await createDockerCompose(config)
 
     expect(writeFile).toBeCalledTimes(3)
-    expect(copyFile).toBeCalledTimes(3)
+    expect(copyFile).toBeCalledTimes(4)
   })
 })
 
 describe('generates docker-compose script details', () => {
   it('creates docker-compose script with quorum and tessera', () => {
 
-    let config = createQuickstartConfig({
+    let config = createReplica7NodesConfig({
       numberNodes: '1',
       consensus: 'raft',
       quorumVersion: '2.4.0',
@@ -106,7 +106,7 @@ volumes:
 
   it('creates docker-compose script just quorum', () => {
 
-    let config = createQuickstartConfig({
+    let config = createReplica7NodesConfig({
       numberNodes: '1',
       consensus: 'raft',
       quorumVersion: '2.4.0',
@@ -152,7 +152,7 @@ volumes:
 
   it('creates docker-compose script with quorum and cakeshop', () => {
 
-    const config = createQuickstartConfig({
+    const config = createReplica7NodesConfig({
       numberNodes: '1',
       consensus: 'raft',
       transactionManager: 'none',
@@ -210,7 +210,7 @@ volumes:
 
   it('creates docker-compose script with quorum, tessera and cakeshop', () => {
 
-    const config = createQuickstartConfig({
+    const config = createReplica7NodesConfig({
       numberNodes: '1',
       consensus: 'raft',
       transactionManager: '0.10.2',

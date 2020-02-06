@@ -1,4 +1,4 @@
-import { createQuickstartConfig, createCustomConfig, generateNodeConfigs } from '../model/NetworkConfig'
+import { createQuickstartConfig, createReplica7NodesConfig, createCustomConfig, generateNodeConfigs } from '../model/NetworkConfig'
 import { buildBash } from '../utils/bashHelper'
 import { createDockerCompose } from '../utils/dockerHelper'
 import { getCustomizedBashNodes, getCustomizedDockerPorts } from '../utils/promptHelper'
@@ -17,7 +17,12 @@ import {
 
 import inquirer from 'inquirer'
 
-export async function quickstart () {
+export async function quickstart() {
+  const config = createQuickstartConfig()
+  await buildNetwork(config, 'bash')
+}
+
+export async function replica7Nodes () {
   const answers = await inquirer.prompt([
     DEPLOYMENT_TYPE,
     CONSENSUS_MODE,
@@ -26,7 +31,7 @@ export async function quickstart () {
     TRANSACTION_MANAGER,
     CAKESHOP
   ])
-  const config = createQuickstartConfig(answers)
+  const config = createReplica7NodesConfig(answers)
   await buildNetwork(config, answers.deployment)
 }
 

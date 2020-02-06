@@ -1,5 +1,5 @@
 import { createDirectory } from '../../utils/networkCreator'
-import { createQuickstartConfig } from '../../model/NetworkConfig'
+import { createReplica7NodesConfig } from '../../model/NetworkConfig'
 import { buildBashScript, buildBash, waitForTesseraNodesCommand } from '../../utils/bashHelper'
 import { copyFile, cwd, writeFile } from '../../utils/fileUtils'
 import { execute } from '../../utils/execUtils'
@@ -17,7 +17,7 @@ pathToCakeshop.mockReturnValue('cakeshop')
 
 describe('generates bash script details', () => {
   it('creates bash script given config details', () => {
-    let config = createQuickstartConfig({
+    let config = createReplica7NodesConfig({
       numberNodes: '5',
       consensus: 'raft',
       quorumVersion: '2.4.0',
@@ -41,7 +41,7 @@ describe('generates bash script details', () => {
 
 describe('builds bash directory', () => {
   it('given bash details builds files to run bash', async () => {
-    let config = createQuickstartConfig({
+    let config = createReplica7NodesConfig({
       numberNodes: '5',
       consensus: 'raft',
       quorumVersion: '2.4.0',
@@ -57,7 +57,7 @@ describe('builds bash directory', () => {
     await buildBash(config)
 
     expect(writeFile).toBeCalledWith('test/start.sh', expect.any(String), true)
-    expect(copyFile).toBeCalledTimes(4)
+    expect(copyFile).toBeCalledTimes(5)
     expect(execute).toBeCalledTimes(5)
   })
 })

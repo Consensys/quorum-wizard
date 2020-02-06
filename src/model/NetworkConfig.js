@@ -1,4 +1,24 @@
-export function createQuickstartConfig (answers) {
+export function createQuickstartConfig() {
+  return {
+    network: {
+      name: '3-nodes-raft-tessera-bash',
+      verbosity: 5,
+      consensus: 'raft',
+      quorumVersion: '2.4.0',
+      transactionManager: '0.10.2',
+      id: 10,
+      permissioned: true,
+      genesisFile: '7nodes/raft-genesis.json',
+      generateKeys: false,
+      configDir: '7nodes',
+      deployment: 'bash',
+      cakeshop: true,
+      custom: false,
+    },
+    nodes: generateNodeConfigs(3, 'tessera', 'bash', true)
+  }
+}
+export function createReplica7NodesConfig (answers) {
   const {
     numberNodes,
     consensus,
@@ -18,7 +38,7 @@ export function createQuickstartConfig (answers) {
       permissioned: true,
       genesisFile: `7nodes/${consensus}-genesis.json`,
       generateKeys: false,
-      configDir: `7nodes`,
+      configDir: '7nodes',
       deployment: deployment,
       cakeshop: cakeshop,
       custom: false,

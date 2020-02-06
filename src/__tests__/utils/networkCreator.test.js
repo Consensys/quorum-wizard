@@ -2,8 +2,8 @@ import { join } from 'path'
 import { createDirectory, createStaticNodes } from '../../utils/networkCreator'
 import {createConfig} from '../../model/TesseraConfig'
 import {
-  createQuickstartConfig,
   generateNodeConfigs,
+  createReplica7NodesConfig,
   createCustomConfig
 } from '../../model/NetworkConfig'
 import {
@@ -25,7 +25,7 @@ cwd.mockReturnValue(TEST_CWD)
 describe('creates a bash network', () => {
   it('rejects invalid network names', () => {
     const names = [ '', '.', '..', '\0', '/']
-    let config = createQuickstartConfig({
+    let config = createReplica7NodesConfig({
       numberNodes: '5',
       consensus: 'raft',
       quorumVersion: '2.4.0',
@@ -40,7 +40,7 @@ describe('creates a bash network', () => {
   })
 
   it('Creates the correct directory structure and moves files in', () => {
-    let config = createQuickstartConfig({
+    let config = createReplica7NodesConfig({
       numberNodes: '5',
       consensus: 'raft',
       quorumVersion: '2.4.0',
@@ -77,7 +77,7 @@ describe('creates a bash network', () => {
 describe('creates a docker network', () => {
   it('rejects invalid network names', () => {
     const names = [ '', '.', '..', '\0', '/']
-    let config = createQuickstartConfig({
+    let config = createReplica7NodesConfig({
       numberNodes: '5',
       consensus: 'raft',
       quorumVersion: '2.4.0',
@@ -92,7 +92,7 @@ describe('creates a docker network', () => {
   })
 
   it('Creates the correct directory structure and moves files in', () => {
-    let config = createQuickstartConfig({
+    let config = createReplica7NodesConfig({
       numberNodes: '5',
       consensus: 'raft',
       quorumVersion: '2.4.0',

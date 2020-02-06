@@ -1,10 +1,15 @@
-import { createQuickstartConfig, createCustomConfig } from '../../model/NetworkConfig'
+import { createQuickstartConfig, createCustomConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
 
 // rather than having big test jsons that we match to, we can just use snapshot
 // tests, where it will compare against the last time you ran and if it's
 // different you can review to make sure the changes were intended
+test('creates quickstart setup', () => {
+  const config = createQuickstartConfig()
+  expect(config).toMatchSnapshot()
+})
+
 test('creates 7nodes istanbul config', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '7',
     consensus: 'istanbul',
     quorumVersion: '2.4.0',
@@ -16,7 +21,7 @@ test('creates 7nodes istanbul config', () => {
 })
 
 test('creates 5nodes raft no-TM config', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '5',
     consensus: 'raft',
     quorumVersion: '2.4.0',
@@ -28,7 +33,7 @@ test('creates 5nodes raft no-TM config', () => {
 })
 
 test('creates 7nodes istanbul docker config', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '7',
     consensus: 'istanbul',
     quorumVersion: '2.4.0',
@@ -40,7 +45,7 @@ test('creates 7nodes istanbul docker config', () => {
 })
 
 test('creates 5nodes raft no-TM cakeshop docker config', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '5',
     consensus: 'raft',
     quorumVersion: '2.4.0',
@@ -52,7 +57,7 @@ test('creates 5nodes raft no-TM cakeshop docker config', () => {
 })
 
 test('creates 7nodes istanbul cakeshop config', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '7',
     consensus: 'istanbul',
     quorumVersion: '2.4.0',
