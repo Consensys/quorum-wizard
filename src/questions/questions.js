@@ -13,9 +13,9 @@ export const INITIAL_MODE = {
 }
 
 export const NUMBER_NODES = {
-  type: 'input', // bug with number type when invalid, can't delete old value
+  type: 'input',
   name: 'numberNodes',
-  message: 'Input the number of nodes you would like in your network - 3 is recommended for raft, 5 for istanbul',
+  message: 'Input the number of nodes you would like in your network - a minimum of 3 is recommended for raft, and a minimum of 5 for istanbul',
   default: '7',
   validate: (input) => validateNumberStringInRange(input, 2, 7)
 }
@@ -74,7 +74,7 @@ export const NETWORK_ID = {
 }
 
 export const GENESIS_LOCATION = {
-  type: 'input', // bug with number type when invalid, can't delete old value
+  type: 'input',
   name: 'genesisLocation',
   message: 'If you would like to use your own genesis file: enter the file location:',
   default: 'none',
