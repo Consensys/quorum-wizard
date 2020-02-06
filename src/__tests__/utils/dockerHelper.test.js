@@ -20,7 +20,7 @@ describe('generates docker-compose directory', () => {
     let config = createQuickstartConfig({
       numberNodes: '5',
       consensus: 'raft',
-      gethBinary: '2.4.0',
+      quorumVersion: '2.4.0',
       transactionManager: '0.10.2',
       deployment: 'docker-compose',
       cakeshop: false
@@ -46,7 +46,7 @@ describe('generates docker-compose script details', () => {
     let config = createQuickstartConfig({
       numberNodes: '1',
       consensus: 'raft',
-      gethBinary: '2.4.0',
+      quorumVersion: '2.4.0',
       transactionManager: '0.10.2',
       deployment: 'docker-compose',
       cakeshop: false
@@ -109,7 +109,7 @@ volumes:
     let config = createQuickstartConfig({
       numberNodes: '1',
       consensus: 'raft',
-      gethBinary: '2.4.0',
+      quorumVersion: '2.4.0',
       transactionManager: 'none',
       deployment: 'docker-compose',
       cakeshop: false

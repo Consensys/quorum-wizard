@@ -48,7 +48,7 @@ export const CONSENSUS_MODE = {
 
 export const GETH_BINARY = {
   type: 'list',
-  name: 'gethBinary',
+  name: 'quorumVersion',
   message: 'Which version of Quorum would you like to use?',
   choices: ({deployment}) => {
     let choices = [...getDownloadableGethChoices()]

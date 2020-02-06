@@ -2,7 +2,7 @@ import { join } from 'path'
 import { executeSync } from './execUtils'
 import { createFolder, copyFile } from './fileUtils'
 import { isTessera } from '../model/NetworkConfig'
-import { pathToBootnode, pathToGethBinary, pathToTesseraJar } from './binaryHelper'
+import { pathToBootnode, pathToQuorumBinary, pathToTesseraJar } from './binaryHelper'
 
 export function generateKeys(config, keyPath) {
   console.log(`Generating ${config.nodes.length} keys..`)
@@ -18,7 +18,7 @@ export function generateKeys(config, keyPath) {
 }
 
 function doExec(keyDir, config) {
-  let cmd = `cd ${keyDir} && ${pathToGethBinary(config.network.gethBinary)} account new --keystore ${keyDir} --password password.txt
+  let cmd = `cd ${keyDir} && ${pathToQuorumBinary(config.network.quorumVersion)} account new --keystore ${keyDir} --password password.txt
   ${pathToBootnode()} -genkey=nodekey
   ${pathToBootnode()} --nodekey=nodekey --writeaddress > enode
   find . -type f -name 'UTC*' -execdir mv {} key ';'

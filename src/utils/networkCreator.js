@@ -6,7 +6,7 @@ import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
 import { isTessera } from '../model/NetworkConfig'
 import { createGethStartCommand, createTesseraStartCommand } from './bashHelper'
-import { pathToGethBinary } from './binaryHelper'
+import { pathToQuorumBinary } from './binaryHelper'
 
 export function createDirectory (config) {
   // https://nodejs.org/en/knowledge/file-system/security/introduction/
@@ -79,7 +79,7 @@ export function createDirectory (config) {
 
     if (config.network.deployment === 'bash') {
       // TODO make this use the BIN_GETH env variable
-      const initCommand = `cd ${networkPath} && ${pathToGethBinary(config.network.gethBinary)} --datadir ${quorumDir} init ${genesisDestination}`
+      const initCommand = `cd ${networkPath} && ${pathToQuorumBinary(config.network.quorumVersion)} --datadir ${quorumDir} init ${genesisDestination}`
       initCommands.push(initCommand)
 
       let tmIpcLocation = isTessera(config) ? join(tmDir, 'tm.ipc') : 'ignore'

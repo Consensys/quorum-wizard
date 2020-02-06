@@ -7,7 +7,7 @@ test('creates 7nodes istanbul config', () => {
   const config = createQuickstartConfig({
     numberNodes: '7',
     consensus: 'istanbul',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     deployment: 'bash',
     cakeshop: false
@@ -19,7 +19,7 @@ test('creates 5nodes raft no-TM config', () => {
   const config = createQuickstartConfig({
     numberNodes: '5',
     consensus: 'raft',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: 'none',
     deployment: 'bash',
     cakeshop: false
@@ -31,7 +31,7 @@ test('creates 7nodes istanbul docker config', () => {
   const config = createQuickstartConfig({
     numberNodes: '7',
     consensus: 'istanbul',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     deployment: 'docker-compose',
     cakeshop: false
@@ -43,7 +43,7 @@ test('creates 5nodes raft no-TM cakeshop docker config', () => {
   const config = createQuickstartConfig({
     numberNodes: '5',
     consensus: 'raft',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: 'none',
     deployment: 'docker-compose',
     cakeshop: true
@@ -55,7 +55,7 @@ test('creates 7nodes istanbul cakeshop config', () => {
   const config = createQuickstartConfig({
     numberNodes: '7',
     consensus: 'istanbul',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     deployment: 'bash',
     cakeshop: true
@@ -67,7 +67,7 @@ test('creates 6nodes raft custom config', () => {
   const config = createCustomConfig({
     numberNodes: '6',
     consensus: 'raft',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     deployment: 'bash',
     cakeshop: false,
@@ -85,7 +85,7 @@ test('creates 7nodes istanbul no-TM custom config', () => {
   const config = createCustomConfig({
     numberNodes: '7',
     consensus: 'istanbul',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: 'none',
     deployment: 'bash',
     cakeshop: false,
@@ -103,7 +103,7 @@ test('creates 6nodes raft custom docker config', () => {
   const config = createCustomConfig({
     numberNodes: '6',
     consensus: 'raft',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     deployment: 'docker-compose',
     cakeshop: false,
@@ -121,7 +121,7 @@ test('creates 7nodes istanbul no-TM custom docker config', () => {
   const config = createCustomConfig({
     numberNodes: '7',
     consensus: 'istanbul',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: 'none',
     deployment: 'docker-compose',
     cakeshop: false,

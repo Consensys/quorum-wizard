@@ -4,14 +4,14 @@ import { buildBashScript, buildBash, waitForTesseraNodesCommand } from '../../ut
 import { copyFile, cwd, writeFile } from '../../utils/fileUtils'
 import { execute } from '../../utils/execUtils'
 import { TEST_CWD } from '../testHelper'
-import { pathToCakeshop, pathToGethBinary, pathToTesseraJar } from '../../utils/binaryHelper'
+import { pathToCakeshop, pathToQuorumBinary, pathToTesseraJar } from '../../utils/binaryHelper'
 
 jest.mock('../../utils/networkCreator')
 jest.mock('../../utils/fileUtils')
 jest.mock('../../utils/execUtils')
 jest.mock('../../utils/binaryHelper')
 cwd.mockReturnValue(TEST_CWD)
-pathToGethBinary.mockReturnValue('geth')
+pathToQuorumBinary.mockReturnValue('geth')
 pathToTesseraJar.mockReturnValue('tessera')
 pathToCakeshop.mockReturnValue('cakeshop')
 
@@ -20,7 +20,7 @@ describe('generates bash script details', () => {
     let config = createQuickstartConfig({
       numberNodes: '5',
       consensus: 'raft',
-      gethBinary: '2.4.0',
+      quorumVersion: '2.4.0',
       transactionManager: '0.10.2',
       deployment: 'bash',
       cakeshop: false
@@ -44,7 +44,7 @@ describe('builds bash directory', () => {
     let config = createQuickstartConfig({
       numberNodes: '5',
       consensus: 'raft',
-      gethBinary: '2.4.0',
+      quorumVersion: '2.4.0',
       transactionManager: '0.10.2',
       deployment: 'bash',
       cakeshop: false

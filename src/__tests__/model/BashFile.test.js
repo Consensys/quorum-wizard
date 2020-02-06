@@ -11,7 +11,7 @@ test('creates 3nodes raft bash tessera', () => {
   const config = createQuickstartConfig({
     numberNodes: '3',
     consensus: 'raft',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     deployment: 'bash',
     cakeshop: false
@@ -24,7 +24,7 @@ test('creates 3nodes raft bash tessera cakeshop', () => {
   const config = createQuickstartConfig({
     numberNodes: '3',
     consensus: 'raft',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     deployment: 'bash',
     cakeshop: true
@@ -38,7 +38,7 @@ test('creates 3nodes raft bash tessera custom', () => {
   const config = createCustomConfig({
     numberNodes: '3',
     consensus: 'raft',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     deployment: 'bash',
     cakeshop: false,
@@ -89,7 +89,7 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
   const config = createCustomConfig({
     numberNodes: '2',
     consensus: 'istanbul',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     deployment: 'bash',
     cakeshop: true,

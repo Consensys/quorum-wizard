@@ -5,14 +5,14 @@ export function createQuickstartConfig (answers) {
     transactionManager,
     deployment,
     cakeshop,
-    gethBinary
+    quorumVersion
   } = answers
   return {
     network: {
       name: createNetworkFolderName(answers),
       verbosity: 5,
       consensus: consensus,
-      gethBinary: gethBinary,
+      quorumVersion: quorumVersion,
       transactionManager: transactionManager,
       id: 10,
       permissioned: true,
@@ -34,7 +34,7 @@ export function createCustomConfig (answers) {
     transactionManager,
     deployment,
     cakeshop,
-    gethBinary,
+    quorumVersion,
     generateKeys,
     networkId,
     genesisLocation,
@@ -48,7 +48,7 @@ export function createCustomConfig (answers) {
       name: networkFolder,
       verbosity: 5,
       consensus: consensus,
-      gethBinary: gethBinary,
+      quorumVersion: quorumVersion,
       transactionManager: transactionManager,
       id: 10,
       permissioned: true,

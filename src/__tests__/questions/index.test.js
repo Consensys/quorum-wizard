@@ -13,7 +13,7 @@ jest.mock('../../utils/promptHelper')
 const QUICKSTART_CONFIG = {
   numberNodes: '5',
   consensus: 'istanbul',
-  gethBinary: '2.4.0',
+  quorumVersion: '2.4.0',
   transactionManager: '0.10.2',
   deployment: 'bash',
   cakeshop: false

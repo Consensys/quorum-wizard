@@ -21,7 +21,7 @@ export function getPlatformSpecificUrl ({ url }) {
 // b. Only download if necessary for keygen or istanbul
 // c. Don't download if using docker (except stuff for keygen/istanbul)
 export async function downloadAndCopyBinaries (config) {
-  const { transactionManager, cakeshop, deployment, generateKeys, gethBinary, consensus } = config.network
+  const { transactionManager, cakeshop, deployment, generateKeys, quorumVersion, consensus } = config.network
   const docker = isDocker(deployment)
   const isDockerButNeedsBinaries = docker && generateKeys
 
@@ -35,7 +35,6 @@ export async function downloadAndCopyBinaries (config) {
       await downloadIfMissing('bootnode', '1.8.27')
     }
 
-    let quorumVersion = gethBinary
     if (quorumVersion !== 'PATH') {
       await downloadIfMissing('quorum', quorumVersion)
     }
@@ -105,12 +104,12 @@ export function getTesseraOnPath () {
   return pathChoices
 }
 
-export function pathToGethBinary (gethBinary) {
-  if (gethBinary === 'PATH') {
+export function pathToQuorumBinary (quorumVersion) {
+  if (quorumVersion === 'PATH') {
     return 'geth'
   } else {
-    const info = BINARIES.quorum[gethBinary]
-    return join(cwd(), 'bin', 'quorum', gethBinary, info.name)
+    const info = BINARIES.quorum[quorumVersion]
+    return join(cwd(), 'bin', 'quorum', quorumVersion, info.name)
   }
 }
 

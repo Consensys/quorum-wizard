@@ -10,7 +10,7 @@ import { buildCakeshopDir, generateCakeshopScript, waitForCakeshopCommand } from
 import {
   downloadAndCopyBinaries,
   pathToCakeshop,
-  pathToGethBinary,
+  pathToQuorumBinary,
   pathToTesseraJar,
 } from './binaryHelper'
 import { isTessera } from '../model/NetworkConfig'
@@ -100,7 +100,7 @@ function checkTesseraUpcheck(nodes) {
 }
 export function setEnvironmentCommand (config) {
   const lines = []
-  lines.push(`BIN_GETH=${pathToGethBinary(config.network.gethBinary)}`)
+  lines.push(`BIN_GETH=${pathToQuorumBinary(config.network.quorumVersion)}`)
   if(isTessera(config)) {
     lines.push(`BIN_TESSERA=${pathToTesseraJar(config.network.transactionManager)}`)
   }

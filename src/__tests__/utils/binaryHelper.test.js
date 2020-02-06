@@ -5,7 +5,7 @@ import {
   getTesseraOnPath,
   pathToBootnode,
   pathToCakeshop,
-  pathToGethBinary,
+  pathToQuorumBinary,
   pathToTesseraJar,
 } from '../../utils/binaryHelper'
 import { executeSync } from '../../utils/execUtils'
@@ -23,10 +23,10 @@ downloadIfMissing.mockReturnValue(Promise.resolve())
 
 describe('Chooses the right paths to the binaries', () => {
   it('Calls geth binary directly if on path', () => {
-    expect(pathToGethBinary("PATH")).toEqual("geth")
+    expect(pathToQuorumBinary("PATH")).toEqual("geth")
   })
   it('Calls geth binary in bin folder', () => {
-    expect(pathToGethBinary("2.4.0")).toEqual(join(cwd(), "bin/quorum/2.4.0/geth"))
+    expect(pathToQuorumBinary("2.4.0")).toEqual(join(cwd(), "bin/quorum/2.4.0/geth"))
   })
   it('Calls tessera using $TESSERA_JAR', () => {
     expect(pathToTesseraJar("PATH")).toEqual("$TESSERA_JAR")
@@ -109,7 +109,7 @@ describe('Handles different binary file urls', () => {
 
 describe('Downloads binaries', () => {
   const baseNetwork = {
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     cakeshop: false,
     consensus: 'raft',
@@ -182,7 +182,7 @@ describe('Downloads binaries', () => {
     const config = {
       network: {
         ...baseNetwork,
-        gethBinary: 'PATH',
+        quorumVersion: 'PATH',
         transactionManager: 'PATH'
       }
     }

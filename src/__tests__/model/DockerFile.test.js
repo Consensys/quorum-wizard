@@ -5,7 +5,7 @@ test('creates 3nodes raft dockerFile tessera no cakeshop', () => {
   const config = createQuickstartConfig({
     numberNodes: '3',
     consensus: 'raft',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     deployment: 'docker-compose',
     cakeshop: false
@@ -18,7 +18,7 @@ test('creates 5nodes istanbul dockerFile no tessera no cakeshop', () => {
   const config = createQuickstartConfig({
     numberNodes: '5',
     consensus: 'istanbul',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: 'none',
     deployment: 'docker-compose',
     cakeshop: false
@@ -31,7 +31,7 @@ test('creates 3nodes raft dockerFile tessera cakeshop', () => {
   const config = createQuickstartConfig({
     numberNodes: '3',
     consensus: 'raft',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     deployment: 'docker-compose',
     cakeshop: true
@@ -44,7 +44,7 @@ test('creates 5nodes istanbul dockerFile no tessera cakeshop', () => {
   const config = createQuickstartConfig({
     numberNodes: '5',
     consensus: 'istanbul',
-    gethBinary: '2.4.0',
+    quorumVersion: '2.4.0',
     transactionManager: 'none',
     deployment: 'docker-compose',
     cakeshop: true
