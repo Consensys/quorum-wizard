@@ -15,7 +15,7 @@ jest.mock('../../utils/networkCreator')
 cwd.mockReturnValue(TEST_CWD)
 
 describe('generates docker-compose directory', () => {
-  it('given docker details builds files to run docker', () => {
+  it('given docker details builds files to run docker', async () => {
 
     let config = createQuickstartConfig({
       numberNodes: '5',
@@ -33,7 +33,7 @@ describe('generates docker-compose directory', () => {
       })
     includeCakeshop.mockReturnValueOnce(false)
     readFileToString.mockReturnValueOnce("test")
-    createDockerCompose(config)
+    await createDockerCompose(config)
 
     expect(writeFile).toBeCalledTimes(3)
     expect(copyFile).toBeCalledTimes(3)

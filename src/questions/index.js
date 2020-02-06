@@ -19,11 +19,11 @@ import inquirer from 'inquirer'
 
 export async function quickstart () {
   const answers = await inquirer.prompt([
+    DEPLOYMENT_TYPE,
     CONSENSUS_MODE,
     NUMBER_NODES,
     GETH_BINARY,
     TRANSACTION_MANAGER,
-    DEPLOYMENT_TYPE,
     CAKESHOP
   ])
   const config = createQuickstartConfig(answers)
@@ -32,11 +32,11 @@ export async function quickstart () {
 
 export async function customize () {
   const commonAnswers = await inquirer.prompt([
+    DEPLOYMENT_TYPE,
     CONSENSUS_MODE,
     NUMBER_NODES,
     GETH_BINARY,
     TRANSACTION_MANAGER,
-    DEPLOYMENT_TYPE,
     CAKESHOP
   ])
 
@@ -68,7 +68,7 @@ async function buildNetwork(config, deployment) {
   if (deployment === 'bash') {
     await buildBash(config)
   } else if (deployment === 'docker-compose') {
-    createDockerCompose(config)
+    await createDockerCompose(config)
   }
   console.log(`Quorum network details created. cd network/${config.network.name} and run start.sh to bring up your network`)
 }

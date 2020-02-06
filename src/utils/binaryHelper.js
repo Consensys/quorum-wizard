@@ -1,10 +1,8 @@
-import { createFolder, cwd, exists } from './fileUtils'
-import { basename, join } from 'path'
-import { createWriteStream } from 'fs'
-import axios from 'axios'
-import { createGunzip } from 'zlib'
-import { extract } from 'tar-fs'
+import { cwd } from './fileUtils'
+import { join } from 'path'
 import { executeSync } from './execUtils'
+import { isDocker } from '../model/NetworkConfig'
+import { downloadIfMissing } from './download'
 
 export function getPlatformSpecificUrl ({ url }) {
   if (typeof url === 'string') {
@@ -18,84 +16,37 @@ export function getPlatformSpecificUrl ({ url }) {
   return platformUrl
 }
 
-async function downloadIfMissing (name, version) {
-  if(BINARIES[name] === undefined || BINARIES[name][version] === undefined) {
-    throw new Error(`Could not find binary info entry for ${name} ${version}`)
-  }
-  let binDir = join(cwd(), 'bin', name, version)
-  if (!exists(binDir)) {
-    createFolder(binDir, true)
-    const binaryInfo = BINARIES[name][version]
-    const url = getPlatformSpecificUrl(binaryInfo)
-
-    console.log(`Downloading ${name} ${version} from ${url}...`)
-    const response = await axios({
-      url: url,
-      method: 'GET',
-      responseType: 'stream',
-    })
-
-    if (binaryInfo.type === 'tar.gz') {
-      console.log(`Extracting ${binaryInfo.name} from tar.gz archive`)
-      const extractorStream = response.data.pipe(createGunzip())
-        .pipe(extract(binDir, {
-          map: function (header) {
-            const filename = basename(header.name)
-            if (binaryInfo.files.includes(filename)) {
-              // don't include folders when extracting files we want
-              header.name = filename
-            }
-            return header
-          },
-          ignore: function (name) {
-            return !binaryInfo.files.includes(basename(name))
-          },
-        }))
-      return new Promise((resolve, reject) => {
-        extractorStream.on('finish', () => {
-          console.log('Done')
-          resolve()
-        })
-        extractorStream.on('error', reject)
-      })
-    } else {
-      console.log(`Writing ${binaryInfo.name} to disk`)
-      const writer = createWriteStream(join(binDir, binaryInfo.name),
-        { mode: 0o755 })
-      response.data.pipe(writer)
-      return new Promise((resolve, reject) => {
-        writer.on('finish', () => {
-          console.log('Done')
-          resolve()
-        })
-        writer.on('error', reject)
-      })
-    }
-  } else {
-    console.log('Using cached binary at:', binDir)
-  }
-}
-
+// This method could be improved, but right now it tries to:
+// a. Cache downloads
+// b. Only download if necessary for keygen or istanbul
+// c. Don't download if using docker (except stuff for keygen/istanbul)
 export async function downloadAndCopyBinaries (config) {
-  let quorumVersion = config.network.gethBinary
-  if (quorumVersion !== 'PATH') {
-    await downloadIfMissing('quorum', quorumVersion)
-  }
-  let tesseraVersion = config.network.transactionManager
-  if (tesseraVersion !== 'PATH') {
-    await downloadIfMissing('tessera', tesseraVersion)
-  }
+  const { transactionManager, cakeshop, deployment, generateKeys, gethBinary, consensus } = config.network
+  const docker = isDocker(deployment)
+  const isDockerButNeedsBinaries = docker && generateKeys
 
-  if (config.network.cakeshop) {
-    await downloadIfMissing('cakeshop', '0.11.0-RC2')
-  }
-
-  if (config.network.consensus === 'istanbul') {
+  // needed no matter what if using istanbul to generate genesis
+  if (consensus === 'istanbul') {
     await downloadIfMissing('istanbul', '1.0.1')
   }
 
-  if (config.network.generateKeys) {
-    await downloadIfMissing('bootnode', '1.8.27')
+  if(!docker || isDockerButNeedsBinaries) {
+    if (generateKeys) {
+      await downloadIfMissing('bootnode', '1.8.27')
+    }
+
+    let quorumVersion = gethBinary
+    if (quorumVersion !== 'PATH') {
+      await downloadIfMissing('quorum', quorumVersion)
+    }
+    let tesseraVersion = transactionManager
+    if (tesseraVersion !== 'PATH' && tesseraVersion !== 'none') {
+      await downloadIfMissing('tessera', tesseraVersion)
+    }
+
+    if (!docker && cakeshop) {
+      await downloadIfMissing('cakeshop', '0.11.0-RC2')
+    }
   }
 }
 
@@ -188,7 +139,7 @@ export function pathToBootnode () {
 }
 
 
-const BINARIES = {
+export const BINARIES = {
   quorum: {
     '2.4.0': {
       name: 'geth',

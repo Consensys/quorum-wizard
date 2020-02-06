@@ -1,16 +1,25 @@
 import {
+  downloadAndCopyBinaries,
   getGethOnPath,
   getPlatformSpecificUrl,
-  getTesseraOnPath, pathToBootnode, pathToCakeshop, pathToGethBinary, pathToTesseraJar,
+  getTesseraOnPath,
+  pathToBootnode,
+  pathToCakeshop,
+  pathToGethBinary,
+  pathToTesseraJar,
 } from '../../utils/binaryHelper'
 import { executeSync } from '../../utils/execUtils'
 import { cwd } from '../../utils/fileUtils'
 import { join } from 'path'
 import { TEST_CWD } from '../testHelper'
+import { downloadIfMissing } from '../../utils/download'
+import { any } from 'expect'
 
+jest.mock('../../utils/download')
 jest.mock('../../utils/execUtils')
 jest.mock('../../utils/fileUtils')
 cwd.mockReturnValue(TEST_CWD)
+downloadIfMissing.mockReturnValue(Promise.resolve())
 
 describe('Chooses the right paths to the binaries', () => {
   it('Calls geth binary directly if on path', () => {
@@ -95,6 +104,91 @@ describe('Handles different binary file urls', () => {
   it('Throws an error when using an unsupported platform', () => {
     overrideProcessValue('platform', 'windows_nt')
     expect(() => getPlatformSpecificUrl(multiplePlatform)).toThrow(new Error('Sorry, your platform (windows_nt) is not supported.'))
+  })
+})
+
+describe('Downloads binaries', () => {
+  const baseNetwork = {
+    gethBinary: '2.4.0',
+    transactionManager: '0.10.2',
+    cakeshop: false,
+    consensus: 'raft',
+    generateKeys: false,
+    deployment: 'bash'
+  }
+  beforeEach(() => {
+    downloadIfMissing.mockClear()
+  })
+  it('Downloads correct bins for raft tessera', async () => {
+    const config = {
+      network: {
+        ...baseNetwork,
+      }
+    }
+    await downloadAndCopyBinaries(config)
+    expect(downloadIfMissing).toBeCalledWith('quorum', '2.4.0')
+    expect(downloadIfMissing).toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('bootnode', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
+  })
+  it('Downloads correct bins for istanbul + keygen + cakeshop, just quorum', async () => {
+    const config = {
+      network: {
+        ...baseNetwork,
+        transactionManager: 'none',
+        consensus: 'istanbul',
+        cakeshop: true,
+        generateKeys: true
+      }
+    }
+    await downloadAndCopyBinaries(config)
+    expect(downloadIfMissing).toBeCalledWith('quorum', '2.4.0')
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).toBeCalledWith('cakeshop', any(String))
+    expect(downloadIfMissing).toBeCalledWith('bootnode', any(String))
+    expect(downloadIfMissing).toBeCalledWith('istanbul', any(String))
+  })
+  it('Downloads nothing for raft docker, no keygen', async () => {
+    const config = {
+      network: {
+        ...baseNetwork,
+        deployment: 'docker-compose'
+      }
+    }
+    await downloadAndCopyBinaries(config)
+    expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.4.0')
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('bootnode', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
+  })
+  it('Downloads correct bins for docker with keygen', async () => {
+    const config = {
+      network: {
+        ...baseNetwork,
+        deployment: 'docker-compose',
+        generateKeys: true
+      }
+    }
+    await downloadAndCopyBinaries(config)
+    expect(downloadIfMissing).toBeCalledWith('quorum', '2.4.0')
+    expect(downloadIfMissing).toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
+    expect(downloadIfMissing).toBeCalledWith('bootnode', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
+  })
+  it('Does not download geth and tessera when on path', async () => {
+    const config = {
+      network: {
+        ...baseNetwork,
+        gethBinary: 'PATH',
+        transactionManager: 'PATH'
+      }
+    }
+    await downloadAndCopyBinaries(config)
+    expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.4.0')
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
   })
 })
 

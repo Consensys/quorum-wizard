@@ -16,6 +16,18 @@ export const INITIAL_MODE = {
   ]
 }
 
+export const DEPLOYMENT_TYPE = {
+  type: 'list',
+  name: 'deployment',
+  message: 'Would you like to generate bash scripts or a docker-compose file to bring up your network?',
+  choices: [
+    'bash',
+    'docker-compose',
+    // 'kubernetes',
+    // 'vagrant',
+  ]
+}
+
 export const NUMBER_NODES = {
   type: 'input',
   name: 'numberNodes',
@@ -38,26 +50,26 @@ export const GETH_BINARY = {
   type: 'list',
   name: 'gethBinary',
   message: 'Which version of Quorum would you like to use?',
-  choices: () => getDownloadableGethChoices().concat(getGethOnPath()),
+  choices: ({deployment}) => {
+    let choices = [...getDownloadableGethChoices()]
+    if(deployment === 'bash') {
+      choices = choices.concat(getGethOnPath())
+    }
+    return choices
+  },
 }
 
 export const TRANSACTION_MANAGER = {
   type: 'list',
   name: 'transactionManager',
   message: 'Choose a version of tessera if you would like to use private transactions in your network, otherwise choose "none"',
-  choices: () => getDownloadableTesseraChoices().concat(getTesseraOnPath(), ['none'])
-}
-
-export const DEPLOYMENT_TYPE = {
-  type: 'list',
-  name: 'deployment',
-  message: 'Would you like to generate bash scripts or a docker-compose file to bring up your network?',
-  choices: [
-    'bash',
-    'docker-compose',
-    // 'kubernetes',
-    // 'vagrant',
-  ]
+  choices: ({deployment}) => {
+    let choices = [...getDownloadableTesseraChoices()]
+    if(deployment === 'bash') {
+      choices = choices.concat(getTesseraOnPath())
+    }
+    return choices
+  },
 }
 
 export const CAKESHOP = {
