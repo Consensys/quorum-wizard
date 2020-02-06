@@ -18,8 +18,8 @@ import inquirer from 'inquirer'
 
 export async function quickstart () {
   const answers = await inquirer.prompt([
-    NUMBER_NODES,
     CONSENSUS_MODE,
+    NUMBER_NODES,
     TRANSACTION_MANAGER,
     DEPLOYMENT_TYPE,
     CAKESHOP
@@ -30,8 +30,8 @@ export async function quickstart () {
 
 export async function customize () {
   const commonAnswers = await inquirer.prompt([
-    NUMBER_NODES,
     CONSENSUS_MODE,
+    NUMBER_NODES,
     TRANSACTION_MANAGER,
     DEPLOYMENT_TYPE,
     CAKESHOP
@@ -47,14 +47,14 @@ export async function customize () {
   let nodes = (customAnswers.customizePorts && commonAnswers.deployment === 'bash') ?
     await getCustomizedBashNodes(commonAnswers.numberNodes, commonAnswers.transactionManager === 'tessera') : []
 
-  let dockerConfig = (customAnswers.customizePorts && commonAnswers.deployment === 'docker-compose') ?
+  let dockerCustom = (customAnswers.customizePorts && commonAnswers.deployment === 'docker-compose') ?
     await getCustomizedDockerPorts(commonAnswers.transactionManager === 'tessera') : undefined
 
     const answers = {
       ...commonAnswers,
       ...customAnswers,
       nodes,
-      dockerConfig
+      dockerCustom
     }
   const config = createCustomConfig(answers)
 
@@ -67,4 +67,5 @@ function buildNetwork(config, deployment) {
   } else if (deployment === 'docker-compose') {
     createDockerCompose(config)
   }
+  console.log(`Quorum network details created. cd network/${config.network.name} and run start.sh to bring up your network`)
 }

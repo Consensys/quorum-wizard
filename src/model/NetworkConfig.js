@@ -26,6 +26,7 @@ export function createQuickstartConfig (answers) {
 }
 
 export function createCustomConfig (answers) {
+  console.log(answers)
   const {
     numberNodes,
     consensus,

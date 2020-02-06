@@ -36,6 +36,7 @@ export function buildDockerCompose(config) {
   if(hasCakeshop) {
     services = [services.join(""), buildCakeshopService(config)]
   }
+
   return [formatNewLine(quorumDefinitions), formatNewLine(quorumExposedPorts), formatNewLine(tesseraDefinitions), formatNewLine(tesseraExposedPorts), formatNewLine(cakeshopDefinitions), "services:", services.join(""), buildEndService(config)].join("")
 }
 
