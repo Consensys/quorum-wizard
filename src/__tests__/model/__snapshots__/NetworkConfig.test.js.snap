@@ -915,3 +915,69 @@ Object {
   ],
 }
 `;
+
+exports[`creates quickstart setup 1`] = `
+Object {
+  "network": Object {
+    "cakeshop": true,
+    "configDir": "7nodes",
+    "consensus": "raft",
+    "custom": false,
+    "deployment": "bash",
+    "generateKeys": false,
+    "genesisFile": "7nodes/raft-genesis.json",
+    "id": 10,
+    "name": "3-nodes-raft-tessera-bash",
+    "permissioned": true,
+    "transactionManager": "tessera",
+    "verbosity": 5,
+  },
+  "nodes": Array [
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21000,
+        "ip": "127.0.0.1",
+        "raftPort": 50401,
+        "rpcPort": 22000,
+        "wsPort": 23000,
+      },
+      "tm": Object {
+        "enclavePort": 9180,
+        "ip": "127.0.0.1",
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21001,
+        "ip": "127.0.0.1",
+        "raftPort": 50402,
+        "rpcPort": 22001,
+        "wsPort": 23001,
+      },
+      "tm": Object {
+        "enclavePort": 9181,
+        "ip": "127.0.0.1",
+        "p2pPort": 9002,
+        "thirdPartyPort": 9082,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21002,
+        "ip": "127.0.0.1",
+        "raftPort": 50403,
+        "rpcPort": 22002,
+        "wsPort": 23002,
+      },
+      "tm": Object {
+        "enclavePort": 9182,
+        "ip": "127.0.0.1",
+        "p2pPort": 9003,
+        "thirdPartyPort": 9083,
+      },
+    },
+  ],
+}
+`;

@@ -1,5 +1,5 @@
 import { createDirectory } from '../../utils/networkCreator'
-import { createQuickstartConfig } from '../../model/NetworkConfig'
+import { createQuickstartConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
 import { buildBashScript, buildBash } from '../../utils/bashHelper'
 import { copyFile, cwd, writeFile } from '../../utils/fileUtils'
 import { execute } from '../../utils/execUtils'
@@ -17,7 +17,7 @@ describe('generates bash script details', () => {
       initCommands: ['1', '2', '3', '4', '5'],
       networkPath: 'testPath'
     }
-    let config = createQuickstartConfig({
+    let config = createReplica7NodesConfig({
       numberNodes: '5',
       consensus: 'raft',
       transactionManager: 'tessera',
@@ -35,7 +35,7 @@ describe('generates bash script details', () => {
 
 describe('builds bash directory', () => {
   it('given bash details builds files to run bash', () => {
-    let config = createQuickstartConfig({
+    let config = createReplica7NodesConfig({
       numberNodes: '5',
       consensus: 'raft',
       transactionManager: 'tessera',
@@ -50,7 +50,7 @@ describe('builds bash directory', () => {
     buildBash()
 
     expect(writeFile).toBeCalledWith('test/start.sh', expect.any(String), true)
-    expect(copyFile).toBeCalledTimes(4)
+    expect(copyFile).toBeCalledTimes(5)
     expect(execute).toBeCalledTimes(5)
   })
 })

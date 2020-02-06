@@ -1,5 +1,5 @@
 import { buildBashScript } from '../../utils/bashHelper'
-import { createCustomConfig, createQuickstartConfig } from '../../model/NetworkConfig'
+import { createCustomConfig, createQuickstartConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
 import { cwd } from '../../utils/fileUtils'
 import { TEST_CWD } from '../testHelper'
 import { join } from 'path'
@@ -7,8 +7,14 @@ import { join } from 'path'
 jest.mock('../../utils/fileUtils')
 cwd.mockReturnValue(TEST_CWD)
 
+test('creates quickstart config', () => {
+  const config = createQuickstartConfig()
+  const bash = buildBashScript(config).startScript
+  expect(bash).toMatchSnapshot()
+})
+
 test('creates 3nodes raft bash tessera', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '3',
     consensus: 'raft',
     transactionManager: 'tessera',
@@ -20,7 +26,7 @@ test('creates 3nodes raft bash tessera', () => {
 })
 
 test('creates 3nodes raft bash tessera cakeshop', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '3',
     consensus: 'raft',
     transactionManager: 'tessera',

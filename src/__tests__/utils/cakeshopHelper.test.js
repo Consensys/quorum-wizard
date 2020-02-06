@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { createQuickstartConfig } from '../../model/NetworkConfig'
+import { createQuickstartConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
 import {
   copyFile,
   createFolder,
@@ -15,7 +15,7 @@ cwd.mockReturnValue(TEST_CWD)
 
 describe('creates a cakeshop directory structure for bash', () => {
   it('creates directory structure for cakeshop files and moves them in', () => {
-    let config = createQuickstartConfig({
+    let config = createReplica7NodesConfig({
       numberNodes: '5',
       consensus: 'raft',
       transactionManager: 'tessera',

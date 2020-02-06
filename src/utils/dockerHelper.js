@@ -83,7 +83,8 @@ export function createDockerCompose(config) {
 
   copyFile(join(cwd(), 'lib/runscript.sh'), join(qdata, 'runscript.sh'))
   copyFile(join(cwd(), 'lib/public-contract.js'), join(qdata, 'public-contract.js'))
-  copyFile(join(cwd(), 'lib/private-contract.js'), join(qdata, 'private-contract.js'))
+  copyFile(join(cwd(), 'lib/private-contract-3nodes.js'), join(networkPath, 'private-contract-3nodes.js'))
+  copyFile(join(cwd(), 'lib/private-contract-7nodes.js'), join(networkPath, 'private-contract-7nodes.js'))
 
 }
 
