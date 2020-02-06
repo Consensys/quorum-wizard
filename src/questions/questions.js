@@ -46,7 +46,7 @@ export const CONSENSUS_MODE = {
   ]
 }
 
-export const GETH_BINARY = {
+export const QUORUM_VERSION = {
   type: 'list',
   name: 'quorumVersion',
   message: 'Which version of Quorum would you like to use?',

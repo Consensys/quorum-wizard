@@ -8,7 +8,7 @@ import {
   NUMBER_NODES,
   TRANSACTION_MANAGER,
   CAKESHOP,
-  GETH_BINARY,
+  QUORUM_VERSION,
   KEY_GENERATION,
   NETWORK_ID,
   GENESIS_LOCATION,
@@ -22,7 +22,7 @@ export async function quickstart () {
     DEPLOYMENT_TYPE,
     CONSENSUS_MODE,
     NUMBER_NODES,
-    GETH_BINARY,
+    QUORUM_VERSION,
     TRANSACTION_MANAGER,
     CAKESHOP
   ])
@@ -35,7 +35,7 @@ export async function customize () {
     DEPLOYMENT_TYPE,
     CONSENSUS_MODE,
     NUMBER_NODES,
-    GETH_BINARY,
+    QUORUM_VERSION,
     TRANSACTION_MANAGER,
     CAKESHOP
   ])
