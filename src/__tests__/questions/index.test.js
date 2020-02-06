@@ -27,7 +27,7 @@ const CUSTOM_CONFIG = {
 }
 
 test('placeholder', async () => {
-  const fakeConfig = { test: 'test' }
+  const fakeConfig = { network: {name: 'test'}}
   prompt.mockResolvedValue(QUICKSTART_CONFIG)
   createQuickstartConfig.mockReturnValue(fakeConfig)
   await quickstart()
@@ -37,7 +37,7 @@ test('placeholder', async () => {
 })
 
 test('customize', async () => {
-  const fakeConfig = { test: 'test' }
+  const fakeConfig = { network: {name: 'test'}}
   const fakeCommands = {tesseraStart: 'test', gethStart: 'test', initStart: ['test'],netPath: 'test',}
   createCustomConfig.mockReturnValue(fakeConfig)
   prompt.mockResolvedValueOnce(QUICKSTART_CONFIG)
