@@ -1,8 +1,8 @@
 import { buildDockerCompose } from '../../utils/dockerHelper'
-import { createQuickstartConfig, createCustomConfig } from '../../model/NetworkConfig'
+import { createCustomConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
 
 test('creates 3nodes raft dockerFile tessera no cakeshop', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '3',
     consensus: 'raft',
     transactionManager: 'tessera',
@@ -14,7 +14,7 @@ test('creates 3nodes raft dockerFile tessera no cakeshop', () => {
 })
 
 test('creates 5nodes istanbul dockerFile no tessera no cakeshop', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '5',
     consensus: 'istanbul',
     transactionManager: 'none',
@@ -26,7 +26,7 @@ test('creates 5nodes istanbul dockerFile no tessera no cakeshop', () => {
 })
 
 test('creates 3nodes raft dockerFile tessera cakeshop', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '3',
     consensus: 'raft',
     transactionManager: 'tessera',
@@ -38,7 +38,7 @@ test('creates 3nodes raft dockerFile tessera cakeshop', () => {
 })
 
 test('creates 5nodes istanbul dockerFile no tessera cakeshop', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '5',
     consensus: 'istanbul',
     transactionManager: 'none',

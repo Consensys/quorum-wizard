@@ -1,8 +1,8 @@
-import { createQuickstartConfig } from '../../model/NetworkConfig'
+import { createQuickstartConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
 import { generateCakeshopConfig } from '../../model/CakeshopConfig'
 
 test('creates 3nodes raft dockerFile tessera cakeshop', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '3',
     consensus: 'raft',
     transactionManager: 'tessera',
@@ -14,7 +14,7 @@ test('creates 3nodes raft dockerFile tessera cakeshop', () => {
 })
 
 test('creates 3nodes istanbul bash tessera cakeshop', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '3',
     consensus: 'istanbul',
     transactionManager: 'tessera',
@@ -26,7 +26,7 @@ test('creates 3nodes istanbul bash tessera cakeshop', () => {
 })
 
 test('creates 3nodes raft dockerFile no tessera cakeshop', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '3',
     consensus: 'raft',
     transactionManager: 'none',
@@ -38,7 +38,7 @@ test('creates 3nodes raft dockerFile no tessera cakeshop', () => {
 })
 
 test('creates 3nodes istanbul bash no tessera cakeshop', () => {
-  const config = createQuickstartConfig({
+  const config = createReplica7NodesConfig({
     numberNodes: '3',
     consensus: 'istanbul',
     transactionManager: 'none',
