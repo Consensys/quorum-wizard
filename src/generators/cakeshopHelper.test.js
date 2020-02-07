@@ -1,16 +1,16 @@
 import { join } from 'path'
-import { createQuickstartConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
+import { createQuickstartConfig, createReplica7NodesConfig } from '../model/NetworkConfig'
 import {
   copyFile,
   createFolder,
   cwd,
   writeJsonFile,
-} from '../../utils/fileUtils'
-import { buildCakeshopDir } from '../../utils/cakeshopHelper'
+} from '../utils/fileUtils'
+import { buildCakeshopDir } from './cakeshopHelper'
 import { anything } from 'expect'
-import { TEST_CWD } from '../testHelper'
+import { TEST_CWD } from '../utils/testHelper'
 
-jest.mock('../../utils/fileUtils')
+jest.mock('../utils/fileUtils')
 cwd.mockReturnValue(TEST_CWD)
 
 describe('creates a cakeshop directory structure for bash', () => {

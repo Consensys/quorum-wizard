@@ -1,9 +1,9 @@
-import {  generateNodeConfigs} from '../../model/NetworkConfig'
-import { generateRaftConfig, generateIstanbulConfig } from '../../model/ConsensusConfig'
-import {generateAccounts, generateExtraData } from '../../utils/consensusHelper'
-import { readFileToString } from '../../utils/fileUtils'
+import {  generateNodeConfigs} from './NetworkConfig'
+import { generateRaftConfig, generateIstanbulConfig } from './ConsensusConfig'
+import {generateAccounts, generateExtraData } from '../generators/consensusHelper'
+import { readFileToString } from '../utils/fileUtils'
 
-jest.mock('../../utils/consensusHelper')
+jest.mock('../generators/consensusHelper')
 
 test('creates 3nodes raft genesis', () => {
 

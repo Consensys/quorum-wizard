@@ -1,5 +1,5 @@
-import { createQuickstartConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
-import { generateCakeshopConfig } from '../../model/CakeshopConfig'
+import { createQuickstartConfig, createReplica7NodesConfig } from './NetworkConfig'
+import { generateCakeshopConfig } from './CakeshopConfig'
 
 test('creates 3nodes raft dockerFile tessera cakeshop', () => {
   const config = createReplica7NodesConfig({

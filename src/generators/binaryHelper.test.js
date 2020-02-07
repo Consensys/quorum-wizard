@@ -7,17 +7,17 @@ import {
   pathToCakeshop,
   pathToQuorumBinary,
   pathToTesseraJar,
-} from '../../utils/binaryHelper'
-import { executeSync } from '../../utils/execUtils'
-import { cwd } from '../../utils/fileUtils'
+} from './binaryHelper'
+import { executeSync } from '../utils/execUtils'
+import { cwd } from '../utils/fileUtils'
 import { join } from 'path'
-import { TEST_CWD } from '../testHelper'
-import { downloadIfMissing } from '../../utils/download'
+import { TEST_CWD } from '../utils/testHelper'
+import { downloadIfMissing } from './download'
 import { any } from 'expect'
 
-jest.mock('../../utils/download')
-jest.mock('../../utils/execUtils')
-jest.mock('../../utils/fileUtils')
+jest.mock('../generators/download')
+jest.mock('../utils/execUtils')
+jest.mock('../utils/fileUtils')
 cwd.mockReturnValue(TEST_CWD)
 downloadIfMissing.mockReturnValue(Promise.resolve())
 

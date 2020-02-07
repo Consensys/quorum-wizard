@@ -1,8 +1,8 @@
-import { validateNumberStringInRange } from '../utils/questionUtils'
+import { validateNumberStringInRange } from './validators'
 import {
   getDownloadableGethChoices, getDownloadableTesseraChoices,
   getGethOnPath, getTesseraOnPath,
-} from '../utils/binaryHelper'
+} from '../generators/binaryHelper'
 
 
 export const INITIAL_MODE = {

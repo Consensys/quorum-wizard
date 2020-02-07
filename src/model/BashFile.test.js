@@ -1,10 +1,10 @@
-import { buildBashScript } from '../../utils/bashHelper'
-import { createCustomConfig, createQuickstartConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
-import { cwd } from '../../utils/fileUtils'
-import { TEST_CWD } from '../testHelper'
+import { buildBashScript } from '../generators/bashHelper'
+import { createCustomConfig, createQuickstartConfig, createReplica7NodesConfig } from './NetworkConfig'
+import { cwd } from '../utils/fileUtils'
+import { TEST_CWD } from '../utils/testHelper'
 import { join } from 'path'
 
-jest.mock('../../utils/fileUtils')
+jest.mock('../utils/fileUtils')
 cwd.mockReturnValue(TEST_CWD)
 
 test('creates quickstart config', () => {

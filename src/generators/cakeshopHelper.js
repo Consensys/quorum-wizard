@@ -4,7 +4,7 @@ import {
   createFolder,
   cwd,
   writeJsonFile,
-} from './fileUtils'
+} from '../utils/fileUtils'
 import { generateCakeshopConfig } from '../model/CakeshopConfig'
 
 export function buildCakeshopDir(config, qdata) {

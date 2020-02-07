@@ -1,6 +1,6 @@
-import { cwd } from './fileUtils'
+import { cwd } from '../utils/fileUtils'
 import { join } from 'path'
-import { executeSync } from './execUtils'
+import { executeSync } from '../utils/execUtils'
 import { isDocker } from '../model/NetworkConfig'
 import { downloadIfMissing } from './download'
 

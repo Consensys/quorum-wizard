@@ -4,8 +4,8 @@ import {
   readFileToString
 } from '../utils/fileUtils'
 import { join } from 'path'
-import { executeSync } from './execUtils'
-import { nodekeyToAccount } from './web3Helper'
+import { executeSync } from '../utils/execUtils'
+import { nodekeyToAccount } from '../utils/web3Helper'
 import { pathToIstanbulTools } from './binaryHelper'
 
 export function generateAccounts(nodes, keyPath) {

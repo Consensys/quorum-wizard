@@ -1,14 +1,14 @@
-import { createQuickstartConfig, createReplica7NodesConfig, createCustomConfig } from '../../model/NetworkConfig'
-import { customize, quickstart, replica7Nodes } from '../../questions'
-import { buildBash } from '../../utils/bashHelper'
+import { createQuickstartConfig, createReplica7NodesConfig, createCustomConfig } from '../model/NetworkConfig'
+import { customize, quickstart, replica7Nodes } from './index'
+import { buildBash } from '../generators/bashHelper'
 import { prompt } from 'inquirer'
-import { getCustomizedBashNodes } from '../../utils/promptHelper'
+import { getCustomizedBashNodes } from './promptHelper'
 
 jest.mock('inquirer')
-jest.mock('../../model/NetworkConfig')
-jest.mock('../../utils/bashHelper')
-jest.mock('../../utils/dockerHelper')
-jest.mock('../../utils/promptHelper')
+jest.mock('../model/NetworkConfig')
+jest.mock('../generators/bashHelper')
+jest.mock('../generators/dockerHelper')
+jest.mock('../questions/promptHelper')
 
 const REPLICA_7NODES_CONFIG = {
   numberNodes: '5',

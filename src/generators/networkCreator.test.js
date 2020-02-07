@@ -1,25 +1,25 @@
 import { join } from 'path'
-import { createDirectory, createStaticNodes } from '../../utils/networkCreator'
-import {createConfig} from '../../model/TesseraConfig'
+import { createDirectory, createStaticNodes } from './networkCreator'
+import {createConfig} from '../model/TesseraConfig'
 import {
   generateNodeConfigs,
   createReplica7NodesConfig,
   createCustomConfig
-} from '../../model/NetworkConfig'
+} from '../model/NetworkConfig'
 import {
   copyFile,
   createFolder,
   cwd,
   readFileToString,
   writeJsonFile
-} from '../../utils/fileUtils'
+} from '../utils/fileUtils'
 import { anything } from 'expect'
-import { TEST_CWD } from '../testHelper'
-import { generateConsensusConfig } from '../../model/ConsensusConfig'
+import { TEST_CWD } from '../utils/testHelper'
+import { generateConsensusConfig } from '../model/ConsensusConfig'
 
-jest.mock('../../utils/execUtils')
-jest.mock('../../utils/fileUtils')
-jest.mock('../../model/ConsensusConfig')
+jest.mock('../utils/execUtils')
+jest.mock('../utils/fileUtils')
+jest.mock('../model/ConsensusConfig')
 cwd.mockReturnValue(TEST_CWD)
 
 describe('creates a bash network', () => {

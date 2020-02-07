@@ -1,7 +1,7 @@
 import { createQuickstartConfig, createReplica7NodesConfig, createCustomConfig, generateNodeConfigs } from '../model/NetworkConfig'
-import { buildBash } from '../utils/bashHelper'
-import { createDockerCompose } from '../utils/dockerHelper'
-import { getCustomizedBashNodes, getCustomizedDockerPorts } from '../utils/promptHelper'
+import { buildBash } from '../generators/bashHelper'
+import { createDockerCompose } from '../generators/dockerHelper'
+import { getCustomizedBashNodes, getCustomizedDockerPorts } from './promptHelper'
 import {
   CONSENSUS_MODE,
   DEPLOYMENT_TYPE,

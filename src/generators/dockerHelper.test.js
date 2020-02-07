@@ -1,17 +1,17 @@
-import { createDirectory, includeCakeshop } from '../../utils/networkCreator'
-import { createQuickstartConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
+import { createDirectory, includeCakeshop } from './networkCreator'
+import { createQuickstartConfig, createReplica7NodesConfig } from '../model/NetworkConfig'
 import {
   copyFile,
   writeFile,
   readFileToString,
   formatNewLine,
   cwd,
-} from '../../utils/fileUtils'
-import { buildDockerCompose, createDockerCompose } from '../../utils/dockerHelper'
-import { TEST_CWD } from '../testHelper'
+} from '../utils/fileUtils'
+import { buildDockerCompose, createDockerCompose } from './dockerHelper'
+import { TEST_CWD } from '../utils/testHelper'
 
-jest.mock('../../utils/fileUtils')
-jest.mock('../../utils/networkCreator')
+jest.mock('../utils/fileUtils')
+jest.mock('../generators/networkCreator')
 cwd.mockReturnValue(TEST_CWD)
 
 describe('generates docker-compose directory', () => {

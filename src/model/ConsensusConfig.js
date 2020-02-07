@@ -1,5 +1,5 @@
 import { writeJsonFile,} from '../utils/fileUtils'
-import {generateAccounts, generateExtraData } from '../utils/consensusHelper'
+import {generateAccounts, generateExtraData } from '../generators/consensusHelper'
 
 export function generateConsensusConfig(configDir, keyPath, consensus, nodes, networkId) {
   return consensus === 'raft' ?  generateRaft(configDir, keyPath, nodes, networkId) :

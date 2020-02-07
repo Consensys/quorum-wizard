@@ -1,5 +1,5 @@
-import { buildDockerCompose } from '../../utils/dockerHelper'
-import { createCustomConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
+import { buildDockerCompose } from '../generators/dockerHelper'
+import { createCustomConfig, createReplica7NodesConfig } from './NetworkConfig'
 
 test('creates 3nodes raft dockerFile tessera no cakeshop', () => {
   const config = createReplica7NodesConfig({

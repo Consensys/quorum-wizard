@@ -3,9 +3,9 @@ import {
   copyFile,
   cwd,
   writeFile,
-} from './fileUtils'
+} from '../utils/fileUtils'
 import { join } from 'path'
-import { execute } from './execUtils'
+import { execute } from '../utils/execUtils'
 import { buildCakeshopDir, generateCakeshopScript, waitForCakeshopCommand } from './cakeshopHelper'
 import {
   downloadAndCopyBinaries,
