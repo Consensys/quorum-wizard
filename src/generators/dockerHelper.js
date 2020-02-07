@@ -9,7 +9,7 @@ import {
   writeJsonFile,
   formatNewLine,
   cwd,
-} from './fileUtils'
+} from '../utils/fileUtils'
 import { includeCakeshop, createDirectory } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
 import { isTessera } from '../model/NetworkConfig'

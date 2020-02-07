@@ -1,14 +1,14 @@
 import { join } from 'path'
-import {generateAccounts, generateExtraData } from '../../utils/consensusHelper'
-import { nodekeyToAccount } from '../../utils/web3Helper'
-import {  readFileToString, writeFile, cwd } from '../../utils/fileUtils'
-import {  generateNodeConfigs} from '../../model/NetworkConfig'
-import { executeSync } from '../../utils/execUtils'
-import { TEST_CWD } from '../testHelper'
+import {generateAccounts, generateExtraData } from './consensusHelper'
+import { nodekeyToAccount } from '../utils/web3Helper'
+import {  readFileToString, writeFile, cwd } from '../utils/fileUtils'
+import {  generateNodeConfigs} from '../model/NetworkConfig'
+import { executeSync } from '../utils/execUtils'
+import { TEST_CWD } from '../utils/testHelper'
 
-jest.mock('../../utils/fileUtils')
-jest.mock('../../utils/web3Helper')
-jest.mock('../../utils/execUtils')
+jest.mock('../utils/fileUtils')
+jest.mock('../utils/web3Helper')
+jest.mock('../utils/execUtils')
 cwd.mockReturnValue(TEST_CWD)
 
 describe('generates accounts for genesis', () => {

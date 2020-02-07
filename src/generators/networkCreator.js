@@ -1,6 +1,6 @@
 import { join } from 'path'
 import sanitize from 'sanitize-filename'
-import { copyFile, createFolder, cwd, readFileToString, removeFolder, writeJsonFile, } from './fileUtils'
+import { copyFile, createFolder, cwd, readFileToString, removeFolder, writeJsonFile, } from '../utils/fileUtils'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'

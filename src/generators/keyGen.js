@@ -1,6 +1,6 @@
 import { join } from 'path'
-import { executeSync } from './execUtils'
-import { createFolder, copyFile, readFileToString } from './fileUtils'
+import { executeSync } from '../utils/execUtils'
+import { createFolder, copyFile, readFileToString } from '../utils/fileUtils'
 import { isTessera } from '../model/NetworkConfig'
 import { pathToBootnode, pathToQuorumBinary, pathToTesseraJar } from './binaryHelper'
 

@@ -1,5 +1,5 @@
 import { basename, join } from 'path'
-import { createFolder, cwd, exists } from './fileUtils'
+import { createFolder, cwd, exists } from '../utils/fileUtils'
 import axios from 'axios'
 import { createGunzip } from 'zlib'
 import { extract } from 'tar-fs'

@@ -1,4 +1,4 @@
-import { validateNumberStringInRange } from '../../utils/questionUtils'
+import { validateNumberStringInRange } from './validators'
 
 test('accepts answer bottom of range', () => {
   expect(validateNumberStringInRange("2", 2, 3)).toBe(true)

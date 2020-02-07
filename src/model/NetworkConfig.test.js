@@ -1,4 +1,4 @@
-import { createQuickstartConfig, createCustomConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
+import { createQuickstartConfig, createCustomConfig, createReplica7NodesConfig } from './NetworkConfig'
 
 // rather than having big test jsons that we match to, we can just use snapshot
 // tests, where it will compare against the last time you ran and if it's

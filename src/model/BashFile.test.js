@@ -1,12 +1,12 @@
-import { buildBashScript } from '../../utils/bashHelper'
-import { createCustomConfig, createQuickstartConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
-import { cwd } from '../../utils/fileUtils'
-import { TEST_CWD } from '../testHelper'
-import { generateAccounts } from '../../utils/consensusHelper'
+import { buildBashScript } from '../generators/bashHelper'
+import { createCustomConfig, createQuickstartConfig, createReplica7NodesConfig } from './NetworkConfig'
+import { cwd } from '../utils/fileUtils'
+import { TEST_CWD } from '../utils/testHelper'
+import { generateAccounts } from '../generators/consensusHelper'
 import { join } from 'path'
 
-jest.mock('../../utils/fileUtils')
-jest.mock('../../utils/consensusHelper')
+jest.mock('../utils/fileUtils')
+jest.mock('../generators/consensusHelper')
 cwd.mockReturnValue(TEST_CWD)
 generateAccounts.mockReturnValue("accounts")
 
