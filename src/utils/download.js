@@ -13,7 +13,7 @@ export async function downloadIfMissing (name, version) {
   const binaryInfo = BINARIES[name][version]
   const binDir = join(cwd(), 'bin', name, version)
   const binaryFileLocation = join(binDir, binaryInfo.name)
-  if (!exists(binDir)) {
+  if (!exists(binaryFileLocation)) {
     createFolder(binDir, true)
     const url = getPlatformSpecificUrl(binaryInfo)
 
