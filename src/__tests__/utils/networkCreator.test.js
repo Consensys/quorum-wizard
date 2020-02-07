@@ -49,6 +49,7 @@ describe('creates a bash network', () => {
       cakeshop: false
     })
     const commands = createDirectory(config)
+    expect(generateConsensusConfig).toHaveBeenCalled()
     expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/logs`), true)
     expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', config)
     for (let i = 1; i < 6; i++) {
@@ -101,6 +102,7 @@ describe('creates a docker network', () => {
       cakeshop: false
     })
     const commands = createDirectory(config)
+    expect(generateConsensusConfig).toHaveBeenCalled()
     expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/logs`), true)
     expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', config)
     for (let i = 1; i < 6; i++) {
@@ -141,6 +143,7 @@ describe('creates a docker network', () => {
     })
 
     const commands = createDirectory(config)
+    expect(generateConsensusConfig).toHaveBeenCalled()
     expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/logs`), true)
     expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', config)
     for (let i = 1; i < 6; i++) {
@@ -152,7 +155,7 @@ describe('creates a docker network', () => {
       expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/c${i}`))
       expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/key`), createNetPath(config, `qdata/dd${i}/keystore`, 'key'))
       expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/password.txt`), createNetPath(config, `qdata/dd${i}/keystore`, 'password.txt'))
-      expect(generateConsensusConfig).toBeCalledTimes(1)
+      expect(copyFile).toBeCalledWith(createNetPath(config, 'generated', 'raft-genesis.json'), createNetPath(config, `qdata/dd${i}`, 'raft-genesis.json'))
       expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/nodekey`), createNetPath(config, `qdata/dd${i}/geth`, 'nodekey'))
       expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/tm.key`), createNetPath(config, `qdata/c${i}/tm.key`))
       expect(copyFile).toBeCalledWith(createPath(`7nodes/key${i}/tm.pub`), createNetPath(config, `qdata/c${i}/tm.pub`))

@@ -114,7 +114,7 @@ test('creates 6nodes raft custom docker config', () => {
     cakeshop: false,
     generateKeys: true,
     networkId: 10,
-    genesisLocation: 'testDir',
+    genesisLocation: '',
     customizePorts: false,
     nodes: [],
     dockerCustom: undefined

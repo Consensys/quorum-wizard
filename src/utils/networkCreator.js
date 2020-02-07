@@ -27,20 +27,13 @@ export function createDirectory (config) {
   const configPath = join(cwd(), config.network.configDir)
   createFolder(configPath, true)
   let keyPath = join(cwd(), '7nodes')
-  //if user selected to customize some parts
-  if(config.network.custom) {
-    //key generation, else use given 7nodes keys
-    if(config.network.generateKeys) {
-      generateKeys(config, configPath)
-      keyPath = configPath
-    }
-    //if user supplied genesis file location use that
-    if(config.network.genesisFile !== 'none') {
-      copyFile(config.network.genesisFile, join(configPath, `${config.network.consensus}-genesis.json`))
-    } else { //else generate consensus file based on custom configs
-      generateConsensusConfig(configPath, keyPath, config.network.consensus, config.nodes, config.network.networkId)
-    }
+  //if user selected to generate keys
+  if(config.network.generateKeys) {
+    generateKeys(config, configPath)
+    keyPath = configPath
   }
+  //always generate consensus genesis
+  generateConsensusConfig(configPath, keyPath, config.network.consensus, config.nodes, config.network.networkId)
 
   const staticNodes = createStaticNodes(config.nodes, config.network.consensus, keyPath)
   const peerList = createPeerList(config.nodes, config.network.transactionManager)

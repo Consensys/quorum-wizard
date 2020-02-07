@@ -48,7 +48,7 @@ export async function customize () {
   const customAnswers = await inquirer.prompt([
     KEY_GENERATION,
     NETWORK_ID,
-    GENESIS_LOCATION,
+    // GENESIS_LOCATION,
     CUSTOMIZE_PORTS
   ])
 

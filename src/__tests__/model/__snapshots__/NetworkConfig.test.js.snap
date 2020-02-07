@@ -261,7 +261,7 @@ Object {
     "customizePorts": false,
     "deployment": "docker-compose",
     "generateKeys": true,
-    "genesisFile": "testDir",
+    "genesisFile": "",
     "id": 10,
     "name": "6-nodes-raft-tessera-docker-compose",
     "networkId": 10,
