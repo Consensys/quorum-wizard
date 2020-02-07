@@ -10,10 +10,11 @@ export async function downloadIfMissing (name, version) {
   if (BINARIES[name] === undefined || BINARIES[name][version] === undefined) {
     throw new Error(`Could not find binary info entry for ${name} ${version}`)
   }
-  let binDir = join(cwd(), 'bin', name, version)
+  const binaryInfo = BINARIES[name][version]
+  const binDir = join(cwd(), 'bin', name, version)
+  const binaryFileLocation = join(binDir, binaryInfo.name)
   if (!exists(binDir)) {
     createFolder(binDir, true)
-    const binaryInfo = BINARIES[name][version]
     const url = getPlatformSpecificUrl(binaryInfo)
 
     console.log(`Downloading ${name} ${version} from ${url}...`)
@@ -23,8 +24,8 @@ export async function downloadIfMissing (name, version) {
       responseType: 'stream',
     })
 
+    console.log(`Saving to ${binaryFileLocation}`)
     if (binaryInfo.type === 'tar.gz') {
-      console.log(`Extracting ${binaryInfo.name} from tar.gz archive`)
       const extractorStream = response.data.pipe(createGunzip())
         .pipe(extract(binDir, {
           map: function (header) {
@@ -47,9 +48,7 @@ export async function downloadIfMissing (name, version) {
         extractorStream.on('error', reject)
       })
     } else {
-      console.log(`Writing ${binaryInfo.name} to disk`)
-      const writer = createWriteStream(join(binDir, binaryInfo.name),
-        { mode: 0o755 })
+      const writer = createWriteStream(binaryFileLocation, { mode: 0o755 })
       response.data.pipe(writer)
       return new Promise((resolve, reject) => {
         writer.on('finish', () => {
@@ -60,6 +59,6 @@ export async function downloadIfMissing (name, version) {
       })
     }
   } else {
-    console.log('Using cached binary at:', binDir)
+    console.log('Using cached binary at:', binaryFileLocation)
   }
 }
