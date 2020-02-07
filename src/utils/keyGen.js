@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { executeSync } from './execUtils'
-import { createFolder, copyFile } from './fileUtils'
+import { createFolder, copyFile, readFileToString } from './fileUtils'
 import { isTessera } from '../model/NetworkConfig'
 import { pathToBootnode, pathToQuorumBinary, pathToTesseraJar } from './binaryHelper'
 
@@ -13,6 +13,7 @@ export function generateKeys(config, keyPath) {
     copyFile(config.network.passwordFile, join(keyDir, 'password.txt'))
 
     doExec(keyDir, config)
+    console.log(`tm${nodeNumber} public key: ${readFileToString(join(keyDir, 'tm.pub'))}`)
   })
   console.log('Keys were generated')
 }
