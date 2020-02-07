@@ -18,7 +18,7 @@ export function generateKeys(config, keyPath) {
 }
 
 function doExec(keyDir, config) {
-  let cmd = `cd ${keyDir} && ${pathToQuorumBinary(config.network.quorumVersion)} account new --keystore ${keyDir} --password password.txt
+  let cmd = `cd ${keyDir} && ${pathToQuorumBinary(config.network.quorumVersion)} account new --keystore ${keyDir} --password password.txt 2>&1
   ${pathToBootnode()} -genkey=nodekey
   ${pathToBootnode()} --nodekey=nodekey --writeaddress > enode
   find . -type f -name 'UTC*' -execdir mv {} key ';'
