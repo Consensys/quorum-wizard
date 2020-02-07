@@ -8,9 +8,9 @@ export function createQuickstartConfig() {
       transactionManager: '0.10.2',
       id: 10,
       permissioned: true,
-      genesisFile: '7nodes/raft-genesis.json',
+      genesisFile: 'none',
       generateKeys: false,
-      configDir: '7nodes',
+      configDir: 'network/3-nodes-raft-tessera-bash/generated',
       deployment: 'bash',
       cakeshop: true,
       custom: false,
@@ -27,18 +27,19 @@ export function createReplica7NodesConfig (answers) {
     cakeshop,
     quorumVersion
   } = answers
+  let networkFolder = createNetworkFolderName(answers)
   return {
     network: {
-      name: createNetworkFolderName(answers),
+      name: networkFolder,
       verbosity: 5,
       consensus: consensus,
       quorumVersion: quorumVersion,
       transactionManager: transactionManager,
       id: 10,
       permissioned: true,
-      genesisFile: `7nodes/${consensus}-genesis.json`,
+      genesisFile: 'none',
       generateKeys: false,
-      configDir: '7nodes',
+      configDir: `network/${networkFolder}/generated`,
       deployment: deployment,
       cakeshop: cakeshop,
       custom: false,
