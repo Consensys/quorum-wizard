@@ -1,4 +1,4 @@
-import { createDirectory, isTessera, includeCakeshop } from './networkCreator'
+import { createDirectory, includeCakeshop } from './networkCreator'
 import {
   copyFile,
   cwd,
@@ -7,12 +7,20 @@ import {
 import { join } from 'path'
 import { execute } from './execUtils'
 import { buildCakeshopDir, generateCakeshopScript, waitForCakeshopCommand } from './cakeshopHelper'
+import {
+  downloadAndCopyBinaries,
+  pathToCakeshop,
+  pathToQuorumBinary,
+  pathToTesseraJar,
+} from './binaryHelper'
+import { isTessera } from '../model/NetworkConfig'
 
 export function buildBashScript(config) {
   const commands = createDirectory(config)
 
   const cakeshopStart = includeCakeshop(config) ? [generateCakeshopScript(), waitForCakeshopCommand()].join("") : ""
   const startScript = [
+    setEnvironmentCommand(config),
     commands.tesseraStart,
     waitForTesseraNodesCommand(config),
     commands.gethStart,
@@ -26,7 +34,9 @@ export function buildBashScript(config) {
   }
 }
 
-export function buildBash(config) {
+export async function buildBash(config) {
+
+  await downloadAndCopyBinaries(config)
 
   const bashDetails = buildBashScript(config)
   const networkPath = bashDetails.networkPath
@@ -63,20 +73,19 @@ export function createGethStartCommand (config, node, passwordDestination, nodeN
     `--raft --raftport ${raftPort}` :
     `--istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1`
 
-  return `PRIVATE_CONFIG=${tmIpcLocation} nohup geth --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --verbosity ${verbosity} --networkid ${id} --rpcport ${rpcPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
+  return `PRIVATE_CONFIG=${tmIpcLocation} nohup $BIN_GETH --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --verbosity ${verbosity} --networkid ${id} --rpcport ${rpcPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
 }
 
 export function createTesseraStartCommand (config, node, nodeNumber, tmDir, logDir) {
   // `rm -f ${tmDir}/tm.ipc`
 
-  const tesseraJar = '$TESSERA_JAR' // require env variable to be set for now
   let DEBUG = ''
   if (config.network.remoteDebug) {
     DEBUG = '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=500$i -Xdebug'
   }
 
   const MEMORY = '-Xms128M -Xmx128M'
-  const CMD = `java ${DEBUG} ${MEMORY} -jar ${tesseraJar} -configfile ${tmDir}/tessera-config-09-${nodeNumber}.json >> ${logDir}/tessera${nodeNumber}.log 2>&1 &`
+  const CMD = `java ${DEBUG} ${MEMORY} -jar $BIN_TESSERA -configfile ${tmDir}/tessera-config-09-${nodeNumber}.json >> ${logDir}/tessera${nodeNumber}.log 2>&1 &`
   return CMD
 }
 
@@ -89,6 +98,18 @@ function checkTesseraUpcheck(nodes) {
         DOWN=true
     fi`
   })
+}
+export function setEnvironmentCommand (config) {
+  const lines = []
+  lines.push(`BIN_GETH=${pathToQuorumBinary(config.network.quorumVersion)}`)
+  if(isTessera(config)) {
+    lines.push(`BIN_TESSERA=${pathToTesseraJar(config.network.transactionManager)}`)
+  }
+  if(config.network.cakeshop) {
+    lines.push(`BIN_CAKESHOP=${pathToCakeshop()}`)
+  }
+  lines.push('')
+  return lines.join("\n")
 }
 
 export function waitForTesseraNodesCommand (config) {

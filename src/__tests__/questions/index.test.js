@@ -13,7 +13,8 @@ jest.mock('../../utils/promptHelper')
 const REPLICA_7NODES_CONFIG = {
   numberNodes: '5',
   consensus: 'istanbul',
-  transactionManager: 'tessera',
+  quorumVersion: '2.4.0',
+  transactionManager: '0.10.2',
   deployment: 'bash',
   cakeshop: false
 }
@@ -30,10 +31,11 @@ test('quickstart', async () => {
   const fakeConfig = { network: {name: 'test'}}
   createQuickstartConfig.mockReturnValue(fakeConfig)
   await quickstart()
+  expect(createQuickstartConfig).toHaveBeenCalled()
   expect(buildBash).toHaveBeenCalledWith(fakeConfig)
 })
 
-test('placeholder', async () => {
+test('7nodes replica', async () => {
   const fakeConfig = { network: {name: 'test'}}
   prompt.mockResolvedValue(REPLICA_7NODES_CONFIG)
   createReplica7NodesConfig.mockReturnValue(fakeConfig)

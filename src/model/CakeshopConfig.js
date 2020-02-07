@@ -1,4 +1,4 @@
-import { isTessera } from '../utils/networkCreator'
+import { isTessera } from './NetworkConfig'
 
 export function generateCakeshopConfig(config) {
   let nodes =[]

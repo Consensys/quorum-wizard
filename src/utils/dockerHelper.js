@@ -10,10 +10,10 @@ import {
   formatNewLine,
   cwd,
 } from './fileUtils'
-import { isTessera, includeCakeshop, createDirectory } from './networkCreator'
-import { generateKeys } from './keyGen'
-import { generateConsensusConfig } from '../model/ConsensusConfig'
+import { includeCakeshop, createDirectory } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
+import { isTessera } from '../model/NetworkConfig'
+import { downloadAndCopyBinaries } from './binaryHelper'
 const yaml = require('js-yaml')
 
 export function buildDockerCompose(config) {
@@ -64,7 +64,9 @@ function createCustomTesseraPorts(dockerConfig) {
   }
 }
 
-export function createDockerCompose(config) {
+export async function createDockerCompose(config) {
+  await downloadAndCopyBinaries(config)
+
   const file = buildDockerCompose(config)
 
   const commands = createDirectory(config)

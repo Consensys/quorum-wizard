@@ -1,4 +1,4 @@
-import { createDirectory, isTessera, includeCakeshop } from '../../utils/networkCreator'
+import { createDirectory, includeCakeshop } from '../../utils/networkCreator'
 import { createQuickstartConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
 import {
   copyFile,
@@ -15,12 +15,13 @@ jest.mock('../../utils/networkCreator')
 cwd.mockReturnValue(TEST_CWD)
 
 describe('generates docker-compose directory', () => {
-  it('given docker details builds files to run docker', () => {
+  it('given docker details builds files to run docker', async () => {
 
     let config = createReplica7NodesConfig({
       numberNodes: '5',
       consensus: 'raft',
-      transactionManager: 'tessera',
+      quorumVersion: '2.4.0',
+      transactionManager: '0.10.2',
       deployment: 'docker-compose',
       cakeshop: false
     })
@@ -30,10 +31,9 @@ describe('generates docker-compose directory', () => {
         initStart: [],
         netPath: "test",
       })
-    isTessera.mockReturnValueOnce(true)
     includeCakeshop.mockReturnValueOnce(false)
     readFileToString.mockReturnValueOnce("test")
-    createDockerCompose(config)
+    await createDockerCompose(config)
 
     expect(writeFile).toBeCalledTimes(3)
     expect(copyFile).toBeCalledTimes(4)
@@ -46,7 +46,8 @@ describe('generates docker-compose script details', () => {
     let config = createReplica7NodesConfig({
       numberNodes: '1',
       consensus: 'raft',
-      transactionManager: 'tessera',
+      quorumVersion: '2.4.0',
+      transactionManager: '0.10.2',
       deployment: 'docker-compose',
       cakeshop: false
     })
@@ -94,7 +95,6 @@ volumes:
   "cakeshopvol":`
     const expected = "quorumDefinitions\ntesseraDefinitions" + services
 
-    isTessera.mockReturnValueOnce(true)
     includeCakeshop.mockReturnValueOnce(false)
     readFileToString.mockReturnValueOnce("definitions")
     readFileToString.mockReturnValueOnce("tessera")
@@ -109,6 +109,7 @@ volumes:
     let config = createReplica7NodesConfig({
       numberNodes: '1',
       consensus: 'raft',
+      quorumVersion: '2.4.0',
       transactionManager: 'none',
       deployment: 'docker-compose',
       cakeshop: false
@@ -142,7 +143,6 @@ volumes:
   "cakeshopvol":`
     const expected = "quorumDefinitions" + services
 
-    isTessera.mockReturnValueOnce(false)
     includeCakeshop.mockReturnValueOnce(false)
     readFileToString.mockReturnValueOnce("definitions")
     formatNewLine.mockReturnValueOnce("quorumDefinitions\n")
@@ -199,7 +199,6 @@ volumes:
   "cakeshopvol":`
     const expected = "quorumDefinitions\ncakeshopDefinitions" + services
 
-    isTessera.mockReturnValueOnce(false)
     includeCakeshop.mockReturnValueOnce(true)
     readFileToString.mockReturnValueOnce("quorumDefinitions")
     readFileToString.mockReturnValueOnce("cakeshopDefinitions")
@@ -214,7 +213,7 @@ volumes:
     const config = createReplica7NodesConfig({
       numberNodes: '1',
       consensus: 'raft',
-      transactionManager: 'tessera',
+      transactionManager: '0.10.2',
       deployment: 'docker-compose',
       cakeshop: true
     })
@@ -273,7 +272,6 @@ volumes:
   "cakeshopvol":`
     const expected = "quorumDefinitions\ntesseraDefinitions\ncakeshopDefinitions" + services
 
-    isTessera.mockReturnValueOnce(true)
     includeCakeshop.mockReturnValueOnce(true)
     readFileToString.mockReturnValueOnce("definitions")
     readFileToString.mockReturnValueOnce("tessera")

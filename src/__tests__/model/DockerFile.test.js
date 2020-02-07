@@ -5,7 +5,8 @@ test('creates 3nodes raft dockerFile tessera no cakeshop', () => {
   const config = createReplica7NodesConfig({
     numberNodes: '3',
     consensus: 'raft',
-    transactionManager: 'tessera',
+    quorumVersion: '2.4.0',
+    transactionManager: '0.10.2',
     deployment: 'docker-compose',
     cakeshop: false
   })
@@ -17,6 +18,7 @@ test('creates 5nodes istanbul dockerFile no tessera no cakeshop', () => {
   const config = createReplica7NodesConfig({
     numberNodes: '5',
     consensus: 'istanbul',
+    quorumVersion: '2.4.0',
     transactionManager: 'none',
     deployment: 'docker-compose',
     cakeshop: false
@@ -29,7 +31,8 @@ test('creates 3nodes raft dockerFile tessera cakeshop', () => {
   const config = createReplica7NodesConfig({
     numberNodes: '3',
     consensus: 'raft',
-    transactionManager: 'tessera',
+    quorumVersion: '2.4.0',
+    transactionManager: '0.10.2',
     deployment: 'docker-compose',
     cakeshop: true
   })
@@ -41,6 +44,7 @@ test('creates 5nodes istanbul dockerFile no tessera cakeshop', () => {
   const config = createReplica7NodesConfig({
     numberNodes: '5',
     consensus: 'istanbul',
+    quorumVersion: '2.4.0',
     transactionManager: 'none',
     deployment: 'docker-compose',
     cakeshop: true
@@ -53,7 +57,7 @@ test('creates 3nodes raft docker tessera custom', () => {
   const config = createCustomConfig({
     numberNodes: '3',
     consensus: 'raft',
-    transactionManager: 'tessera',
+    transactionManager: '0.10.2',
     deployment: 'docker-compose',
     cakeshop: false,
     generateKeys: false,
@@ -108,7 +112,7 @@ test('creates 2nodes raft docker tessera cakeshop custom ports', () => {
   const config = createCustomConfig({
     numberNodes: '2',
     consensus: 'raft',
-    transactionManager: 'tessera',
+    transactionManager: '0.10.2',
     deployment: 'docker-compose',
     cakeshop: true,
     generateKeys: false,

@@ -15,9 +15,8 @@ export function buildCakeshopDir(config, qdata) {
 }
 
 export function generateCakeshopScript(qdata) {
-  const cakeshopJar = '$CAKESHOP_JAR' // require env variable to be set for now
   const jvmParams = "-Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop"
-  const CMD = `java ${jvmParams} -jar ${cakeshopJar} > /dev/null 2>&1 &`
+  const CMD = `java ${jvmParams} -jar $BIN_CAKESHOP > /dev/null 2>&1 &`
   return CMD
 }
 

@@ -8,6 +8,7 @@ import {
   NUMBER_NODES,
   TRANSACTION_MANAGER,
   CAKESHOP,
+  QUORUM_VERSION,
   KEY_GENERATION,
   NETWORK_ID,
   GENESIS_LOCATION,
@@ -18,27 +19,29 @@ import inquirer from 'inquirer'
 
 export async function quickstart() {
   const config = createQuickstartConfig()
-  buildNetwork(config, 'bash')
+  await buildNetwork(config, 'bash')
 }
 
 export async function replica7Nodes () {
   const answers = await inquirer.prompt([
+    DEPLOYMENT_TYPE,
     CONSENSUS_MODE,
     NUMBER_NODES,
+    QUORUM_VERSION,
     TRANSACTION_MANAGER,
-    DEPLOYMENT_TYPE,
     CAKESHOP
   ])
   const config = createReplica7NodesConfig(answers)
-  buildNetwork(config, answers.deployment)
+  await buildNetwork(config, answers.deployment)
 }
 
 export async function customize () {
   const commonAnswers = await inquirer.prompt([
+    DEPLOYMENT_TYPE,
     CONSENSUS_MODE,
     NUMBER_NODES,
+    QUORUM_VERSION,
     TRANSACTION_MANAGER,
-    DEPLOYMENT_TYPE,
     CAKESHOP
   ])
 
@@ -50,7 +53,7 @@ export async function customize () {
   ])
 
   let nodes = (customAnswers.customizePorts && commonAnswers.deployment === 'bash') ?
-    await getCustomizedBashNodes(commonAnswers.numberNodes, commonAnswers.transactionManager === 'tessera') : []
+    await getCustomizedBashNodes(commonAnswers.numberNodes, commonAnswers.transactionManager !== 'none') : []
 
   let dockerCustom = (customAnswers.customizePorts && commonAnswers.deployment === 'docker-compose') ?
     await getCustomizedDockerPorts(commonAnswers.transactionManager === 'tessera') : undefined
@@ -63,14 +66,14 @@ export async function customize () {
     }
   const config = createCustomConfig(answers)
 
-  buildNetwork(config, answers.deployment)
+  await buildNetwork(config, answers.deployment)
 }
 
-function buildNetwork(config, deployment) {
+async function buildNetwork(config, deployment) {
   if (deployment === 'bash') {
-    buildBash(config)
+    await buildBash(config)
   } else if (deployment === 'docker-compose') {
-    createDockerCompose(config)
+    await createDockerCompose(config)
   }
   console.log(`Quorum network details created. cd network/${config.network.name} and run start.sh to bring up your network`)
 }

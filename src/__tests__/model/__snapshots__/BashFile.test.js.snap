@@ -1,8 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`creates 2nodes istanbul bash tessera cakeshop custom ports 1`] = `
-"java  -Xms128M -Xmx128M -jar $TESSERA_JAR -configfile /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/c1/tessera-config-09-1.json >> /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/logs/tessera1.log 2>&1 &
-java  -Xms128M -Xmx128M -jar $TESSERA_JAR -configfile /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/c2/tessera-config-09-2.json >> /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/logs/tessera2.log 2>&1 &
+"BIN_GETH=/current/working/dir/bin/quorum/2.4.0/geth
+BIN_TESSERA=/current/working/dir/bin/tessera/0.10.2/tessera-app.jar
+BIN_CAKESHOP=/current/working/dir/bin/cakeshop/0.11.0-RC2/cakeshop.war
+
+java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/c1/tessera-config-09-1.json >> /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/logs/tessera1.log 2>&1 &
+java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/c2/tessera-config-09-2.json >> /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/logs/tessera2.log 2>&1 &
 
 echo \\"Waiting until all Tessera nodes are running...\\"
 DOWN=true
@@ -43,9 +47,9 @@ done
 
 echo \\"All Tessera nodes started\\"
 
-PRIVATE_CONFIG=/current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/c1/tm.ipc nohup geth --datadir qdata/dd1 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,istanbul,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/dd1/keystore/password.txt --istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1 --permissioned --verbosity 5 --networkid 10 --rpcport 56000 --port 55001 2>>qdata/logs/1.log &
-PRIVATE_CONFIG=/current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/c2/tm.ipc nohup geth --datadir qdata/dd2 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,istanbul,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/dd2/keystore/password.txt --istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1 --permissioned --verbosity 5 --networkid 10 --rpcport 56001 --port 55001 2>>qdata/logs/2.log &
-java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -jar $CAKESHOP_JAR > /dev/null 2>&1 &
+PRIVATE_CONFIG=/current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/c1/tm.ipc nohup $BIN_GETH --datadir qdata/dd1 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,istanbul,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/dd1/keystore/password.txt --istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1 --permissioned --verbosity 5 --networkid 10 --rpcport 56000 --port 55001 2>>qdata/logs/1.log &
+PRIVATE_CONFIG=/current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/c2/tm.ipc nohup $BIN_GETH --datadir qdata/dd2 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,istanbul,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/2-nodes-istanbul-tessera-bash/qdata/dd2/keystore/password.txt --istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1 --permissioned --verbosity 5 --networkid 10 --rpcport 56001 --port 55001 2>>qdata/logs/2.log &
+java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -jar $BIN_CAKESHOP > /dev/null 2>&1 &
   DOWN=true
   k=10
   while \${DOWN}; do
@@ -74,9 +78,12 @@ java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -ja
 `;
 
 exports[`creates 3nodes raft bash tessera 1`] = `
-"java  -Xms128M -Xmx128M -jar $TESSERA_JAR -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tessera-config-09-1.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera1.log 2>&1 &
-java  -Xms128M -Xmx128M -jar $TESSERA_JAR -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tessera-config-09-2.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera2.log 2>&1 &
-java  -Xms128M -Xmx128M -jar $TESSERA_JAR -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tessera-config-09-3.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera3.log 2>&1 &
+"BIN_GETH=/current/working/dir/bin/quorum/2.4.0/geth
+BIN_TESSERA=/current/working/dir/bin/tessera/0.10.2/tessera-app.jar
+
+java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tessera-config-09-1.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera1.log 2>&1 &
+java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tessera-config-09-2.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera2.log 2>&1 &
+java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tessera-config-09-3.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera3.log 2>&1 &
 
 echo \\"Waiting until all Tessera nodes are running...\\"
 DOWN=true
@@ -122,16 +129,20 @@ done
 
 echo \\"All Tessera nodes started\\"
 
-PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tm.ipc nohup geth --datadir qdata/dd1 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd1/keystore/password.txt --raft --raftport 50401 --permissioned --verbosity 5 --networkid 10 --rpcport 22000 --port 21000 2>>qdata/logs/1.log &
-PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tm.ipc nohup geth --datadir qdata/dd2 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd2/keystore/password.txt --raft --raftport 50402 --permissioned --verbosity 5 --networkid 10 --rpcport 22001 --port 21001 2>>qdata/logs/2.log &
-PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tm.ipc nohup geth --datadir qdata/dd3 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd3/keystore/password.txt --raft --raftport 50403 --permissioned --verbosity 5 --networkid 10 --rpcport 22002 --port 21002 2>>qdata/logs/3.log &
+PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tm.ipc nohup $BIN_GETH --datadir qdata/dd1 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd1/keystore/password.txt --raft --raftport 50401 --permissioned --verbosity 5 --networkid 10 --rpcport 22000 --port 21000 2>>qdata/logs/1.log &
+PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tm.ipc nohup $BIN_GETH --datadir qdata/dd2 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd2/keystore/password.txt --raft --raftport 50402 --permissioned --verbosity 5 --networkid 10 --rpcport 22001 --port 21001 2>>qdata/logs/2.log &
+PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tm.ipc nohup $BIN_GETH --datadir qdata/dd3 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd3/keystore/password.txt --raft --raftport 50403 --permissioned --verbosity 5 --networkid 10 --rpcport 22002 --port 21002 2>>qdata/logs/3.log &
 "
 `;
 
 exports[`creates 3nodes raft bash tessera cakeshop 1`] = `
-"java  -Xms128M -Xmx128M -jar $TESSERA_JAR -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tessera-config-09-1.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera1.log 2>&1 &
-java  -Xms128M -Xmx128M -jar $TESSERA_JAR -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tessera-config-09-2.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera2.log 2>&1 &
-java  -Xms128M -Xmx128M -jar $TESSERA_JAR -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tessera-config-09-3.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera3.log 2>&1 &
+"BIN_GETH=/current/working/dir/bin/quorum/2.4.0/geth
+BIN_TESSERA=/current/working/dir/bin/tessera/0.10.2/tessera-app.jar
+BIN_CAKESHOP=/current/working/dir/bin/cakeshop/0.11.0-RC2/cakeshop.war
+
+java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tessera-config-09-1.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera1.log 2>&1 &
+java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tessera-config-09-2.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera2.log 2>&1 &
+java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tessera-config-09-3.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera3.log 2>&1 &
 
 echo \\"Waiting until all Tessera nodes are running...\\"
 DOWN=true
@@ -177,10 +188,10 @@ done
 
 echo \\"All Tessera nodes started\\"
 
-PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tm.ipc nohup geth --datadir qdata/dd1 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd1/keystore/password.txt --raft --raftport 50401 --permissioned --verbosity 5 --networkid 10 --rpcport 22000 --port 21000 2>>qdata/logs/1.log &
-PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tm.ipc nohup geth --datadir qdata/dd2 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd2/keystore/password.txt --raft --raftport 50402 --permissioned --verbosity 5 --networkid 10 --rpcport 22001 --port 21001 2>>qdata/logs/2.log &
-PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tm.ipc nohup geth --datadir qdata/dd3 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd3/keystore/password.txt --raft --raftport 50403 --permissioned --verbosity 5 --networkid 10 --rpcport 22002 --port 21002 2>>qdata/logs/3.log &
-java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -jar $CAKESHOP_JAR > /dev/null 2>&1 &
+PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tm.ipc nohup $BIN_GETH --datadir qdata/dd1 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd1/keystore/password.txt --raft --raftport 50401 --permissioned --verbosity 5 --networkid 10 --rpcport 22000 --port 21000 2>>qdata/logs/1.log &
+PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tm.ipc nohup $BIN_GETH --datadir qdata/dd2 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd2/keystore/password.txt --raft --raftport 50402 --permissioned --verbosity 5 --networkid 10 --rpcport 22001 --port 21001 2>>qdata/logs/2.log &
+PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tm.ipc nohup $BIN_GETH --datadir qdata/dd3 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd3/keystore/password.txt --raft --raftport 50403 --permissioned --verbosity 5 --networkid 10 --rpcport 22002 --port 21002 2>>qdata/logs/3.log &
+java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -jar $BIN_CAKESHOP > /dev/null 2>&1 &
   DOWN=true
   k=10
   while \${DOWN}; do
@@ -209,9 +220,12 @@ java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -ja
 `;
 
 exports[`creates 3nodes raft bash tessera custom 1`] = `
-"java  -Xms128M -Xmx128M -jar $TESSERA_JAR -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tessera-config-09-1.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera1.log 2>&1 &
-java  -Xms128M -Xmx128M -jar $TESSERA_JAR -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tessera-config-09-2.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera2.log 2>&1 &
-java  -Xms128M -Xmx128M -jar $TESSERA_JAR -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tessera-config-09-3.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera3.log 2>&1 &
+"BIN_GETH=/current/working/dir/bin/quorum/2.4.0/geth
+BIN_TESSERA=/current/working/dir/bin/tessera/0.10.2/tessera-app.jar
+
+java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tessera-config-09-1.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera1.log 2>&1 &
+java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tessera-config-09-2.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera2.log 2>&1 &
+java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tessera-config-09-3.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera3.log 2>&1 &
 
 echo \\"Waiting until all Tessera nodes are running...\\"
 DOWN=true
@@ -257,16 +271,20 @@ done
 
 echo \\"All Tessera nodes started\\"
 
-PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tm.ipc nohup geth --datadir qdata/dd1 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd1/keystore/password.txt --raft --raftport 50401 --permissioned --verbosity 5 --networkid 10 --rpcport 22000 --port 21000 2>>qdata/logs/1.log &
-PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tm.ipc nohup geth --datadir qdata/dd2 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd2/keystore/password.txt --raft --raftport 50402 --permissioned --verbosity 5 --networkid 10 --rpcport 22001 --port 21001 2>>qdata/logs/2.log &
-PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tm.ipc nohup geth --datadir qdata/dd3 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd3/keystore/password.txt --raft --raftport 50403 --permissioned --verbosity 5 --networkid 10 --rpcport 22002 --port 21002 2>>qdata/logs/3.log &
+PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tm.ipc nohup $BIN_GETH --datadir qdata/dd1 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd1/keystore/password.txt --raft --raftport 50401 --permissioned --verbosity 5 --networkid 10 --rpcport 22000 --port 21000 2>>qdata/logs/1.log &
+PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tm.ipc nohup $BIN_GETH --datadir qdata/dd2 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd2/keystore/password.txt --raft --raftport 50402 --permissioned --verbosity 5 --networkid 10 --rpcport 22001 --port 21001 2>>qdata/logs/2.log &
+PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tm.ipc nohup $BIN_GETH --datadir qdata/dd3 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd3/keystore/password.txt --raft --raftport 50403 --permissioned --verbosity 5 --networkid 10 --rpcport 22002 --port 21002 2>>qdata/logs/3.log &
 "
 `;
 
 exports[`creates quickstart config 1`] = `
-"java  -Xms128M -Xmx128M -jar $TESSERA_JAR -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tessera-config-09-1.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera1.log 2>&1 &
-java  -Xms128M -Xmx128M -jar $TESSERA_JAR -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tessera-config-09-2.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera2.log 2>&1 &
-java  -Xms128M -Xmx128M -jar $TESSERA_JAR -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tessera-config-09-3.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera3.log 2>&1 &
+"BIN_GETH=/current/working/dir/bin/quorum/2.4.0/geth
+BIN_TESSERA=/current/working/dir/bin/tessera/0.10.2/tessera-app.jar
+BIN_CAKESHOP=/current/working/dir/bin/cakeshop/0.11.0-RC2/cakeshop.war
+
+java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tessera-config-09-1.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera1.log 2>&1 &
+java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tessera-config-09-2.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera2.log 2>&1 &
+java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tessera-config-09-3.json >> /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/logs/tessera3.log 2>&1 &
 
 echo \\"Waiting until all Tessera nodes are running...\\"
 DOWN=true
@@ -312,10 +330,10 @@ done
 
 echo \\"All Tessera nodes started\\"
 
-PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tm.ipc nohup geth --datadir qdata/dd1 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd1/keystore/password.txt --raft --raftport 50401 --permissioned --verbosity 5 --networkid 10 --rpcport 22000 --port 21000 2>>qdata/logs/1.log &
-PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tm.ipc nohup geth --datadir qdata/dd2 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd2/keystore/password.txt --raft --raftport 50402 --permissioned --verbosity 5 --networkid 10 --rpcport 22001 --port 21001 2>>qdata/logs/2.log &
-PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tm.ipc nohup geth --datadir qdata/dd3 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd3/keystore/password.txt --raft --raftport 50403 --permissioned --verbosity 5 --networkid 10 --rpcport 22002 --port 21002 2>>qdata/logs/3.log &
-java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -jar $CAKESHOP_JAR > /dev/null 2>&1 &
+PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c1/tm.ipc nohup $BIN_GETH --datadir qdata/dd1 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd1/keystore/password.txt --raft --raftport 50401 --permissioned --verbosity 5 --networkid 10 --rpcport 22000 --port 21000 2>>qdata/logs/1.log &
+PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c2/tm.ipc nohup $BIN_GETH --datadir qdata/dd2 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd2/keystore/password.txt --raft --raftport 50402 --permissioned --verbosity 5 --networkid 10 --rpcport 22001 --port 21001 2>>qdata/logs/2.log &
+PRIVATE_CONFIG=/current/working/dir/network/3-nodes-raft-tessera-bash/qdata/c3/tm.ipc nohup $BIN_GETH --datadir qdata/dd3 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password /current/working/dir/network/3-nodes-raft-tessera-bash/qdata/dd3/keystore/password.txt --raft --raftport 50403 --permissioned --verbosity 5 --networkid 10 --rpcport 22002 --port 21002 2>>qdata/logs/3.log &
+java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -jar $BIN_CAKESHOP > /dev/null 2>&1 &
   DOWN=true
   k=10
   while \${DOWN}; do

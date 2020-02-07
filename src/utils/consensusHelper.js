@@ -6,6 +6,7 @@ import {
 import { join } from 'path'
 import { executeSync } from './execUtils'
 import { nodekeyToAccount } from './web3Helper'
+import { pathToIstanbulTools } from './binaryHelper'
 
 export function generateAccounts(nodes, keyPath) {
   const numNodes = nodes.length
@@ -33,12 +34,7 @@ export function generateExtraData(nodes, configDir, keyPath) {
   const istanbulConfigFile = join(configDir, 'istanbul.toml')
   writeFile(istanbulConfigFile, configLines.join("\n"), false)
 
-  let extraDataCmd = `cd ${configDir} && istanbul extra encode --config ${istanbulConfigFile} | awk '{print $4}' > extraData`
-  executeSync(extraDataCmd, function(err, stdout, stderr) {
-    if (e instanceof Error) {
-      console.error(e)
-      throw e
-    }
-  })
+  let extraDataCmd = `cd ${configDir} && ${pathToIstanbulTools()} extra encode --config ${istanbulConfigFile} | awk '{print $4}' > extraData`
+  executeSync(extraDataCmd)
   return readFileToString(join(configDir, 'extraData'))
 }

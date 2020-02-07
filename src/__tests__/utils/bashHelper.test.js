@@ -1,29 +1,35 @@
 import { createDirectory } from '../../utils/networkCreator'
-import { createQuickstartConfig, createReplica7NodesConfig } from '../../model/NetworkConfig'
-import { buildBashScript, buildBash } from '../../utils/bashHelper'
+import { createReplica7NodesConfig } from '../../model/NetworkConfig'
+import { buildBashScript, buildBash, waitForTesseraNodesCommand } from '../../utils/bashHelper'
 import { copyFile, cwd, writeFile } from '../../utils/fileUtils'
 import { execute } from '../../utils/execUtils'
 import { TEST_CWD } from '../testHelper'
+import { pathToCakeshop, pathToQuorumBinary, pathToTesseraJar } from '../../utils/binaryHelper'
 
 jest.mock('../../utils/networkCreator')
 jest.mock('../../utils/fileUtils')
 jest.mock('../../utils/execUtils')
+jest.mock('../../utils/binaryHelper')
 cwd.mockReturnValue(TEST_CWD)
+pathToQuorumBinary.mockReturnValue('geth')
+pathToTesseraJar.mockReturnValue('tessera')
+pathToCakeshop.mockReturnValue('cakeshop')
 
 describe('generates bash script details', () => {
   it('creates bash script given config details', () => {
-    const expected = {
-      startScript: 'startTessera\n\nstartGeth\n',
-      initCommands: ['1', '2', '3', '4', '5'],
-      networkPath: 'testPath'
-    }
     let config = createReplica7NodesConfig({
       numberNodes: '5',
       consensus: 'raft',
-      transactionManager: 'tessera',
+      quorumVersion: '2.4.0',
+      transactionManager: '0.10.2',
       deployment: 'bash',
       cakeshop: false
     })
+    const expected = {
+      startScript: `BIN_GETH=geth\nBIN_TESSERA=tessera\n\nstartTessera\n${waitForTesseraNodesCommand(config)}\nstartGeth\n`,
+      initCommands: ['1', '2', '3', '4', '5'],
+      networkPath: 'testPath'
+    }
     createDirectory.mockReturnValueOnce({tesseraStart:  "startTessera",
         gethStart: "startGeth",
         initStart: ['1', '2', '3', '4', '5'],
@@ -34,11 +40,12 @@ describe('generates bash script details', () => {
 })
 
 describe('builds bash directory', () => {
-  it('given bash details builds files to run bash', () => {
+  it('given bash details builds files to run bash', async () => {
     let config = createReplica7NodesConfig({
       numberNodes: '5',
       consensus: 'raft',
-      transactionManager: 'tessera',
+      quorumVersion: '2.4.0',
+      transactionManager: '0.10.2',
       deployment: 'bash',
       cakeshop: false
     })
@@ -47,7 +54,7 @@ describe('builds bash directory', () => {
         initStart: ['1', '2', '3', '4', '5'],
         netPath: "test",
       })
-    buildBash()
+    await buildBash(config)
 
     expect(writeFile).toBeCalledWith('test/start.sh', expect.any(String), true)
     expect(copyFile).toBeCalledTimes(5)

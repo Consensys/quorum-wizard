@@ -1,7 +1,8 @@
-import fs from 'fs'
 import { join } from 'path'
 import { executeSync } from './execUtils'
 import { createFolder, copyFile } from './fileUtils'
+import { isTessera } from '../model/NetworkConfig'
+import { pathToBootnode, pathToQuorumBinary, pathToTesseraJar } from './binaryHelper'
 
 export function generateKeys(config, keyPath) {
   console.log(`Generating ${config.nodes.length} keys..`)
@@ -11,25 +12,20 @@ export function generateKeys(config, keyPath) {
     createFolder(keyDir, true)
     copyFile(config.network.passwordFile, join(keyDir, 'password.txt'))
 
-    doExec(keyDir, config.network.transactionManager === 'tessera')
+    doExec(keyDir, config)
   })
   console.log('Keys were generated')
 }
 
-function doExec(keyDir, isTessera) {
-  let cmd = `cd ${keyDir} && geth account new --keystore ${keyDir} --password password.txt
-  bootnode -genkey=nodekey
-  bootnode --nodekey=nodekey --writeaddress > enode
+function doExec(keyDir, config) {
+  let cmd = `cd ${keyDir} && ${pathToQuorumBinary(config.network.quorumVersion)} account new --keystore ${keyDir} --password password.txt
+  ${pathToBootnode()} -genkey=nodekey
+  ${pathToBootnode()} --nodekey=nodekey --writeaddress > enode
   find . -type f -name 'UTC*' -execdir mv {} key ';'
   `
-  if(isTessera) {
-    cmd += 'java -jar $TESSERA_JAR -keygen -filename tm'
+  if(isTessera(config)) {
+    cmd += `java -jar ${pathToTesseraJar(config.network.transactionManager)} -keygen -filename tm`
   }
 
-  executeSync(cmd, function(err, stdout, stderr) {
-    if (e instanceof Error) {
-      console.error(e)
-      throw e
-    }
-  })
+  executeSync(cmd)
 }

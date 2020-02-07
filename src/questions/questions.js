@@ -1,4 +1,8 @@
 import { validateNumberStringInRange } from '../utils/questionUtils'
+import {
+  getDownloadableGethChoices, getDownloadableTesseraChoices,
+  getGethOnPath, getTesseraOnPath,
+} from '../utils/binaryHelper'
 
 
 export const INITIAL_MODE = {
@@ -34,6 +38,18 @@ All you need to do is go to the specified location and run ./start.sh
   ]
 }
 
+export const DEPLOYMENT_TYPE = {
+  type: 'list',
+  name: 'deployment',
+  message: 'Would you like to generate bash scripts or a docker-compose file to bring up your network?',
+  choices: [
+    'bash',
+    'docker-compose',
+    // 'kubernetes',
+    // 'vagrant',
+  ]
+}
+
 export const NUMBER_NODES = {
   type: 'input',
   name: 'numberNodes',
@@ -52,26 +68,30 @@ export const CONSENSUS_MODE = {
   ]
 }
 
+export const QUORUM_VERSION = {
+  type: 'list',
+  name: 'quorumVersion',
+  message: 'Which version of Quorum would you like to use?',
+  choices: ({deployment}) => {
+    let choices = [...getDownloadableGethChoices()]
+    if(deployment === 'bash') {
+      choices = choices.concat(getGethOnPath())
+    }
+    return choices
+  },
+}
+
 export const TRANSACTION_MANAGER = {
   type: 'list',
   name: 'transactionManager',
-  message: 'Select tessera if you would like to use private transactions in your network',
-  choices: [
-    'tessera',
-    'none',
-  ]
-}
-
-export const DEPLOYMENT_TYPE = {
-  type: 'list',
-  name: 'deployment',
-  message: 'Would you like to generate bash scripts or a docker-compose file to bring up your network?',
-  choices: [
-    'bash',
-    'docker-compose',
-    // 'kubernetes',
-    // 'vagrant',
-  ]
+  message: 'Choose a version of tessera if you would like to use private transactions in your network, otherwise choose "none"',
+  choices: ({deployment}) => {
+    let choices = [...getDownloadableTesseraChoices()]
+    if(deployment === 'bash') {
+      choices = choices.concat(getTesseraOnPath())
+    }
+    return choices
+  },
 }
 
 export const CAKESHOP = {
