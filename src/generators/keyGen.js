@@ -13,7 +13,9 @@ export function generateKeys(config, keyPath) {
     copyFile(config.network.passwordFile, join(keyDir, 'password.txt'))
 
     doExec(keyDir, config)
-    console.log(`tm${nodeNumber} public key: ${readFileToString(join(keyDir, 'tm.pub'))}`)
+    if(isTessera(config)) {
+      console.log(`tm${nodeNumber} public key: ${readFileToString(join(keyDir, 'tm.pub'))}`)
+    }
   })
   console.log('Keys were generated')
 }
