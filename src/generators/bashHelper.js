@@ -65,7 +65,7 @@ export async function buildBash(config) {
 }
 
 export function createGethStartCommand (config, node, passwordDestination, nodeNumber, tmIpcLocation) {
-  const { verbosity, id, consensus } = config.network
+  const { verbosity, networkId, consensus } = config.network
   const { devP2pPort, rpcPort, wsPort, raftPort } = node.quorum
 
   const args = `--nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --emitcheckpoints --unlock 0 --password ${passwordDestination}`
@@ -73,7 +73,7 @@ export function createGethStartCommand (config, node, passwordDestination, nodeN
     `--raft --raftport ${raftPort}` :
     `--istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1`
 
-  return `PRIVATE_CONFIG=${tmIpcLocation} nohup $BIN_GETH --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --verbosity ${verbosity} --networkid ${id} --rpcport ${rpcPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
+  return `PRIVATE_CONFIG=${tmIpcLocation} nohup $BIN_GETH --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --verbosity ${verbosity} --networkid ${networkId} --rpcport ${rpcPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
 }
 
 export function createTesseraStartCommand (config, node, nodeNumber, tmDir, logDir) {

@@ -90,7 +90,7 @@ export const TRANSACTION_MANAGER = {
     if(deployment === 'bash') {
       choices = choices.concat(getTesseraOnPath())
     }
-    return choices
+    return choices.concat('none')
   },
 }
 
