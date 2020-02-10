@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { executeSync } from '../utils/execUtils'
-import { createFolder, copyFile } from '../utils/fileUtils'
+import { createFolder, copyFile, readFileToString } from '../utils/fileUtils'
 import { isTessera } from '../model/NetworkConfig'
 import { pathToBootnode, pathToQuorumBinary, pathToTesseraJar } from './binaryHelper'
 
@@ -13,12 +13,15 @@ export function generateKeys(config, keyPath) {
     copyFile(config.network.passwordFile, join(keyDir, 'password.txt'))
 
     doExec(keyDir, config)
+    if(isTessera(config)) {
+      console.log(`tm${nodeNumber} public key: ${readFileToString(join(keyDir, 'tm.pub'))}`)
+    }
   })
   console.log('Keys were generated')
 }
 
 function doExec(keyDir, config) {
-  let cmd = `cd ${keyDir} && ${pathToQuorumBinary(config.network.quorumVersion)} account new --keystore ${keyDir} --password password.txt
+  let cmd = `cd ${keyDir} && ${pathToQuorumBinary(config.network.quorumVersion)} account new --keystore ${keyDir} --password password.txt 2>&1
   ${pathToBootnode()} -genkey=nodekey
   ${pathToBootnode()} --nodekey=nodekey --writeaddress > enode
   find . -type f -name 'UTC*' -execdir mv {} key ';'

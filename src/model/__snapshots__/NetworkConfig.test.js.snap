@@ -4,12 +4,12 @@ exports[`creates 5nodes raft no-TM cakeshop docker config 1`] = `
 Object {
   "network": Object {
     "cakeshop": true,
-    "configDir": "7nodes",
+    "configDir": "network/5-nodes-raft-docker-compose/generated",
     "consensus": "raft",
     "custom": false,
     "deployment": "docker-compose",
     "generateKeys": false,
-    "genesisFile": "7nodes/raft-genesis.json",
+    "genesisFile": "none",
     "id": 10,
     "name": "5-nodes-raft-docker-compose",
     "permissioned": true,
@@ -71,12 +71,12 @@ exports[`creates 5nodes raft no-TM config 1`] = `
 Object {
   "network": Object {
     "cakeshop": false,
-    "configDir": "7nodes",
+    "configDir": "network/5-nodes-raft-bash/generated",
     "consensus": "raft",
     "custom": false,
     "deployment": "bash",
     "generateKeys": false,
-    "genesisFile": "7nodes/raft-genesis.json",
+    "genesisFile": "none",
     "id": 10,
     "name": "5-nodes-raft-bash",
     "permissioned": true,
@@ -261,7 +261,7 @@ Object {
     "customizePorts": false,
     "deployment": "docker-compose",
     "generateKeys": true,
-    "genesisFile": "testDir",
+    "genesisFile": "",
     "id": 10,
     "name": "6-nodes-raft-tessera-docker-compose",
     "networkId": 10,
@@ -370,12 +370,12 @@ exports[`creates 7nodes istanbul cakeshop config 1`] = `
 Object {
   "network": Object {
     "cakeshop": true,
-    "configDir": "7nodes",
+    "configDir": "network/7-nodes-istanbul-tessera-bash/generated",
     "consensus": "istanbul",
     "custom": false,
     "deployment": "bash",
     "generateKeys": false,
-    "genesisFile": "7nodes/istanbul-genesis.json",
+    "genesisFile": "none",
     "id": 10,
     "name": "7-nodes-istanbul-tessera-bash",
     "permissioned": true,
@@ -497,12 +497,12 @@ exports[`creates 7nodes istanbul config 1`] = `
 Object {
   "network": Object {
     "cakeshop": false,
-    "configDir": "7nodes",
+    "configDir": "network/7-nodes-istanbul-tessera-bash/generated",
     "consensus": "istanbul",
     "custom": false,
     "deployment": "bash",
     "generateKeys": false,
-    "genesisFile": "7nodes/istanbul-genesis.json",
+    "genesisFile": "none",
     "id": 10,
     "name": "7-nodes-istanbul-tessera-bash",
     "permissioned": true,
@@ -624,12 +624,12 @@ exports[`creates 7nodes istanbul docker config 1`] = `
 Object {
   "network": Object {
     "cakeshop": false,
-    "configDir": "7nodes",
+    "configDir": "network/7-nodes-istanbul-tessera-docker-compose/generated",
     "consensus": "istanbul",
     "custom": false,
     "deployment": "docker-compose",
     "generateKeys": false,
-    "genesisFile": "7nodes/istanbul-genesis.json",
+    "genesisFile": "none",
     "id": 10,
     "name": "7-nodes-istanbul-tessera-docker-compose",
     "permissioned": true,
@@ -929,12 +929,12 @@ exports[`creates quickstart setup 1`] = `
 Object {
   "network": Object {
     "cakeshop": true,
-    "configDir": "7nodes",
+    "configDir": "network/3-nodes-raft-tessera-bash/generated",
     "consensus": "raft",
     "custom": false,
     "deployment": "bash",
     "generateKeys": false,
-    "genesisFile": "7nodes/raft-genesis.json",
+    "genesisFile": "none",
     "id": 10,
     "name": "3-nodes-raft-tessera-bash",
     "permissioned": true,

@@ -41,6 +41,7 @@ describe('generates extraData for istanbul genesis', () => {
     .mockReturnValueOnce("0x49C1488d2f8Abf1D7AB0a08f2E1308369fDDFbfE")
     .mockReturnValueOnce("0x1760F90FF74aD4d8BBF536D01Fc0afb879c3dCf0")
 
+    executeSync.mockReturnValueOnce("validators")
     generateExtraData(nodes, 'testDir', 'keyPath')
     expect(writeFile).toBeCalledWith(join('testDir', 'istanbul.toml'), expect.anything(), false)
     expect(executeSync).toBeCalledTimes(1)

@@ -34,7 +34,7 @@ export function generateExtraData(nodes, configDir, keyPath) {
   const istanbulConfigFile = join(configDir, 'istanbul.toml')
   writeFile(istanbulConfigFile, configLines.join("\n"), false)
 
-  let extraDataCmd = `cd ${configDir} && ${pathToIstanbulTools()} extra encode --config ${istanbulConfigFile} | awk '{print $4}' > extraData`
-  executeSync(extraDataCmd)
-  return readFileToString(join(configDir, 'extraData'))
+  let extraDataCmd = `cd ${configDir} && ${pathToIstanbulTools()} extra encode --config ${istanbulConfigFile} | awk '{print $4}' `
+
+  return executeSync(extraDataCmd).toString().trim()
 }

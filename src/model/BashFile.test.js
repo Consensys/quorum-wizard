@@ -2,10 +2,13 @@ import { buildBashScript } from '../generators/bashHelper'
 import { createCustomConfig, createQuickstartConfig, createReplica7NodesConfig } from './NetworkConfig'
 import { cwd } from '../utils/fileUtils'
 import { TEST_CWD } from '../utils/testHelper'
+import { generateAccounts } from '../generators/consensusHelper'
 import { join } from 'path'
 
 jest.mock('../utils/fileUtils')
+jest.mock('../generators/consensusHelper')
 cwd.mockReturnValue(TEST_CWD)
+generateAccounts.mockReturnValue("accounts")
 
 test('creates quickstart config', () => {
   const config = createQuickstartConfig()
@@ -40,7 +43,6 @@ test('creates 3nodes raft bash tessera cakeshop', () => {
 })
 
 test('creates 3nodes raft bash tessera custom', () => {
-  cwd.mockReturnValueOnce(process.cwd())
   const config = createCustomConfig({
     numberNodes: '3',
     consensus: 'raft',
@@ -50,7 +52,7 @@ test('creates 3nodes raft bash tessera custom', () => {
     cakeshop: false,
     generateKeys: false,
     networkId: 10,
-    genesisLocation: join(cwd(), '7nodes', 'raft-genesis.json'),
+    genesisLocation: 'none',
     customizePorts: false,
     nodes: [],
     dockerCustom: undefined
@@ -60,7 +62,6 @@ test('creates 3nodes raft bash tessera custom', () => {
 })
 
 test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
-  cwd.mockReturnValueOnce(process.cwd())
   let nodes = [
     {
       quorum: {
@@ -101,7 +102,7 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
     cakeshop: true,
     generateKeys: false,
     networkId: 10,
-    genesisLocation: join(cwd(), '7nodes', 'raft-genesis.json'),
+    genesisLocation: 'none',
     customizePorts: true,
     nodes: nodes,
     dockerCustom: undefined

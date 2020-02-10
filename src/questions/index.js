@@ -48,7 +48,7 @@ export async function customize () {
   const customAnswers = await inquirer.prompt([
     KEY_GENERATION,
     NETWORK_ID,
-    GENESIS_LOCATION,
+    // GENESIS_LOCATION,
     CUSTOMIZE_PORTS
   ])
 
@@ -56,7 +56,7 @@ export async function customize () {
     await getCustomizedBashNodes(commonAnswers.numberNodes, commonAnswers.transactionManager !== 'none') : []
 
   let dockerCustom = (customAnswers.customizePorts && commonAnswers.deployment === 'docker-compose') ?
-    await getCustomizedDockerPorts(commonAnswers.transactionManager === 'tessera') : undefined
+    await getCustomizedDockerPorts(commonAnswers.transactionManager !== 'none') : undefined
 
     const answers = {
       ...commonAnswers,

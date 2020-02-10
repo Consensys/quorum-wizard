@@ -6,13 +6,13 @@ export function createQuickstartConfig() {
       consensus: 'raft',
       quorumVersion: '2.4.0',
       transactionManager: '0.10.2',
-      id: 10,
       permissioned: true,
-      genesisFile: '7nodes/raft-genesis.json',
+      genesisFile: 'none',
       generateKeys: false,
-      configDir: '7nodes',
+      configDir: 'network/3-nodes-raft-tessera-bash/generated',
       deployment: 'bash',
       cakeshop: true,
+      networkId: '10',
       custom: false,
     },
     nodes: generateNodeConfigs(3, 'tessera', 'bash', true)
@@ -27,23 +27,27 @@ export function createReplica7NodesConfig (answers) {
     cakeshop,
     quorumVersion
   } = answers
+  let networkFolder = createNetworkFolderName(answers)
   return {
     network: {
-      name: createNetworkFolderName(answers),
+      name: networkFolder,
       verbosity: 5,
       consensus: consensus,
       quorumVersion: quorumVersion,
       transactionManager: transactionManager,
-      id: 10,
       permissioned: true,
-      genesisFile: `7nodes/${consensus}-genesis.json`,
+      genesisFile: 'none',
       generateKeys: false,
-      configDir: '7nodes',
+      configDir: `network/${networkFolder}/generated`,
+      passwordFile: '7nodes/key1/password.txt',
       deployment: deployment,
       cakeshop: cakeshop,
+      networkId: '10',
       custom: false,
+      customizePorts: false,
     },
-    nodes: generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop)
+    nodes: generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop),
+    dockerCustom: undefined
   }
 }
 
@@ -70,7 +74,6 @@ export function createCustomConfig (answers) {
       consensus: consensus,
       quorumVersion: quorumVersion,
       transactionManager: transactionManager,
-      id: 10,
       permissioned: true,
       genesisFile: genesisLocation,
       generateKeys: generateKeys,
