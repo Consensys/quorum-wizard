@@ -59,6 +59,6 @@ export async function downloadIfMissing (name, version) {
       })
     }
   } else {
-    console.log('Using cached binary at:', binaryFileLocation)
+    console.log(`Using cached ${name} at: ${binaryFileLocation}`)
   }
 }

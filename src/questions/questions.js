@@ -19,10 +19,10 @@ We have 3 options to help you start exploring Quorum:
 
   1.  Quickstart - our 1 click option to create a 3 node raft network with tessera and cakeshop
 
-  2.  Replicate quorum-example 7nodes network - using pregenerated keys from quorum 7nodes example,
+  2.  Simple Network - using pregenerated keys from quorum 7nodes example,
       this option allows you to choose the number of nodes (7 max), consensus mechanism, transaction manager, and the option to deploy cakeshop
 
-  3.  Custom network - In addition to the options available in #2, this selection allows for further customization of your network.
+  3.  Fully Custom Network - In addition to the options available in #2, this selection allows for further customization of your network.
       Choose to generate keys, customize ports for both bash and docker, use your own genesis file, or change the network id
 
 Quorum Creator will generate your startup files and everything required to bring up your network.
@@ -31,9 +31,9 @@ All you need to do is go to the specified location and run ./start.sh
 `,
 
   choices: [
-    { name: 'Quickstart', value: 1 },
-    { name: 'Replicate quorum-example 7nodes network', value: 2 },
-    { name: 'Create Custom Network', value: 3 },
+    { name: 'Quickstart (3-node raft network with tessera and cakeshop)', value: 1 },
+    { name: 'Simple Network', value: 2 },
+    { name: 'Fully Custom Network', value: 3 },
     { name: 'Exit', value: 4 }
   ]
 }

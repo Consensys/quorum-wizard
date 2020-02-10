@@ -13,9 +13,6 @@ export function generateKeys(config, keyPath) {
     writeFile(join(keyDir, 'password.txt'), "")
 
     doExec(keyDir, config)
-    if(isTessera(config)) {
-      console.log(`tm${nodeNumber} public key: ${readFileToString(join(keyDir, 'tm.pub'))}`)
-    }
   })
   console.log('Keys were generated')
 }

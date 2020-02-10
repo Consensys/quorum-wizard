@@ -36,8 +36,10 @@ export function buildBashScript(config) {
 
 export async function buildBash(config) {
 
+  console.log('Downloading dependencies...')
   await downloadAndCopyBinaries(config)
 
+  console.log('Building network data directory...')
   const bashDetails = buildBashScript(config)
   const networkPath = bashDetails.networkPath
 
@@ -45,6 +47,7 @@ export async function buildBash(config) {
     buildCakeshopDir(config, join(networkPath, 'qdata'))
   }
 
+  console.log('Writing start script...')
   writeFile(join(networkPath, 'start.sh'), bashDetails.startScript, true)
   copyFile(join(cwd(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
 
@@ -53,6 +56,7 @@ export async function buildBash(config) {
   copyFile(join(cwd(), 'lib/private-contract-3nodes.js'), join(networkPath, 'private-contract-3nodes.js'))
   copyFile(join(cwd(), 'lib/private-contract-7nodes.js'), join(networkPath, 'private-contract-7nodes.js'))
 
+  console.log('Initializing quorum...')
   bashDetails.initCommands.forEach((command) => {
     // TODO figure out the safest way to run shell commands
     execute(command, (e, stdout, stderr) => {

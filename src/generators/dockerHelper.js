@@ -65,10 +65,15 @@ function createCustomTesseraPorts(dockerConfig) {
 }
 
 export async function createDockerCompose(config) {
+  console.log('Downloading dependencies...')
   await downloadAndCopyBinaries(config)
 
+  console.log('Building docker-compose file...')
   const file = buildDockerCompose(config)
 
+  console.log('Downloading dependencies...')
+  console.log('Building network data directory...')
+  console.log('Building network data directory...')
   const commands = createDirectory(config)
   const networkPath = commands.netPath
   const qdata = join(networkPath, 'qdata')
@@ -77,6 +82,7 @@ export async function createDockerCompose(config) {
     buildCakeshopDir(config, qdata)
   }
 
+  console.log('Writing start script...')
   let startCommands = `QUORUM_CONSENSUS=${config.network.consensus} docker-compose up -d`
 
   writeFile(join(networkPath, 'docker-compose.yml'), file, false)

@@ -1,4 +1,10 @@
-import { createQuickstartConfig, createReplica7NodesConfig, createCustomConfig, generateNodeConfigs } from '../model/NetworkConfig'
+import {
+  createQuickstartConfig,
+  createReplica7NodesConfig,
+  createCustomConfig,
+  generateNodeConfigs,
+  isTessera
+} from '../model/NetworkConfig'
 import { buildBash } from '../generators/bashHelper'
 import { createDockerCompose } from '../generators/dockerHelper'
 import { getCustomizedBashNodes, getCustomizedDockerPorts } from './promptHelper'
@@ -16,6 +22,8 @@ import {
 } from './questions'
 
 import inquirer from 'inquirer'
+import { cwd, readFileToString } from '../utils/fileUtils'
+import { join } from "path"
 
 export async function quickstart() {
   const config = createQuickstartConfig()
@@ -70,10 +78,31 @@ export async function customize () {
 }
 
 async function buildNetwork(config, deployment) {
+  console.log('')
   if (deployment === 'bash') {
     await buildBash(config)
   } else if (deployment === 'docker-compose') {
     await createDockerCompose(config)
   }
-  console.log(`Quorum network details created. cd network/${config.network.name} and run start.sh to bring up your network`)
+  console.log('Done')
+
+  console.log('')
+  const qdata = join(cwd(), 'network', config.network.name, 'qdata')
+  if(isTessera(config)) {
+    console.log('--------------------------------------------------------------------------------')
+    console.log('')
+    config.nodes.forEach((node, i) => {
+      const nodeNumber = i + 1
+      console.log(`Tessera Node ${nodeNumber} public key:`)
+      console.log(`${readFileToString(join(qdata, `c${nodeNumber}`, 'tm.pub'))}`)
+      console.log('')
+    })
+    console.log('--------------------------------------------------------------------------------')
+  }
+  console.log('')
+  console.log('Quorum network created. Run the following commands to start your network:')
+  console.log('')
+  console.log(`cd network/${config.network.name}`)
+  console.log('./start.sh')
+  console.log('')
 }
