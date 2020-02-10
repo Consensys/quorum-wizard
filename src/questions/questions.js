@@ -1,4 +1,4 @@
-import { validateNumberStringInRange } from './validators'
+import { validateNetworkId, validateNumberStringInRange } from './validators'
 import {
   getDownloadableGethChoices, getDownloadableTesseraChoices,
   getGethOnPath, getTesseraOnPath,
@@ -53,8 +53,12 @@ export const DEPLOYMENT_TYPE = {
 export const NUMBER_NODES = {
   type: 'input',
   name: 'numberNodes',
-  message: 'Input the number of nodes you would like in your network - a minimum of 3 is recommended for raft, and a minimum of 5 for istanbul',
-  default: '7',
+  message: (answers) => {
+    return answers.consensus === 'raft' ?
+      'Input the number of nodes (2-7) you would like in your network - a minimum of 3 is recommended' :
+      'Input the number of nodes (2-7) you would like in your network - a minimum of 3 is recommended for development, 5 to properly handle node failure'
+  },
+  default: '3',
   validate: (input) => validateNumberStringInRange(input, 2, 7)
 }
 
@@ -113,6 +117,7 @@ export const NETWORK_ID = {
   name: 'networkId',
   message: '10 is the default network id in quorum but you can use a different one',
   default: '10',
+  validate: (input) => validateNetworkId(input)
 }
 
 export const GENESIS_LOCATION = {
@@ -126,5 +131,6 @@ export const CUSTOMIZE_PORTS = {
   type: 'confirm',
   name: 'customizePorts',
   message: 'Would you like to customize your node ports?',
-  default: false
+  default: false,
+  validate: (input) => validateNumberStringInRange(input, 0, 65535)
 }
