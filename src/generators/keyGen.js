@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { executeSync } from '../utils/execUtils'
-import { createFolder, copyFile, readFileToString } from '../utils/fileUtils'
+import { createFolder, readFileToString, writeFile } from '../utils/fileUtils'
 import { isTessera } from '../model/NetworkConfig'
 import { pathToBootnode, pathToQuorumBinary, pathToTesseraJar } from './binaryHelper'
 
@@ -10,7 +10,7 @@ export function generateKeys(config, keyPath) {
     const nodeNumber = i + 1
     const keyDir = join(keyPath, `key${nodeNumber}`)
     createFolder(keyDir, true)
-    copyFile(config.network.passwordFile, join(keyDir, 'password.txt'))
+    writeFile(join(keyDir, 'password.txt'), "")
 
     doExec(keyDir, config)
     if(isTessera(config)) {

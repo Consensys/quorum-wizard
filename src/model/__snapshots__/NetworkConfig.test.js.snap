@@ -2,16 +2,18 @@
 
 exports[`creates 5nodes raft no-TM cakeshop docker config 1`] = `
 Object {
+  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": true,
     "configDir": "network/5-nodes-raft-docker-compose/generated",
     "consensus": "raft",
     "custom": false,
+    "customizePorts": false,
     "deployment": "docker-compose",
     "generateKeys": false,
     "genesisFile": "none",
-    "id": 10,
     "name": "5-nodes-raft-docker-compose",
+    "networkId": "10",
     "permissioned": true,
     "quorumVersion": "2.4.0",
     "transactionManager": "none",
@@ -69,16 +71,18 @@ Object {
 
 exports[`creates 5nodes raft no-TM config 1`] = `
 Object {
+  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": false,
     "configDir": "network/5-nodes-raft-bash/generated",
     "consensus": "raft",
     "custom": false,
+    "customizePorts": false,
     "deployment": "bash",
     "generateKeys": false,
     "genesisFile": "none",
-    "id": 10,
     "name": "5-nodes-raft-bash",
+    "networkId": "10",
     "permissioned": true,
     "quorumVersion": "2.4.0",
     "transactionManager": "none",
@@ -146,10 +150,8 @@ Object {
     "deployment": "bash",
     "generateKeys": true,
     "genesisFile": "",
-    "id": 10,
     "name": "6-nodes-raft-tessera-bash",
     "networkId": 10,
-    "passwordFile": "7nodes/key1/password.txt",
     "permissioned": true,
     "quorumVersion": "2.4.0",
     "transactionManager": "0.10.2",
@@ -262,10 +264,8 @@ Object {
     "deployment": "docker-compose",
     "generateKeys": true,
     "genesisFile": "",
-    "id": 10,
     "name": "6-nodes-raft-tessera-docker-compose",
     "networkId": 10,
-    "passwordFile": "7nodes/key1/password.txt",
     "permissioned": true,
     "quorumVersion": "2.4.0",
     "transactionManager": "0.10.2",
@@ -368,16 +368,18 @@ Object {
 
 exports[`creates 7nodes istanbul cakeshop config 1`] = `
 Object {
+  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": true,
     "configDir": "network/7-nodes-istanbul-tessera-bash/generated",
     "consensus": "istanbul",
     "custom": false,
+    "customizePorts": false,
     "deployment": "bash",
     "generateKeys": false,
     "genesisFile": "none",
-    "id": 10,
     "name": "7-nodes-istanbul-tessera-bash",
+    "networkId": "10",
     "permissioned": true,
     "quorumVersion": "2.4.0",
     "transactionManager": "0.10.2",
@@ -495,16 +497,18 @@ Object {
 
 exports[`creates 7nodes istanbul config 1`] = `
 Object {
+  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": false,
     "configDir": "network/7-nodes-istanbul-tessera-bash/generated",
     "consensus": "istanbul",
     "custom": false,
+    "customizePorts": false,
     "deployment": "bash",
     "generateKeys": false,
     "genesisFile": "none",
-    "id": 10,
     "name": "7-nodes-istanbul-tessera-bash",
+    "networkId": "10",
     "permissioned": true,
     "quorumVersion": "2.4.0",
     "transactionManager": "0.10.2",
@@ -622,16 +626,18 @@ Object {
 
 exports[`creates 7nodes istanbul docker config 1`] = `
 Object {
+  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": false,
     "configDir": "network/7-nodes-istanbul-tessera-docker-compose/generated",
     "consensus": "istanbul",
     "custom": false,
+    "customizePorts": false,
     "deployment": "docker-compose",
     "generateKeys": false,
     "genesisFile": "none",
-    "id": 10,
     "name": "7-nodes-istanbul-tessera-docker-compose",
+    "networkId": "10",
     "permissioned": true,
     "quorumVersion": "2.4.0",
     "transactionManager": "0.10.2",
@@ -759,10 +765,8 @@ Object {
     "deployment": "bash",
     "generateKeys": true,
     "genesisFile": "",
-    "id": 10,
     "name": "7-nodes-istanbul-bash",
     "networkId": 12,
-    "passwordFile": "7nodes/key1/password.txt",
     "permissioned": true,
     "quorumVersion": "2.4.0",
     "transactionManager": "none",
@@ -848,10 +852,8 @@ Object {
     "deployment": "docker-compose",
     "generateKeys": false,
     "genesisFile": "",
-    "id": 10,
     "name": "7-nodes-istanbul-docker-compose",
     "networkId": 10,
-    "passwordFile": "7nodes/key1/password.txt",
     "permissioned": true,
     "quorumVersion": "2.4.0",
     "transactionManager": "none",
@@ -935,8 +937,8 @@ Object {
     "deployment": "bash",
     "generateKeys": false,
     "genesisFile": "none",
-    "id": 10,
     "name": "3-nodes-raft-tessera-bash",
+    "networkId": "10",
     "permissioned": true,
     "quorumVersion": "2.4.0",
     "transactionManager": "0.10.2",
