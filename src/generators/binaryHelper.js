@@ -72,22 +72,19 @@ export function getGethOnPath () {
 }
 
 export function getDownloadableGethChoices () {
-  return Object.entries(BINARIES.quorum).map((entry) => {
-    const key = entry[0]
-    const binaryInfo = entry[1]
-    return {
-      name: `Quorum ${key}`,
-      value: key,
-    }
-  })
+  return getDownloadableChoices(BINARIES.quorum)
 }
 
 export function getDownloadableTesseraChoices () {
-  return Object.entries(BINARIES.tessera).map((entry) => {
+  return getDownloadableChoices(BINARIES.tessera)
+}
+
+function getDownloadableChoices (versions) {
+  return Object.entries(versions).map((entry) => {
     const key = entry[0]
-    const binaryInfo = entry[1]
+    const { description } = entry[1]
     return {
-      name: `Tessera ${key}`,
+      name: description,
       value: key,
     }
   })
@@ -143,6 +140,7 @@ export const BINARIES = {
   quorum: {
     '2.4.0': {
       name: 'geth',
+      description: 'Quorum 2.4.0',
       url: {
         darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.4.0/geth_v2.4.0_darwin_amd64.tar.gz',
         linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.4.0/geth_v2.4.0_linux_amd64.tar.gz',
@@ -155,8 +153,15 @@ export const BINARIES = {
   },
 
   tessera: {
+    '0.10.3': {
+      name: 'tessera-app.jar',
+      description: 'Tessera 0.10.3 (Java 11+)',
+      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.3/tessera-app-0.10.3-app.jar',
+      type: 'jar',
+    },
     '0.10.2': {
       name: 'tessera-app.jar',
+      description: 'Tessera 0.10.2 (Java 8)',
       url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.2/tessera-app-0.10.2-app.jar',
       type: 'jar',
     },
