@@ -1,7 +1,7 @@
 import { createDirectory, includeCakeshop } from './networkCreator'
 import {
   copyFile,
-  cwd,
+  libRootDir,
   writeFile,
 } from '../utils/fileUtils'
 import { join } from 'path'
@@ -49,12 +49,12 @@ export async function buildBash(config) {
 
   console.log('Writing start script...')
   writeFile(join(networkPath, 'start.sh'), bashDetails.startScript, true)
-  copyFile(join(cwd(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
+  copyFile(join(libRootDir(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
 
-  copyFile(join(cwd(), 'lib/runscript.sh'), join(networkPath, 'runscript.sh'))
-  copyFile(join(cwd(), 'lib/public-contract.js'), join(networkPath, 'public-contract.js'))
-  copyFile(join(cwd(), 'lib/private-contract-3nodes.js'), join(networkPath, 'private-contract-3nodes.js'))
-  copyFile(join(cwd(), 'lib/private-contract-7nodes.js'), join(networkPath, 'private-contract-7nodes.js'))
+  copyFile(join(libRootDir(), 'lib/runscript.sh'), join(networkPath, 'runscript.sh'))
+  copyFile(join(libRootDir(), 'lib/public-contract.js'), join(networkPath, 'public-contract.js'))
+  copyFile(join(libRootDir(), 'lib/private-contract-3nodes.js'), join(networkPath, 'private-contract-3nodes.js'))
+  copyFile(join(libRootDir(), 'lib/private-contract-7nodes.js'), join(networkPath, 'private-contract-7nodes.js'))
 
   console.log('Initializing quorum...')
   bashDetails.initCommands.forEach((command) => {

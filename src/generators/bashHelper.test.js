@@ -1,9 +1,9 @@
 import { createDirectory } from './networkCreator'
 import { createReplica7NodesConfig } from '../model/NetworkConfig'
 import { buildBashScript, buildBash, waitForTesseraNodesCommand } from './bashHelper'
-import { copyFile, cwd, writeFile } from '../utils/fileUtils'
+import { copyFile, cwd, libRootDir, writeFile } from '../utils/fileUtils'
 import { execute } from '../utils/execUtils'
-import { TEST_CWD } from '../utils/testHelper'
+import { TEST_CWD, TEST_LIB_ROOT_DIR } from '../utils/testHelper'
 import { pathToCakeshop, pathToQuorumBinary, pathToTesseraJar } from './binaryHelper'
 
 jest.mock('../generators/networkCreator')
@@ -11,6 +11,7 @@ jest.mock('../utils/fileUtils')
 jest.mock('../utils/execUtils')
 jest.mock('../generators/binaryHelper')
 cwd.mockReturnValue(TEST_CWD)
+libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 pathToQuorumBinary.mockReturnValue('geth')
 pathToTesseraJar.mockReturnValue('tessera')
 pathToCakeshop.mockReturnValue('cakeshop')

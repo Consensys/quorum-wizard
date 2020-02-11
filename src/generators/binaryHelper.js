@@ -1,4 +1,4 @@
-import { cwd } from '../utils/fileUtils'
+import { libRootDir } from '../utils/fileUtils'
 import { join } from 'path'
 import { executeSync } from '../utils/execUtils'
 import { isDocker } from '../model/NetworkConfig'
@@ -107,7 +107,7 @@ export function pathToQuorumBinary (quorumVersion) {
     return 'geth'
   } else {
     const info = BINARIES.quorum[quorumVersion]
-    return join(cwd(), 'bin', 'quorum', quorumVersion, info.name)
+    return join(libRootDir(), 'bin', 'quorum', quorumVersion, info.name)
   }
 }
 
@@ -116,23 +116,23 @@ export function pathToTesseraJar (transactionManager) {
     return '$TESSERA_JAR'
   } else {
     const info = BINARIES.tessera[transactionManager]
-    return join(cwd(), 'bin', 'tessera', transactionManager, info.name)
+    return join(libRootDir(), 'bin', 'tessera', transactionManager, info.name)
   }
 }
 
 export function pathToCakeshop () {
   const info = BINARIES.cakeshop['0.11.0-RC2']
-  return join(cwd(), 'bin', 'cakeshop', '0.11.0-RC2', info.name)
+  return join(libRootDir(), 'bin', 'cakeshop', '0.11.0-RC2', info.name)
 }
 
 export function pathToIstanbulTools () {
   const info = BINARIES.istanbul['1.0.1']
-  return join(cwd(), 'bin', 'istanbul', '1.0.1', info.name)
+  return join(libRootDir(), 'bin', 'istanbul', '1.0.1', info.name)
 }
 
 export function pathToBootnode () {
   const info = BINARIES.bootnode['1.8.27']
-  return join(cwd(), 'bin', 'bootnode', '1.8.27', info.name)
+  return join(libRootDir(), 'bin', 'bootnode', '1.8.27', info.name)
 }
 
 

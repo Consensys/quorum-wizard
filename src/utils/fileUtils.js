@@ -1,5 +1,9 @@
 import fs from 'fs-extra'
-import { join } from 'path'
+import { join, resolve } from 'path'
+
+// this file is in $ROOT/build/utils/ and the bin, lib, and 7nodes folders are in $ROOT.
+// Go up two folders and cache that path for later use
+const libRoot = resolve(__dirname, "../..")
 
 export function writeJsonFile (folder, filename, object, space = 2) {
   fs.writeFileSync(join(folder, filename),
@@ -43,6 +47,10 @@ export function formatNewLine(file) {
 
 export function cwd() {
   return process.cwd()
+}
+
+export function libRootDir() {
+  return libRoot
 }
 
 export function exists(path) {

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import 'source-map-support/register'
 import inquirer from 'inquirer'
 import { customize, quickstart, replica7Nodes } from './questions'

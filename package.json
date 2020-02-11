@@ -3,8 +3,18 @@
   "version": "0.1.0",
   "description": "Tool for walking through the setup of Quorum networks.",
   "main": "src/index.js",
+  "bin": {
+    "quorum-creator": "build/index.js"
+  },
+  "preferGlobal": true,
+  "files": [
+    "build",
+    "lib",
+    "7nodes",
+    "package.json",
+    "README.md"
+  ],
   "scripts": {
-
     "build": "babel src -d build --ignore \"src/**/*.test.js\" --source-maps inline",
     "start": "babel src --watch -d build --ignore \"src/**/*.test.js\"  --source-maps inline",
     "test": "jest",
@@ -31,7 +41,7 @@
     "sanitize-filename": "^1.6.3",
     "source-map-support": "^0.5.16",
     "tar-fs": "^2.0.0",
-    "web3": "^1.2.4"
+    "web3": "^1.2.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.3",

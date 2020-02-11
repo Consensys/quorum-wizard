@@ -1,14 +1,10 @@
-import { join, normalize } from 'path'
-import sanitize from 'sanitize-filename'
+import { join } from 'path'
 import {
   copyFile,
-  createFolder,
   readFileToString,
-  removeFolder,
   writeFile,
-  writeJsonFile,
   formatNewLine,
-  cwd,
+  libRootDir,
 } from '../utils/fileUtils'
 import { includeCakeshop, createDirectory } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
@@ -20,11 +16,11 @@ export function buildDockerCompose(config) {
   const hasTessera = isTessera(config)
   const hasCakeshop = includeCakeshop(config)
 
-  const quorumDefinitions = readFileToString(join(cwd(), 'lib/docker-compose-definitions-quorum.yml'))
+  const quorumDefinitions = readFileToString(join(libRootDir(), 'lib/docker-compose-definitions-quorum.yml'))
   const quorumExposedPorts = createCustomQuorumPorts(config.dockerCustom)
-  const tesseraDefinitions = hasTessera ? readFileToString(join(cwd(), 'lib/docker-compose-definitions-tessera.yml')) : ""
+  const tesseraDefinitions = hasTessera ? readFileToString(join(libRootDir(), 'lib/docker-compose-definitions-tessera.yml')) : ""
   const tesseraExposedPorts = hasTessera ? createCustomTesseraPorts(config.dockerCustom) : ""
-  const cakeshopDefinitions = hasCakeshop ? readFileToString(join(cwd(), 'lib/docker-compose-definitions-cakeshop.yml')) : ""
+  const cakeshopDefinitions = hasCakeshop ? readFileToString(join(libRootDir(), 'lib/docker-compose-definitions-cakeshop.yml')) : ""
 
   let services = config.nodes.map((node, i) => {
     let allServices = buildNodeService(node, i, hasTessera)
@@ -89,10 +85,10 @@ export async function createDockerCompose(config) {
   writeFile(join(networkPath, 'start.sh'), startCommands, true)
   writeFile(join(networkPath, 'stop.sh'), 'docker-compose down', true)
 
-  copyFile(join(cwd(), 'lib/runscript.sh'), join(qdata, 'runscript.sh'))
-  copyFile(join(cwd(), 'lib/public-contract.js'), join(qdata, 'public-contract.js'))
-  copyFile(join(cwd(), 'lib/private-contract-3nodes.js'), join(qdata, 'private-contract-3nodes.js'))
-  copyFile(join(cwd(), 'lib/private-contract-7nodes.js'), join(qdata, 'private-contract-7nodes.js'))
+  copyFile(join(libRootDir(), 'lib/runscript.sh'), join(qdata, 'runscript.sh'))
+  copyFile(join(libRootDir(), 'lib/public-contract.js'), join(qdata, 'public-contract.js'))
+  copyFile(join(libRootDir(), 'lib/private-contract-3nodes.js'), join(qdata, 'private-contract-3nodes.js'))
+  copyFile(join(libRootDir(), 'lib/private-contract-7nodes.js'), join(qdata, 'private-contract-7nodes.js'))
 
 }
 

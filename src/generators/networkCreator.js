@@ -1,6 +1,14 @@
 import { join } from 'path'
 import sanitize from 'sanitize-filename'
-import { copyFile, createFolder, cwd, readFileToString, removeFolder, writeJsonFile, } from '../utils/fileUtils'
+import {
+  copyFile,
+  createFolder,
+  cwd,
+  libRootDir,
+  readFileToString,
+  removeFolder,
+  writeJsonFile,
+} from '../utils/fileUtils'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
@@ -26,7 +34,7 @@ export function createDirectory (config) {
 
   const configPath = join(cwd(), config.network.configDir)
   createFolder(configPath, true)
-  let keyPath = join(cwd(), '7nodes')
+  let keyPath = join(libRootDir(), '7nodes')
   //if user selected to generate keys
   if(config.network.generateKeys) {
     generateKeys(config, configPath)

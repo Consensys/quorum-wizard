@@ -1,13 +1,13 @@
 import { buildBashScript } from '../generators/bashHelper'
 import { createCustomConfig, createQuickstartConfig, createReplica7NodesConfig } from './NetworkConfig'
-import { cwd } from '../utils/fileUtils'
-import { TEST_CWD } from '../utils/testHelper'
+import { cwd, libRootDir } from '../utils/fileUtils'
+import { TEST_CWD, TEST_LIB_ROOT_DIR } from '../utils/testHelper'
 import { generateAccounts } from '../generators/consensusHelper'
-import { join } from 'path'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/consensusHelper')
 cwd.mockReturnValue(TEST_CWD)
+libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 generateAccounts.mockReturnValue("accounts")
 
 test('creates quickstart config', () => {

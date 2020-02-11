@@ -3,15 +3,16 @@ import { createQuickstartConfig, createReplica7NodesConfig } from '../model/Netw
 import {
   copyFile,
   createFolder,
-  cwd,
+  cwd, libRootDir,
   writeJsonFile,
 } from '../utils/fileUtils'
 import { buildCakeshopDir } from './cakeshopHelper'
 import { anything } from 'expect'
-import { TEST_CWD } from '../utils/testHelper'
+import { TEST_CWD, TEST_LIB_ROOT_DIR } from '../utils/testHelper'
 
 jest.mock('../utils/fileUtils')
 cwd.mockReturnValue(TEST_CWD)
+libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 
 describe('creates a cakeshop directory structure for bash', () => {
   it('creates directory structure for cakeshop files and moves them in', () => {
@@ -26,12 +27,12 @@ describe('creates a cakeshop directory structure for bash', () => {
     buildCakeshopDir(config, createNetPath(config, 'qdata'))
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/cakeshop/local'), true)
     expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'qdata/cakeshop/local'), 'cakeshop.json', anything())
-    expect(copyFile).toBeCalledWith(createPath('lib', 'cakeshop_application.properties.template'), createNetPath(config, 'qdata/cakeshop/local','application.properties'))
+    expect(copyFile).toBeCalledWith(createLibPath('lib', 'cakeshop_application.properties.template'), createNetPath(config, 'qdata/cakeshop/local','application.properties'))
   })
 })
 
-function createPath(...relativePaths) {
-  return join(cwd(), ...relativePaths)
+function createLibPath(...relativePaths) {
+  return join(libRootDir(), ...relativePaths)
 }
 
 function createNetPath(config, ...relativePaths) {

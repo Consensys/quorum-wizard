@@ -1,5 +1,5 @@
 import { basename, join } from 'path'
-import { createFolder, cwd, exists } from '../utils/fileUtils'
+import { createFolder, exists, libRootDir } from '../utils/fileUtils'
 import axios from 'axios'
 import { createGunzip } from 'zlib'
 import { extract } from 'tar-fs'
@@ -11,7 +11,7 @@ export async function downloadIfMissing (name, version) {
     throw new Error(`Could not find binary info entry for ${name} ${version}`)
   }
   const binaryInfo = BINARIES[name][version]
-  const binDir = join(cwd(), 'bin', name, version)
+  const binDir = join(libRootDir(), 'bin', name, version)
   const binaryFileLocation = join(binDir, binaryInfo.name)
   if (!exists(binaryFileLocation)) {
     createFolder(binDir, true)

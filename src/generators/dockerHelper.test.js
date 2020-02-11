@@ -6,13 +6,15 @@ import {
   readFileToString,
   formatNewLine,
   cwd,
+  libRootDir,
 } from '../utils/fileUtils'
 import { buildDockerCompose, createDockerCompose } from './dockerHelper'
-import { TEST_CWD } from '../utils/testHelper'
+import { TEST_CWD, TEST_LIB_ROOT_DIR } from '../utils/testHelper'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')
 cwd.mockReturnValue(TEST_CWD)
+libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 
 describe('generates docker-compose directory', () => {
   it('given docker details builds files to run docker', async () => {

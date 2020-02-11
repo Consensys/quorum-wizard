@@ -2,7 +2,7 @@ import { join } from 'path'
 import {
   copyFile,
   createFolder,
-  cwd,
+  libRootDir,
   writeJsonFile,
 } from '../utils/fileUtils'
 import { generateCakeshopConfig } from '../model/CakeshopConfig'
@@ -11,7 +11,7 @@ export function buildCakeshopDir(config, qdata) {
   const cakeshopDir = join(qdata, 'cakeshop', 'local')
   createFolder(cakeshopDir, true)
   writeJsonFile(cakeshopDir, 'cakeshop.json', generateCakeshopConfig(config))
-  copyFile(join(cwd(), 'lib/cakeshop_application.properties.template'), join(cakeshopDir, 'application.properties'))
+  copyFile(join(libRootDir(), 'lib/cakeshop_application.properties.template'), join(cakeshopDir, 'application.properties'))
 }
 
 export function generateCakeshopScript(qdata) {
