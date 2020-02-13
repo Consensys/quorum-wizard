@@ -31,7 +31,7 @@ All you need to do is go to the specified location and run ./start.sh
 `,
 
   choices: [
-    { name: 'Quickstart (3-node raft network with tessera and cakeshop)', value: 1 },
+    { name: 'Quickstart (3-node raft network with tessera and cakeshop, requires Java 8)', value: 1 },
     { name: 'Simple Network', value: 2 },
     { name: 'Fully Custom Network', value: 3 },
     { name: 'Exit', value: 4 }
@@ -101,7 +101,7 @@ export const TRANSACTION_MANAGER = {
 export const CAKESHOP = {
   type: 'confirm',
   name: 'cakeshop',
-  message: 'Do you want to run cakeshop with your network?',
+  message: 'Do you want to run cakeshop with your network? (Requires Java 8)',
   default: false
 }
 

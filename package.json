@@ -1,6 +1,6 @@
 {
   "name": "quorum-creator",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tool for walking through the setup of Quorum networks.",
   "main": "src/index.js",
   "bin": {
