@@ -13,18 +13,11 @@ import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
 import { isTessera } from '../model/NetworkConfig'
-import { createGethStartCommand, createTesseraStartCommand } from './bashHelper'
-import { pathToQuorumBinary } from './binaryHelper'
 
 export function createDirectory (config) {
   // https://nodejs.org/en/knowledge/file-system/security/introduction/
 
-  const networkFolderName = sanitize(config.network.name)
-  if (networkFolderName === '') {
-    throw new Error('Network name was empty or contained invalid characters')
-  }
-
-  const networkPath = join(cwd(), 'network', networkFolderName)
+  const networkPath = getFullNetworkPath(config)
   removeFolder(networkPath)
 
   const qdata = join(networkPath, 'qdata')
@@ -45,9 +38,6 @@ export function createDirectory (config) {
 
   const staticNodes = createStaticNodes(config.nodes, config.network.consensus, keyPath)
   const peerList = createPeerList(config.nodes, config.network.transactionManager)
-  const initCommands = []
-  const startCommands = []
-  const tmStartCommands = []
 
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
@@ -57,7 +47,7 @@ export function createDirectory (config) {
     const keyDir = join(quorumDir, 'keystore')
     const tmDir = join(qdata, `c${nodeNumber}`)
     const passwordDestination = join(keyDir, 'password.txt')
-    const genesisDestination = join(quorumDir, `${config.network.consensus}-genesis.json`)
+    const genesisDestination = join(quorumDir, 'genesis.json')
     createFolder(quorumDir)
     createFolder(gethDir)
     createFolder(keyDir)
@@ -68,7 +58,7 @@ export function createDirectory (config) {
     copyFile(join(keyFolder, 'key'), join(keyDir, 'key'))
     copyFile(join(keyFolder, 'nodekey'), join(gethDir, 'nodekey'))
     copyFile(join(keyFolder, 'password.txt'), passwordDestination)
-    copyFile(join(configPath, `${config.network.consensus}-genesis.json`), genesisDestination)
+    copyFile(join(configPath, 'genesis.json'), genesisDestination)
     if(isTessera(config)) {
       copyFile(join(keyFolder, 'tm.key'), join(tmDir, 'tm.key'))
       copyFile(join(keyFolder, 'tm.pub'), join(tmDir, 'tm.pub'))
@@ -77,32 +67,7 @@ export function createDirectory (config) {
       writeJsonFile(tmDir, `tessera-config-09-${nodeNumber}.json`,
         tesseraConfig)
     }
-
-    if (config.network.deployment === 'bash') {
-      // TODO make this use the BIN_GETH env variable
-      const initCommand = `cd ${networkPath} && ${pathToQuorumBinary(config.network.quorumVersion)} --datadir ${quorumDir} init ${genesisDestination}`
-      initCommands.push(initCommand)
-
-      let tmIpcLocation = isTessera(config) ? join(tmDir, 'tm.ipc') : 'ignore'
-      const startCommand = createGethStartCommand(config, node,
-        passwordDestination, nodeNumber, tmIpcLocation)
-        startCommands.push(startCommand)
-
-      if (isTessera(config)) {
-        const tmStartCommand = createTesseraStartCommand(config, node, nodeNumber,
-          tmDir, logs)
-        tmStartCommands.push(tmStartCommand)
-      }
-    }
   })
-
-  const obj = {
-    tesseraStart:  tmStartCommands.join('\n'),
-    gethStart: startCommands.join('\n'),
-    initStart: initCommands,
-    netPath: networkPath,
-  }
-  return obj;
 }
 
 export function createStaticNodes (nodes, consensus, configDir) {
@@ -130,4 +95,13 @@ function createPeerList (nodes, transactionManager) {
   return nodes.map((node) => ({
     url: `http://${node.tm.ip}:${node.tm.p2pPort}`
   }))
+}
+
+export function getFullNetworkPath(config) {
+  const networkFolderName = sanitize(config.network.name)
+  if (networkFolderName === '') {
+    throw new Error('Network name was empty or contained invalid characters')
+  }
+
+  return join(cwd(), 'network', networkFolderName)
 }

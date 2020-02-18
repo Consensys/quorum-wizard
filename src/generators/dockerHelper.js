@@ -6,7 +6,7 @@ import {
   formatNewLine,
   libRootDir,
 } from '../utils/fileUtils'
-import { includeCakeshop, createDirectory } from './networkCreator'
+import { getFullNetworkPath, includeCakeshop } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
 import { isTessera } from '../model/NetworkConfig'
 import { downloadAndCopyBinaries } from './binaryHelper'
@@ -68,10 +68,8 @@ export async function createDockerCompose(config) {
   const file = buildDockerCompose(config)
 
   console.log('Downloading dependencies...')
-  console.log('Building network data directory...')
-  console.log('Building network data directory...')
-  const commands = createDirectory(config)
-  const networkPath = commands.netPath
+
+  const networkPath = getFullNetworkPath(config)
   const qdata = join(networkPath, 'qdata')
 
   if(includeCakeshop(config)) {

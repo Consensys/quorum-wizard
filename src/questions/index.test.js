@@ -3,12 +3,14 @@ import { customize, quickstart, replica7Nodes } from './index'
 import { buildBash } from '../generators/bashHelper'
 import { prompt } from 'inquirer'
 import { getCustomizedBashNodes } from './promptHelper'
+import { createDirectory } from '../generators/networkCreator'
 
 jest.mock('inquirer')
 jest.mock('../model/NetworkConfig')
 jest.mock('../generators/bashHelper')
 jest.mock('../generators/dockerHelper')
 jest.mock('../questions/promptHelper')
+jest.mock('../generators/networkCreator')
 
 const REPLICA_7NODES_CONFIG = {
   numberNodes: '5',
@@ -32,6 +34,7 @@ test('quickstart', async () => {
   createQuickstartConfig.mockReturnValue(fakeConfig)
   await quickstart()
   expect(createQuickstartConfig).toHaveBeenCalled()
+  expect(createDirectory).toHaveBeenCalledWith(fakeConfig)
   expect(buildBash).toHaveBeenCalledWith(fakeConfig)
 })
 
@@ -42,12 +45,12 @@ test('7nodes replica', async () => {
   await replica7Nodes()
   expect(createReplica7NodesConfig)
     .toHaveBeenCalledWith(REPLICA_7NODES_CONFIG)
+  expect(createDirectory).toHaveBeenCalledWith(fakeConfig)
   expect(buildBash).toHaveBeenCalledWith(fakeConfig)
 })
 
 test('customize', async () => {
   const fakeConfig = { network: {name: 'test'}}
-  const fakeCommands = {tesseraStart: 'test', gethStart: 'test', initStart: ['test'],netPath: 'test',}
   createCustomConfig.mockReturnValue(fakeConfig)
   prompt.mockResolvedValueOnce(REPLICA_7NODES_CONFIG)
   prompt.mockResolvedValueOnce(CUSTOM_CONFIG)
@@ -60,5 +63,6 @@ test('customize', async () => {
   }
   expect(createCustomConfig).toHaveBeenCalledWith(combinedAnswers)
 
+  expect(createDirectory).toHaveBeenCalledWith(fakeConfig)
   expect(buildBash).toHaveBeenCalledWith(fakeConfig)
 })

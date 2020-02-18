@@ -1,8 +1,8 @@
-import { createDirectory, includeCakeshop } from './networkCreator'
+import { createDirectory, getFullNetworkPath, includeCakeshop } from './networkCreator'
 import {
-  copyFile,
-  libRootDir,
-  writeFile,
+  copyFile, createFolder, cwd,
+  libRootDir, removeFolder,
+  writeFile, writeJsonFile,
 } from '../utils/fileUtils'
 import { join } from 'path'
 import { execute } from '../utils/execUtils'
@@ -16,23 +16,61 @@ import {
 import { isTessera } from '../model/NetworkConfig'
 
 export function buildBashScript(config) {
-  const commands = createDirectory(config)
+  const commands = createCommands(config)
 
-  const cakeshopStart = includeCakeshop(config) ? [generateCakeshopScript(), waitForCakeshopCommand()].join("") : ""
   const startScript = [
     setEnvironmentCommand(config),
     commands.tesseraStart,
     waitForTesseraNodesCommand(config),
+    'echo "Starting Quorum nodes"',
     commands.gethStart,
-    cakeshopStart
+    generateCakeshopScript(config),
+    'echo "Successfully started Quorum network."',
   ]
 
   return {
     startScript: startScript.join('\n'),
-    initCommands: commands.initStart,
-    networkPath: commands.netPath
+    initCommands: commands.initStart
   }
 }
+
+export function createCommands (config) {
+  const networkPath = getFullNetworkPath(config)
+  const initCommands = []
+  const startCommands = []
+  const tmStartCommands = []
+
+  config.nodes.forEach((node, i) => {
+    const nodeNumber = i+1
+    const quorumDir = join('qdata', `dd${nodeNumber}`)
+    const tmDir = join('qdata', `c${nodeNumber}`)
+    const genesisLocation = join(quorumDir, 'genesis.json')
+    const keyDir = join(quorumDir, 'keystore')
+    const passwordDestination = join(keyDir, 'password.txt')
+    const logs = join('qdata', 'logs')
+    const initCommand = `cd ${networkPath} && ${pathToQuorumBinary(config.network.quorumVersion)} --datadir ${quorumDir} init ${genesisLocation}`
+    initCommands.push(initCommand)
+
+    let tmIpcLocation = isTessera(config) ? join(tmDir, 'tm.ipc') : 'ignore'
+    const startCommand = createGethStartCommand(config, node,
+      passwordDestination, nodeNumber, tmIpcLocation)
+    startCommands.push(startCommand)
+
+    if (isTessera(config)) {
+      const tmStartCommand = createTesseraStartCommand(config, node, nodeNumber,
+        tmDir, logs)
+      tmStartCommands.push(tmStartCommand)
+    }
+  })
+
+  const obj = {
+    tesseraStart:  tmStartCommands.join('\n'),
+    gethStart: startCommands.join('\n'),
+    initStart: initCommands,
+  }
+  return obj;
+}
+
 
 export async function buildBash(config) {
 
@@ -41,7 +79,7 @@ export async function buildBash(config) {
 
   console.log('Building network data directory...')
   const bashDetails = buildBashScript(config)
-  const networkPath = bashDetails.networkPath
+  const networkPath = getFullNetworkPath(config)
 
   if(includeCakeshop(config)) {
     buildCakeshopDir(config, join(networkPath, 'qdata'))

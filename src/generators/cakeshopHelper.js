@@ -1,11 +1,7 @@
 import { join } from 'path'
-import {
-  copyFile,
-  createFolder,
-  libRootDir,
-  writeJsonFile,
-} from '../utils/fileUtils'
+import { copyFile, createFolder, libRootDir, writeJsonFile, } from '../utils/fileUtils'
 import { generateCakeshopConfig } from '../model/CakeshopConfig'
+import { includeCakeshop } from './networkCreator'
 
 export function buildCakeshopDir(config, qdata) {
   const cakeshopDir = join(qdata, 'cakeshop', 'local')
@@ -14,10 +10,17 @@ export function buildCakeshopDir(config, qdata) {
   copyFile(join(libRootDir(), 'lib/cakeshop_application.properties.template'), join(cakeshopDir, 'application.properties'))
 }
 
-export function generateCakeshopScript(qdata) {
+export function generateCakeshopScript(config) {
+  if(!includeCakeshop(config)) {
+    return ''
+  }
   const jvmParams = "-Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop"
-  const CMD = `java ${jvmParams} -jar $BIN_CAKESHOP > /dev/null 2>&1 &`
-  return CMD
+  const startCommand = `java ${jvmParams} -jar $BIN_CAKESHOP > /dev/null 2>&1 &`
+  return [
+    'echo "Starting Cakeshop"',
+    startCommand,
+    waitForCakeshopCommand(config)
+  ].join('\n')
 }
 
 export function waitForCakeshopCommand(config) {
