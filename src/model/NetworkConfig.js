@@ -97,10 +97,6 @@ function createNetworkFolderName (answers) {
   return `${numberNodes}-nodes-${consensus}-${transactionManagerName}${deployment}`
 }
 
-export function isDocker (deployment) {
-  return deployment === 'docker-compose'
-}
-
 export function generateNodeConfigs (numberNodes, transactionManager, deployment) {
   let devP2pPort = 21000,
     rpcPort = 22000,
@@ -134,6 +130,22 @@ export function generateNodeConfigs (numberNodes, transactionManager, deployment
   return nodes
 }
 
-export function isTessera (config) {
-  return config.network.transactionManager !== 'none'
+export function isTessera (tessera) {
+  return tessera !== 'none'
+}
+
+export function isDocker (deployment) {
+  return deployment === 'docker-compose'
+}
+
+export function isBash (deployment) {
+  return deployment === 'bash'
+}
+
+export function isIstanbul (consensus) {
+  return consensus === 'istanbul'
+}
+
+export function isRaft (consensus) {
+  return consensus === 'raft'
 }

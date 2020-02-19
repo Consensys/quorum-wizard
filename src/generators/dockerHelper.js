@@ -13,7 +13,7 @@ import { downloadAndCopyBinaries } from './binaryHelper'
 const yaml = require('js-yaml')
 
 export function buildDockerCompose(config) {
-  const hasTessera = isTessera(config)
+  const hasTessera = isTessera(config.network.transactionManager)
   const hasCakeshop = includeCakeshop(config)
 
   const quorumDefinitions = readFileToString(join(libRootDir(), 'lib/docker-compose-definitions-quorum.yml'))

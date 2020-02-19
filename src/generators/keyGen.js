@@ -23,7 +23,7 @@ function doExec(keyDir, config) {
   ${pathToBootnode()} --nodekey=nodekey --writeaddress > enode
   find . -type f -name 'UTC*' -execdir mv {} key ';'
   `
-  if(isTessera(config)) {
+  if(isTessera(config.network.transactionManager)) {
     cmd += `java -jar ${pathToTesseraJar(config.network.transactionManager)} -keygen -filename tm`
   }
 

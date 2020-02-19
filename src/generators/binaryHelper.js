@@ -1,7 +1,7 @@
 import { libRootDir } from '../utils/fileUtils'
 import { join } from 'path'
 import { executeSync } from '../utils/execUtils'
-import { isDocker } from '../model/NetworkConfig'
+import { isDocker, isIstanbul } from '../model/NetworkConfig'
 import { downloadIfMissing } from './download'
 
 export function getPlatformSpecificUrl ({ url }) {
@@ -26,7 +26,7 @@ export async function downloadAndCopyBinaries (config) {
   const isDockerButNeedsBinaries = docker && generateKeys
 
   // needed no matter what if using istanbul to generate genesis
-  if (consensus === 'istanbul') {
+  if (isIstanbul(consensus)) {
     await downloadIfMissing('istanbul', '1.0.1')
   }
 

@@ -1,4 +1,4 @@
-import { createQuickstartConfig, createReplica7NodesConfig, createCustomConfig } from '../model/NetworkConfig'
+import { createQuickstartConfig, createReplica7NodesConfig, createCustomConfig, isBash, isTessera, isDocker } from '../model/NetworkConfig'
 import { customize, quickstart, replica7Nodes } from './index'
 import { buildBash } from '../generators/bashHelper'
 import { prompt } from 'inquirer'
@@ -32,6 +32,8 @@ const CUSTOM_CONFIG = {
 test('quickstart', async () => {
   const fakeConfig = { network: {name: 'test'}, nodes: []}
   createQuickstartConfig.mockReturnValue(fakeConfig)
+  isBash.mockReturnValueOnce(true)
+  isDocker.mockReturnValueOnce(false)
   await quickstart()
   expect(createQuickstartConfig).toHaveBeenCalled()
   expect(createDirectory).toHaveBeenCalledWith(fakeConfig)
@@ -42,6 +44,8 @@ test('7nodes replica', async () => {
   const fakeConfig = { network: {name: 'test'}, nodes: []}
   prompt.mockResolvedValue(REPLICA_7NODES_CONFIG)
   createReplica7NodesConfig.mockReturnValue(fakeConfig)
+  isBash.mockReturnValueOnce(true)
+  isDocker.mockReturnValueOnce(false)
   await replica7Nodes()
   expect(createReplica7NodesConfig)
     .toHaveBeenCalledWith(REPLICA_7NODES_CONFIG)
@@ -52,6 +56,9 @@ test('7nodes replica', async () => {
 test('customize', async () => {
   const fakeConfig = { network: {name: 'test'}, nodes: []}
   createCustomConfig.mockReturnValue(fakeConfig)
+  isBash.mockReturnValueOnce(true)
+  isTessera.mockReturnValueOnce(true)
+  isDocker.mockReturnValueOnce(false)
   prompt.mockResolvedValueOnce(REPLICA_7NODES_CONFIG)
   prompt.mockResolvedValueOnce(CUSTOM_CONFIG)
   getCustomizedBashNodes.mockReturnValueOnce(['nodes'])
@@ -62,7 +69,6 @@ test('customize', async () => {
     nodes: ['nodes'],
   }
   expect(createCustomConfig).toHaveBeenCalledWith(combinedAnswers)
-
   expect(createDirectory).toHaveBeenCalledWith(fakeConfig)
   expect(buildBash).toHaveBeenCalledWith(fakeConfig)
 })

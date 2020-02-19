@@ -3,7 +3,9 @@ import {
   createReplica7NodesConfig,
   createCustomConfig,
   generateNodeConfigs,
-  isTessera
+  isTessera,
+  isDocker,
+  isBash
 } from '../model/NetworkConfig'
 import { buildBash } from '../generators/bashHelper'
 import { createDockerCompose } from '../generators/dockerHelper'
@@ -62,11 +64,11 @@ export async function customize () {
     CUSTOMIZE_PORTS
   ])
 
-  let nodes = (customAnswers.customizePorts && commonAnswers.deployment === 'bash') ?
+  let nodes = (customAnswers.customizePorts && isBash(commonAnswers.deployment)) ?
     await getCustomizedBashNodes(commonAnswers.numberNodes, commonAnswers.transactionManager !== 'none') : []
 
-  let dockerCustom = (customAnswers.customizePorts && commonAnswers.deployment === 'docker-compose') ?
-    await getCustomizedDockerPorts(commonAnswers.transactionManager !== 'none') : undefined
+  let dockerCustom = (customAnswers.customizePorts && isDocker(commonAnswers.deployment)) ?
+    await getCustomizedDockerPorts(isTessera(commonAnswers.transactionManager)) : undefined
 
     const answers = {
       ...commonAnswers,
@@ -82,18 +84,18 @@ export async function customize () {
 async function buildNetwork(config, deployment) {
   console.log('')
   createDirectory(config)
-  if (deployment === 'bash') {
+  if (isBash(deployment)) {
     await buildBash(config)
-  } else if (deployment === 'docker-compose') {
+  } else if (isDocker(deployment)) {
     await createDockerCompose(config)
   }
   console.log('Done')
 
   console.log('')
   const qdata = join(cwd(), 'network', config.network.name, 'qdata')
-  if(isTessera(config)) {
+  if(isTessera(config.network.transactionManager)) {
     const numNodes = config.nodes.length
-    const networkFolder = deployment === 'bash' ? join(cwd(), 'network', config.network.name) : qdata
+    const networkFolder = isBash(deployment) ? join(cwd(), 'network', config.network.name) : qdata
     console.log('--------------------------------------------------------------------------------')
     console.log('')
     config.nodes.forEach((node, i) => {
