@@ -1,4 +1,4 @@
-import { createDirectory, includeCakeshop } from './networkCreator'
+import { createDirectory, getFullNetworkPath, includeCakeshop } from './networkCreator'
 import { createQuickstartConfig, createReplica7NodesConfig } from '../model/NetworkConfig'
 import {
   copyFile,
@@ -15,6 +15,7 @@ jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
+getFullNetworkPath.mockReturnValue(`${TEST_CWD}/test-network`)
 
 describe('generates docker-compose directory', () => {
   it('given docker details builds files to run docker', async () => {
@@ -31,7 +32,6 @@ describe('generates docker-compose directory', () => {
     createDirectory.mockReturnValueOnce({tesseraStart:  "",
         gethStart: "",
         initStart: [],
-        netPath: "test",
       })
     includeCakeshop.mockReturnValueOnce(false)
     readFileToString.mockReturnValueOnce("test")
