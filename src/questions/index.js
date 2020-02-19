@@ -25,6 +25,7 @@ import inquirer from 'inquirer'
 import { cwd, readFileToString } from '../utils/fileUtils'
 import { join } from "path"
 import { createDirectory } from '../generators/networkCreator'
+import { generateAndCopyExampleScripts } from '../generators/examplesHelper'
 
 export async function quickstart() {
   const config = createQuickstartConfig()
@@ -91,13 +92,19 @@ async function buildNetwork(config, deployment) {
   console.log('')
   const qdata = join(cwd(), 'network', config.network.name, 'qdata')
   if(isTessera(config)) {
+    const numNodes = config.nodes.length
+    const networkFolder = deployment === 'bash' ? join(cwd(), 'network', config.network.name) : qdata
     console.log('--------------------------------------------------------------------------------')
     console.log('')
     config.nodes.forEach((node, i) => {
       const nodeNumber = i + 1
       console.log(`Tessera Node ${nodeNumber} public key:`)
-      console.log(`${readFileToString(join(qdata, `c${nodeNumber}`, 'tm.pub'))}`)
+      const pubKey = readFileToString(join(qdata, `c${nodeNumber}`, 'tm.pub'))
+      console.log(`${pubKey}`)
       console.log('')
+      if (nodeNumber === numNodes) {
+        generateAndCopyExampleScripts(pubKey, networkFolder)
+      }
     })
     console.log('--------------------------------------------------------------------------------')
   }

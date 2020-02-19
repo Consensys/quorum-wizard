@@ -30,7 +30,7 @@ const CUSTOM_CONFIG = {
 }
 
 test('quickstart', async () => {
-  const fakeConfig = { network: {name: 'test'}}
+  const fakeConfig = { network: {name: 'test'}, nodes: []}
   createQuickstartConfig.mockReturnValue(fakeConfig)
   await quickstart()
   expect(createQuickstartConfig).toHaveBeenCalled()
@@ -39,7 +39,7 @@ test('quickstart', async () => {
 })
 
 test('7nodes replica', async () => {
-  const fakeConfig = { network: {name: 'test'}}
+  const fakeConfig = { network: {name: 'test'}, nodes: []}
   prompt.mockResolvedValue(REPLICA_7NODES_CONFIG)
   createReplica7NodesConfig.mockReturnValue(fakeConfig)
   await replica7Nodes()
@@ -50,7 +50,7 @@ test('7nodes replica', async () => {
 })
 
 test('customize', async () => {
-  const fakeConfig = { network: {name: 'test'}}
+  const fakeConfig = { network: {name: 'test'}, nodes: []}
   createCustomConfig.mockReturnValue(fakeConfig)
   prompt.mockResolvedValueOnce(REPLICA_7NODES_CONFIG)
   prompt.mockResolvedValueOnce(CUSTOM_CONFIG)

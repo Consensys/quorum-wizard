@@ -89,11 +89,6 @@ export async function buildBash(config) {
   writeFile(join(networkPath, 'start.sh'), bashDetails.startScript, true)
   copyFile(join(libRootDir(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
 
-  copyFile(join(libRootDir(), 'lib/runscript.sh'), join(networkPath, 'runscript.sh'))
-  copyFile(join(libRootDir(), 'lib/public-contract.js'), join(networkPath, 'public-contract.js'))
-  copyFile(join(libRootDir(), 'lib/private-contract-3nodes.js'), join(networkPath, 'private-contract-3nodes.js'))
-  copyFile(join(libRootDir(), 'lib/private-contract-7nodes.js'), join(networkPath, 'private-contract-7nodes.js'))
-
   console.log('Initializing quorum...')
   bashDetails.initCommands.forEach((command) => {
     // TODO figure out the safest way to run shell commands
