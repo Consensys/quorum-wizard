@@ -95,7 +95,7 @@ async function buildNetwork(config, deployment) {
   const qdata = join(cwd(), 'network', config.network.name, 'qdata')
   const networkFolder = isBash(deployment) ? join(cwd(), 'network', config.network.name) : qdata
   let pubKey = ''
-  if(isTessera(config)) {
+  if(isTessera(config.network.transactionManager)) {
     console.log('--------------------------------------------------------------------------------')
     console.log('')
     config.nodes.forEach((node, i) => {
@@ -115,7 +115,7 @@ async function buildNetwork(config, deployment) {
   console.log('./start.sh')
   console.log('')
   console.log('A sample private and public simpleStorage contract are provided to deploy to your network')
-  const tesseraMsg = isTessera(config) ? `The private contract has privateFor set as ${pubKey}\n` : ''
+  const tesseraMsg = isTessera(config.network.transactionManager) ? `The private contract has privateFor set as ${pubKey}\n` : ''
   console.log(tesseraMsg)
   const exampleMsg = isDocker(deployment) ?
     `To use attach to one of your quorum nodes and run loadScript('/examples/private-contract.js')` :
