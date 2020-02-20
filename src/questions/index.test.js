@@ -4,6 +4,8 @@ import { buildBash } from '../generators/bashHelper'
 import { prompt } from 'inquirer'
 import { getCustomizedBashNodes } from './promptHelper'
 import { createDirectory } from '../generators/networkCreator'
+import { copyFile, writeFile, cwd, libRootDir } from '../utils/fileUtils'
+import { TEST_CWD, TEST_LIB_ROOT_DIR } from '../utils/testHelper'
 
 jest.mock('inquirer')
 jest.mock('../model/NetworkConfig')
@@ -11,6 +13,9 @@ jest.mock('../generators/bashHelper')
 jest.mock('../generators/dockerHelper')
 jest.mock('../questions/promptHelper')
 jest.mock('../generators/networkCreator')
+jest.mock('../utils/fileUtils')
+cwd.mockReturnValue(TEST_CWD)
+libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 
 const REPLICA_7NODES_CONFIG = {
   numberNodes: '5',
