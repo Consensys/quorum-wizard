@@ -10,6 +10,15 @@ cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 generateAccounts.mockReturnValue("accounts")
 
+const baseNetwork = {
+  numberNodes: '3',
+  consensus: 'raft',
+  quorumVersion: '2.4.0',
+  transactionManager: '0.10.2',
+  cakeshop: false,
+  deployment: 'bash'
+}
+
 test('creates quickstart config', () => {
   const config = createQuickstartConfig()
   const bash = buildBashScript(config).startScript
@@ -17,25 +26,14 @@ test('creates quickstart config', () => {
 })
 
 test('creates 3nodes raft bash tessera', () => {
-  const config = createReplica7NodesConfig({
-    numberNodes: '3',
-    consensus: 'raft',
-    quorumVersion: '2.4.0',
-    transactionManager: '0.10.2',
-    deployment: 'bash',
-    cakeshop: false
-  })
+  const config = createReplica7NodesConfig(baseNetwork)
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
 })
 
 test('creates 3nodes raft bash tessera cakeshop', () => {
   const config = createReplica7NodesConfig({
-    numberNodes: '3',
-    consensus: 'raft',
-    quorumVersion: '2.4.0',
-    transactionManager: '0.10.2',
-    deployment: 'bash',
+    ...baseNetwork,
     cakeshop: true
   })
   const bash = buildBashScript(config).startScript
@@ -44,12 +42,7 @@ test('creates 3nodes raft bash tessera cakeshop', () => {
 
 test('creates 3nodes raft bash tessera custom', () => {
   const config = createCustomConfig({
-    numberNodes: '3',
-    consensus: 'raft',
-    quorumVersion: '2.4.0',
-    transactionManager: '0.10.2',
-    deployment: 'bash',
-    cakeshop: false,
+    ...baseNetwork,
     generateKeys: false,
     networkId: 10,
     genesisLocation: 'none',

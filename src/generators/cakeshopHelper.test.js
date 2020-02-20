@@ -15,14 +15,16 @@ cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 
 describe('creates a cakeshop directory structure for bash', () => {
+  const baseNetwork = {
+    numberNodes: '5',
+    consensus: 'raft',
+    quorumVersion: '2.4.0',
+    transactionManager: '0.10.2',
+    cakeshop: true,
+    deployment: 'bash'
+  }
   it('creates directory structure for cakeshop files and moves them in', () => {
-    let config = createReplica7NodesConfig({
-      numberNodes: '5',
-      consensus: 'raft',
-      transactionManager: '0.10.2',
-      deployment: 'bash',
-      cakeshop: true
-    })
+    let config = createReplica7NodesConfig(baseNetwork)
 
     buildCakeshopDir(config, createNetPath(config, 'qdata'))
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/cakeshop/local'), true)

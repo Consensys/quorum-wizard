@@ -24,17 +24,19 @@ jest.mock('../model/ConsensusConfig')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 
+const baseNetwork = {
+  numberNodes: '5',
+  consensus: 'raft',
+  quorumVersion: '2.4.0',
+  transactionManager: '0.10.2',
+  cakeshop: false,
+  deployment: 'bash'
+}
+
 describe('creates a bash network', () => {
   it('rejects invalid network names', () => {
     const names = [ '', '.', '..', '\0', '/']
-    let config = createReplica7NodesConfig({
-      numberNodes: '5',
-      consensus: 'raft',
-      quorumVersion: '2.4.0',
-      transactionManager: '0.10.2',
-      deployment: 'bash',
-      cakeshop: false
-    })
+    let config = createReplica7NodesConfig(baseNetwork)
     names.forEach((name) => {
       config.network.name = name
       expect(() => createDirectory(config)).toThrow(Error)
@@ -42,14 +44,7 @@ describe('creates a bash network', () => {
   })
 
   it('Creates the correct directory structure and moves files in', () => {
-    let config = createReplica7NodesConfig({
-      numberNodes: '5',
-      consensus: 'raft',
-      quorumVersion: '2.4.0',
-      transactionManager: '0.10.2',
-      deployment: 'bash',
-      cakeshop: false
-    })
+    let config = createReplica7NodesConfig(baseNetwork)
     createDirectory(config)
     expect(generateConsensusConfig).toHaveBeenCalled()
     expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/logs`), true)
@@ -76,12 +71,8 @@ describe('creates a docker network', () => {
   it('rejects invalid network names', () => {
     const names = [ '', '.', '..', '\0', '/']
     let config = createReplica7NodesConfig({
-      numberNodes: '5',
-      consensus: 'raft',
-      quorumVersion: '2.4.0',
-      transactionManager: '0.10.2',
-      deployment: 'docker-compose',
-      cakeshop: false
+      ...baseNetwork,
+      deployment: 'docker-compose'
     })
     names.forEach((name) => {
       config.network.name = name
@@ -91,12 +82,8 @@ describe('creates a docker network', () => {
 
   it('Creates the correct directory structure and moves files in', () => {
     let config = createReplica7NodesConfig({
-      numberNodes: '5',
-      consensus: 'raft',
-      quorumVersion: '2.4.0',
-      transactionManager: '0.10.2',
-      deployment: 'docker-compose',
-      cakeshop: false
+      ...baseNetwork,
+      deployment: 'docker-compose'
     })
     createDirectory(config)
     expect(generateConsensusConfig).toHaveBeenCalled()
@@ -119,19 +106,10 @@ describe('creates a docker network', () => {
     }
   })
 
-  it('Creates the correct directory structure and moves files in', () => {
+  it('Creates the correct directory structure for custom config and moves files in', () => {
     let config = createCustomConfig({
-      numberNodes: '5',
-      consensus: 'raft',
-      transactionManager: 'tessera',
-      deployment: 'docker-compose',
-      cakeshop: false,
-      generateKeys: false,
-      networkId: '10',
-      genesisLocation: 'none',
-      customizePorts: false,
-      nodes: [],
-      dockerCustom: undefined
+      ...baseNetwork,
+      deployment: 'docker-compose'
     })
 
     createDirectory(config)
