@@ -117,7 +117,7 @@ async function buildNetwork(config, deployment) {
   console.log('A sample private and public simpleStorage contract are provided to deploy to your network')
   const tesseraMsg = isTessera(config) ? `The private contract has privateFor set as ${pubKey}\n` : ''
   console.log(tesseraMsg)
-  const exampleMsg = (deployment === 'docker-compose') ?
+  const exampleMsg = isDocker(deployment) ?
     `To use attach to one of your quorum nodes and run loadScript('/examples/private-contract.js')` :
     `To use run ./runscript.sh private-contract.js from the network folder`
   console.log(exampleMsg)
