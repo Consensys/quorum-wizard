@@ -33,7 +33,7 @@ var simple = simpleContract.new(42, {from:web3.eth.accounts[0], data: bytecode, 
 }
 
 export function generateAndCopyExampleScripts(privateFor, networkPath) {
-  copyFile(join(libRootDir(), 'lib/runscript.sh'), join(networkPath, 'runscript.sh'))
-  copyFile(join(libRootDir(), 'lib/public-contract.js'), join(networkPath, 'public-contract.js'))
+  copyFile(join(libRootDir(), 'lib', 'runscript.sh'), join(networkPath, 'runscript.sh'))
+  copyFile(join(libRootDir(), 'lib', 'public-contract.js'), join(networkPath, 'public-contract.js'))
   writeFile(join(networkPath, 'private-contract.js'), generatePrivateContractExample(privateFor))
 }

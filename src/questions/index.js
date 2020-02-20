@@ -91,27 +91,33 @@ async function buildNetwork(config, deployment) {
 
   console.log('')
   const qdata = join(cwd(), 'network', config.network.name, 'qdata')
+  const networkFolder = deployment === 'bash' ? join(cwd(), 'network', config.network.name) : qdata
+  let pubKey = ''
   if(isTessera(config)) {
-    const numNodes = config.nodes.length
-    const networkFolder = deployment === 'bash' ? join(cwd(), 'network', config.network.name) : qdata
     console.log('--------------------------------------------------------------------------------')
     console.log('')
     config.nodes.forEach((node, i) => {
       const nodeNumber = i + 1
       console.log(`Tessera Node ${nodeNumber} public key:`)
-      const pubKey = readFileToString(join(qdata, `c${nodeNumber}`, 'tm.pub'))
+      pubKey = readFileToString(join(qdata, `c${nodeNumber}`, 'tm.pub'))
       console.log(`${pubKey}`)
       console.log('')
-      if (nodeNumber === numNodes) {
-        generateAndCopyExampleScripts(pubKey, networkFolder)
-      }
     })
     console.log('--------------------------------------------------------------------------------')
   }
+  generateAndCopyExampleScripts(pubKey, networkFolder)
   console.log('')
   console.log('Quorum network created. Run the following commands to start your network:')
   console.log('')
   console.log(`cd network/${config.network.name}`)
   console.log('./start.sh')
+  console.log('')
+  console.log('A sample private and public simpleStorage contract are provided to deploy to your network')
+  const tesseraMsg = isTessera(config) ? `The private contract has privateFor set as ${pubKey}\n` : ''
+  console.log(tesseraMsg)
+  const exampleMsg = (deployment === 'docker-compose') ?
+    `To use attach to one of your quorum nodes and run loadScript('/examples/private-contract.js')` :
+    `To use run ./runscript.sh private-contract.js from the network folder`
+  console.log(exampleMsg)
   console.log('')
 }
