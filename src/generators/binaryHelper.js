@@ -47,7 +47,6 @@ export async function downloadAndCopyBinaries (config) {
       await downloadIfMissing('cakeshop', '0.11.0-RC2')
     }
   }
-  console.log('')
 }
 
 export function getGethOnPath () {

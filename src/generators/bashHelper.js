@@ -14,6 +14,7 @@ import {
   pathToTesseraJar,
 } from './binaryHelper'
 import { isTessera, isRaft } from '../model/NetworkConfig'
+import { info } from '../utils/log'
 
 export function buildBashScript(config) {
   const commands = createCommands(config)
@@ -74,10 +75,10 @@ export function createCommands (config) {
 
 export async function buildBash(config) {
 
-  console.log('Downloading dependencies...')
+  info('Downloading dependencies...')
   await downloadAndCopyBinaries(config)
 
-  console.log('Building network data directory...')
+  info('Building network data directory...')
   const bashDetails = buildBashScript(config)
   const networkPath = getFullNetworkPath(config)
 
@@ -85,11 +86,11 @@ export async function buildBash(config) {
     buildCakeshopDir(config, join(networkPath, 'qdata'))
   }
 
-  console.log('Writing start script...')
+  info('Writing start script...')
   writeFile(join(networkPath, 'start.sh'), bashDetails.startScript, true)
   copyFile(join(libRootDir(), 'lib', 'stop.sh'), join(networkPath, 'stop.sh'))
 
-  console.log('Initializing quorum...')
+  info('Initializing quorum...')
   bashDetails.initCommands.forEach((command) => {
     // TODO figure out the safest way to run shell commands
     execute(command, (e, stdout, stderr) => {

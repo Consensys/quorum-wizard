@@ -1,4 +1,5 @@
 import { join } from 'path'
+import { info } from '../utils/log'
 import { executeSync } from '../utils/execUtils'
 import { createFolder, readFileToString, writeFile } from '../utils/fileUtils'
 import { isTessera } from '../model/NetworkConfig'
@@ -6,7 +7,7 @@ import { pathToBootnode, pathToQuorumBinary, pathToTesseraJar } from './binaryHe
 
 export function generateKeys(config, keyPath) {
   const tesseraKeyMsg = isTessera(config.network.transactionManager) ? ' and Tessera' : ''
-  console.log(`Generating ${config.nodes.length} keys for Quorum${tesseraKeyMsg} nodes..`)
+  info(`Generating ${config.nodes.length} keys for Quorum${tesseraKeyMsg} nodes..`)
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
     const keyDir = join(keyPath, `key${nodeNumber}`)
@@ -15,7 +16,7 @@ export function generateKeys(config, keyPath) {
 
     doExec(keyDir, config)
   })
-  console.log('Keys were generated')
+  info('Keys were generated')
 }
 
 function doExec(keyDir, config) {
