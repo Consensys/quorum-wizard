@@ -5,7 +5,8 @@ import { isTessera } from '../model/NetworkConfig'
 import { pathToBootnode, pathToQuorumBinary, pathToTesseraJar } from './binaryHelper'
 
 export function generateKeys(config, keyPath) {
-  console.log(`Generating ${config.nodes.length} keys..`)
+  const tesseraKeyMsg = isTessera(config.network.transactionManager) ? ' and Tessera' : ''
+  console.log(`Generating ${config.nodes.length} keys for Quorum${tesseraKeyMsg} nodes..`)
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
     const keyDir = join(keyPath, `key${nodeNumber}`)
