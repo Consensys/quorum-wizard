@@ -11,6 +11,7 @@ import { buildCakeshopDir } from './cakeshopHelper'
 import { isTessera } from '../model/NetworkConfig'
 import { downloadAndCopyBinaries } from './binaryHelper'
 const yaml = require('js-yaml')
+import { info } from '../utils/log'
 
 export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
@@ -61,13 +62,13 @@ function createCustomTesseraPorts(dockerConfig) {
 }
 
 export async function createDockerCompose(config) {
-  console.log('Downloading dependencies...')
+  info('Downloading dependencies...')
   await downloadAndCopyBinaries(config)
 
-  console.log('Building docker-compose file...')
+  info('Building docker-compose file...')
   const file = buildDockerCompose(config)
 
-  console.log('Downloading dependencies...')
+  info('Downloading dependencies...')
 
   const networkPath = getFullNetworkPath(config)
   const qdata = join(networkPath, 'qdata')
@@ -76,7 +77,7 @@ export async function createDockerCompose(config) {
     buildCakeshopDir(config, qdata)
   }
 
-  console.log('Writing start script...')
+  info('Writing start script...')
   let startCommands = `QUORUM_CONSENSUS=${config.network.consensus} docker-compose up -d`
 
   writeFile(join(networkPath, 'docker-compose.yml'), file, false)

@@ -1,3 +1,4 @@
+import { error, info } from '../utils/log'
 import {
   createQuickstartConfig,
   createReplica7NodesConfig,
@@ -82,44 +83,44 @@ export async function customize () {
 }
 
 async function buildNetwork(config, deployment) {
-  console.log('')
+  info('')
   createDirectory(config)
   if (isBash(deployment)) {
     await buildBash(config)
   } else if (isDocker(deployment)) {
     await createDockerCompose(config)
   }
-  console.log('Done')
+  info('Done')
 
-  console.log('')
+  info('')
   const qdata = join(cwd(), 'network', config.network.name, 'qdata')
   const networkFolder = isBash(deployment) ? join(cwd(), 'network', config.network.name) : qdata
   let pubKey = ''
   if(isTessera(config.network.transactionManager)) {
-    console.log('--------------------------------------------------------------------------------')
-    console.log('')
+    info('--------------------------------------------------------------------------------')
+    info('')
     config.nodes.forEach((node, i) => {
       const nodeNumber = i + 1
-      console.log(`Tessera Node ${nodeNumber} public key:`)
+      info(`Tessera Node ${nodeNumber} public key:`)
       pubKey = readFileToString(join(qdata, `c${nodeNumber}`, 'tm.pub'))
-      console.log(`${pubKey}`)
-      console.log('')
+      info(`${pubKey}`)
+      info('')
     })
-    console.log('--------------------------------------------------------------------------------')
+    info('--------------------------------------------------------------------------------')
   }
   generateAndCopyExampleScripts(pubKey, networkFolder)
-  console.log('')
-  console.log('Quorum network created. Run the following commands to start your network:')
-  console.log('')
-  console.log(`cd network/${config.network.name}`)
-  console.log('./start.sh')
-  console.log('')
-  console.log('A sample private and public simpleStorage contract are provided to deploy to your network')
+  info('')
+  info('Quorum network created. Run the following commands to start your network:')
+  info('')
+  info(`cd network/${config.network.name}`)
+  info('./start.sh')
+  info('')
+  info('A sample private and public simpleStorage contract are provided to deploy to your network')
   const tesseraMsg = isTessera(config.network.transactionManager) ? `The private contract has privateFor set as ${pubKey}\n` : ''
-  console.log(tesseraMsg)
+  info(tesseraMsg)
   const exampleMsg = isDocker(deployment) ?
     `To use attach to one of your quorum nodes and run loadScript('/examples/private-contract.js')` :
     `To use run ./runscript.sh private-contract.js from the network folder`
-  console.log(exampleMsg)
-  console.log('')
+  info(exampleMsg)
+  info('')
 }

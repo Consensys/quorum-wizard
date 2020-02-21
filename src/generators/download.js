@@ -5,6 +5,7 @@ import { createGunzip } from 'zlib'
 import { extract } from 'tar-fs'
 import { createWriteStream } from 'fs'
 import { BINARIES, getPlatformSpecificUrl } from './binaryHelper'
+import { info } from '../utils/log'
 
 export async function downloadIfMissing (name, version) {
   if (BINARIES[name] === undefined || BINARIES[name][version] === undefined) {
@@ -17,14 +18,14 @@ export async function downloadIfMissing (name, version) {
     createFolder(binDir, true)
     const url = getPlatformSpecificUrl(binaryInfo)
 
-    console.log(`Downloading ${name} ${version} from ${url}...`)
+    info(`Downloading ${name} ${version} from ${url}...`)
     const response = await axios({
       url: url,
       method: 'GET',
       responseType: 'stream',
     })
 
-    console.log(`Saving to ${binaryFileLocation}`)
+    info(`Saving to ${binaryFileLocation}`)
     if (binaryInfo.type === 'tar.gz') {
       const extractorStream = response.data.pipe(createGunzip())
         .pipe(extract(binDir, {
@@ -42,7 +43,7 @@ export async function downloadIfMissing (name, version) {
         }))
       return new Promise((resolve, reject) => {
         extractorStream.on('finish', () => {
-          console.log('Done')
+          info('Done')
           resolve()
         })
         extractorStream.on('error', reject)
@@ -52,13 +53,13 @@ export async function downloadIfMissing (name, version) {
       response.data.pipe(writer)
       return new Promise((resolve, reject) => {
         writer.on('finish', () => {
-          console.log('Done')
+          info('Done')
           resolve()
         })
         writer.on('error', reject)
       })
     }
   } else {
-    console.log(`Using cached ${name} at: ${binaryFileLocation}`)
+    info(`Using cached ${name} at: ${binaryFileLocation}`)
   }
 }
