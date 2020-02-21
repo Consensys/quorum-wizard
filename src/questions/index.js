@@ -3,7 +3,9 @@ import {
   createReplica7NodesConfig,
   createCustomConfig,
   generateNodeConfigs,
-  isTessera
+  isTessera,
+  isDocker,
+  isBash
 } from '../model/NetworkConfig'
 import { buildBash } from '../generators/bashHelper'
 import { createDockerCompose } from '../generators/dockerHelper'
@@ -25,6 +27,7 @@ import inquirer from 'inquirer'
 import { cwd, readFileToString } from '../utils/fileUtils'
 import { join } from "path"
 import { createDirectory } from '../generators/networkCreator'
+import { generateAndCopyExampleScripts } from '../generators/examplesHelper'
 
 export async function quickstart() {
   const config = createQuickstartConfig()
@@ -61,11 +64,11 @@ export async function customize () {
     CUSTOMIZE_PORTS
   ])
 
-  let nodes = (customAnswers.customizePorts && commonAnswers.deployment === 'bash') ?
-    await getCustomizedBashNodes(commonAnswers.numberNodes, commonAnswers.transactionManager !== 'none') : []
+  let nodes = (customAnswers.customizePorts && isBash(commonAnswers.deployment)) ?
+    await getCustomizedBashNodes(commonAnswers.numberNodes, isTessera(commonAnswers.transactionManager)) : []
 
-  let dockerCustom = (customAnswers.customizePorts && commonAnswers.deployment === 'docker-compose') ?
-    await getCustomizedDockerPorts(commonAnswers.transactionManager !== 'none') : undefined
+  let dockerCustom = (customAnswers.customizePorts && isDocker(commonAnswers.deployment)) ?
+    await getCustomizedDockerPorts(isTessera(commonAnswers.transactionManager)) : undefined
 
     const answers = {
       ...commonAnswers,
@@ -81,30 +84,42 @@ export async function customize () {
 async function buildNetwork(config, deployment) {
   console.log('')
   createDirectory(config)
-  if (deployment === 'bash') {
+  if (isBash(deployment)) {
     await buildBash(config)
-  } else if (deployment === 'docker-compose') {
+  } else if (isDocker(deployment)) {
     await createDockerCompose(config)
   }
   console.log('Done')
 
   console.log('')
   const qdata = join(cwd(), 'network', config.network.name, 'qdata')
-  if(isTessera(config)) {
+  const networkFolder = isBash(deployment) ? join(cwd(), 'network', config.network.name) : qdata
+  let pubKey = ''
+  if(isTessera(config.network.transactionManager)) {
     console.log('--------------------------------------------------------------------------------')
     console.log('')
     config.nodes.forEach((node, i) => {
       const nodeNumber = i + 1
       console.log(`Tessera Node ${nodeNumber} public key:`)
-      console.log(`${readFileToString(join(qdata, `c${nodeNumber}`, 'tm.pub'))}`)
+      pubKey = readFileToString(join(qdata, `c${nodeNumber}`, 'tm.pub'))
+      console.log(`${pubKey}`)
       console.log('')
     })
     console.log('--------------------------------------------------------------------------------')
   }
+  generateAndCopyExampleScripts(pubKey, networkFolder)
   console.log('')
   console.log('Quorum network created. Run the following commands to start your network:')
   console.log('')
   console.log(`cd network/${config.network.name}`)
   console.log('./start.sh')
+  console.log('')
+  console.log('A sample private and public simpleStorage contract are provided to deploy to your network')
+  const tesseraMsg = isTessera(config.network.transactionManager) ? `The private contract has privateFor set as ${pubKey}\n` : ''
+  console.log(tesseraMsg)
+  const exampleMsg = isDocker(deployment) ?
+    `To use attach to one of your quorum nodes and run loadScript('/examples/private-contract.js')` :
+    `To use run ./runscript.sh private-contract.js from the network folder`
+  console.log(exampleMsg)
   console.log('')
 }

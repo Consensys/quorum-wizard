@@ -3,6 +3,7 @@ import {
   getDownloadableGethChoices, getDownloadableTesseraChoices,
   getGethOnPath, getTesseraOnPath,
 } from '../generators/binaryHelper'
+import { isRaft, isBash } from '../model/NetworkConfig'
 
 
 export const INITIAL_MODE = {
@@ -54,7 +55,7 @@ export const NUMBER_NODES = {
   type: 'input',
   name: 'numberNodes',
   message: (answers) => {
-    return answers.consensus === 'raft' ?
+    return isRaft(answers.consensus) ?
       'Input the number of nodes (2-7) you would like in your network - a minimum of 3 is recommended' :
       'Input the number of nodes (2-7) you would like in your network - a minimum of 3 is recommended for development, 5 to properly handle node failure'
   },
@@ -78,7 +79,7 @@ export const QUORUM_VERSION = {
   message: 'Which version of Quorum would you like to use?',
   choices: ({deployment}) => {
     let choices = [...getDownloadableGethChoices()]
-    if(deployment === 'bash') {
+    if(isBash(deployment)) {
       choices = choices.concat(getGethOnPath())
     }
     return choices
@@ -91,7 +92,7 @@ export const TRANSACTION_MANAGER = {
   message: 'Choose a version of tessera if you would like to use private transactions in your network, otherwise choose "none"',
   choices: ({deployment}) => {
     let choices = [...getDownloadableTesseraChoices()]
-    if(deployment === 'bash') {
+    if(isBash(deployment)) {
       choices = choices.concat(getTesseraOnPath())
     }
     return choices.concat('none')

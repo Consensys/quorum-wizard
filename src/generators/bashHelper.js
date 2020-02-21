@@ -13,7 +13,7 @@ import {
   pathToQuorumBinary,
   pathToTesseraJar,
 } from './binaryHelper'
-import { isTessera } from '../model/NetworkConfig'
+import { isTessera, isRaft } from '../model/NetworkConfig'
 
 export function buildBashScript(config) {
   const commands = createCommands(config)
@@ -51,12 +51,12 @@ export function createCommands (config) {
     const initCommand = `cd ${networkPath} && ${pathToQuorumBinary(config.network.quorumVersion)} --datadir ${quorumDir} init ${genesisLocation}`
     initCommands.push(initCommand)
 
-    let tmIpcLocation = isTessera(config) ? join(tmDir, 'tm.ipc') : 'ignore'
+    let tmIpcLocation = isTessera(config.network.transactionManager) ? join(tmDir, 'tm.ipc') : 'ignore'
     const startCommand = createGethStartCommand(config, node,
       passwordDestination, nodeNumber, tmIpcLocation)
     startCommands.push(startCommand)
 
-    if (isTessera(config)) {
+    if (isTessera(config.network.transactionManager)) {
       const tmStartCommand = createTesseraStartCommand(config, node, nodeNumber,
         tmDir, logs)
       tmStartCommands.push(tmStartCommand)
@@ -87,12 +87,7 @@ export async function buildBash(config) {
 
   console.log('Writing start script...')
   writeFile(join(networkPath, 'start.sh'), bashDetails.startScript, true)
-  copyFile(join(libRootDir(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
-
-  copyFile(join(libRootDir(), 'lib/runscript.sh'), join(networkPath, 'runscript.sh'))
-  copyFile(join(libRootDir(), 'lib/public-contract.js'), join(networkPath, 'public-contract.js'))
-  copyFile(join(libRootDir(), 'lib/private-contract-3nodes.js'), join(networkPath, 'private-contract-3nodes.js'))
-  copyFile(join(libRootDir(), 'lib/private-contract-7nodes.js'), join(networkPath, 'private-contract-7nodes.js'))
+  copyFile(join(libRootDir(), 'lib', 'stop.sh'), join(networkPath, 'stop.sh'))
 
   console.log('Initializing quorum...')
   bashDetails.initCommands.forEach((command) => {
@@ -111,7 +106,7 @@ export function createGethStartCommand (config, node, passwordDestination, nodeN
   const { devP2pPort, rpcPort, wsPort, raftPort } = node.quorum
 
   const args = `--nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --emitcheckpoints --unlock 0 --password ${passwordDestination}`
-  const consensusArgs = consensus === 'raft' ?
+  const consensusArgs = isRaft(consensus) ?
     `--raft --raftport ${raftPort}` :
     `--istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1`
 
@@ -144,7 +139,7 @@ function checkTesseraUpcheck(nodes) {
 export function setEnvironmentCommand (config) {
   const lines = []
   lines.push(`BIN_GETH=${pathToQuorumBinary(config.network.quorumVersion)}`)
-  if(isTessera(config)) {
+  if(isTessera(config.network.transactionManager)) {
     lines.push(`BIN_TESSERA=${pathToTesseraJar(config.network.transactionManager)}`)
   }
   if(config.network.cakeshop) {
@@ -155,7 +150,7 @@ export function setEnvironmentCommand (config) {
 }
 
 export function waitForTesseraNodesCommand (config) {
-  if(!isTessera(config)) {
+  if(!isTessera(config.network.transactionManager)) {
     return ''
   }
   // TODO use config values for ip, port, data folder, etc.

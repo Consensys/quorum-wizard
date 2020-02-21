@@ -13,7 +13,7 @@ import { downloadAndCopyBinaries } from './binaryHelper'
 const yaml = require('js-yaml')
 
 export function buildDockerCompose(config) {
-  const hasTessera = isTessera(config)
+  const hasTessera = isTessera(config.network.transactionManager)
   const hasCakeshop = includeCakeshop(config)
 
   const quorumDefinitions = readFileToString(join(libRootDir(), 'lib/docker-compose-definitions-quorum.yml'))
@@ -82,12 +82,6 @@ export async function createDockerCompose(config) {
   writeFile(join(networkPath, 'docker-compose.yml'), file, false)
   writeFile(join(networkPath, 'start.sh'), startCommands, true)
   writeFile(join(networkPath, 'stop.sh'), 'docker-compose down', true)
-
-  copyFile(join(libRootDir(), 'lib/runscript.sh'), join(qdata, 'runscript.sh'))
-  copyFile(join(libRootDir(), 'lib/public-contract.js'), join(qdata, 'public-contract.js'))
-  copyFile(join(libRootDir(), 'lib/private-contract-3nodes.js'), join(qdata, 'private-contract-3nodes.js'))
-  copyFile(join(libRootDir(), 'lib/private-contract-7nodes.js'), join(qdata, 'private-contract-7nodes.js'))
-
 }
 
 function buildNodeService(node, i, hasTessera) {

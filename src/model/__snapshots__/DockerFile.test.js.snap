@@ -47,7 +47,7 @@ x-quorum-def:
       cat /examples/dd$\${NODE_ID}/permissioned-nodes.json | sed 's/^\\\\(.*\\\\)@.*\\\\?\\\\(.*\\\\)raftport=5040\\\\([0-9]\\\\)\\\\(.*\\\\)$$/\\\\1@172.16.239.1\\\\3:21000?discport=0\\\\&raftport=50400\\\\4/g' > $\${DDIR}/static-nodes.json
       cp $\${DDIR}/static-nodes.json $\${DDIR}/permissioned-nodes.json
       cat $\${DDIR}/static-nodes.json
-      GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/\${QUORUM_CONSENSUS:-istanbul}-genesis.json\\"
+      GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/genesis.json\\"
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport 50400\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
@@ -345,7 +345,7 @@ x-quorum-def:
       cat /examples/dd$\${NODE_ID}/permissioned-nodes.json | sed 's/^\\\\(.*\\\\)@.*\\\\?\\\\(.*\\\\)raftport=5040\\\\([0-9]\\\\)\\\\(.*\\\\)$$/\\\\1@172.16.239.1\\\\3:21000?discport=0\\\\&raftport=50400\\\\4/g' > $\${DDIR}/static-nodes.json
       cp $\${DDIR}/static-nodes.json $\${DDIR}/permissioned-nodes.json
       cat $\${DDIR}/static-nodes.json
-      GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/\${QUORUM_CONSENSUS:-istanbul}-genesis.json\\"
+      GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/genesis.json\\"
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport 50400\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
@@ -638,7 +638,7 @@ x-quorum-def:
       cat /examples/dd$\${NODE_ID}/permissioned-nodes.json | sed 's/^\\\\(.*\\\\)@.*\\\\?\\\\(.*\\\\)raftport=5040\\\\([0-9]\\\\)\\\\(.*\\\\)$$/\\\\1@172.16.239.1\\\\3:21000?discport=0\\\\&raftport=50400\\\\4/g' > $\${DDIR}/static-nodes.json
       cp $\${DDIR}/static-nodes.json $\${DDIR}/permissioned-nodes.json
       cat $\${DDIR}/static-nodes.json
-      GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/\${QUORUM_CONSENSUS:-istanbul}-genesis.json\\"
+      GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/genesis.json\\"
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport 50400\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
@@ -966,7 +966,7 @@ x-quorum-def:
       cat /examples/dd$\${NODE_ID}/permissioned-nodes.json | sed 's/^\\\\(.*\\\\)@.*\\\\?\\\\(.*\\\\)raftport=5040\\\\([0-9]\\\\)\\\\(.*\\\\)$$/\\\\1@172.16.239.1\\\\3:21000?discport=0\\\\&raftport=50400\\\\4/g' > $\${DDIR}/static-nodes.json
       cp $\${DDIR}/static-nodes.json $\${DDIR}/permissioned-nodes.json
       cat $\${DDIR}/static-nodes.json
-      GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/\${QUORUM_CONSENSUS:-istanbul}-genesis.json\\"
+      GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/genesis.json\\"
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport 50400\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
@@ -1259,7 +1259,7 @@ x-quorum-def:
       cat /examples/dd$\${NODE_ID}/permissioned-nodes.json | sed 's/^\\\\(.*\\\\)@.*\\\\?\\\\(.*\\\\)raftport=5040\\\\([0-9]\\\\)\\\\(.*\\\\)$$/\\\\1@172.16.239.1\\\\3:21000?discport=0\\\\&raftport=50400\\\\4/g' > $\${DDIR}/static-nodes.json
       cp $\${DDIR}/static-nodes.json $\${DDIR}/permissioned-nodes.json
       cat $\${DDIR}/static-nodes.json
-      GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/\${QUORUM_CONSENSUS:-istanbul}-genesis.json\\"
+      GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/genesis.json\\"
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport 50400\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
@@ -1454,7 +1454,7 @@ x-quorum-def:
       cat /examples/dd$\${NODE_ID}/permissioned-nodes.json | sed 's/^\\\\(.*\\\\)@.*\\\\?\\\\(.*\\\\)raftport=5040\\\\([0-9]\\\\)\\\\(.*\\\\)$$/\\\\1@172.16.239.1\\\\3:21000?discport=0\\\\&raftport=50400\\\\4/g' > $\${DDIR}/static-nodes.json
       cp $\${DDIR}/static-nodes.json $\${DDIR}/permissioned-nodes.json
       cat $\${DDIR}/static-nodes.json
-      GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/\${QUORUM_CONSENSUS:-istanbul}-genesis.json\\"
+      GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/genesis.json\\"
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport 50400\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
