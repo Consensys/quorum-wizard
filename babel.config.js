@@ -1,5 +1,5 @@
 module.exports = {
-  "presets": [["@babel/preset-env", {targets: {node: 'current'}}]],
+  "presets": [["@babel/preset-env", {targets: {node: 'current'}}],["airbnb", {targets: {node: 'current'}}]],
   "plugins": [
     [
       "@babel/plugin-transform-runtime",
