@@ -1,20 +1,32 @@
-import { createDirectory, getFullNetworkPath, includeCakeshop } from './networkCreator'
-import {
-  copyFile, createFolder, cwd,
-  libRootDir, removeFolder,
-  writeFile, writeJsonFile,
-} from '../utils/fileUtils'
 import { join } from 'path'
+import {
+  getFullNetworkPath,
+  includeCakeshop,
+} from './networkCreator'
+import {
+  copyFile,
+  libRootDir,
+  writeFile,
+} from '../utils/fileUtils'
 import { execute } from '../utils/execUtils'
-import { buildCakeshopDir, generateCakeshopScript, waitForCakeshopCommand } from './cakeshopHelper'
+import {
+  buildCakeshopDir,
+  generateCakeshopScript,
+} from './cakeshopHelper'
 import {
   downloadAndCopyBinaries,
   pathToCakeshop,
   pathToQuorumBinary,
   pathToTesseraJar,
 } from './binaryHelper'
-import { isTessera, isRaft } from '../model/NetworkConfig'
-import { info } from '../utils/log'
+import {
+  isRaft,
+  isTessera,
+} from '../model/NetworkConfig'
+import {
+  error,
+  info,
+} from '../utils/log'
 
 export function buildBashScript(config) {
   const commands = createCommands(config)
@@ -31,18 +43,18 @@ export function buildBashScript(config) {
 
   return {
     startScript: startScript.join('\n'),
-    initCommands: commands.initStart
+    initCommands: commands.initStart,
   }
 }
 
-export function createCommands (config) {
+export function createCommands(config) {
   const networkPath = getFullNetworkPath(config)
   const initCommands = []
   const startCommands = []
   const tmStartCommands = []
 
   config.nodes.forEach((node, i) => {
-    const nodeNumber = i+1
+    const nodeNumber = i + 1
     const quorumDir = join('qdata', `dd${nodeNumber}`)
     const tmDir = join('qdata', `c${nodeNumber}`)
     const genesisLocation = join(quorumDir, 'genesis.json')
@@ -52,29 +64,34 @@ export function createCommands (config) {
     const initCommand = `cd ${networkPath} && ${pathToQuorumBinary(config.network.quorumVersion)} --datadir ${quorumDir} init ${genesisLocation}`
     initCommands.push(initCommand)
 
-    let tmIpcLocation = isTessera(config.network.transactionManager) ? join(tmDir, 'tm.ipc') : 'ignore'
-    const startCommand = createGethStartCommand(config, node,
-      passwordDestination, nodeNumber, tmIpcLocation)
+    const tmIpcLocation = isTessera(config.network.transactionManager)
+      ? join(tmDir, 'tm.ipc')
+      : 'ignore'
+    const startCommand = createGethStartCommand(
+      config,
+      node,
+      passwordDestination,
+      nodeNumber,
+      tmIpcLocation,
+    )
     startCommands.push(startCommand)
 
     if (isTessera(config.network.transactionManager)) {
-      const tmStartCommand = createTesseraStartCommand(config, node, nodeNumber,
-        tmDir, logs)
+      const tmStartCommand = createTesseraStartCommand(config, node, nodeNumber, tmDir, logs)
       tmStartCommands.push(tmStartCommand)
     }
   })
 
   const obj = {
-    tesseraStart:  tmStartCommands.join('\n'),
+    tesseraStart: tmStartCommands.join('\n'),
     gethStart: startCommands.join('\n'),
     initStart: initCommands,
   }
-  return obj;
+  return obj
 }
 
 
 export async function buildBash(config) {
-
   info('Downloading dependencies...')
   await downloadAndCopyBinaries(config)
 
@@ -82,7 +99,7 @@ export async function buildBash(config) {
   const bashDetails = buildBashScript(config)
   const networkPath = getFullNetworkPath(config)
 
-  if(includeCakeshop(config)) {
+  if (includeCakeshop(config)) {
     buildCakeshopDir(config, join(networkPath, 'qdata'))
   }
 
@@ -92,29 +109,30 @@ export async function buildBash(config) {
 
   info('Initializing quorum...')
   bashDetails.initCommands.forEach((command) => {
-    // TODO figure out the safest way to run shell commands
-    execute(command, (e, stdout, stderr) => {
+    execute(command, (e) => {
       if (e instanceof Error) {
-        console.error(e)
+        error('Error executing command', e)
         throw e
       }
     })
   })
 }
 
-export function createGethStartCommand (config, node, passwordDestination, nodeNumber, tmIpcLocation) {
+export function createGethStartCommand(config, node, passwordDestination, nodeNumber, tmIpcPath) {
   const { verbosity, networkId, consensus } = config.network
-  const { devP2pPort, rpcPort, wsPort, raftPort } = node.quorum
+  const {
+    devP2pPort, rpcPort, raftPort,
+  } = node.quorum
 
   const args = `--nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --emitcheckpoints --unlock 0 --password ${passwordDestination}`
-  const consensusArgs = isRaft(consensus) ?
-    `--raft --raftport ${raftPort}` :
-    `--istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1`
+  const consensusArgs = isRaft(consensus)
+    ? `--raft --raftport ${raftPort}`
+    : '--istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1'
 
-  return `PRIVATE_CONFIG=${tmIpcLocation} nohup $BIN_GETH --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --verbosity ${verbosity} --networkid ${networkId} --rpcport ${rpcPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
+  return `PRIVATE_CONFIG=${tmIpcPath} nohup $BIN_GETH --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --verbosity ${verbosity} --networkid ${networkId} --rpcport ${rpcPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
 }
 
-export function createTesseraStartCommand (config, node, nodeNumber, tmDir, logDir) {
+export function createTesseraStartCommand(config, node, nodeNumber, tmDir, logDir) {
   // `rm -f ${tmDir}/tm.ipc`
 
   let DEBUG = ''
@@ -128,30 +146,29 @@ export function createTesseraStartCommand (config, node, nodeNumber, tmDir, logD
 }
 
 function checkTesseraUpcheck(nodes) {
-  return nodes.map((node, i) => {
-    return `
-    result${i+1}=$(curl -s http://${node.tm.ip}:${node.tm.p2pPort}/upcheck)
-    if [ ! "\${result${i+1}}" == "I'm up!" ]; then
-        echo "Node ${i+1} is not yet listening on http"
+  return nodes.map((node, i) => `
+    result${i + 1}=$(curl -s http://${node.tm.ip}:${node.tm.p2pPort}/upcheck)
+    if [ ! "\${result${i + 1}}" == "I'm up!" ]; then
+        echo "Node ${i + 1} is not yet listening on http"
         DOWN=true
-    fi`
-  })
+    fi`)
 }
-export function setEnvironmentCommand (config) {
+
+export function setEnvironmentCommand(config) {
   const lines = []
   lines.push(`BIN_GETH=${pathToQuorumBinary(config.network.quorumVersion)}`)
-  if(isTessera(config.network.transactionManager)) {
+  if (isTessera(config.network.transactionManager)) {
     lines.push(`BIN_TESSERA=${pathToTesseraJar(config.network.transactionManager)}`)
   }
-  if(config.network.cakeshop) {
+  if (config.network.cakeshop) {
     lines.push(`BIN_CAKESHOP=${pathToCakeshop()}`)
   }
   lines.push('')
-  return lines.join("\n")
+  return lines.join('\n')
 }
 
-export function waitForTesseraNodesCommand (config) {
-  if(!isTessera(config.network.transactionManager)) {
+export function waitForTesseraNodesCommand(config) {
+  if (!isTessera(config.network.transactionManager)) {
     return ''
   }
   // TODO use config values for ip, port, data folder, etc.

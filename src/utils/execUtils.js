@@ -1,12 +1,10 @@
-import { exec, execSync } from 'child_process'
+import {
+  exec,
+  execSync,
+} from 'child_process'
 
-export function execute (command, callback) {
-  exec(command, (e, stdout, stderr) => {
-    if (e instanceof Error) {
-      console.error(e)
-      throw e
-    }
-  })
+export function execute(command, callback) {
+  exec(command, callback)
 }
 
 export function executeSync(command, options) {

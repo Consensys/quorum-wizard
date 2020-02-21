@@ -1,15 +1,24 @@
-import { createDirectory, getFullNetworkPath, includeCakeshop } from './networkCreator'
-import { createQuickstartConfig, createReplica7NodesConfig } from '../model/NetworkConfig'
 import {
-  copyFile,
-  writeFile,
-  readFileToString,
-  formatNewLine,
+  createDirectory,
+  getFullNetworkPath,
+  includeCakeshop,
+} from './networkCreator'
+import { createReplica7NodesConfig } from '../model/NetworkConfig'
+import {
   cwd,
+  formatNewLine,
   libRootDir,
+  readFileToString,
+  writeFile,
 } from '../utils/fileUtils'
-import { buildDockerCompose, createDockerCompose } from './dockerHelper'
-import { TEST_CWD, TEST_LIB_ROOT_DIR } from '../utils/testHelper'
+import {
+  buildDockerCompose,
+  createDockerCompose,
+} from './dockerHelper'
+import {
+  TEST_CWD,
+  TEST_LIB_ROOT_DIR,
+} from '../utils/testHelper'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')
@@ -23,20 +32,20 @@ const baseNetwork = {
   quorumVersion: '2.4.0',
   transactionManager: '0.10.2',
   cakeshop: true,
-  deployment: 'docker-compose'
+  deployment: 'docker-compose',
 }
 
 describe('generates docker-compose directory', () => {
   it('given docker details builds files to run docker', async () => {
+    const config = createReplica7NodesConfig(baseNetwork)
 
-    let config = createReplica7NodesConfig(baseNetwork)
-
-    createDirectory.mockReturnValueOnce({tesseraStart:  "",
-        gethStart: "",
-        initStart: [],
-      })
+    createDirectory.mockReturnValueOnce({
+      tesseraStart: '',
+      gethStart: '',
+      initStart: [],
+    })
     includeCakeshop.mockReturnValueOnce(false)
-    readFileToString.mockReturnValueOnce("test")
+    readFileToString.mockReturnValueOnce('test')
     await createDockerCompose(config)
 
     expect(writeFile).toBeCalledTimes(3)
@@ -45,11 +54,10 @@ describe('generates docker-compose directory', () => {
 
 describe('generates docker-compose script details', () => {
   it('creates docker-compose script with quorum and tessera', () => {
-
-    let config = createReplica7NodesConfig({
+    const config = createReplica7NodesConfig({
       ...baseNetwork,
       numberNodes: '1',
-      cakeshop: false
+      cakeshop: false,
     })
     const services = `
 services:
@@ -93,24 +101,23 @@ networks:
 volumes:
   "vol1":
   "cakeshopvol":`
-    const expected = "quorumDefinitions\ntesseraDefinitions" + services
+    const expected = `quorumDefinitions\ntesseraDefinitions${services}`
 
     includeCakeshop.mockReturnValueOnce(false)
-    readFileToString.mockReturnValueOnce("definitions")
-    readFileToString.mockReturnValueOnce("tessera")
-    formatNewLine.mockReturnValueOnce("quorumDefinitions\n")
-    formatNewLine.mockReturnValueOnce("tesseraDefinitions\n")
+    readFileToString.mockReturnValueOnce('definitions')
+    readFileToString.mockReturnValueOnce('tessera')
+    formatNewLine.mockReturnValueOnce('quorumDefinitions\n')
+    formatNewLine.mockReturnValueOnce('tesseraDefinitions\n')
 
     expect(buildDockerCompose(config)).toEqual(expected)
   })
 
   it('creates docker-compose script just quorum', () => {
-
-    let config = createReplica7NodesConfig({
+    const config = createReplica7NodesConfig({
       ...baseNetwork,
       numberNodes: '1',
       transactionManager: 'none',
-      cakeshop: false
+      cakeshop: false,
     })
     const services = `
 services:
@@ -139,17 +146,16 @@ networks:
 volumes:
   "vol1":
   "cakeshopvol":`
-    const expected = "quorumDefinitions" + services
+    const expected = `quorumDefinitions${services}`
 
     includeCakeshop.mockReturnValueOnce(false)
-    readFileToString.mockReturnValueOnce("definitions")
-    formatNewLine.mockReturnValueOnce("quorumDefinitions\n")
+    readFileToString.mockReturnValueOnce('definitions')
+    formatNewLine.mockReturnValueOnce('quorumDefinitions\n')
 
     expect(buildDockerCompose(config)).toEqual(expected)
   })
 
   it('creates docker-compose script with quorum and cakeshop', () => {
-
     const config = createReplica7NodesConfig({
       ...baseNetwork,
       numberNodes: '1',
@@ -193,19 +199,18 @@ networks:
 volumes:
   "vol1":
   "cakeshopvol":`
-    const expected = "quorumDefinitions\ncakeshopDefinitions" + services
+    const expected = `quorumDefinitions\ncakeshopDefinitions${services}`
 
     includeCakeshop.mockReturnValueOnce(true)
-    readFileToString.mockReturnValueOnce("quorumDefinitions")
-    readFileToString.mockReturnValueOnce("cakeshopDefinitions")
-    formatNewLine.mockReturnValueOnce("quorumDefinitions\n")
-    formatNewLine.mockReturnValueOnce("cakeshopDefinitions\n")
+    readFileToString.mockReturnValueOnce('quorumDefinitions')
+    readFileToString.mockReturnValueOnce('cakeshopDefinitions')
+    formatNewLine.mockReturnValueOnce('quorumDefinitions\n')
+    formatNewLine.mockReturnValueOnce('cakeshopDefinitions\n')
 
     expect(buildDockerCompose(config)).toEqual(expected)
   })
 
   it('creates docker-compose script with quorum, tessera and cakeshop', () => {
-
     const config = createReplica7NodesConfig({
       ...baseNetwork,
       numberNodes: '1',
@@ -263,15 +268,15 @@ networks:
 volumes:
   "vol1":
   "cakeshopvol":`
-    const expected = "quorumDefinitions\ntesseraDefinitions\ncakeshopDefinitions" + services
+    const expected = `quorumDefinitions\ntesseraDefinitions\ncakeshopDefinitions${services}`
 
     includeCakeshop.mockReturnValueOnce(true)
-    readFileToString.mockReturnValueOnce("definitions")
-    readFileToString.mockReturnValueOnce("tessera")
-    readFileToString.mockReturnValueOnce("cakeshop")
-    formatNewLine.mockReturnValueOnce("quorumDefinitions\n")
-    formatNewLine.mockReturnValueOnce("tesseraDefinitions\n")
-    formatNewLine.mockReturnValueOnce("cakeshopDefinitions\n")
+    readFileToString.mockReturnValueOnce('definitions')
+    readFileToString.mockReturnValueOnce('tessera')
+    readFileToString.mockReturnValueOnce('cakeshop')
+    formatNewLine.mockReturnValueOnce('quorumDefinitions\n')
+    formatNewLine.mockReturnValueOnce('tesseraDefinitions\n')
+    formatNewLine.mockReturnValueOnce('cakeshopDefinitions\n')
 
     expect(buildDockerCompose(config)).toEqual(expected)
   })

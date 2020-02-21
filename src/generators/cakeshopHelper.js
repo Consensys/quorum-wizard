@@ -1,5 +1,10 @@
 import { join } from 'path'
-import { copyFile, createFolder, libRootDir, writeJsonFile, } from '../utils/fileUtils'
+import {
+  copyFile,
+  createFolder,
+  libRootDir,
+  writeJsonFile,
+} from '../utils/fileUtils'
 import { generateCakeshopConfig } from '../model/CakeshopConfig'
 import { includeCakeshop } from './networkCreator'
 
@@ -7,23 +12,26 @@ export function buildCakeshopDir(config, qdata) {
   const cakeshopDir = join(qdata, 'cakeshop', 'local')
   createFolder(cakeshopDir, true)
   writeJsonFile(cakeshopDir, 'cakeshop.json', generateCakeshopConfig(config))
-  copyFile(join(libRootDir(), 'lib', 'cakeshop_application.properties.template'), join(cakeshopDir, 'application.properties'))
+  copyFile(
+    join(libRootDir(), 'lib', 'cakeshop_application.properties.template'),
+    join(cakeshopDir, 'application.properties'),
+  )
 }
 
 export function generateCakeshopScript(config) {
-  if(!includeCakeshop(config)) {
+  if (!includeCakeshop(config)) {
     return ''
   }
-  const jvmParams = "-Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop"
+  const jvmParams = '-Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop'
   const startCommand = `java ${jvmParams} -jar $BIN_CAKESHOP > /dev/null 2>&1 &`
   return [
     'echo "Starting Cakeshop"',
     startCommand,
-    waitForCakeshopCommand(config)
+    waitForCakeshopCommand(),
   ].join('\n')
 }
 
-export function waitForCakeshopCommand(config) {
+export function waitForCakeshopCommand() {
   return `
   DOWN=true
   k=10

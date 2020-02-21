@@ -1,5 +1,8 @@
 import { buildDockerCompose } from '../generators/dockerHelper'
-import { createCustomConfig, createReplica7NodesConfig } from './NetworkConfig'
+import {
+  createCustomConfig,
+  createReplica7NodesConfig,
+} from './NetworkConfig'
 
 test('creates 3nodes raft dockerFile tessera no cakeshop', () => {
   const config = createReplica7NodesConfig({
@@ -8,7 +11,7 @@ test('creates 3nodes raft dockerFile tessera no cakeshop', () => {
     quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     deployment: 'docker-compose',
-    cakeshop: false
+    cakeshop: false,
   })
   const docker = buildDockerCompose(config)
   expect(docker).toMatchSnapshot()
@@ -21,7 +24,7 @@ test('creates 5nodes istanbul dockerFile no tessera no cakeshop', () => {
     quorumVersion: '2.4.0',
     transactionManager: 'none',
     deployment: 'docker-compose',
-    cakeshop: false
+    cakeshop: false,
   })
   const docker = buildDockerCompose(config)
   expect(docker).toMatchSnapshot()
@@ -34,7 +37,7 @@ test('creates 3nodes raft dockerFile tessera cakeshop', () => {
     quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     deployment: 'docker-compose',
-    cakeshop: true
+    cakeshop: true,
   })
   const docker = buildDockerCompose(config)
   expect(docker).toMatchSnapshot()
@@ -47,7 +50,7 @@ test('creates 5nodes istanbul dockerFile no tessera cakeshop', () => {
     quorumVersion: '2.4.0',
     transactionManager: 'none',
     deployment: 'docker-compose',
-    cakeshop: true
+    cakeshop: true,
   })
   const docker = buildDockerCompose(config)
   expect(docker).toMatchSnapshot()
@@ -65,14 +68,14 @@ test('creates 3nodes raft docker tessera custom', () => {
     genesisLocation: 'none',
     customizePorts: false,
     nodes: [],
-    dockerCustom: undefined
+    dockerCustom: undefined,
   })
   const docker = buildDockerCompose(config)
   expect(docker).toMatchSnapshot()
 })
 
 test('creates 2nodes raft docker tessera cakeshop custom ports', () => {
-  let nodes = [
+  const nodes = [
     {
       quorum: {
         ip: '172.16.239.11',
@@ -86,7 +89,7 @@ test('creates 2nodes raft docker tessera cakeshop custom ports', () => {
         thirdPartyPort: '5081',
         p2pPort: '5001',
         enclavePort: '5181',
-      }
+      },
     },
     {
       quorum: {
@@ -101,13 +104,14 @@ test('creates 2nodes raft docker tessera cakeshop custom ports', () => {
         thirdPartyPort: '5082',
         p2pPort: '5002',
         enclavePort: '5182',
-      }
-    }]
-  let docker = {
+      },
+    },
+  ]
+  const docker = {
     quorumRpcPort: '31000',
     quorumRaftPort: '30400',
     tesseraThirdPartyPort: '3080',
-    tesseraP2pPort: '3000'
+    tesseraP2pPort: '3000',
   }
   const config = createCustomConfig({
     numberNodes: '2',
@@ -119,8 +123,8 @@ test('creates 2nodes raft docker tessera cakeshop custom ports', () => {
     networkId: 10,
     genesisLocation: 'none',
     customizePorts: true,
-    nodes: nodes,
-    dockerCustom: docker
+    nodes,
+    dockerCustom: docker,
   })
   const bash = buildDockerCompose(config)
   expect(bash).toMatchSnapshot()

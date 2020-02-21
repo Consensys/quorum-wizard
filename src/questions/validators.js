@@ -7,9 +7,10 @@ export function validateNumberStringInRange(input, low, high) {
 }
 
 export function validateNetworkId(input) {
-  if(input === '1') {
+  if (input === '1') {
     return 'Ethereum Mainnet has a network id of 1. Please choose another id'
-  } else if (parseInt(input) < 0) {
+  }
+  if (parseInt(input, 10) < 0) {
     return 'Network ID must be positive'
   }
   return true

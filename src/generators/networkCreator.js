@@ -12,9 +12,12 @@ import {
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
-import { isTessera, isRaft } from '../model/NetworkConfig'
+import {
+  isRaft,
+  isTessera,
+} from '../model/NetworkConfig'
 
-export function createDirectory (config) {
+export function createDirectory(config) {
   // https://nodejs.org/en/knowledge/file-system/security/introduction/
 
   const networkPath = getFullNetworkPath(config)
@@ -28,13 +31,19 @@ export function createDirectory (config) {
   const configPath = join(cwd(), config.network.configDir)
   createFolder(configPath, true)
   let keyPath = join(libRootDir(), '7nodes')
-  //if user selected to generate keys
-  if(config.network.generateKeys) {
+  // if user selected to generate keys
+  if (config.network.generateKeys) {
     generateKeys(config, configPath)
     keyPath = configPath
   }
-  //always generate consensus genesis
-  generateConsensusConfig(configPath, keyPath, config.network.consensus, config.nodes, config.network.networkId)
+  // always generate consensus genesis
+  generateConsensusConfig(
+    configPath,
+    keyPath,
+    config.network.consensus,
+    config.nodes,
+    config.network.networkId,
+  )
 
   const staticNodes = createStaticNodes(config.nodes, config.network.consensus, keyPath)
   const peerList = createPeerList(config.nodes, config.network.transactionManager)
@@ -59,18 +68,23 @@ export function createDirectory (config) {
     copyFile(join(keyFolder, 'nodekey'), join(gethDir, 'nodekey'))
     copyFile(join(keyFolder, 'password.txt'), passwordDestination)
     copyFile(join(configPath, 'genesis.json'), genesisDestination)
-    if(isTessera(config.network.transactionManager)) {
+    if (isTessera(config.network.transactionManager)) {
       copyFile(join(keyFolder, 'tm.key'), join(tmDir, 'tm.key'))
       copyFile(join(keyFolder, 'tm.pub'), join(tmDir, 'tm.pub'))
-      let tesseraConfig = createConfig(tmDir, nodeNumber, node.tm.ip,
-        node.tm.thirdPartyPort, node.tm.p2pPort, peerList)
-      writeJsonFile(tmDir, `tessera-config-09-${nodeNumber}.json`,
-        tesseraConfig)
+      const tesseraConfig = createConfig(
+        tmDir,
+        nodeNumber,
+        node.tm.ip,
+        node.tm.thirdPartyPort,
+        node.tm.p2pPort,
+        peerList,
+      )
+      writeJsonFile(tmDir, `tessera-config-09-${nodeNumber}.json`, tesseraConfig)
     }
   })
 }
 
-export function createStaticNodes (nodes, consensus, configDir) {
+export function createStaticNodes(nodes, consensus, configDir) {
   return nodes.map((node, i) => {
     const nodeNumber = i + 1
     const generatedKeyFolder = `${configDir}/key${nodeNumber}`
@@ -88,13 +102,11 @@ export function includeCakeshop(config) {
   return config.network.cakeshop
 }
 
-function createPeerList (nodes, transactionManager) {
+function createPeerList(nodes, transactionManager) {
   if (!isTessera(transactionManager)) {
     return []
   }
-  return nodes.map((node) => ({
-    url: `http://${node.tm.ip}:${node.tm.p2pPort}`
-  }))
+  return nodes.map((node) => ({ url: `http://${node.tm.ip}:${node.tm.p2pPort}` }))
 }
 
 export function getFullNetworkPath(config) {

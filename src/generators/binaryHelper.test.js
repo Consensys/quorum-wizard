@@ -1,7 +1,8 @@
+import { join } from 'path'
+import { any } from 'expect'
 import {
   downloadAndCopyBinaries,
   getGethOnPath,
-  getPlatformSpecificUrl,
   getTesseraOnPath,
   pathToBootnode,
   pathToCakeshop,
@@ -9,11 +10,15 @@ import {
   pathToTesseraJar,
 } from './binaryHelper'
 import { executeSync } from '../utils/execUtils'
-import { cwd, libRootDir } from '../utils/fileUtils'
-import { join } from 'path'
-import { TEST_CWD, TEST_LIB_ROOT_DIR } from '../utils/testHelper'
+import {
+  cwd,
+  libRootDir,
+} from '../utils/fileUtils'
+import {
+  TEST_CWD,
+  TEST_LIB_ROOT_DIR,
+} from '../utils/testHelper'
 import { downloadIfMissing } from './download'
-import { any } from 'expect'
 
 jest.mock('../generators/download')
 jest.mock('../utils/execUtils')
@@ -24,22 +29,25 @@ downloadIfMissing.mockReturnValue(Promise.resolve())
 
 describe('Chooses the right paths to the binaries', () => {
   it('Calls geth binary directly if on path', () => {
-    expect(pathToQuorumBinary("PATH")).toEqual("geth")
+    expect(pathToQuorumBinary('PATH')).toEqual('geth')
   })
   it('Calls geth binary in bin folder', () => {
-    expect(pathToQuorumBinary("2.4.0")).toEqual(join(libRootDir(), "bin/quorum/2.4.0/geth"))
+    expect(pathToQuorumBinary('2.4.0')).toEqual(join(libRootDir(), 'bin/quorum/2.4.0/geth'))
   })
   it('Calls tessera using $TESSERA_JAR', () => {
-    expect(pathToTesseraJar("PATH")).toEqual("$TESSERA_JAR")
+    expect(pathToTesseraJar('PATH')).toEqual('$TESSERA_JAR')
   })
   it('Calls tessera using bin folder jar', () => {
-    expect(pathToTesseraJar("0.10.2")).toEqual(join(libRootDir(), "bin/tessera/0.10.2/tessera-app.jar"))
+    expect(pathToTesseraJar('0.10.2')).toEqual(join(
+      libRootDir(),
+      'bin/tessera/0.10.2/tessera-app.jar',
+    ))
   })
   it('Calls cakeshop using bin folder war', () => {
-    expect(pathToCakeshop()).toEqual(join(libRootDir(), "bin/cakeshop/0.11.0-RC2/cakeshop.war"))
+    expect(pathToCakeshop()).toEqual(join(libRootDir(), 'bin/cakeshop/0.11.0-RC2/cakeshop.war'))
   })
   it('Calls bootnode using bin folder', () => {
-    expect(pathToBootnode()).toEqual(join(libRootDir(), "bin/bootnode/1.8.27/bootnode"))
+    expect(pathToBootnode()).toEqual(join(libRootDir(), 'bin/bootnode/1.8.27/bootnode'))
   })
 })
 
@@ -53,7 +61,6 @@ describe('Finds binaries on path', () => {
     executeSync.mockReturnValueOnce(Buffer.from(''))
     expect(getGethOnPath()).toEqual([])
     expect(executeSync).toHaveBeenLastCalledWith('which geth')
-
   })
   it('Returns no choices when local geth (not quorum) is found', () => {
     executeSync.mockReturnValueOnce(Buffer.from('/usr/bin/geth'))
@@ -65,10 +72,12 @@ describe('Finds binaries on path', () => {
   it('Returns choice when local quorum is found, parses version', () => {
     executeSync.mockReturnValueOnce(Buffer.from('/usr/bin/geth'))
     executeSync.mockReturnValueOnce(Buffer.from(quorumVersion))
-    expect(getGethOnPath()).toEqual([{
+    expect(getGethOnPath()).toEqual([
+      {
         name: 'Quorum 2.2.4 on path (/usr/bin/geth)',
         value: 'PATH',
-      }])
+      },
+    ])
     expect(executeSync).toHaveBeenCalledWith('which geth')
     expect(executeSync).toHaveBeenLastCalledWith('geth version')
   })
@@ -76,35 +85,14 @@ describe('Finds binaries on path', () => {
   })
   it('Returns choice when $TESSERA_JAR is set', () => {
     const originalEnv = process.env
-    overrideProcessValue('env', {'TESSERA_JAR': '/path/to/jar'})
-    expect(getTesseraOnPath()).toEqual([{
-      name: 'Tessera at $TESSERA_JAR (/path/to/jar)',
-      value: 'PATH',
-    }])
+    overrideProcessValue('env', { TESSERA_JAR: '/path/to/jar' })
+    expect(getTesseraOnPath()).toEqual([
+      {
+        name: 'Tessera at $TESSERA_JAR (/path/to/jar)',
+        value: 'PATH',
+      },
+    ])
     overrideProcessValue('env', originalEnv)
-  })
-})
-
-describe('Handles different binary file urls', () => {
-  let originalPlatform
-  beforeAll(() => {
-    originalPlatform = process.platform
-  })
-  afterAll(() => {
-    overrideProcessValue('platform', originalPlatform)
-  })
-  it('Works with cross-platform single urls', () => {
-    expect(getPlatformSpecificUrl(crossPlatform)).toEqual('crossplatform_url')
-  })
-  it('Works with multiple platform urls', () => {
-    overrideProcessValue('platform', 'linux')
-    expect(getPlatformSpecificUrl(multiplePlatform)).toEqual('linux_url')
-    overrideProcessValue('platform', 'darwin')
-    expect(getPlatformSpecificUrl(multiplePlatform)).toEqual('mac_url')
-  })
-  it('Throws an error when using an unsupported platform', () => {
-    overrideProcessValue('platform', 'windows_nt')
-    expect(() => getPlatformSpecificUrl(multiplePlatform)).toThrow(new Error('Sorry, your platform (windows_nt) is not supported.'))
   })
 })
 
@@ -115,7 +103,7 @@ describe('Downloads binaries', () => {
     cakeshop: false,
     consensus: 'raft',
     generateKeys: false,
-    deployment: 'bash'
+    deployment: 'bash',
   }
   beforeEach(() => {
     downloadIfMissing.mockClear()
@@ -124,7 +112,7 @@ describe('Downloads binaries', () => {
     const config = {
       network: {
         ...baseNetwork,
-      }
+      },
     }
     await downloadAndCopyBinaries(config)
     expect(downloadIfMissing).toBeCalledWith('quorum', '2.4.0')
@@ -140,8 +128,8 @@ describe('Downloads binaries', () => {
         transactionManager: 'none',
         consensus: 'istanbul',
         cakeshop: true,
-        generateKeys: true
-      }
+        generateKeys: true,
+      },
     }
     await downloadAndCopyBinaries(config)
     expect(downloadIfMissing).toBeCalledWith('quorum', '2.4.0')
@@ -154,8 +142,8 @@ describe('Downloads binaries', () => {
     const config = {
       network: {
         ...baseNetwork,
-        deployment: 'docker-compose'
-      }
+        deployment: 'docker-compose',
+      },
     }
     await downloadAndCopyBinaries(config)
     expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.4.0')
@@ -169,8 +157,8 @@ describe('Downloads binaries', () => {
       network: {
         ...baseNetwork,
         deployment: 'docker-compose',
-        generateKeys: true
-      }
+        generateKeys: true,
+      },
     }
     await downloadAndCopyBinaries(config)
     expect(downloadIfMissing).toBeCalledWith('quorum', '2.4.0')
@@ -184,8 +172,8 @@ describe('Downloads binaries', () => {
       network: {
         ...baseNetwork,
         quorumVersion: 'PATH',
-        transactionManager: 'PATH'
-      }
+        transactionManager: 'PATH',
+      },
     }
     await downloadAndCopyBinaries(config)
     expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.4.0')
@@ -193,28 +181,11 @@ describe('Downloads binaries', () => {
   })
 })
 
-function overrideProcessValue (key, value) {
+function overrideProcessValue(key, value) {
   // process.platform is read-only, use this workaround to set it
   Object.defineProperty(process, key, { value })
 }
 
-const crossPlatform = {
-  name: 'file.jar',
-  url: 'crossplatform_url',
-  type: 'jar',
-}
-
-const multiplePlatform = {
-  name: 'compiled_bin',
-  url: {
-    darwin: 'mac_url',
-    linux: 'linux_url',
-  },
-  type: 'tar.gz',
-  files: [
-    'compiled_bin',
-  ],
-}
 const vanillaGethVersion = `Geth
 Version: 1.9.0-unstable
 Git Commit: f03402232cd7bcc558b70a20df5b326b1d71e1ad
@@ -237,4 +208,3 @@ Go Version: go1.9.7
 Operating System: darwin
 GOPATH=/Users/bradmcdermott/go
 GOROOT=/usr/local/Cellar/go@1.9/1.9.7/libexec`
-
