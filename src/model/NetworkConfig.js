@@ -91,7 +91,7 @@ export function createCustomConfig (answers) {
 function createNetworkFolderName (answers) {
   const {numberNodes, consensus, transactionManager, deployment} = answers
 
-  let transactionManagerName = transactionManager === 'none'
+  let transactionManagerName = !isTessera(transactionManager)
     ? ''
     : 'tessera-'
   return `${numberNodes}-nodes-${consensus}-${transactionManagerName}${deployment}`
@@ -117,7 +117,7 @@ export function generateNodeConfigs (numberNodes, transactionManager, deployment
         raftPort: raftPort + i,
       },
     }
-    if(transactionManager !== 'none') {
+    if(isTessera(transactionManager)) {
       node.tm = {
         ip: isDocker(deployment) ? `172.16.239.10${i + 1}` : '127.0.0.1',
         thirdPartyPort: thirdPartyPort + i,

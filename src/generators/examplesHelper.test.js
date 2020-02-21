@@ -16,8 +16,8 @@ describe('generates and copies over example scripts', () => {
       }
     }
     generateAndCopyExampleScripts('pubKey', createNetPath(config))
-    expect(copyFile).toBeCalledWith(createLibPath('lib/runscript.sh'), createNetPath(config, 'runscript.sh'))
-    expect(copyFile).toBeCalledWith(createLibPath('lib/public-contract.js'), createNetPath(config, 'public-contract.js'))
+    expect(copyFile).toBeCalledWith(createLibPath('lib', 'runscript.sh'), createNetPath(config, 'runscript.sh'))
+    expect(copyFile).toBeCalledWith(createLibPath('lib', 'public-contract.js'), createNetPath(config, 'public-contract.js'))
     expect(writeFile).toBeCalledWith(createNetPath(config, 'private-contract.js'), expect.anything())
   })
 })

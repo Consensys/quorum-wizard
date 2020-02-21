@@ -1,7 +1,7 @@
 import { libRootDir } from '../utils/fileUtils'
 import { join } from 'path'
 import { executeSync } from '../utils/execUtils'
-import { isDocker, isIstanbul } from '../model/NetworkConfig'
+import { isDocker, isIstanbul, isTessera } from '../model/NetworkConfig'
 import { downloadIfMissing } from './download'
 
 export function getPlatformSpecificUrl ({ url }) {
@@ -39,7 +39,7 @@ export async function downloadAndCopyBinaries (config) {
       await downloadIfMissing('quorum', quorumVersion)
     }
     let tesseraVersion = transactionManager
-    if (tesseraVersion !== 'PATH' && tesseraVersion !== 'none') {
+    if (tesseraVersion !== 'PATH' && isTessera(tesseraVersion)) {
       await downloadIfMissing('tessera', tesseraVersion)
     }
 

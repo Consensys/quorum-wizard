@@ -87,7 +87,7 @@ export async function buildBash(config) {
 
   console.log('Writing start script...')
   writeFile(join(networkPath, 'start.sh'), bashDetails.startScript, true)
-  copyFile(join(libRootDir(), 'lib/stop.sh'), join(networkPath, 'stop.sh'))
+  copyFile(join(libRootDir(), 'lib', 'stop.sh'), join(networkPath, 'stop.sh'))
 
   console.log('Initializing quorum...')
   bashDetails.initCommands.forEach((command) => {

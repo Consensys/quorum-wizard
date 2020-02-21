@@ -65,7 +65,7 @@ export async function customize () {
   ])
 
   let nodes = (customAnswers.customizePorts && isBash(commonAnswers.deployment)) ?
-    await getCustomizedBashNodes(commonAnswers.numberNodes, commonAnswers.transactionManager !== 'none') : []
+    await getCustomizedBashNodes(commonAnswers.numberNodes, isTessera(commonAnswers.transactionManager)) : []
 
   let dockerCustom = (customAnswers.customizePorts && isDocker(commonAnswers.deployment)) ?
     await getCustomizedDockerPorts(isTessera(commonAnswers.transactionManager)) : undefined
