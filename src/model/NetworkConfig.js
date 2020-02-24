@@ -15,42 +15,43 @@ export function createQuickstartConfig() {
       networkId: '10',
       custom: false,
     },
-    nodes: generateNodeConfigs(3, 'tessera', 'bash', true)
+    nodes: generateNodeConfigs(3, 'tessera', 'bash', true),
   }
 }
-export function createReplica7NodesConfig (answers) {
+
+export function createReplica7NodesConfig(answers) {
   const {
     numberNodes,
     consensus,
     transactionManager,
     deployment,
     cakeshop,
-    quorumVersion
+    quorumVersion,
   } = answers
-  let networkFolder = createNetworkFolderName(answers)
+  const networkFolder = createNetworkFolderName(answers)
   return {
     network: {
       name: networkFolder,
       verbosity: 5,
-      consensus: consensus,
-      quorumVersion: quorumVersion,
-      transactionManager: transactionManager,
+      consensus,
+      quorumVersion,
+      transactionManager,
       permissioned: true,
       genesisFile: 'none',
       generateKeys: false,
       configDir: `network/${networkFolder}/generated`,
-      deployment: deployment,
-      cakeshop: cakeshop,
+      deployment,
+      cakeshop,
       networkId: '10',
       custom: false,
       customizePorts: false,
     },
     nodes: generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop),
-    dockerCustom: undefined
+    dockerCustom: undefined,
   }
 }
 
-export function createCustomConfig (answers) {
+export function createCustomConfig(answers) {
   const {
     numberNodes,
     consensus,
@@ -63,51 +64,58 @@ export function createCustomConfig (answers) {
     genesisLocation,
     customizePorts,
     nodes,
-    dockerCustom
+    dockerCustom,
   } = answers
-  let networkFolder = createNetworkFolderName(answers)
+  const networkFolder = createNetworkFolderName(answers)
   return {
     network: {
       name: networkFolder,
       verbosity: 5,
-      consensus: consensus,
-      quorumVersion: quorumVersion,
-      transactionManager: transactionManager,
+      consensus,
+      quorumVersion,
+      transactionManager,
       permissioned: true,
       genesisFile: genesisLocation,
-      generateKeys: generateKeys,
+      generateKeys,
       configDir: `network/${networkFolder}/generated`,
-      deployment: deployment,
-      cakeshop: cakeshop,
-      networkId: networkId,
+      deployment,
+      cakeshop,
+      networkId,
       custom: true,
-      customizePorts: customizePorts,
-     },
-     nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop),
-     dockerCustom: dockerCustom
-   }
- }
+      customizePorts,
+    },
+    nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(
+      numberNodes,
+      transactionManager,
+      deployment,
+      cakeshop,
+    ),
+    dockerCustom,
+  }
+}
 
-function createNetworkFolderName (answers) {
-  const {numberNodes, consensus, transactionManager, deployment} = answers
+function createNetworkFolderName(answers) {
+  const {
+    numberNodes, consensus, transactionManager, deployment,
+  } = answers
 
-  let transactionManagerName = !isTessera(transactionManager)
+  const transactionManagerName = !isTessera(transactionManager)
     ? ''
     : 'tessera-'
   return `${numberNodes}-nodes-${consensus}-${transactionManagerName}${deployment}`
 }
 
-export function generateNodeConfigs (numberNodes, transactionManager, deployment) {
-  let devP2pPort = 21000,
-    rpcPort = 22000,
-    wsPort = 23000,
-    raftPort = 50401,
-    thirdPartyPort = 9081,
-    p2pPort = 9001,
-    enclavePort = 9180,
-    nodes = []
+export function generateNodeConfigs(numberNodes, transactionManager, deployment) {
+  const devP2pPort = 21000
+  const rpcPort = 22000
+  const wsPort = 23000
+  const raftPort = 50401
+  const thirdPartyPort = 9081
+  const p2pPort = 9001
+  const enclavePort = 9180
+  const nodes = []
 
-  for (let i = 0; i < parseInt(numberNodes, 10); i++) {
+  for (let i = 0; i < parseInt(numberNodes, 10); i += 1) {
     const node = {
       quorum: {
         ip: isDocker(deployment) ? `172.16.239.1${i + 1}` : '127.0.0.1',
@@ -117,7 +125,7 @@ export function generateNodeConfigs (numberNodes, transactionManager, deployment
         raftPort: raftPort + i,
       },
     }
-    if(isTessera(transactionManager)) {
+    if (isTessera(transactionManager)) {
       node.tm = {
         ip: isDocker(deployment) ? `172.16.239.10${i + 1}` : '127.0.0.1',
         thirdPartyPort: thirdPartyPort + i,
@@ -130,22 +138,22 @@ export function generateNodeConfigs (numberNodes, transactionManager, deployment
   return nodes
 }
 
-export function isTessera (tessera) {
+export function isTessera(tessera) {
   return tessera !== 'none'
 }
 
-export function isDocker (deployment) {
+export function isDocker(deployment) {
   return deployment === 'docker-compose'
 }
 
-export function isBash (deployment) {
+export function isBash(deployment) {
   return deployment === 'bash'
 }
 
-export function isIstanbul (consensus) {
+export function isIstanbul(consensus) {
   return consensus === 'istanbul'
 }
 
-export function isRaft (consensus) {
+export function isRaft(consensus) {
   return consensus === 'raft'
 }

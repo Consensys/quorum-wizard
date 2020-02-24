@@ -1,9 +1,10 @@
 import winston from 'winston'
 
 
-const logLevel = process.env.NODE_ENV === 'test' ?
-  'error' :
-  (process.env.LOG_LEVEL || 'info')
+const logLevel = process.env.NODE_ENV === 'test'
+  ? 'error'
+  : (process.env.LOG_LEVEL || 'info'
+  )
 
 const logger = winston.createLogger({
   level: logLevel,
@@ -12,13 +13,14 @@ const logger = winston.createLogger({
       format: winston.format.combine(
         winston.format.colorize(),
         winston.format.printf(
-          (info) => {
-            if(info.level.indexOf('info') >= 0) {
+          (msg) => {
+            if (msg.level.indexOf('info') >= 0) {
               // no log level label for info messages
-              return `${info.message}`;
+              return `${msg.message}`
             }
-            return `${info.level}: ${info.message}`;
-          })
+            return `${msg.level}: ${msg.message}`
+          },
+        ),
       ),
       handleExceptions: true,
     }),
@@ -33,7 +35,7 @@ export function debug(message) {
   logger.debug(message)
 }
 
-export function error(message, e='') {
+export function error(message, e = '') {
   logger.error(`${message}\n${e}`)
 }
 

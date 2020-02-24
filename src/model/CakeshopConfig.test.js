@@ -1,4 +1,4 @@
-import { createQuickstartConfig, createReplica7NodesConfig } from './NetworkConfig'
+import { createReplica7NodesConfig } from './NetworkConfig'
 import { generateCakeshopConfig } from './CakeshopConfig'
 
 const baseNetwork = {
@@ -7,13 +7,13 @@ const baseNetwork = {
   quorumVersion: '2.4.0',
   transactionManager: '0.10.2',
   deployment: 'bash',
-  cakeshop: true
+  cakeshop: true,
 }
 
 test('creates 3nodes raft dockerFile tessera cakeshop', () => {
   const config = createReplica7NodesConfig({
     ...baseNetwork,
-    deployment: 'docker-compose'
+    deployment: 'docker-compose',
   })
   const cakeshop = generateCakeshopConfig(config)
   expect(cakeshop).toMatchSnapshot()
@@ -22,7 +22,7 @@ test('creates 3nodes raft dockerFile tessera cakeshop', () => {
 test('creates 3nodes istanbul bash tessera cakeshop', () => {
   const config = createReplica7NodesConfig({
     ...baseNetwork,
-    consensus: 'istanbul'
+    consensus: 'istanbul',
   })
   const cakeshop = generateCakeshopConfig(config)
   expect(cakeshop).toMatchSnapshot()
@@ -32,7 +32,7 @@ test('creates 3nodes raft dockerFile no tessera cakeshop', () => {
   const config = createReplica7NodesConfig({
     ...baseNetwork,
     transactionManager: 'none',
-    deployment: 'docker-compose'
+    deployment: 'docker-compose',
   })
   const cakeshop = generateCakeshopConfig(config)
   expect(cakeshop).toMatchSnapshot()
@@ -42,7 +42,7 @@ test('creates 3nodes istanbul bash no tessera cakeshop', () => {
   const config = createReplica7NodesConfig({
     ...baseNetwork,
     consensus: 'istanbul',
-    transactionManager: 'none'
+    transactionManager: 'none',
   })
   const cakeshop = generateCakeshopConfig(config)
   expect(cakeshop).toMatchSnapshot()

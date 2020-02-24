@@ -1,9 +1,17 @@
-import { validateNetworkId, validateNumberStringInRange } from './validators'
 import {
-  getDownloadableGethChoices, getDownloadableTesseraChoices,
-  getGethOnPath, getTesseraOnPath,
+  validateNetworkId,
+  validateNumberStringInRange,
+} from './validators'
+import {
+  getDownloadableGethChoices,
+  getDownloadableTesseraChoices,
+  getGethOnPath,
+  getTesseraOnPath,
 } from '../generators/binaryHelper'
-import { isRaft, isBash } from '../model/NetworkConfig'
+import {
+  isBash,
+  isRaft,
+} from '../model/NetworkConfig'
 
 
 export const INITIAL_MODE = {
@@ -32,11 +40,14 @@ All you need to do is go to the specified location and run ./start.sh
 `,
 
   choices: [
-    { name: 'Quickstart (3-node raft network with tessera and cakeshop, requires Java 8)', value: 1 },
+    {
+      name: 'Quickstart (3-node raft network with tessera and cakeshop, requires Java 8)',
+      value: 1,
+    },
     { name: 'Simple Network', value: 2 },
     { name: 'Fully Custom Network', value: 3 },
-    { name: 'Exit', value: 4 }
-  ]
+    { name: 'Exit', value: 4 },
+  ],
 }
 
 export const DEPLOYMENT_TYPE = {
@@ -48,19 +59,17 @@ export const DEPLOYMENT_TYPE = {
     'docker-compose',
     // 'kubernetes',
     // 'vagrant',
-  ]
+  ],
 }
 
 export const NUMBER_NODES = {
   type: 'input',
   name: 'numberNodes',
-  message: (answers) => {
-    return isRaft(answers.consensus) ?
-      'Input the number of nodes (2-7) you would like in your network - a minimum of 3 is recommended' :
-      'Input the number of nodes (2-7) you would like in your network - a minimum of 3 is recommended for development, 5 to properly handle node failure'
-  },
+  message: (answers) => (isRaft(answers.consensus)
+    ? 'Input the number of nodes (2-7) you would like in your network - a minimum of 3 is recommended'
+    : 'Input the number of nodes (2-7) you would like in your network - a minimum of 3 is recommended for development, 5 to properly handle node failure'),
   default: '3',
-  validate: (input) => validateNumberStringInRange(input, 2, 7)
+  validate: (input) => validateNumberStringInRange(input, 2, 7),
 }
 
 export const CONSENSUS_MODE = {
@@ -70,16 +79,16 @@ export const CONSENSUS_MODE = {
   choices: [
     'istanbul',
     'raft',
-  ]
+  ],
 }
 
 export const QUORUM_VERSION = {
   type: 'list',
   name: 'quorumVersion',
   message: 'Which version of Quorum would you like to use?',
-  choices: ({deployment}) => {
+  choices: ({ deployment }) => {
     let choices = [...getDownloadableGethChoices()]
-    if(isBash(deployment)) {
+    if (isBash(deployment)) {
       choices = choices.concat(getGethOnPath())
     }
     return choices
@@ -90,9 +99,9 @@ export const TRANSACTION_MANAGER = {
   type: 'list',
   name: 'transactionManager',
   message: 'Choose a version of tessera if you would like to use private transactions in your network, otherwise choose "none"',
-  choices: ({deployment}) => {
+  choices: ({ deployment }) => {
     let choices = [...getDownloadableTesseraChoices()]
-    if(isBash(deployment)) {
+    if (isBash(deployment)) {
       choices = choices.concat(getTesseraOnPath())
     }
     return choices.concat('none')
@@ -103,14 +112,14 @@ export const CAKESHOP = {
   type: 'confirm',
   name: 'cakeshop',
   message: 'Do you want to run cakeshop with your network? (Requires Java 8)',
-  default: false
+  default: false,
 }
 
 export const KEY_GENERATION = {
   type: 'confirm',
   name: 'generateKeys',
   message: 'Would you like to generate keys for your network?',
-  default: false
+  default: false,
 }
 
 export const NETWORK_ID = {
@@ -118,7 +127,7 @@ export const NETWORK_ID = {
   name: 'networkId',
   message: '10 is the default network id in quorum but you can use a different one',
   default: '10',
-  validate: (input) => validateNetworkId(input)
+  validate: (input) => validateNetworkId(input),
 }
 
 export const GENESIS_LOCATION = {
@@ -133,5 +142,4 @@ export const CUSTOMIZE_PORTS = {
   name: 'customizePorts',
   message: 'Would you like to customize your node ports?',
   default: false,
-  validate: (input) => validateNumberStringInRange(input, 0, 65535)
 }

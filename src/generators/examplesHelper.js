@@ -1,13 +1,12 @@
+import { join } from 'path'
 import {
   copyFile,
   libRootDir,
   writeFile,
 } from '../utils/fileUtils'
-import { join } from 'path'
 
 function generatePrivateContractExample(privateFor) {
-
-return `
+  return `
 a = eth.accounts[0]
 web3.eth.defaultAccount = a;
 
@@ -19,21 +18,25 @@ var bytecode = "0x6060604052341561000f57600080fd5b604051602080610149833981016040
 
 var simpleContract = web3.eth.contract(abi);
 var simple = simpleContract.new(42, {from:web3.eth.accounts[0], data: bytecode, gas: 0x47b760, privateFor: ["${privateFor}"]}, function(e, contract) {
-	if (e) {
-		console.log("err creating contract", e);
-	} else {
-		if (!contract.address) {
-			console.log("Contract transaction send: TransactionHash: " + contract.transactionHash + " waiting to be mined...");
-		} else {
-			console.log("Contract mined! Address: " + contract.address);
-			console.log(contract);
-		}
-	}
+  if (e) {
+    console.log("err creating contract", e);
+  } else {
+    if (!contract.address) {
+      console.log("Contract transaction send: TransactionHash: " + contract.transactionHash + " waiting to be mined...");
+    } else {
+      console.log("Contract mined! Address: " + contract.address);
+      console.log(contract);
+    }
+  }
 });`
 }
 
+// eslint-disable-next-line import/prefer-default-export
 export function generateAndCopyExampleScripts(privateFor, networkPath) {
   copyFile(join(libRootDir(), 'lib', 'runscript.sh'), join(networkPath, 'runscript.sh'))
-  copyFile(join(libRootDir(), 'lib', 'public-contract.js'), join(networkPath, 'public-contract.js'))
+  copyFile(
+    join(libRootDir(), 'lib', 'public-contract.js'),
+    join(networkPath, 'public-contract.js'),
+  )
   writeFile(join(networkPath, 'private-contract.js'), generatePrivateContractExample(privateFor))
 }

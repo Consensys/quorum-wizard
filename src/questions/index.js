@@ -1,32 +1,36 @@
-import { error, info } from '../utils/log'
+import inquirer from 'inquirer'
+import { join } from 'path'
+import { info } from '../utils/log'
 import {
+  createCustomConfig,
   createQuickstartConfig,
   createReplica7NodesConfig,
-  createCustomConfig,
-  generateNodeConfigs,
-  isTessera,
+  isBash,
   isDocker,
-  isBash
+  isTessera,
 } from '../model/NetworkConfig'
 import { buildBash } from '../generators/bashHelper'
 import { createDockerCompose } from '../generators/dockerHelper'
-import { getCustomizedBashNodes, getCustomizedDockerPorts } from './promptHelper'
 import {
-  CONSENSUS_MODE,
-  DEPLOYMENT_TYPE,
-  NUMBER_NODES,
-  TRANSACTION_MANAGER,
+  getCustomizedBashNodes,
+  getCustomizedDockerPorts,
+} from './promptHelper'
+import {
   CAKESHOP,
-  QUORUM_VERSION,
+  CONSENSUS_MODE,
+  CUSTOMIZE_PORTS,
+  DEPLOYMENT_TYPE,
   KEY_GENERATION,
   NETWORK_ID,
-  GENESIS_LOCATION,
-  CUSTOMIZE_PORTS
+  NUMBER_NODES,
+  QUORUM_VERSION,
+  TRANSACTION_MANAGER,
 } from './questions'
 
-import inquirer from 'inquirer'
-import { cwd, readFileToString } from '../utils/fileUtils'
-import { join } from "path"
+import {
+  cwd,
+  readFileToString,
+} from '../utils/fileUtils'
 import { createDirectory } from '../generators/networkCreator'
 import { generateAndCopyExampleScripts } from '../generators/examplesHelper'
 
@@ -35,48 +39,53 @@ export async function quickstart() {
   await buildNetwork(config, 'bash')
 }
 
-export async function replica7Nodes () {
+export async function replica7Nodes() {
   const answers = await inquirer.prompt([
     DEPLOYMENT_TYPE,
     CONSENSUS_MODE,
     NUMBER_NODES,
     QUORUM_VERSION,
     TRANSACTION_MANAGER,
-    CAKESHOP
+    CAKESHOP,
   ])
   const config = createReplica7NodesConfig(answers)
   await buildNetwork(config, answers.deployment)
 }
 
-export async function customize () {
+export async function customize() {
   const commonAnswers = await inquirer.prompt([
     DEPLOYMENT_TYPE,
     CONSENSUS_MODE,
     NUMBER_NODES,
     QUORUM_VERSION,
     TRANSACTION_MANAGER,
-    CAKESHOP
+    CAKESHOP,
   ])
 
   const customAnswers = await inquirer.prompt([
     KEY_GENERATION,
     NETWORK_ID,
     // GENESIS_LOCATION,
-    CUSTOMIZE_PORTS
+    CUSTOMIZE_PORTS,
   ])
 
-  let nodes = (customAnswers.customizePorts && isBash(commonAnswers.deployment)) ?
-    await getCustomizedBashNodes(commonAnswers.numberNodes, isTessera(commonAnswers.transactionManager)) : []
+  const nodes = (customAnswers.customizePorts && isBash(commonAnswers.deployment))
+    ? await getCustomizedBashNodes(
+      commonAnswers.numberNodes,
+      isTessera(commonAnswers.transactionManager),
+    )
+    : []
 
-  let dockerCustom = (customAnswers.customizePorts && isDocker(commonAnswers.deployment)) ?
-    await getCustomizedDockerPorts(isTessera(commonAnswers.transactionManager)) : undefined
+  const dockerCustom = (customAnswers.customizePorts && isDocker(commonAnswers.deployment)
+  )
+    ? await getCustomizedDockerPorts(isTessera(commonAnswers.transactionManager)) : undefined
 
-    const answers = {
-      ...commonAnswers,
-      ...customAnswers,
-      nodes,
-      dockerCustom
-    }
+  const answers = {
+    ...commonAnswers,
+    ...customAnswers,
+    nodes,
+    dockerCustom,
+  }
   const config = createCustomConfig(answers)
 
   await buildNetwork(config, answers.deployment)
@@ -96,7 +105,7 @@ async function buildNetwork(config, deployment) {
   const qdata = join(cwd(), 'network', config.network.name, 'qdata')
   const networkFolder = isBash(deployment) ? join(cwd(), 'network', config.network.name) : qdata
   let pubKey = ''
-  if(isTessera(config.network.transactionManager)) {
+  if (isTessera(config.network.transactionManager)) {
     info('--------------------------------------------------------------------------------')
     info('')
     config.nodes.forEach((node, i) => {
@@ -116,11 +125,13 @@ async function buildNetwork(config, deployment) {
   info('./start.sh')
   info('')
   info('A sample private and public simpleStorage contract are provided to deploy to your network')
-  const tesseraMsg = isTessera(config.network.transactionManager) ? `The private contract has privateFor set as ${pubKey}\n` : ''
+  const tesseraMsg = isTessera(config.network.transactionManager)
+    ? `The private contract has privateFor set as ${pubKey}\n`
+    : ''
   info(tesseraMsg)
-  const exampleMsg = isDocker(deployment) ?
-    `To use attach to one of your quorum nodes and run loadScript('/examples/private-contract.js')` :
-    `To use run ./runscript.sh private-contract.js from the network folder`
+  const exampleMsg = isDocker(deployment)
+    ? 'To use attach to one of your quorum nodes and run loadScript(\'/examples/private-contract.js\')'
+    : 'To use run ./runscript.sh private-contract.js from the network folder'
   info(exampleMsg)
   info('')
 }
