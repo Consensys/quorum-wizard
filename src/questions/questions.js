@@ -142,5 +142,4 @@ export const CUSTOMIZE_PORTS = {
   name: 'customizePorts',
   message: 'Would you like to customize your node ports?',
   default: false,
-  validate: (input) => validateNumberStringInRange(input, 0, 65535),
 }
