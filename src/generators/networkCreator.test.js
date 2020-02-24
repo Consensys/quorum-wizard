@@ -5,8 +5,7 @@ import {
   createStaticNodes,
 } from './networkCreator'
 import {
-  createCustomConfig,
-  createReplica7NodesConfig,
+  createConfigFromAnswers,
   generateNodeConfigs,
 } from '../model/NetworkConfig'
 import {
@@ -41,7 +40,7 @@ const baseNetwork = {
 describe('creates a bash network', () => {
   it('rejects invalid network names', () => {
     const names = ['', '.', '..', '\0', '/']
-    const config = createReplica7NodesConfig(baseNetwork)
+    const config = createConfigFromAnswers(baseNetwork)
     names.forEach((name) => {
       config.network.name = name
       expect(() => createDirectory(config)).toThrow(Error)
@@ -49,7 +48,7 @@ describe('creates a bash network', () => {
   })
 
   it('Creates the correct directory structure and moves files in', () => {
-    const config = createReplica7NodesConfig(baseNetwork)
+    const config = createConfigFromAnswers(baseNetwork)
     createDirectory(config)
     expect(generateConsensusConfig).toHaveBeenCalled()
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/logs'), true)
@@ -105,7 +104,7 @@ describe('creates a bash network', () => {
 describe('creates a docker network', () => {
   it('rejects invalid network names', () => {
     const names = ['', '.', '..', '\0', '/']
-    const config = createReplica7NodesConfig({
+    const config = createConfigFromAnswers({
       ...baseNetwork,
       deployment: 'docker-compose',
     })
@@ -116,7 +115,7 @@ describe('creates a docker network', () => {
   })
 
   it('Creates the correct directory structure and moves files in', () => {
-    const config = createReplica7NodesConfig({
+    const config = createConfigFromAnswers({
       ...baseNetwork,
       deployment: 'docker-compose',
     })
@@ -172,7 +171,7 @@ describe('creates a docker network', () => {
   })
 
   it('Creates the correct directory structure for custom config and moves files in', () => {
-    const config = createCustomConfig({
+    const config = createConfigFromAnswers({
       ...baseNetwork,
       deployment: 'docker-compose',
     })

@@ -1,6 +1,7 @@
 import { join } from 'path'
 import {
   copyFile,
+  cwd,
   libRootDir,
   writeFile,
 } from '../utils/fileUtils'
@@ -31,9 +32,16 @@ var simple = simpleContract.new(42, {from:web3.eth.accounts[0], data: bytecode, 
 });`
 }
 
+function generateRunScript(config) {
+  const node = config.nodes[0]
+  return `#!/bin/bash
+geth --exec "loadScript(\\"$1\\")" attach "http://${node.quorum.ip}:${node.quorum.rpcPort}"`
+}
+
 // eslint-disable-next-line import/prefer-default-export
-export function generateAndCopyExampleScripts(privateFor, networkPath) {
-  copyFile(join(libRootDir(), 'lib', 'runscript.sh'), join(networkPath, 'runscript.sh'))
+export function generateAndCopyExampleScripts(config, privateFor) {
+  const networkPath = join(cwd(), 'network', config.network.name)
+  writeFile(join(networkPath, 'runscript.sh'), generateRunScript(config), true)
   copyFile(
     join(libRootDir(), 'lib', 'public-contract.js'),
     join(networkPath, 'public-contract.js'),

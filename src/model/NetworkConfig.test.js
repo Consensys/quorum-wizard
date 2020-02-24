@@ -1,8 +1,4 @@
-import {
-  createCustomConfig,
-  createQuickstartConfig,
-  createReplica7NodesConfig,
-} from './NetworkConfig'
+import { createConfigFromAnswers } from './NetworkConfig'
 
 // rather than having big test jsons that we match to, we can just use snapshot
 // tests, where it will compare against the last time you ran and if it's
@@ -17,12 +13,12 @@ const baseNetwork = {
 }
 
 test('creates quickstart setup', () => {
-  const config = createQuickstartConfig()
+  const config = createConfigFromAnswers({})
   expect(config).toMatchSnapshot()
 })
 
 test('creates 7nodes istanbul config', () => {
-  const config = createReplica7NodesConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     numberNodes: '7',
     consensus: 'istanbul',
@@ -31,7 +27,7 @@ test('creates 7nodes istanbul config', () => {
 })
 
 test('creates 5nodes raft no-TM config', () => {
-  const config = createReplica7NodesConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     numberNodes: '5',
     transactionManager: 'none',
@@ -40,7 +36,7 @@ test('creates 5nodes raft no-TM config', () => {
 })
 
 test('creates 7nodes istanbul docker config', () => {
-  const config = createReplica7NodesConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     numberNodes: '7',
     consensus: 'istanbul',
@@ -50,7 +46,7 @@ test('creates 7nodes istanbul docker config', () => {
 })
 
 test('creates 5nodes raft no-TM cakeshop docker config', () => {
-  const config = createReplica7NodesConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     numberNodes: '5',
     transactionManager: 'none',
@@ -61,7 +57,7 @@ test('creates 5nodes raft no-TM cakeshop docker config', () => {
 })
 
 test('creates 7nodes istanbul cakeshop config', () => {
-  const config = createReplica7NodesConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     numberNodes: '7',
     consensus: 'istanbul',
@@ -71,7 +67,7 @@ test('creates 7nodes istanbul cakeshop config', () => {
 })
 
 test('creates 6nodes raft custom config', () => {
-  const config = createCustomConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     numberNodes: '6',
     generateKeys: true,
@@ -83,7 +79,7 @@ test('creates 6nodes raft custom config', () => {
 })
 
 test('creates 7nodes istanbul no-TM custom config', () => {
-  const config = createCustomConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     numberNodes: '7',
     consensus: 'istanbul',
@@ -97,7 +93,7 @@ test('creates 7nodes istanbul no-TM custom config', () => {
 })
 
 test('creates 6nodes raft custom docker config', () => {
-  const config = createCustomConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     numberNodes: '6',
     deployment: 'docker-compose',
@@ -110,7 +106,7 @@ test('creates 6nodes raft custom docker config', () => {
 })
 
 test('creates 7nodes istanbul no-TM custom docker config', () => {
-  const config = createCustomConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     numberNodes: '7',
     consensus: 'istanbul',

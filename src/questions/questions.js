@@ -42,11 +42,11 @@ All you need to do is go to the specified location and run ./start.sh
   choices: [
     {
       name: 'Quickstart (3-node raft network with tessera and cakeshop, requires Java 8)',
-      value: 1,
+      value: 'quickstart',
     },
-    { name: 'Simple Network', value: 2 },
-    { name: 'Fully Custom Network', value: 3 },
-    { name: 'Exit', value: 4 },
+    { name: 'Simple Network', value: 'simple' },
+    { name: 'Fully Custom Network', value: 'custom' },
+    { name: 'Exit', value: 'exit' },
   ],
 }
 
@@ -143,3 +143,20 @@ export const CUSTOMIZE_PORTS = {
   message: 'Would you like to customize your node ports?',
   default: false,
 }
+
+export const QUICKSTART_QUESTIONS = []
+export const SIMPLE_QUESTIONS = [
+  DEPLOYMENT_TYPE,
+  CONSENSUS_MODE,
+  NUMBER_NODES,
+  QUORUM_VERSION,
+  TRANSACTION_MANAGER,
+  CAKESHOP,
+]
+export const CUSTOM_QUESTIONS = [
+  ...SIMPLE_QUESTIONS,
+  KEY_GENERATION,
+  NETWORK_ID,
+  // GENESIS_LOCATION,
+  CUSTOMIZE_PORTS,
+]

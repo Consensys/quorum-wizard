@@ -1,11 +1,8 @@
 import { buildDockerCompose } from '../generators/dockerHelper'
-import {
-  createCustomConfig,
-  createReplica7NodesConfig,
-} from './NetworkConfig'
+import { createConfigFromAnswers } from './NetworkConfig'
 
 test('creates 3nodes raft dockerFile tessera no cakeshop', () => {
-  const config = createReplica7NodesConfig({
+  const config = createConfigFromAnswers({
     numberNodes: '3',
     consensus: 'raft',
     quorumVersion: '2.4.0',
@@ -18,7 +15,7 @@ test('creates 3nodes raft dockerFile tessera no cakeshop', () => {
 })
 
 test('creates 5nodes istanbul dockerFile no tessera no cakeshop', () => {
-  const config = createReplica7NodesConfig({
+  const config = createConfigFromAnswers({
     numberNodes: '5',
     consensus: 'istanbul',
     quorumVersion: '2.4.0',
@@ -31,7 +28,7 @@ test('creates 5nodes istanbul dockerFile no tessera no cakeshop', () => {
 })
 
 test('creates 3nodes raft dockerFile tessera cakeshop', () => {
-  const config = createReplica7NodesConfig({
+  const config = createConfigFromAnswers({
     numberNodes: '3',
     consensus: 'raft',
     quorumVersion: '2.4.0',
@@ -44,7 +41,7 @@ test('creates 3nodes raft dockerFile tessera cakeshop', () => {
 })
 
 test('creates 5nodes istanbul dockerFile no tessera cakeshop', () => {
-  const config = createReplica7NodesConfig({
+  const config = createConfigFromAnswers({
     numberNodes: '5',
     consensus: 'istanbul',
     quorumVersion: '2.4.0',
@@ -57,7 +54,7 @@ test('creates 5nodes istanbul dockerFile no tessera cakeshop', () => {
 })
 
 test('creates 3nodes raft docker tessera custom', () => {
-  const config = createCustomConfig({
+  const config = createConfigFromAnswers({
     numberNodes: '3',
     consensus: 'raft',
     transactionManager: '0.10.2',
@@ -113,7 +110,7 @@ test('creates 2nodes raft docker tessera cakeshop custom ports', () => {
     tesseraThirdPartyPort: '3080',
     tesseraP2pPort: '3000',
   }
-  const config = createCustomConfig({
+  const config = createConfigFromAnswers({
     numberNodes: '2',
     consensus: 'raft',
     transactionManager: '0.10.2',

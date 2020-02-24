@@ -3,7 +3,7 @@ import {
   getFullNetworkPath,
   includeCakeshop,
 } from './networkCreator'
-import { createReplica7NodesConfig } from '../model/NetworkConfig'
+import { createConfigFromAnswers } from '../model/NetworkConfig'
 import {
   cwd,
   formatNewLine,
@@ -37,7 +37,7 @@ const baseNetwork = {
 
 describe('generates docker-compose directory', () => {
   it('given docker details builds files to run docker', async () => {
-    const config = createReplica7NodesConfig(baseNetwork)
+    const config = createConfigFromAnswers(baseNetwork)
 
     createDirectory.mockReturnValueOnce({
       tesseraStart: '',
@@ -54,7 +54,7 @@ describe('generates docker-compose directory', () => {
 
 describe('generates docker-compose script details', () => {
   it('creates docker-compose script with quorum and tessera', () => {
-    const config = createReplica7NodesConfig({
+    const config = createConfigFromAnswers({
       ...baseNetwork,
       numberNodes: '1',
       cakeshop: false,
@@ -113,7 +113,7 @@ volumes:
   })
 
   it('creates docker-compose script just quorum', () => {
-    const config = createReplica7NodesConfig({
+    const config = createConfigFromAnswers({
       ...baseNetwork,
       numberNodes: '1',
       transactionManager: 'none',
@@ -156,7 +156,7 @@ volumes:
   })
 
   it('creates docker-compose script with quorum and cakeshop', () => {
-    const config = createReplica7NodesConfig({
+    const config = createConfigFromAnswers({
       ...baseNetwork,
       numberNodes: '1',
       transactionManager: 'none',
@@ -211,7 +211,7 @@ volumes:
   })
 
   it('creates docker-compose script with quorum, tessera and cakeshop', () => {
-    const config = createReplica7NodesConfig({
+    const config = createConfigFromAnswers({
       ...baseNetwork,
       numberNodes: '1',
     })
