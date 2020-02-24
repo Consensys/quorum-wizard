@@ -8,7 +8,7 @@ import {
   libRootDir,
   writeFile,
 } from '../utils/fileUtils'
-import { execute } from '../utils/execUtils'
+import { executeSync } from '../utils/execUtils'
 import {
   buildCakeshopDir,
   generateCakeshopScript,
@@ -23,10 +23,7 @@ import {
   isRaft,
   isTessera,
 } from '../model/NetworkConfig'
-import {
-  error,
-  info,
-} from '../utils/log'
+import { info } from '../utils/log'
 
 export function buildBashScript(config) {
   const commands = createCommands(config)
@@ -61,7 +58,7 @@ export function createCommands(config) {
     const keyDir = join(quorumDir, 'keystore')
     const passwordDestination = join(keyDir, 'password.txt')
     const logs = join('qdata', 'logs')
-    const initCommand = `cd ${networkPath} && ${pathToQuorumBinary(config.network.quorumVersion)} --datadir ${quorumDir} init ${genesisLocation}`
+    const initCommand = `cd ${networkPath} && ${pathToQuorumBinary(config.network.quorumVersion)} --datadir ${quorumDir} init ${genesisLocation} 2>&1`
     initCommands.push(initCommand)
 
     const tmIpcLocation = isTessera(config.network.transactionManager)
@@ -108,14 +105,8 @@ export async function buildBash(config) {
   copyFile(join(libRootDir(), 'lib', 'stop.sh'), join(networkPath, 'stop.sh'))
 
   info('Initializing quorum...')
-  bashDetails.initCommands.forEach((command) => {
-    execute(command, (e) => {
-      if (e instanceof Error) {
-        error('Error executing command', e)
-        throw e
-      }
-    })
-  })
+  bashDetails.initCommands.forEach((command) => executeSync(command))
+  info('Done')
 }
 
 export function createGethStartCommand(config, node, passwordDestination, nodeNumber, tmIpcPath) {
