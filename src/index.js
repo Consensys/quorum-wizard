@@ -2,7 +2,6 @@
 
 import 'source-map-support/register'
 import inquirer from 'inquirer'
-import { join } from 'path'
 import { info } from './utils/log'
 import { promptUser } from './questions'
 import { INITIAL_MODE } from './questions/questions'
@@ -15,11 +14,8 @@ import {
 import { createDirectory } from './generators/networkCreator'
 import { buildBash } from './generators/bashHelper'
 import { createDockerCompose } from './generators/dockerHelper'
-import {
-  cwd,
-  readFileToString,
-} from './utils/fileUtils'
 import { generateAndCopyExampleScripts } from './generators/examplesHelper'
+import { printTesseraKeys } from './generators/transactionManager'
 
 inquirer.prompt([INITIAL_MODE])
   .then(async ({ mode }) => {
@@ -34,7 +30,7 @@ inquirer.prompt([INITIAL_MODE])
     await createScript(config)
 
     // TODO move this to start.sh so they see it every time they run the network?
-    const lastNodePubKey = printTesseraKeys(config)
+    const lastNodePubKey = printTesseraKeys(config, true)
 
     generateAndCopyExampleScripts(config, lastNodePubKey)
     printInstructions(config, lastNodePubKey)
@@ -46,24 +42,6 @@ async function createScript(config) {
   } else if (isDocker(config.network.deployment)) {
     await createDockerCompose(config)
   }
-}
-
-function printTesseraKeys(config) {
-  const qdata = join(cwd(), 'network', config.network.name, 'qdata')
-  let pubKey = ''
-  if (isTessera(config.network.transactionManager)) {
-    info('--------------------------------------------------------------------------------')
-    info('')
-    config.nodes.forEach((node, i) => {
-      const nodeNumber = i + 1
-      info(`Tessera Node ${nodeNumber} public key:`)
-      pubKey = readFileToString(join(qdata, `c${nodeNumber}`, 'tm.pub'))
-      info(`${pubKey}`)
-      info('')
-    })
-    info('--------------------------------------------------------------------------------')
-  }
-  return pubKey
 }
 
 function printInstructions(config, lastNodesPubKey) {
