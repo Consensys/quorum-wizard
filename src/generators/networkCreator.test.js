@@ -5,8 +5,7 @@ import {
   createStaticNodes,
 } from './networkCreator'
 import {
-  createCustomConfig,
-  createReplica7NodesConfig,
+  createConfigFromAnswers,
   generateNodeConfigs,
 } from '../model/NetworkConfig'
 import {
@@ -41,7 +40,7 @@ const baseNetwork = {
 describe('creates a bash network', () => {
   it('rejects invalid network names', () => {
     const names = ['', '.', '..', '\0', '/']
-    const config = createReplica7NodesConfig(baseNetwork)
+    const config = createConfigFromAnswers(baseNetwork)
     names.forEach((name) => {
       config.network.name = name
       expect(() => createDirectory(config)).toThrow(Error)
@@ -49,7 +48,7 @@ describe('creates a bash network', () => {
   })
 
   it('Creates the correct directory structure and moves files in', () => {
-    const config = createReplica7NodesConfig(baseNetwork)
+    const config = createConfigFromAnswers(baseNetwork)
     createDirectory(config)
     expect(generateConsensusConfig).toHaveBeenCalled()
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/logs'), true)
@@ -105,7 +104,7 @@ describe('creates a bash network', () => {
 describe('creates a docker network', () => {
   it('rejects invalid network names', () => {
     const names = ['', '.', '..', '\0', '/']
-    const config = createReplica7NodesConfig({
+    const config = createConfigFromAnswers({
       ...baseNetwork,
       deployment: 'docker-compose',
     })
@@ -116,67 +115,10 @@ describe('creates a docker network', () => {
   })
 
   it('Creates the correct directory structure and moves files in', () => {
-    const config = createReplica7NodesConfig({
+    const config = createConfigFromAnswers({
       ...baseNetwork,
       deployment: 'docker-compose',
     })
-    createDirectory(config)
-    expect(generateConsensusConfig).toHaveBeenCalled()
-    expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/logs'), true)
-    expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', config)
-    for (let i = 1; i < 6; i += 1) {
-      expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}`))
-      expect(writeJsonFile).toBeCalledWith(
-        createNetPath(config, `qdata/dd${i}`),
-        'static-nodes.json',
-        anything(),
-      )
-      expect(writeJsonFile).toBeCalledWith(
-        createNetPath(config, `qdata/dd${i}`),
-        'permissioned-nodes.json',
-        anything(),
-      )
-      expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}/geth`))
-      expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}/keystore`))
-      expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/c${i}`))
-      expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/key`),
-        createNetPath(config, `qdata/dd${i}/keystore`, 'key'),
-      )
-      expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/password.txt`),
-        createNetPath(config, `qdata/dd${i}/keystore`, 'password.txt'),
-      )
-      expect(copyFile).toBeCalledWith(
-        createNetPath(config, 'generated', 'genesis.json'),
-        createNetPath(config, `qdata/dd${i}`, 'genesis.json'),
-      )
-      expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/nodekey`),
-        createNetPath(config, `qdata/dd${i}/geth`, 'nodekey'),
-      )
-      expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/tm.key`),
-        createNetPath(config, `qdata/c${i}/tm.key`),
-      )
-      expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/tm.pub`),
-        createNetPath(config, `qdata/c${i}/tm.pub`),
-      )
-      expect(writeJsonFile).toBeCalledWith(
-        createNetPath(config, `qdata/c${i}`),
-        `tessera-config-09-${i}.json`,
-        anything(),
-      )
-    }
-  })
-
-  it('Creates the correct directory structure for custom config and moves files in', () => {
-    const config = createCustomConfig({
-      ...baseNetwork,
-      deployment: 'docker-compose',
-    })
-
     createDirectory(config)
     expect(generateConsensusConfig).toHaveBeenCalled()
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/logs'), true)

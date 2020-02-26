@@ -1,4 +1,4 @@
-import { createReplica7NodesConfig } from './NetworkConfig'
+import { createConfigFromAnswers } from './NetworkConfig'
 import { generateCakeshopConfig } from './CakeshopConfig'
 
 const baseNetwork = {
@@ -11,7 +11,7 @@ const baseNetwork = {
 }
 
 test('creates 3nodes raft dockerFile tessera cakeshop', () => {
-  const config = createReplica7NodesConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     deployment: 'docker-compose',
   })
@@ -20,7 +20,7 @@ test('creates 3nodes raft dockerFile tessera cakeshop', () => {
 })
 
 test('creates 3nodes istanbul bash tessera cakeshop', () => {
-  const config = createReplica7NodesConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     consensus: 'istanbul',
   })
@@ -29,7 +29,7 @@ test('creates 3nodes istanbul bash tessera cakeshop', () => {
 })
 
 test('creates 3nodes raft dockerFile no tessera cakeshop', () => {
-  const config = createReplica7NodesConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     transactionManager: 'none',
     deployment: 'docker-compose',
@@ -39,7 +39,7 @@ test('creates 3nodes raft dockerFile no tessera cakeshop', () => {
 })
 
 test('creates 3nodes istanbul bash no tessera cakeshop', () => {
-  const config = createReplica7NodesConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     consensus: 'istanbul',
     transactionManager: 'none',

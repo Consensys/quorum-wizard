@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { anything } from 'expect'
-import { createReplica7NodesConfig } from '../model/NetworkConfig'
+import { createConfigFromAnswers } from '../model/NetworkConfig'
 import {
   copyFile,
   createFolder,
@@ -28,7 +28,7 @@ describe('creates a cakeshop directory structure for bash', () => {
     deployment: 'bash',
   }
   it('creates directory structure for cakeshop files and moves them in', () => {
-    const config = createReplica7NodesConfig(baseNetwork)
+    const config = createConfigFromAnswers(baseNetwork)
 
     buildCakeshopDir(config, createNetPath(config, 'qdata'))
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/cakeshop/local'), true)

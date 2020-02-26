@@ -1,40 +1,28 @@
 import { prompt } from 'inquirer'
+import { promptUser } from './index'
 import {
-  createCustomConfig,
-  createQuickstartConfig,
-  createReplica7NodesConfig,
-  isBash,
-  isDocker,
-  isTessera,
-} from '../model/NetworkConfig'
+  CUSTOM_QUESTIONS,
+  QUICKSTART_QUESTIONS,
+  SIMPLE_QUESTIONS,
+} from './questions'
 import {
-  customize,
-  quickstart,
-  replica7Nodes,
-} from './index'
-import { buildBash } from '../generators/bashHelper'
-import { getCustomizedBashNodes } from './promptHelper'
-import { createDirectory } from '../generators/networkCreator'
-import {
-  cwd,
-  libRootDir,
-} from '../utils/fileUtils'
-import {
-  TEST_CWD,
-  TEST_LIB_ROOT_DIR,
-} from '../utils/testHelper'
+  getCustomizedBashNodes,
+  getCustomizedDockerPorts,
+} from './promptHelper'
 
 jest.mock('inquirer')
-jest.mock('../model/NetworkConfig')
-jest.mock('../generators/bashHelper')
-jest.mock('../generators/dockerHelper')
-jest.mock('../questions/promptHelper')
-jest.mock('../generators/networkCreator')
-jest.mock('../utils/fileUtils')
-cwd.mockReturnValue(TEST_CWD)
-libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
+jest.mock('./promptHelper')
 
-const REPLICA_7NODES_CONFIG = {
+const QUICKSTART_CONFIG = {
+  numberNodes: '3',
+  consensus: 'raft',
+  quorumVersion: '2.4.0',
+  transactionManager: '0.10.2',
+  deployment: 'bash',
+  cakeshop: true,
+}
+
+const SIMPLE_CONFIG = {
   numberNodes: '5',
   consensus: 'istanbul',
   quorumVersion: '2.4.0',
@@ -44,6 +32,7 @@ const REPLICA_7NODES_CONFIG = {
 }
 
 const CUSTOM_CONFIG = {
+  ...SIMPLE_CONFIG,
   generateKeys: false,
   networkId: 10,
   genesisLocation: 'testDir',
@@ -51,46 +40,55 @@ const CUSTOM_CONFIG = {
   nodes: ['nodes'],
 }
 
-test('quickstart', async () => {
-  const fakeConfig = { network: { name: 'test' }, nodes: [] }
-  createQuickstartConfig.mockReturnValue(fakeConfig)
-  isBash.mockReturnValueOnce(true)
-  isDocker.mockReturnValueOnce(false)
-  await quickstart()
-  expect(createQuickstartConfig).toHaveBeenCalled()
-  expect(createDirectory).toHaveBeenCalledWith(fakeConfig)
-  expect(buildBash).toHaveBeenCalledWith(fakeConfig)
-})
+describe('prompts the user with different sets of questions based on first choice', () => {
+  beforeEach(() => {
+    prompt.mockClear()
+    getCustomizedBashNodes.mockClear()
+    getCustomizedDockerPorts.mockClear()
+  })
+  it('quickstart', async () => {
+    prompt.mockResolvedValue(QUICKSTART_CONFIG)
+    await promptUser('quickstart')
+    expect(prompt).toHaveBeenCalledWith(QUICKSTART_QUESTIONS)
+    expect(getCustomizedBashNodes).toHaveBeenCalledTimes(0)
+    expect(getCustomizedDockerPorts).toHaveBeenCalledTimes(0)
+  })
 
-test('7nodes replica', async () => {
-  const fakeConfig = { network: { name: 'test' }, nodes: [] }
-  prompt.mockResolvedValue(REPLICA_7NODES_CONFIG)
-  createReplica7NodesConfig.mockReturnValue(fakeConfig)
-  isBash.mockReturnValueOnce(true)
-  isDocker.mockReturnValueOnce(false)
-  await replica7Nodes()
-  expect(createReplica7NodesConfig)
-    .toHaveBeenCalledWith(REPLICA_7NODES_CONFIG)
-  expect(createDirectory).toHaveBeenCalledWith(fakeConfig)
-  expect(buildBash).toHaveBeenCalledWith(fakeConfig)
-})
+  it('simple', async () => {
+    prompt.mockResolvedValue(SIMPLE_CONFIG)
+    await promptUser('simple')
+    expect(prompt).toHaveBeenCalledWith(SIMPLE_QUESTIONS)
+    expect(getCustomizedBashNodes).toHaveBeenCalledTimes(0)
+    expect(getCustomizedDockerPorts).toHaveBeenCalledTimes(0)
+  })
 
-test('customize', async () => {
-  const fakeConfig = { network: { name: 'test' }, nodes: [] }
-  createCustomConfig.mockReturnValue(fakeConfig)
-  isBash.mockReturnValueOnce(true)
-  isTessera.mockReturnValueOnce(true)
-  isDocker.mockReturnValueOnce(false)
-  prompt.mockResolvedValueOnce(REPLICA_7NODES_CONFIG)
-  prompt.mockResolvedValueOnce(CUSTOM_CONFIG)
-  getCustomizedBashNodes.mockReturnValueOnce(['nodes'])
-  await customize()
-  const combinedAnswers = {
-    ...REPLICA_7NODES_CONFIG,
-    ...CUSTOM_CONFIG,
-    nodes: ['nodes'],
-  }
-  expect(createCustomConfig).toHaveBeenCalledWith(combinedAnswers)
-  expect(createDirectory).toHaveBeenCalledWith(fakeConfig)
-  expect(buildBash).toHaveBeenCalledWith(fakeConfig)
+  it('customize, but not ports', async () => {
+    prompt.mockResolvedValue({
+      ...CUSTOM_CONFIG,
+      customizePorts: false,
+    })
+    await promptUser('custom')
+    expect(prompt).toHaveBeenCalledWith(CUSTOM_QUESTIONS)
+    expect(getCustomizedBashNodes).toHaveBeenCalledTimes(0)
+    expect(getCustomizedDockerPorts).toHaveBeenCalledTimes(0)
+  })
+  it('customize, bash ports', async () => {
+    prompt.mockResolvedValue({
+      ...CUSTOM_CONFIG,
+    })
+    await promptUser('custom')
+    expect(prompt).toHaveBeenCalledWith(CUSTOM_QUESTIONS)
+    expect(getCustomizedBashNodes).toHaveBeenCalledTimes(1)
+    expect(getCustomizedDockerPorts).toHaveBeenCalledTimes(0)
+  })
+  it('customize, docker ports', async () => {
+    prompt.mockResolvedValue({
+      ...CUSTOM_CONFIG,
+      deployment: 'docker-compose',
+    })
+    await promptUser('custom')
+    expect(prompt).toHaveBeenCalledWith(CUSTOM_QUESTIONS)
+    expect(getCustomizedBashNodes).toHaveBeenCalledTimes(0)
+    expect(getCustomizedDockerPorts).toHaveBeenCalledTimes(1)
+  })
 })

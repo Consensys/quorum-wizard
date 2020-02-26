@@ -1,9 +1,5 @@
 import { buildBashScript } from './bashHelper'
-import {
-  createCustomConfig,
-  createQuickstartConfig,
-  createReplica7NodesConfig,
-} from '../model/NetworkConfig'
+import { createConfigFromAnswers } from '../model/NetworkConfig'
 import {
   cwd,
   libRootDir,
@@ -30,19 +26,19 @@ const baseNetwork = {
 }
 
 test('creates quickstart config', () => {
-  const config = createQuickstartConfig()
+  const config = createConfigFromAnswers({})
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
 })
 
 test('creates 3nodes raft bash tessera', () => {
-  const config = createReplica7NodesConfig(baseNetwork)
+  const config = createConfigFromAnswers(baseNetwork)
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
 })
 
 test('creates 3nodes raft bash tessera cakeshop', () => {
-  const config = createReplica7NodesConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     cakeshop: true,
   })
@@ -51,7 +47,7 @@ test('creates 3nodes raft bash tessera cakeshop', () => {
 })
 
 test('creates 3nodes raft bash tessera custom', () => {
-  const config = createCustomConfig({
+  const config = createConfigFromAnswers({
     ...baseNetwork,
     generateKeys: false,
     networkId: 10,
@@ -97,7 +93,7 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
       },
     },
   ]
-  const config = createCustomConfig({
+  const config = createConfigFromAnswers({
     numberNodes: '2',
     consensus: 'istanbul',
     quorumVersion: '2.4.0',

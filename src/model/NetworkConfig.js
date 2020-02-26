@@ -1,72 +1,24 @@
-export function createQuickstartConfig() {
-  return {
-    network: {
-      name: '3-nodes-raft-tessera-bash',
-      verbosity: 5,
-      consensus: 'raft',
-      quorumVersion: '2.4.0',
-      transactionManager: '0.10.2',
-      permissioned: true,
-      genesisFile: 'none',
-      generateKeys: false,
-      configDir: 'network/3-nodes-raft-tessera-bash/generated',
-      deployment: 'bash',
-      cakeshop: true,
-      networkId: '10',
-      custom: false,
-    },
-    nodes: generateNodeConfigs(3, 'tessera', 'bash', true),
-  }
-}
-
-export function createReplica7NodesConfig(answers) {
+export function createConfigFromAnswers(answers) {
   const {
-    numberNodes,
-    consensus,
-    transactionManager,
-    deployment,
-    cakeshop,
-    quorumVersion,
-  } = answers
-  const networkFolder = createNetworkFolderName(answers)
-  return {
-    network: {
-      name: networkFolder,
-      verbosity: 5,
-      consensus,
-      quorumVersion,
-      transactionManager,
-      permissioned: true,
-      genesisFile: 'none',
-      generateKeys: false,
-      configDir: `network/${networkFolder}/generated`,
-      deployment,
-      cakeshop,
-      networkId: '10',
-      custom: false,
-      customizePorts: false,
-    },
-    nodes: generateNodeConfigs(numberNodes, transactionManager, deployment, cakeshop),
-    dockerCustom: undefined,
-  }
-}
-
-export function createCustomConfig(answers) {
-  const {
-    numberNodes,
-    consensus,
-    transactionManager,
-    deployment,
-    cakeshop,
-    quorumVersion,
-    generateKeys,
-    networkId,
-    genesisLocation,
-    customizePorts,
-    nodes,
+    numberNodes = 3,
+    consensus = 'raft',
+    quorumVersion = '2.4.0',
+    transactionManager = '0.10.2',
+    deployment = 'bash',
+    cakeshop = true,
+    generateKeys = false,
+    networkId = '10',
+    genesisLocation = 'none',
+    customizePorts = false,
+    nodes = [],
     dockerCustom,
   } = answers
-  const networkFolder = createNetworkFolderName(answers)
+  const networkFolder = createNetworkFolderName(
+    numberNodes,
+    consensus,
+    transactionManager,
+    deployment,
+  )
   return {
     network: {
       name: networkFolder,
@@ -81,7 +33,6 @@ export function createCustomConfig(answers) {
       deployment,
       cakeshop,
       networkId,
-      custom: true,
       customizePorts,
     },
     nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(
@@ -94,11 +45,7 @@ export function createCustomConfig(answers) {
   }
 }
 
-function createNetworkFolderName(answers) {
-  const {
-    numberNodes, consensus, transactionManager, deployment,
-  } = answers
-
+function createNetworkFolderName(numberNodes, consensus, transactionManager, deployment) {
   const transactionManagerName = !isTessera(transactionManager)
     ? ''
     : 'tessera-'

@@ -100,6 +100,7 @@ export async function createDockerCompose(config) {
   writeFile(join(networkPath, 'docker-compose.yml'), file, false)
   writeFile(join(networkPath, 'start.sh'), startCommands, true)
   writeFile(join(networkPath, 'stop.sh'), 'docker-compose down', true)
+  info('Done')
 }
 
 function buildNodeService(node, i, hasTessera) {

@@ -21,11 +21,18 @@ describe('generates and copies over example scripts', () => {
       network: {
         name: 'test',
       },
+      nodes: [{
+        quorum: {
+          ip: '1.2.3.4',
+          rpcPort: '1234',
+        },
+      }],
     }
-    generateAndCopyExampleScripts('pubKey', createNetPath(config))
-    expect(copyFile).toBeCalledWith(
-      createLibPath('lib', 'runscript.sh'),
+    generateAndCopyExampleScripts(config, 'pubKey')
+    expect(writeFile).toBeCalledWith(
       createNetPath(config, 'runscript.sh'),
+      expect.anything(),
+      true,
     )
     expect(copyFile).toBeCalledWith(
       createLibPath('lib', 'public-contract.js'),
