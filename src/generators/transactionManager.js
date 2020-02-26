@@ -6,6 +6,7 @@ import {
 } from '../utils/fileUtils'
 import { isTessera } from '../model/NetworkConfig'
 
+// eslint-disable-next-line import/prefer-default-export
 export function printTesseraKeys(config, log) {
   let keyString = !log ? 'echo "' : ''
   const qdata = join(cwd(), 'network', config.network.name, 'qdata')
@@ -23,7 +24,6 @@ export function printTesseraKeys(config, log) {
   if (log) {
     info(keyString)
     return pubKey
-  } else {
-    return keyString
   }
+  return keyString
 }

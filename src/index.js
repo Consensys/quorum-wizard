@@ -17,25 +17,47 @@ import { createDockerCompose } from './generators/dockerHelper'
 import { generateAndCopyExampleScripts } from './generators/examplesHelper'
 import { printTesseraKeys } from './generators/transactionManager'
 
-inquirer.prompt([INITIAL_MODE])
-  .then(async ({ mode }) => {
-    if (mode === 'exit') {
-      info('Exiting...')
-      return
-    }
+const yargs = require('yargs')
 
-    const answers = await promptUser(mode)
-    const config = createConfigFromAnswers(answers)
-    createDirectory(config)
-    await createScript(config)
+const { argv } = yargs
+  .command(
+    'quickstart',
+    'create 3 node raft network with tessera and cakeshop',
+    {
+      quickstart: {
+        description: 'create a 3 node raft network with tessera and cakeshop',
+        alias: 'q',
+        type: 'boolean',
+      },
+    },
+  )
+  .help()
+  .alias('help', 'h')
+if (argv.q) {
+  buildNetwork('quickstart')
+} else {
+  inquirer.prompt([INITIAL_MODE])
+    .then(async ({ mode }) => {
+      if (mode === 'exit') {
+        info('Exiting...')
+        return
+      }
+      buildNetwork(mode)
+    })
+}
 
-    // TODO move this to start.sh so they see it every time they run the network?
-    const lastNodePubKey = printTesseraKeys(config, true)
+async function buildNetwork(mode) {
+  const answers = await promptUser(mode)
+  const config = createConfigFromAnswers(answers)
+  createDirectory(config)
+  await createScript(config)
 
-    generateAndCopyExampleScripts(config, lastNodePubKey)
-    printInstructions(config, lastNodePubKey)
-  })
+  // TODO move this to start.sh so they see it every time they run the network?
+  const lastNodePubKey = printTesseraKeys(config, true)
 
+  generateAndCopyExampleScripts(config, lastNodePubKey)
+  printInstructions(config, lastNodePubKey)
+}
 async function createScript(config) {
   if (isBash(config.network.deployment)) {
     await buildBash(config)
