@@ -22,7 +22,7 @@ const QUICKSTART_CONFIG = {
   cakeshop: true,
 }
 
-const REPLICA_7NODES_CONFIG = {
+const SIMPLE_CONFIG = {
   numberNodes: '5',
   consensus: 'istanbul',
   quorumVersion: '2.4.0',
@@ -32,7 +32,7 @@ const REPLICA_7NODES_CONFIG = {
 }
 
 const CUSTOM_CONFIG = {
-  ...REPLICA_7NODES_CONFIG,
+  ...SIMPLE_CONFIG,
   generateKeys: false,
   networkId: 10,
   genesisLocation: 'testDir',
@@ -54,8 +54,8 @@ describe('prompts the user with different sets of questions based on first choic
     expect(getCustomizedDockerPorts).toHaveBeenCalledTimes(0)
   })
 
-  it('7nodes replica', async () => {
-    prompt.mockResolvedValue(REPLICA_7NODES_CONFIG)
+  it('simple', async () => {
+    prompt.mockResolvedValue(SIMPLE_CONFIG)
     await promptUser('simple')
     expect(prompt).toHaveBeenCalledWith(SIMPLE_QUESTIONS)
     expect(getCustomizedBashNodes).toHaveBeenCalledTimes(0)
