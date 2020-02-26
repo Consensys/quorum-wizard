@@ -35,7 +35,7 @@ var simple = simpleContract.new(42, {from:web3.eth.accounts[0], data: bytecode, 
 function generateRunScript(config) {
   const node = config.nodes[0]
   return `#!/bin/bash
-geth --exec "loadScript(\\"$1\\")" attach "http://${node.quorum.ip}:${node.quorum.rpcPort}"`
+geth --exec "loadScript(\\"$1\\")" attach "http://localhost:${node.quorum.rpcPort}"`
 }
 
 // eslint-disable-next-line import/prefer-default-export
