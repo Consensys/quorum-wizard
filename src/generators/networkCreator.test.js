@@ -33,7 +33,7 @@ const baseNetwork = {
   consensus: 'raft',
   quorumVersion: '2.4.0',
   transactionManager: '0.10.2',
-  cakeshop: false,
+  cakeshop: 'none',
   deployment: 'bash',
 }
 

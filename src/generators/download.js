@@ -114,8 +114,15 @@ export const BINARIES = {
   },
 
   cakeshop: {
+    '0.11.0-RC2-J11': {
+      name: 'cakeshop.war',
+      description: 'Cakeshop 0.11.0-RC2 (Java 11+)',
+      url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0-RC2/cakeshop-0.11.0-RC2-J11.war',
+      type: 'war',
+    },
     '0.11.0-RC2': {
       name: 'cakeshop.war',
+      description: 'Cakeshop 0.11.0-RC2 (Java 8)',
       url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0-RC2/cakeshop-0.11.0-RC2.war',
       type: 'war',
     },

@@ -3,6 +3,7 @@ import {
   validateNumberStringInRange,
 } from './validators'
 import {
+  getDownloadableCakeshopChoices,
   getDownloadableGethChoices,
   getDownloadableTesseraChoices,
   getGethOnPath,
@@ -12,6 +13,7 @@ import {
   isBash,
   isRaft,
 } from '../model/NetworkConfig'
+import { getJavaVersion } from '../utils/execUtils'
 
 
 export const INITIAL_MODE = {
@@ -22,7 +24,7 @@ Welcome to Quorum Creator!
 
 This tool allows you to easily create bash and docker files to start up a quorum network.
 You can control consensus, privacy, network details and more for a customized setup.
-Additionaly you can choose to deploy our chain explorer, Cakeshop, to easily view and monitor your network.
+Additionally you can choose to deploy our chain explorer, Cakeshop, to easily view and monitor your network.
 
 We have 3 options to help you start exploring Quorum:
 
@@ -41,7 +43,7 @@ All you need to do is go to the specified location and run ./start.sh
 
   choices: [
     {
-      name: 'Quickstart (3-node raft network with tessera and cakeshop, requires Java 8)',
+      name: 'Quickstart (3-node raft network with tessera and cakeshop)',
       value: 'quickstart',
     },
     { name: 'Simple Network', value: 'simple' },
@@ -109,10 +111,11 @@ export const TRANSACTION_MANAGER = {
 }
 
 export const CAKESHOP = {
-  type: 'confirm',
+  type: 'list',
   name: 'cakeshop',
-  message: 'Do you want to run cakeshop with your network? (Requires Java 8)',
-  default: false,
+  message: 'Which version of Cakeshop (our chain explorer) do you want to run cakeshop with your network?',
+  choices: ['none', ...getDownloadableCakeshopChoices()],
+  default: 'none',
 }
 
 export const KEY_GENERATION = {

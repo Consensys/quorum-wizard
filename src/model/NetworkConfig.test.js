@@ -1,4 +1,8 @@
 import { createConfigFromAnswers } from './NetworkConfig'
+import { getJavaVersion } from '../utils/execUtils'
+
+jest.mock('../utils/execUtils')
+getJavaVersion.mockReturnValue(8)
 
 // rather than having big test jsons that we match to, we can just use snapshot
 // tests, where it will compare against the last time you ran and if it's
@@ -9,12 +13,19 @@ const baseNetwork = {
   quorumVersion: '2.4.0',
   transactionManager: '0.10.2',
   deployment: 'bash',
-  cakeshop: false,
+  cakeshop: 'none',
 }
 
 test('creates quickstart setup', () => {
   const config = createConfigFromAnswers({})
   expect(config).toMatchSnapshot()
+})
+
+test('creates quickstart config with java 11+', () => {
+  getJavaVersion.mockReturnValue(11)
+  const config = createConfigFromAnswers({})
+  expect(config).toMatchSnapshot()
+  getJavaVersion.mockReturnValue(8)
 })
 
 test('creates 7nodes istanbul config', () => {
@@ -51,7 +62,7 @@ test('creates 5nodes raft no-TM cakeshop docker config', () => {
     numberNodes: '5',
     transactionManager: 'none',
     deployment: 'docker-compose',
-    cakeshop: true,
+    cakeshop: '0.11.0-RC2',
   })
   expect(config).toMatchSnapshot()
 })
@@ -61,7 +72,7 @@ test('creates 7nodes istanbul cakeshop config', () => {
     ...baseNetwork,
     numberNodes: '7',
     consensus: 'istanbul',
-    cakeshop: true,
+    cakeshop: '0.11.0-RC2',
   })
   expect(config).toMatchSnapshot()
 })

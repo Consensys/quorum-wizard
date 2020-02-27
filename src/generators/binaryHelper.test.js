@@ -9,7 +9,10 @@ import {
   pathToQuorumBinary,
   pathToTesseraJar,
 } from './binaryHelper'
-import { executeSync } from '../utils/execUtils'
+import {
+  executeSync,
+  getJavaVersion,
+} from '../utils/execUtils'
 import {
   cwd,
   libRootDir,
@@ -26,6 +29,7 @@ jest.mock('../utils/fileUtils')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 downloadIfMissing.mockReturnValue(Promise.resolve())
+getJavaVersion.mockReturnValue(8)
 
 describe('Chooses the right paths to the binaries', () => {
   it('Calls geth binary directly if on path', () => {
@@ -44,7 +48,7 @@ describe('Chooses the right paths to the binaries', () => {
     ))
   })
   it('Calls cakeshop using bin folder war', () => {
-    expect(pathToCakeshop()).toEqual(join(libRootDir(), 'bin/cakeshop/0.11.0-RC2/cakeshop.war'))
+    expect(pathToCakeshop('0.11.0-RC2')).toEqual(join(libRootDir(), 'bin/cakeshop/0.11.0-RC2/cakeshop.war'))
   })
   it('Calls bootnode using bin folder', () => {
     expect(pathToBootnode()).toEqual(join(libRootDir(), 'bin/bootnode/1.8.27/bootnode'))
@@ -100,7 +104,7 @@ describe('Downloads binaries', () => {
   const baseNetwork = {
     quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
-    cakeshop: false,
+    cakeshop: 'none',
     consensus: 'raft',
     generateKeys: false,
     deployment: 'bash',
@@ -127,7 +131,7 @@ describe('Downloads binaries', () => {
         ...baseNetwork,
         transactionManager: 'none',
         consensus: 'istanbul',
-        cakeshop: true,
+        cakeshop: '0.11.0-RC2',
         generateKeys: true,
       },
     }

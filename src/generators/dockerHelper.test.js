@@ -31,7 +31,7 @@ const baseNetwork = {
   consensus: 'raft',
   quorumVersion: '2.4.0',
   transactionManager: '0.10.2',
-  cakeshop: true,
+  cakeshop: '0.11.0-RC2',
   deployment: 'docker-compose',
 }
 
@@ -57,7 +57,7 @@ describe('generates docker-compose script details', () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
       numberNodes: '1',
-      cakeshop: false,
+      cakeshop: 'none',
     })
     const services = `
 services:
@@ -117,7 +117,7 @@ volumes:
       ...baseNetwork,
       numberNodes: '1',
       transactionManager: 'none',
-      cakeshop: false,
+      cakeshop: 'none',
     })
     const services = `
 services:

@@ -9,19 +9,22 @@ import {
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
 import { generateAccounts } from './consensusHelper'
+import { getJavaVersion } from '../utils/execUtils'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/consensusHelper')
+jest.mock('../utils/execUtils')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 generateAccounts.mockReturnValue('accounts')
+getJavaVersion.mockReturnValue(8)
 
 const baseNetwork = {
   numberNodes: '3',
   consensus: 'raft',
   quorumVersion: '2.4.0',
   transactionManager: '0.10.2',
-  cakeshop: false,
+  cakeshop: 'none',
   deployment: 'bash',
 }
 
@@ -29,6 +32,14 @@ test('creates quickstart config', () => {
   const config = createConfigFromAnswers({})
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
+})
+
+test('creates quickstart config with java 11+', () => {
+  getJavaVersion.mockReturnValue(11)
+  const config = createConfigFromAnswers({})
+  const bash = buildBashScript(config).startScript
+  expect(bash).toMatchSnapshot()
+  getJavaVersion.mockReturnValue(8)
 })
 
 test('creates 3nodes raft bash tessera', () => {
@@ -40,7 +51,7 @@ test('creates 3nodes raft bash tessera', () => {
 test('creates 3nodes raft bash tessera cakeshop', () => {
   const config = createConfigFromAnswers({
     ...baseNetwork,
-    cakeshop: true,
+    cakeshop: '0.11.0-RC2',
   })
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
@@ -99,7 +110,7 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
     quorumVersion: '2.4.0',
     transactionManager: '0.10.2',
     deployment: 'bash',
-    cakeshop: true,
+    cakeshop: '0.11.0-RC2',
     generateKeys: false,
     networkId: 10,
     genesisLocation: 'none',

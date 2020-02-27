@@ -1,11 +1,13 @@
+import { getJavaVersion } from '../utils/execUtils'
+
 export function createConfigFromAnswers(answers) {
   const {
     numberNodes = 3,
     consensus = 'raft',
     quorumVersion = '2.4.0',
-    transactionManager = '0.10.2',
+    transactionManager = getJavaVersion() === 8 ? '0.10.2' : '0.10.3',
     deployment = 'bash',
-    cakeshop = true,
+    cakeshop = getJavaVersion() === 8 ? '0.11.0-RC2' : '0.11.0-RC2-J11',
     generateKeys = false,
     networkId = '10',
     genesisLocation = 'none',

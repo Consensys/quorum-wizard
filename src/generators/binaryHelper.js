@@ -40,8 +40,8 @@ export async function downloadAndCopyBinaries(config) {
       await downloadIfMissing('tessera', tesseraVersion)
     }
 
-    if (!docker && cakeshop) {
-      await downloadIfMissing('cakeshop', '0.11.0-RC2')
+    if (!docker && cakeshop !== 'none') {
+      await downloadIfMissing('cakeshop', cakeshop)
     }
   }
 }
@@ -73,6 +73,10 @@ export function getDownloadableGethChoices() {
 
 export function getDownloadableTesseraChoices() {
   return getDownloadableChoices(BINARIES.tessera)
+}
+
+export function getDownloadableCakeshopChoices() {
+  return getDownloadableChoices(BINARIES.cakeshop)
 }
 
 function getDownloadableChoices(versions) {
@@ -114,9 +118,9 @@ export function pathToTesseraJar(transactionManager) {
   return join(libRootDir(), 'bin', 'tessera', transactionManager, info.name)
 }
 
-export function pathToCakeshop() {
-  const info = BINARIES.cakeshop['0.11.0-RC2']
-  return join(libRootDir(), 'bin', 'cakeshop', '0.11.0-RC2', info.name)
+export function pathToCakeshop(version) {
+  const info = BINARIES.cakeshop[version]
+  return join(libRootDir(), 'bin', 'cakeshop', version, info.name)
 }
 
 export function pathToIstanbulTools() {
