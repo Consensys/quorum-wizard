@@ -1,29 +1,24 @@
 import { join } from 'path'
-import { info } from '../utils/log'
-import {
-  cwd,
-  readFileToString,
-} from '../utils/fileUtils'
+import { readFileToString } from '../utils/fileUtils'
 import { isTessera } from '../model/NetworkConfig'
+import { getFullNetworkPath } from './networkCreator'
 
-// eslint-disable-next-line import/prefer-default-export
-export function printTesseraKeys(config, log) {
-  let keyString = !log ? 'echo "' : ''
-  const qdata = join(cwd(), 'network', config.network.name, 'qdata')
-  let pubKey = ''
-  if (isTessera(config.network.transactionManager)) {
-    keyString += '--------------------------------------------------------------------------------\n'
-    config.nodes.forEach((node, i) => {
-      const nodeNumber = i + 1
-      pubKey = readFileToString(join(qdata, `c${nodeNumber}`, 'tm.pub'))
-      keyString += `\nTessera Node ${nodeNumber} public key:\n${pubKey}\n`
-    })
-    keyString += '\n--------------------------------------------------------------------------------'
-    keyString += !log ? '"\n' : '\n'
+export function formatTesseraKeysOutput(config) {
+  if (!isTessera(config.network.transactionManager)) {
+    return ''
   }
-  if (log) {
-    info(keyString)
-    return pubKey
-  }
-  return keyString
+  const output = config.nodes
+    .map((node, i) => loadTesseraPublicKey(config, i + 1))
+    .map((publicKey, i) => `Tessera Node ${i + 1} public key:\n${publicKey}`)
+
+  return `--------------------------------------------------------------------------------
+
+${output.join('\n\n')}
+
+--------------------------------------------------------------------------------
+`
+}
+
+export function loadTesseraPublicKey(config, nodeNumber) {
+  return readFileToString(join(getFullNetworkPath(config), 'qdata', `c${nodeNumber}`, 'tm.pub'))
 }
