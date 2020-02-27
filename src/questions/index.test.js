@@ -8,10 +8,10 @@ import {
 import {
   getCustomizedBashNodes,
   getCustomizedDockerPorts,
-} from './promptHelper'
+} from './customPromptHelper'
 
 jest.mock('inquirer')
-jest.mock('./promptHelper')
+jest.mock('./customPromptHelper')
 
 const QUICKSTART_CONFIG = {
   numberNodes: '3',
