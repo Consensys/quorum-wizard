@@ -78,7 +78,17 @@ java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -ja
   echo \\"Cakeshop started at http://localhost:8999\\"
   exit 0
   
-echo \\"Successfully started Quorum network.\\""
+echo \\"Successfully started Quorum network.\\"
+echo \\"--------------------------------------------------------------------------------
+
+Tessera Node 1 public key:
+publicKey
+
+Tessera Node 2 public key:
+publicKey
+
+--------------------------------------------------------------------------------\\"
+"
 `;
 
 exports[`creates 3nodes raft bash tessera 1`] = `
@@ -138,7 +148,20 @@ PRIVATE_CONFIG=qdata/c1/tm.ipc nohup $BIN_GETH --datadir qdata/dd1 --nodiscover 
 PRIVATE_CONFIG=qdata/c2/tm.ipc nohup $BIN_GETH --datadir qdata/dd2 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password qdata/dd2/keystore/password.txt --raft --raftport 50402 --permissioned --verbosity 5 --networkid 10 --rpcport 22001 --port 21001 2>>qdata/logs/2.log &
 PRIVATE_CONFIG=qdata/c3/tm.ipc nohup $BIN_GETH --datadir qdata/dd3 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password qdata/dd3/keystore/password.txt --raft --raftport 50403 --permissioned --verbosity 5 --networkid 10 --rpcport 22002 --port 21002 2>>qdata/logs/3.log &
 
-echo \\"Successfully started Quorum network.\\""
+echo \\"Successfully started Quorum network.\\"
+echo \\"--------------------------------------------------------------------------------
+
+Tessera Node 1 public key:
+publicKey
+
+Tessera Node 2 public key:
+publicKey
+
+Tessera Node 3 public key:
+publicKey
+
+--------------------------------------------------------------------------------\\"
+"
 `;
 
 exports[`creates 3nodes raft bash tessera cakeshop 1`] = `
@@ -226,7 +249,20 @@ java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -ja
   echo \\"Cakeshop started at http://localhost:8999\\"
   exit 0
   
-echo \\"Successfully started Quorum network.\\""
+echo \\"Successfully started Quorum network.\\"
+echo \\"--------------------------------------------------------------------------------
+
+Tessera Node 1 public key:
+publicKey
+
+Tessera Node 2 public key:
+publicKey
+
+Tessera Node 3 public key:
+publicKey
+
+--------------------------------------------------------------------------------\\"
+"
 `;
 
 exports[`creates 3nodes raft bash tessera custom 1`] = `
@@ -286,7 +322,20 @@ PRIVATE_CONFIG=qdata/c1/tm.ipc nohup $BIN_GETH --datadir qdata/dd1 --nodiscover 
 PRIVATE_CONFIG=qdata/c2/tm.ipc nohup $BIN_GETH --datadir qdata/dd2 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password qdata/dd2/keystore/password.txt --raft --raftport 50402 --permissioned --verbosity 5 --networkid 10 --rpcport 22001 --port 21001 2>>qdata/logs/2.log &
 PRIVATE_CONFIG=qdata/c3/tm.ipc nohup $BIN_GETH --datadir qdata/dd3 --nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,raft,quorumPermission --emitcheckpoints --unlock 0 --password qdata/dd3/keystore/password.txt --raft --raftport 50403 --permissioned --verbosity 5 --networkid 10 --rpcport 22002 --port 21002 2>>qdata/logs/3.log &
 
-echo \\"Successfully started Quorum network.\\""
+echo \\"Successfully started Quorum network.\\"
+echo \\"--------------------------------------------------------------------------------
+
+Tessera Node 1 public key:
+publicKey
+
+Tessera Node 2 public key:
+publicKey
+
+Tessera Node 3 public key:
+publicKey
+
+--------------------------------------------------------------------------------\\"
+"
 `;
 
 exports[`creates quickstart config 1`] = `
@@ -374,5 +423,18 @@ java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -ja
   echo \\"Cakeshop started at http://localhost:8999\\"
   exit 0
   
-echo \\"Successfully started Quorum network.\\""
+echo \\"Successfully started Quorum network.\\"
+echo \\"--------------------------------------------------------------------------------
+
+Tessera Node 1 public key:
+publicKey
+
+Tessera Node 2 public key:
+publicKey
+
+Tessera Node 3 public key:
+publicKey
+
+--------------------------------------------------------------------------------\\"
+"
 `;
