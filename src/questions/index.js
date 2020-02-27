@@ -7,7 +7,7 @@ import {
 import {
   getCustomizedBashNodes,
   getCustomizedDockerPorts,
-} from './promptHelper'
+} from './customPromptHelper'
 import {
   CUSTOM_QUESTIONS,
   QUICKSTART_QUESTIONS,
