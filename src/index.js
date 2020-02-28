@@ -27,7 +27,7 @@ const { argv } = yargs
   .alias('q', 'quickstart')
   .describe('q', 'create 3 node raft network with tessera and cakeshop')
   .help()
-  .alias('help', 'h')
+  .alias('h', 'help')
   .strict()
 
 if (argv.q) {
