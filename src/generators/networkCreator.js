@@ -99,7 +99,7 @@ export function createStaticNodes(nodes, consensus, configDir) {
 }
 
 export function includeCakeshop(config) {
-  return config.network.cakeshop
+  return config.network.cakeshop !== 'none'
 }
 
 function createPeerList(nodes, transactionManager) {

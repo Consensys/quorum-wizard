@@ -153,8 +153,8 @@ export function setEnvironmentCommand(config) {
   if (isTessera(config.network.transactionManager)) {
     lines.push(`BIN_TESSERA=${pathToTesseraJar(config.network.transactionManager)}`)
   }
-  if (config.network.cakeshop) {
-    lines.push(`BIN_CAKESHOP=${pathToCakeshop()}`)
+  if (includeCakeshop(config)) {
+    lines.push(`BIN_CAKESHOP=${pathToCakeshop(config.network.cakeshop)}`)
   }
   lines.push('')
   return lines.join('\n')
@@ -164,7 +164,6 @@ export function waitForTesseraNodesCommand(config) {
   if (!isTessera(config.network.transactionManager)) {
     return ''
   }
-  // TODO use config values for ip, port, data folder, etc.
   return `
 echo "Waiting until all Tessera nodes are running..."
 DOWN=true

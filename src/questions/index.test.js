@@ -19,7 +19,7 @@ const QUICKSTART_CONFIG = {
   quorumVersion: '2.4.0',
   transactionManager: '0.10.2',
   deployment: 'bash',
-  cakeshop: true,
+  cakeshop: '0.11.0-RC2',
 }
 
 const SIMPLE_CONFIG = {
@@ -28,7 +28,7 @@ const SIMPLE_CONFIG = {
   quorumVersion: '2.4.0',
   transactionManager: '0.10.2',
   deployment: 'bash',
-  cakeshop: false,
+  cakeshop: 'none',
 }
 
 const CUSTOM_CONFIG = {

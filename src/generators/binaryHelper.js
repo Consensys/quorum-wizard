@@ -10,6 +10,7 @@ import {
   BINARIES,
   downloadIfMissing,
 } from './download'
+import { disableIfWrongJavaVersion } from '../questions/validators'
 
 // This method could be improved, but right now it tries to:
 // a. Cache downloads
@@ -40,8 +41,8 @@ export async function downloadAndCopyBinaries(config) {
       await downloadIfMissing('tessera', tesseraVersion)
     }
 
-    if (!docker && cakeshop) {
-      await downloadIfMissing('cakeshop', '0.11.0-RC2')
+    if (!docker && cakeshop !== 'none') {
+      await downloadIfMissing('cakeshop', cakeshop)
     }
   }
 }
@@ -76,14 +77,11 @@ export function getDownloadableTesseraChoices() {
 }
 
 function getDownloadableChoices(versions) {
-  return Object.entries(versions).map((entry) => {
-    const key = entry[0]
-    const { description } = entry[1]
-    return {
-      name: description,
-      value: key,
-    }
-  })
+  return Object.entries(versions).map(([key, binaryInfo]) => ({
+    name: binaryInfo.description,
+    value: key,
+    disabled: disableIfWrongJavaVersion(binaryInfo),
+  }))
 }
 
 export function getTesseraOnPath() {
@@ -114,9 +112,9 @@ export function pathToTesseraJar(transactionManager) {
   return join(libRootDir(), 'bin', 'tessera', transactionManager, info.name)
 }
 
-export function pathToCakeshop() {
-  const info = BINARIES.cakeshop['0.11.0-RC2']
-  return join(libRootDir(), 'bin', 'cakeshop', '0.11.0-RC2', info.name)
+export function pathToCakeshop(version) {
+  const info = BINARIES.cakeshop[version]
+  return join(libRootDir(), 'bin', 'cakeshop', version, info.name)
 }
 
 export function pathToIstanbulTools() {

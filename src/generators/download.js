@@ -101,23 +101,30 @@ export const BINARIES = {
   tessera: {
     '0.10.3': {
       name: 'tessera-app.jar',
-      description: 'Tessera 0.10.3 (Java 11+)',
+      description: 'Tessera 0.10.3',
       url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.3/tessera-app-0.10.3-app.jar',
       type: 'jar',
     },
     '0.10.2': {
       name: 'tessera-app.jar',
-      description: 'Tessera 0.10.2 (Java 8)',
+      description: 'Tessera 0.10.2',
       url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.2/tessera-app-0.10.2-app.jar',
-      type: 'jar',
+      type: 'jar8',
     },
   },
 
   cakeshop: {
+    '0.11.0-RC2-J11': {
+      name: 'cakeshop.war',
+      description: 'Cakeshop 0.11.0-RC2',
+      url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0-RC2/cakeshop-0.11.0-RC2-J11.war',
+      type: 'jar',
+    },
     '0.11.0-RC2': {
       name: 'cakeshop.war',
+      description: 'Cakeshop 0.11.0-RC2',
       url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0-RC2/cakeshop-0.11.0-RC2.war',
-      type: 'war',
+      type: 'jar8',
     },
   },
 

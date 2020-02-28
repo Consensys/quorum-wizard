@@ -1,11 +1,13 @@
+import { isJava11Plus } from '../utils/execUtils'
+
 export function createConfigFromAnswers(answers) {
   const {
     numberNodes = 3,
     consensus = 'raft',
     quorumVersion = '2.4.0',
-    transactionManager = '0.10.2',
+    transactionManager = isJava11Plus() ? '0.10.3' : '0.10.2',
     deployment = 'bash',
-    cakeshop = true,
+    cakeshop = isJava11Plus() ? '0.11.0-RC2-J11' : '0.11.0-RC2',
     generateKeys = false,
     networkId = '10',
     genesisLocation = 'none',

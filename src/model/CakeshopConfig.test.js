@@ -7,7 +7,7 @@ const baseNetwork = {
   quorumVersion: '2.4.0',
   transactionManager: '0.10.2',
   deployment: 'bash',
-  cakeshop: true,
+  cakeshop: '0.11.0-RC2',
 }
 
 test('creates 3nodes raft dockerFile tessera cakeshop', () => {
