@@ -5,6 +5,7 @@ import {
   libRootDir,
   writeFile,
 } from '../utils/fileUtils'
+import { loadTesseraPublicKey } from './transactionManager'
 
 function generatePrivateContractExample(privateFor) {
   return `
@@ -39,12 +40,13 @@ geth --exec "loadScript(\\"$1\\")" attach "http://localhost:${node.quorum.rpcPor
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export function generateAndCopyExampleScripts(config, privateFor) {
+export function generateAndCopyExampleScripts(config) {
   const networkPath = join(cwd(), 'network', config.network.name)
   writeFile(join(networkPath, 'runscript.sh'), generateRunScript(config), true)
   copyFile(
     join(libRootDir(), 'lib', 'public-contract.js'),
     join(networkPath, 'public-contract.js'),
   )
-  writeFile(join(networkPath, 'private-contract.js'), generatePrivateContractExample(privateFor))
+  const nodeTwoPublicKey = loadTesseraPublicKey(config, 2)
+  writeFile(join(networkPath, 'private-contract.js'), generatePrivateContractExample(nodeTwoPublicKey))
 }

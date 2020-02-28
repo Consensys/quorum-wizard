@@ -10,13 +10,16 @@ import {
   writeFile,
 } from '../utils/fileUtils'
 import { generateAndCopyExampleScripts } from './examplesHelper'
+import { loadTesseraPublicKey } from './transactionManager'
 
 jest.mock('../utils/fileUtils')
+jest.mock('./transactionManager')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
+loadTesseraPublicKey.mockReturnValue('publickey')
 
 describe('generates and copies over example scripts', () => {
-  it('generates private-contract and copies over the 3 example scripts', () => {
+  it('generates private-contract with node 2 and copies over the 3 example scripts', () => {
     const config = {
       network: {
         name: 'test',
@@ -28,7 +31,7 @@ describe('generates and copies over example scripts', () => {
         },
       }],
     }
-    generateAndCopyExampleScripts(config, 'pubKey')
+    generateAndCopyExampleScripts(config)
     expect(writeFile).toBeCalledWith(
       createNetPath(config, 'runscript.sh'),
       expect.anything(),
@@ -42,6 +45,7 @@ describe('generates and copies over example scripts', () => {
       createNetPath(config, 'private-contract.js'),
       expect.anything(),
     )
+    expect(loadTesseraPublicKey).toBeCalledWith(config, 2)
   })
 })
 

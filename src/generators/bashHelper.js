@@ -24,6 +24,7 @@ import {
   isTessera,
 } from '../model/NetworkConfig'
 import { info } from '../utils/log'
+import { formatTesseraKeysOutput } from './transactionManager'
 
 export function buildBashScript(config) {
   const commands = createCommands(config)
@@ -36,6 +37,7 @@ export function buildBashScript(config) {
     commands.gethStart,
     generateCakeshopScript(config),
     'echo "Successfully started Quorum network."',
+    `echo "${formatTesseraKeysOutput(config)}"`,
   ]
 
   return {

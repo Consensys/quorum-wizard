@@ -3,6 +3,7 @@ import { createConfigFromAnswers } from '../model/NetworkConfig'
 import {
   cwd,
   libRootDir,
+  readFileToString,
 } from '../utils/fileUtils'
 import {
   TEST_CWD,
@@ -11,10 +12,11 @@ import {
 import { generateAccounts } from './consensusHelper'
 
 jest.mock('../utils/fileUtils')
-jest.mock('../generators/consensusHelper')
+jest.mock('./consensusHelper')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 generateAccounts.mockReturnValue('accounts')
+readFileToString.mockReturnValue('publicKey')
 
 const baseNetwork = {
   numberNodes: '3',

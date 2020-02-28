@@ -48,7 +48,7 @@ describe('generates docker-compose directory', () => {
     readFileToString.mockReturnValueOnce('test')
     await createDockerCompose(config)
 
-    expect(writeFile).toBeCalledTimes(3)
+    expect(writeFile).toBeCalledTimes(4)
   })
 })
 
@@ -118,6 +118,7 @@ volumes:
       numberNodes: '1',
       transactionManager: 'none',
       cakeshop: false,
+      consensus: 'istanbul',
     })
     const services = `
 services:
