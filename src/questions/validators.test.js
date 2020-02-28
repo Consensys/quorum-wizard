@@ -1,7 +1,11 @@
 import {
+  transformCakeshopAnswer,
   validateNetworkId,
   validateNumberStringInRange,
 } from './validators'
+import { isJava11Plus } from '../utils/execUtils'
+
+jest.mock('../utils/execUtils')
 
 test('accepts answer bottom of range', () => {
   expect(validateNumberStringInRange('2', 2, 3)).toBe(true)
@@ -35,4 +39,12 @@ test('rejects network id of 1', () => {
 
 test('rejects network id of less than 0', () => {
   expect(validateNetworkId('-1')).toEqual('Network ID must be positive')
+})
+
+test('Turns cakeshop answer from boolean to version/none', () => {
+  expect(transformCakeshopAnswer('No')).toEqual('none')
+  isJava11Plus.mockReturnValueOnce(false)
+  expect(transformCakeshopAnswer('Yes')).toEqual('0.11.0-RC2')
+  isJava11Plus.mockReturnValueOnce(true)
+  expect(transformCakeshopAnswer('Yes')).toEqual('0.11.0-RC2-J11')
 })

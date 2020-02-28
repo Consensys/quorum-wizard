@@ -1,6 +1,6 @@
 import { execSync } from 'child_process'
 import {
-  getJavaVersion,
+  isJava11Plus,
   runJavaVersionLookup,
 } from './execUtils'
 
@@ -21,8 +21,8 @@ describe('Gets java versions', () => {
   })
   it('caches getJavaVersion', () => {
     execSync.mockReturnValueOnce('1.8')
-    expect(getJavaVersion()).toEqual(8)
+    expect(isJava11Plus()).toEqual(false)
     execSync.mockReturnValueOnce('fail')
-    expect(getJavaVersion()).toEqual(8)
+    expect(isJava11Plus()).toEqual(false)
   })
 })

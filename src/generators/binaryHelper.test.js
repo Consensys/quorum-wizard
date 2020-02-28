@@ -11,7 +11,7 @@ import {
 } from './binaryHelper'
 import {
   executeSync,
-  getJavaVersion,
+  isJava11Plus,
 } from '../utils/execUtils'
 import {
   cwd,
@@ -29,7 +29,7 @@ jest.mock('../utils/fileUtils')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 downloadIfMissing.mockReturnValue(Promise.resolve())
-getJavaVersion.mockReturnValue(8)
+isJava11Plus.mockReturnValue(false)
 
 describe('Chooses the right paths to the binaries', () => {
   it('Calls geth binary directly if on path', () => {

@@ -1,9 +1,9 @@
 import {
+  transformCakeshopAnswer,
   validateNetworkId,
   validateNumberStringInRange,
 } from './validators'
 import {
-  getDownloadableCakeshopChoices,
   getDownloadableGethChoices,
   getDownloadableTesseraChoices,
   getGethOnPath,
@@ -13,7 +13,6 @@ import {
   isBash,
   isRaft,
 } from '../model/NetworkConfig'
-import { getJavaVersion } from '../utils/execUtils'
 
 
 export const INITIAL_MODE = {
@@ -111,11 +110,12 @@ export const TRANSACTION_MANAGER = {
 }
 
 export const CAKESHOP = {
-  type: 'list',
+  type: 'list', // can't transform answer from boolean on confirm questions, so it had to be a list
   name: 'cakeshop',
-  message: 'Which version of Cakeshop (our chain explorer) do you want to run cakeshop with your network?',
-  choices: ['none', ...getDownloadableCakeshopChoices()],
-  default: 'none',
+  message: 'Do you want to run Cakeshop (our chain explorer) with your network?',
+  choices: ['No', 'Yes'],
+  default: 'No',
+  filter: transformCakeshopAnswer,
 }
 
 export const KEY_GENERATION = {

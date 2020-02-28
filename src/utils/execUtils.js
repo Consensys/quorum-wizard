@@ -30,10 +30,9 @@ export function runJavaVersionLookup() {
   return parseInt(versionOutput, 10)
 }
 
-
-export function getJavaVersion() {
+export function isJava11Plus() {
   if (!JAVA_VERSION) {
     JAVA_VERSION = runJavaVersionLookup()
   }
-  return JAVA_VERSION
+  return JAVA_VERSION >= 11
 }

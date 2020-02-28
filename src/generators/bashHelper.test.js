@@ -9,7 +9,7 @@ import {
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
 import { generateAccounts } from './consensusHelper'
-import { getJavaVersion } from '../utils/execUtils'
+import { isJava11Plus } from '../utils/execUtils'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/consensusHelper')
@@ -17,7 +17,7 @@ jest.mock('../utils/execUtils')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 generateAccounts.mockReturnValue('accounts')
-getJavaVersion.mockReturnValue(8)
+isJava11Plus.mockReturnValue(false)
 
 const baseNetwork = {
   numberNodes: '3',
@@ -35,11 +35,11 @@ test('creates quickstart config', () => {
 })
 
 test('creates quickstart config with java 11+', () => {
-  getJavaVersion.mockReturnValue(11)
+  isJava11Plus.mockReturnValue(true)
   const config = createConfigFromAnswers({})
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
-  getJavaVersion.mockReturnValue(8)
+  isJava11Plus.mockReturnValue(false)
 })
 
 test('creates 3nodes raft bash tessera', () => {

@@ -75,10 +75,6 @@ export function getDownloadableTesseraChoices() {
   return getDownloadableChoices(BINARIES.tessera)
 }
 
-export function getDownloadableCakeshopChoices() {
-  return getDownloadableChoices(BINARIES.cakeshop)
-}
-
 function getDownloadableChoices(versions) {
   return Object.entries(versions).map((entry) => {
     const key = entry[0]

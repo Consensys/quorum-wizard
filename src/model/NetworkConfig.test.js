@@ -1,8 +1,8 @@
 import { createConfigFromAnswers } from './NetworkConfig'
-import { getJavaVersion } from '../utils/execUtils'
+import { isJava11Plus } from '../utils/execUtils'
 
 jest.mock('../utils/execUtils')
-getJavaVersion.mockReturnValue(8)
+isJava11Plus.mockReturnValue(false)
 
 // rather than having big test jsons that we match to, we can just use snapshot
 // tests, where it will compare against the last time you ran and if it's
@@ -22,10 +22,10 @@ test('creates quickstart setup', () => {
 })
 
 test('creates quickstart config with java 11+', () => {
-  getJavaVersion.mockReturnValue(11)
+  isJava11Plus.mockReturnValue(true)
   const config = createConfigFromAnswers({})
   expect(config).toMatchSnapshot()
-  getJavaVersion.mockReturnValue(8)
+  isJava11Plus.mockReturnValue(false)
 })
 
 test('creates 7nodes istanbul config', () => {
