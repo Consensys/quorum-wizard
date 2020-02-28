@@ -31,8 +31,11 @@ const { argv } = yargs
       },
     },
   )
+  .alias('q', 'quickstart')
   .help()
   .alias('help', 'h')
+  .strict()
+
 if (argv.q) {
   buildNetwork('quickstart')
 } else {
