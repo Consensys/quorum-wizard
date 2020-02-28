@@ -56,6 +56,5 @@ export function waitForCakeshopCommand() {
   done
 
   echo "Cakeshop started at http://localhost:8999"
-  exit 0
   `
 }
