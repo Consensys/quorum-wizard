@@ -10,6 +10,7 @@ import {
   BINARIES,
   downloadIfMissing,
 } from './download'
+import { disableIfWrongJavaVersion } from '../questions/validators'
 
 // This method could be improved, but right now it tries to:
 // a. Cache downloads
@@ -76,14 +77,11 @@ export function getDownloadableTesseraChoices() {
 }
 
 function getDownloadableChoices(versions) {
-  return Object.entries(versions).map((entry) => {
-    const key = entry[0]
-    const { description } = entry[1]
-    return {
-      name: description,
-      value: key,
-    }
-  })
+  return Object.entries(versions).map(([key, binaryInfo]) => ({
+    name: binaryInfo.description,
+    value: key,
+    disabled: disableIfWrongJavaVersion(binaryInfo),
+  }))
 }
 
 export function getTesseraOnPath() {

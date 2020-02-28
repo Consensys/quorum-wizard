@@ -1,4 +1,5 @@
 import {
+  disableIfWrongJavaVersion,
   transformCakeshopAnswer,
   validateNetworkId,
   validateNumberStringInRange,
@@ -47,4 +48,13 @@ test('Turns cakeshop answer from boolean to version/none', () => {
   expect(transformCakeshopAnswer('Yes')).toEqual('0.11.0-RC2')
   isJava11Plus.mockReturnValueOnce(true)
   expect(transformCakeshopAnswer('Yes')).toEqual('0.11.0-RC2-J11')
+})
+
+test('Disables java choices based on java version', () => {
+  isJava11Plus.mockReturnValue(true)
+  expect(disableIfWrongJavaVersion({ type: 'jar' })).toEqual(false)
+  expect(disableIfWrongJavaVersion({ type: 'jar8' })).toEqual('Disabled, requires Java 8')
+  isJava11Plus.mockReturnValue(false)
+  expect(disableIfWrongJavaVersion({ type: 'jar' })).toEqual('Disabled, requires Java 11+')
+  expect(disableIfWrongJavaVersion({ type: 'jar8' })).toEqual(false)
 })
