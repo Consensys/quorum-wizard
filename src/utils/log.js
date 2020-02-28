@@ -1,31 +1,35 @@
 import winston from 'winston'
 
+let logger
 
-const logLevel = process.env.NODE_ENV === 'test'
-  ? 'error'
-  : (process.env.LOG_LEVEL || 'info'
-  )
-
-const logger = winston.createLogger({
-  level: logLevel,
-  transports: [
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.printf(
-          (msg) => {
-            if (msg.level.indexOf('info') >= 0) {
-              // no log level label for info messages
-              return `${msg.message}`
-            }
-            return `${msg.level}: ${msg.message}`
-          },
+export function createLogger(verbose) {
+  let logLevel
+  if (verbose) {
+    logLevel = 'debug'
+  } else {
+    logLevel = process.env.NODE_ENV === 'test' ? 'error' : 'info'
+  }
+  logger = winston.createLogger({
+    level: logLevel,
+    transports: [
+      new winston.transports.Console({
+        format: winston.format.combine(
+          winston.format.colorize(),
+          winston.format.printf(
+            (msg) => {
+              if (msg.level.indexOf('info') >= 0) {
+                // no log level label for info messages
+                return `${msg.message}`
+              }
+              return `${msg.level}: ${msg.message}`
+            },
+          ),
         ),
-      ),
-      handleExceptions: true,
-    }),
-  ],
-})
+        handleExceptions: true,
+      }),
+    ],
+  })
+}
 
 export function info(message) {
   logger.info(message)
