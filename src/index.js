@@ -15,7 +15,10 @@ import { createDirectory } from './generators/networkCreator'
 import { buildBash } from './generators/bashHelper'
 import { createDockerCompose } from './generators/dockerHelper'
 import { generateAndCopyExampleScripts } from './generators/examplesHelper'
-import { printTesseraKeys } from './generators/transactionManager'
+import {
+  formatTesseraKeysOutput,
+  loadTesseraPublicKey,
+} from './generators/transactionManager'
 
 const yargs = require('yargs')
 
@@ -51,22 +54,22 @@ async function buildNetwork(mode) {
   const config = createConfigFromAnswers(answers)
   createDirectory(config)
   await createScript(config)
-
-  // TODO move this to start.sh so they see it every time they run the network?
-  const lastNodePubKey = printTesseraKeys(config, true)
-
-  generateAndCopyExampleScripts(config, lastNodePubKey)
-  printInstructions(config, lastNodePubKey)
+  generateAndCopyExampleScripts(config)
+  printInstructions(config)
 }
+
 async function createScript(config) {
   if (isBash(config.network.deployment)) {
     await buildBash(config)
   } else if (isDocker(config.network.deployment)) {
     await createDockerCompose(config)
+  } else {
+    throw new Error('Only bash and docker deployments are supported')
   }
 }
 
-function printInstructions(config, lastNodesPubKey) {
+function printInstructions(config) {
+  info(formatTesseraKeysOutput(config))
   info('')
   info('Quorum network created. Run the following commands to start your network:')
   info('')
@@ -74,10 +77,10 @@ function printInstructions(config, lastNodesPubKey) {
   info('./start.sh')
   info('')
   info('A sample private and public simpleStorage contract are provided to deploy to your network')
-  const tesseraMsg = isTessera(config.network.transactionManager)
-    ? `The private contract has privateFor set as ${lastNodesPubKey}\n`
-    : ''
-  info(tesseraMsg)
+  const nodeTwoPublicKey = loadTesseraPublicKey(config, 2)
+  info(isTessera(config.network.transactionManager)
+    ? `The private contract has privateFor set to use Node 2's public key: ${nodeTwoPublicKey}\n`
+    : '')
   const exampleMsg = isDocker(config.network.deployment)
     ? 'To use attach to one of your quorum nodes and run loadScript(\'/examples/private-contract.js\')'
     : 'To use run ./runscript.sh private-contract.js from the network folder'
