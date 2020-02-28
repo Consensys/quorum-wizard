@@ -23,18 +23,9 @@ import {
 const yargs = require('yargs')
 
 const { argv } = yargs
-  .command(
-    'quickstart',
-    'create 3 node raft network with tessera and cakeshop',
-    {
-      quickstart: {
-        description: 'create a 3 node raft network with tessera and cakeshop',
-        alias: 'q',
-        type: 'boolean',
-      },
-    },
-  )
+  .boolean('q')
   .alias('q', 'quickstart')
+  .describe('q', 'create 3 node raft network with tessera and cakeshop')
   .help()
   .alias('help', 'h')
   .strict()
