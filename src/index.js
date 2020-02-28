@@ -2,7 +2,11 @@
 
 import 'source-map-support/register'
 import inquirer from 'inquirer'
-import { info } from './utils/log'
+import {
+  createLogger,
+  debug,
+  info,
+} from './utils/log'
 import { promptUser } from './questions'
 import { INITIAL_MODE } from './questions/questions'
 import {
@@ -26,11 +30,16 @@ const { argv } = yargs
   .boolean('q')
   .alias('q', 'quickstart')
   .describe('q', 'create 3 node raft network with tessera and cakeshop')
+  .boolean('v')
+  .alias('v', 'verbose')
+  .describe('v', 'Turn on additional logs for debugging')
   .help()
   .alias('h', 'help')
   .version()
-  .alias('v', 'version')
   .strict()
+
+createLogger(argv.v)
+debug('Showing debug logs')
 
 if (argv.q) {
   buildNetwork('quickstart')
