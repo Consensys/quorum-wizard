@@ -34,9 +34,9 @@ export function buildDockerCompose(config) {
   )) : ''
 
   let services = config.nodes.map((node, i) => {
-    let allServices = buildNodeService(node, i, hasTessera)
+    let allServices = buildNodeService(config, node, i, hasTessera)
     if (hasTessera) {
-      allServices = [allServices, buildTesseraService(node, i, config.dockerCustom)].join('')
+      allServices = [allServices, buildTesseraService(config, node, i, config.dockerCustom)].join('')
     }
     return allServices
   })
@@ -95,15 +95,26 @@ export async function createDockerCompose(config) {
   }
 
   info('Writing start script...')
-  const startCommands = `QUORUM_CONSENSUS=${config.network.consensus} docker-compose up -d`
+  const startCommands = 'docker-compose up -d'
 
   writeFile(join(networkPath, 'docker-compose.yml'), file, false)
+  writeFile(join(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
   writeFile(join(networkPath, 'start.sh'), startCommands, true)
   writeFile(join(networkPath, 'stop.sh'), 'docker-compose down', true)
   info('Done')
 }
 
-function buildNodeService(node, i, hasTessera) {
+function createEnvFile(config, hasTessera) {
+  let env = `QUORUM_CONSENSUS=${config.network.consensus}
+QUORUM_DOCKER_IMAGE=quorumengineering/quorum:${config.network.quorumVersion}`
+  if (hasTessera) {
+    env = env.concat(`
+QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/tessera:${config.network.transactionManager}`)
+  }
+  return env
+}
+
+function buildNodeService(config, node, i, hasTessera) {
   const txManager = hasTessera
     ? `depends_on:
       - txmanager${i + 1}
@@ -128,7 +139,7 @@ function buildNodeService(node, i, hasTessera) {
         ipv4_address: 172.16.239.1${i + 1}`
 }
 
-function buildTesseraService(node, i, docker) {
+function buildTesseraService(config, node, i, docker) {
   const port = docker === undefined ? '9080' : docker.tesseraThirdPartyPort
   return `
   txmanager${i + 1}:

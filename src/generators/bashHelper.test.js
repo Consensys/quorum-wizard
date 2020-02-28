@@ -3,6 +3,7 @@ import { createConfigFromAnswers } from '../model/NetworkConfig'
 import {
   cwd,
   libRootDir,
+  readFileToString,
 } from '../utils/fileUtils'
 import {
   TEST_CWD,
@@ -12,11 +13,12 @@ import { generateAccounts } from './consensusHelper'
 import { isJava11Plus } from '../utils/execUtils'
 
 jest.mock('../utils/fileUtils')
-jest.mock('../generators/consensusHelper')
+jest.mock('./consensusHelper')
 jest.mock('../utils/execUtils')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 generateAccounts.mockReturnValue('accounts')
+readFileToString.mockReturnValue('publicKey')
 isJava11Plus.mockReturnValue(false)
 
 const baseNetwork = {
