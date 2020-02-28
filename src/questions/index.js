@@ -3,6 +3,7 @@ import {
   isBash,
   isDocker,
   isTessera,
+  isRaft,
 } from '../model/NetworkConfig'
 import {
   getCustomizedBashNodes,
@@ -43,9 +44,13 @@ async function promptForCustomPorts(answers) {
     answers.nodes = await getCustomizedBashNodes(
       answers.numberNodes,
       isTessera(answers.transactionManager),
+      isRaft(answers.consensus),
     )
   } else if (isDocker(answers.deployment)) {
     // eslint-disable-next-line no-param-reassign
-    answers.dockerCustom = await getCustomizedDockerPorts(isTessera(answers.transactionManager))
+    answers.dockerCustom = await getCustomizedDockerPorts(
+      isTessera(answers.transactionManager),
+      isRaft(answers.consensus),
+    )
   }
 }
