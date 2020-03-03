@@ -11,12 +11,14 @@ import {
   downloadIfMissing,
 } from './download'
 import { disableIfWrongJavaVersion } from '../questions/validators'
+import { info } from '../utils/log'
 
 // This method could be improved, but right now it tries to:
 // a. Cache downloads
 // b. Only download if necessary for keygen or istanbul
 // c. Don't download if using docker (except stuff for keygen/istanbul)
 export async function downloadAndCopyBinaries(config) {
+  info('Downloading dependencies...')
   const {
     transactionManager, cakeshop, deployment, generateKeys, quorumVersion, consensus,
   } = config.network

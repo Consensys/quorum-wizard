@@ -11,7 +11,6 @@ import {
 } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
 import { isTessera } from '../model/NetworkConfig'
-import { downloadAndCopyBinaries } from './binaryHelper'
 import { info } from '../utils/log'
 
 export function buildDockerCompose(config) {
@@ -79,9 +78,6 @@ function createCustomTesseraPorts(dockerConfig) {
 }
 
 export async function createDockerCompose(config) {
-  info('Downloading dependencies...')
-  await downloadAndCopyBinaries(config)
-
   info('Building docker-compose file...')
   const file = buildDockerCompose(config)
 

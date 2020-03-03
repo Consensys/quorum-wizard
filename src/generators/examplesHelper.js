@@ -6,6 +6,7 @@ import {
   writeFile,
 } from '../utils/fileUtils'
 import { loadTesseraPublicKey } from './transactionManager'
+import { isTessera } from '../model/NetworkConfig'
 
 function generatePrivateContractExample(privateFor) {
   return `
@@ -47,6 +48,8 @@ export function generateAndCopyExampleScripts(config) {
     join(libRootDir(), 'lib', 'public-contract.js'),
     join(networkPath, 'public-contract.js'),
   )
-  const nodeTwoPublicKey = loadTesseraPublicKey(config, 2)
-  writeFile(join(networkPath, 'private-contract.js'), generatePrivateContractExample(nodeTwoPublicKey))
+  if (isTessera(config.network.transactionManager)) {
+    const nodeTwoPublicKey = loadTesseraPublicKey(config, 2)
+    writeFile(join(networkPath, 'private-contract.js'), generatePrivateContractExample(nodeTwoPublicKey))
+  }
 }
