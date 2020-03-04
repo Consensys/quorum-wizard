@@ -83,10 +83,12 @@ function printInstructions(config) {
   info(`cd network/${config.network.name}`)
   info('./start.sh')
   info('')
-  info('A sample private and public simpleStorage contract are provided to deploy to your network')
-  info(isTessera(config.network.transactionManager)
-    ? `The private contract has privateFor set to use Node 2's public key: ${loadTesseraPublicKey(config, 2)}\n`
-    : '')
+  info('A sample simpleStorage contract is provided to deploy to your network')
   info('To use run ./runscript.sh public-contract.js from the network folder')
   info('')
+  if (isTessera(config.network.transactionManager)) {
+    info(`A private simpleStorage contract was created with privateFor set to use Node 2's public key: ${loadTesseraPublicKey(config, 2)}`)
+    info('To use run ./runscript private-contract.js from the network folder')
+    info('')
+  }
 }
