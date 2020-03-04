@@ -87,9 +87,6 @@ function printInstructions(config) {
   info(isTessera(config.network.transactionManager)
     ? `The private contract has privateFor set to use Node 2's public key: ${loadTesseraPublicKey(config, 2)}\n`
     : '')
-  const exampleMsg = isDocker(config.network.deployment)
-    ? 'To use attach to one of your quorum nodes and run loadScript(\'/examples/public-contract.js\')'
-    : 'To use run ./runscript.sh public-contract.js from the network folder'
-  info(exampleMsg)
+  info('To use run ./runscript.sh public-contract.js from the network folder')
   info('')
 }

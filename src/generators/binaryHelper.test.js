@@ -22,14 +22,17 @@ import {
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
 import { downloadIfMissing } from './download'
+import { info } from '../utils/log'
 
 jest.mock('../generators/download')
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
+jest.mock('../utils/log')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 downloadIfMissing.mockReturnValue(Promise.resolve())
 isJava11Plus.mockReturnValue(false)
+info.mockReturnValue('log')
 
 describe('Chooses the right paths to the binaries', () => {
   it('Calls geth binary directly if on path', () => {

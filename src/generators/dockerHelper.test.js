@@ -19,12 +19,15 @@ import {
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
+import { info } from '../utils/log'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')
+jest.mock('../utils/log')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 getFullNetworkPath.mockReturnValue(`${TEST_CWD}/test-network`)
+info.mockReturnValue('log')
 
 const baseNetwork = {
   numberNodes: '5',
