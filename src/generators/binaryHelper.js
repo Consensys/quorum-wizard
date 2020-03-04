@@ -11,12 +11,14 @@ import {
   downloadIfMissing,
 } from './download'
 import { disableIfWrongJavaVersion } from '../questions/validators'
+import { info } from '../utils/log'
 
 // This method could be improved, but right now it tries to:
 // a. Cache downloads
 // b. Only download if necessary for keygen or istanbul
 // c. Don't download if using docker (except stuff for keygen/istanbul)
 export async function downloadAndCopyBinaries(config) {
+  info('Downloading dependencies...')
   const {
     transactionManager, cakeshop, deployment, generateKeys, quorumVersion, consensus,
   } = config.network
@@ -100,29 +102,29 @@ export function pathToQuorumBinary(quorumVersion) {
   if (quorumVersion === 'PATH') {
     return 'geth'
   }
-  const info = BINARIES.quorum[quorumVersion]
-  return join(libRootDir(), 'bin', 'quorum', quorumVersion, info.name)
+  const binary = BINARIES.quorum[quorumVersion]
+  return join(libRootDir(), 'bin', 'quorum', quorumVersion, binary.name)
 }
 
 export function pathToTesseraJar(transactionManager) {
   if (transactionManager === 'PATH') {
     return '$TESSERA_JAR'
   }
-  const info = BINARIES.tessera[transactionManager]
-  return join(libRootDir(), 'bin', 'tessera', transactionManager, info.name)
+  const binary = BINARIES.tessera[transactionManager]
+  return join(libRootDir(), 'bin', 'tessera', transactionManager, binary.name)
 }
 
 export function pathToCakeshop(version) {
-  const info = BINARIES.cakeshop[version]
-  return join(libRootDir(), 'bin', 'cakeshop', version, info.name)
+  const binary = BINARIES.cakeshop[version]
+  return join(libRootDir(), 'bin', 'cakeshop', version, binary.name)
 }
 
 export function pathToIstanbulTools() {
-  const info = BINARIES.istanbul['1.0.1']
-  return join(libRootDir(), 'bin', 'istanbul', '1.0.1', info.name)
+  const binary = BINARIES.istanbul['1.0.1']
+  return join(libRootDir(), 'bin', 'istanbul', '1.0.1', binary.name)
 }
 
 export function pathToBootnode() {
-  const info = BINARIES.bootnode['1.8.27']
-  return join(libRootDir(), 'bin', 'bootnode', '1.8.27', info.name)
+  const binary = BINARIES.bootnode['1.8.27']
+  return join(libRootDir(), 'bin', 'bootnode', '1.8.27', binary.name)
 }

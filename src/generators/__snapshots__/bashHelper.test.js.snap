@@ -76,7 +76,6 @@ java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -ja
   done
 
   echo \\"Cakeshop started at http://localhost:8999\\"
-  exit 0
   
 echo \\"Successfully started Quorum network.\\"
 echo \\"--------------------------------------------------------------------------------
@@ -247,7 +246,6 @@ java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -ja
   done
 
   echo \\"Cakeshop started at http://localhost:8999\\"
-  exit 0
   
 echo \\"Successfully started Quorum network.\\"
 echo \\"--------------------------------------------------------------------------------
@@ -421,7 +419,6 @@ java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -ja
   done
 
   echo \\"Cakeshop started at http://localhost:8999\\"
-  exit 0
   
 echo \\"Successfully started Quorum network.\\"
 echo \\"--------------------------------------------------------------------------------
@@ -522,7 +519,6 @@ java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -ja
   done
 
   echo \\"Cakeshop started at http://localhost:8999\\"
-  exit 0
   
 echo \\"Successfully started Quorum network.\\"
 echo \\"--------------------------------------------------------------------------------

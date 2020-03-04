@@ -23,6 +23,7 @@ import {
   formatTesseraKeysOutput,
   loadTesseraPublicKey,
 } from './generators/transactionManager'
+import { downloadAndCopyBinaries } from './generators/binaryHelper'
 
 const yargs = require('yargs')
 
@@ -57,6 +58,7 @@ if (argv.q) {
 async function buildNetwork(mode) {
   const answers = await promptUser(mode)
   const config = createConfigFromAnswers(answers)
+  await downloadAndCopyBinaries(config)
   createDirectory(config)
   await createScript(config)
   generateAndCopyExampleScripts(config)
@@ -81,14 +83,12 @@ function printInstructions(config) {
   info(`cd network/${config.network.name}`)
   info('./start.sh')
   info('')
-  info('A sample private and public simpleStorage contract are provided to deploy to your network')
-  const nodeTwoPublicKey = loadTesseraPublicKey(config, 2)
-  info(isTessera(config.network.transactionManager)
-    ? `The private contract has privateFor set to use Node 2's public key: ${nodeTwoPublicKey}\n`
-    : '')
-  const exampleMsg = isDocker(config.network.deployment)
-    ? 'To use attach to one of your quorum nodes and run loadScript(\'/examples/private-contract.js\')'
-    : 'To use run ./runscript.sh private-contract.js from the network folder'
-  info(exampleMsg)
+  info('A sample simpleStorage contract is provided to deploy to your network')
+  info('To use run ./runscript.sh public-contract.js from the network folder')
   info('')
+  if (isTessera(config.network.transactionManager)) {
+    info(`A private simpleStorage contract was created with privateFor set to use Node 2's public key: ${loadTesseraPublicKey(config, 2)}`)
+    info('To use run ./runscript private-contract.js from the network folder')
+    info('')
+  }
 }
