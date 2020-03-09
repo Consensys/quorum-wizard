@@ -23,8 +23,8 @@ export function generateCakeshopConfig(config) {
 function createTransactionManagerUrl(config, node) {
   if (isTessera(config.network.transactionManager)) {
     return isDocker(config.network.deployment)
-      ? `http://host.docker.internal:${node.tm.thirdPartyPort}/partyinfo/keys`
-      : `http://localhost:${node.tm.thirdPartyPort}/partyinfo/keys`
+      ? `http://host.docker.internal:${node.tm.thirdPartyPort}`
+      : `http://localhost:${node.tm.thirdPartyPort}`
   }
   return ''
 }
