@@ -20,7 +20,7 @@ export function validateNetworkId(input) {
 
 export function transformCakeshopAnswer(answer) {
   if (answer === 'Yes') {
-    return isJava11Plus() ? '0.11.0-RC2-J11' : '0.11.0-RC2'
+    return isJava11Plus() ? '0.11.0' : '0.11.0-J8'
   }
   return 'none'
 }

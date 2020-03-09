@@ -31,7 +31,7 @@ libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 const baseNetwork = {
   numberNodes: '5',
   consensus: 'raft',
-  quorumVersion: '2.4.0',
+  quorumVersion: '2.5.0',
   transactionManager: '0.10.2',
   cakeshop: 'none',
   deployment: 'bash',
