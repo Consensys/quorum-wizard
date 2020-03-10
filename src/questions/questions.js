@@ -68,8 +68,8 @@ export const NUMBER_NODES = {
   name: 'numberNodes',
   message: (answers) => (isRaft(answers.consensus)
     ? 'Input the number of nodes (2-7) you would like in your network - a minimum of 3 is recommended'
-    : 'Input the number of nodes (2-7) you would like in your network - a minimum of 3 is recommended for development, 5 to properly handle node failure'),
-  default: '3',
+    : 'Input the number of nodes (2-7) you would like in your network - a minimum of 4 is recommended'),
+  default: (answers) => (isRaft(answers.consensus) ? '3' : '4'),
   validate: (input) => validateNumberStringInRange(input, 2, 7),
 }
 
