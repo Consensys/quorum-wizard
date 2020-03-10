@@ -1,6 +1,6 @@
 # quorum-creator
 
-## Developing
+## Developing 
 `yarn install` to get all the dependencies.
 
 `yarn test:watch` to automatically run tests on changes
