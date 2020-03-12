@@ -32,7 +32,7 @@ We have 3 options to help you start exploring Quorum:
   2.  Simple Network - using pregenerated keys from quorum 7nodes example,
       this option allows you to choose the number of nodes (7 max), consensus mechanism, transaction manager, and the option to deploy cakeshop
 
-  3.  Fully Custom Network - In addition to the options available in #2, this selection allows for further customization of your network.
+  3.  Custom Network - In addition to the options available in #2, this selection allows for further customization of your network.
       Choose to generate keys, customize ports for both bash and docker, use your own genesis file, or change the network id
 
 Quorum Creator will generate your startup files and everything required to bring up your network.
@@ -46,7 +46,7 @@ All you need to do is go to the specified location and run ./start.sh
       value: 'quickstart',
     },
     { name: 'Simple Network', value: 'simple' },
-    { name: 'Fully Custom Network', value: 'custom' },
+    { name: 'Custom Network', value: 'custom' },
     { name: 'Exit', value: 'exit' },
   ],
 }
