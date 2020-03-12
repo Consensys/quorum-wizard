@@ -84,12 +84,12 @@ export function getPlatformSpecificUrl({ url }) {
 
 export const BINARIES = {
   quorum: {
-    '2.4.0': {
+    '2.5.0': {
       name: 'geth',
-      description: 'Quorum 2.4.0',
+      description: 'Quorum 2.5.0',
       url: {
-        darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.4.0/geth_v2.4.0_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.4.0/geth_v2.4.0_linux_amd64.tar.gz',
+        darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.5.0/geth_v2.5.0_darwin_amd64.tar.gz',
+        linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.5.0/geth_v2.5.0_linux_amd64.tar.gz',
       },
       type: 'tar.gz',
       files: [
@@ -99,10 +99,10 @@ export const BINARIES = {
   },
 
   tessera: {
-    '0.10.3': {
+    '0.10.4': {
       name: 'tessera-app.jar',
-      description: 'Tessera 0.10.3',
-      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.3/tessera-app-0.10.3-app.jar',
+      description: 'Tessera 0.10.4',
+      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.4/tessera-app-0.10.4-app.jar',
       type: 'jar',
     },
     '0.10.2': {
@@ -114,16 +114,16 @@ export const BINARIES = {
   },
 
   cakeshop: {
-    '0.11.0-RC2-J11': {
+    '0.11.0': {
       name: 'cakeshop.war',
-      description: 'Cakeshop 0.11.0-RC2',
-      url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0-RC2/cakeshop-0.11.0-RC2-J11.war',
+      description: 'Cakeshop 0.11.0',
+      url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0/cakeshop-0.11.0.war',
       type: 'jar',
     },
-    '0.11.0-RC2': {
+    '0.11.0-J8': {
       name: 'cakeshop.war',
-      description: 'Cakeshop 0.11.0-RC2',
-      url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0-RC2/cakeshop-0.11.0-RC2.war',
+      description: 'Cakeshop 0.11.0-J8',
+      url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0/cakeshop-0.11.0-J8.war',
       type: 'jar8',
     },
   },

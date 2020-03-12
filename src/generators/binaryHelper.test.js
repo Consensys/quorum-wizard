@@ -39,7 +39,7 @@ describe('Chooses the right paths to the binaries', () => {
     expect(pathToQuorumBinary('PATH')).toEqual('geth')
   })
   it('Calls geth binary in bin folder', () => {
-    expect(pathToQuorumBinary('2.4.0')).toEqual(join(libRootDir(), 'bin/quorum/2.4.0/geth'))
+    expect(pathToQuorumBinary('2.5.0')).toEqual(join(libRootDir(), 'bin/quorum/2.5.0/geth'))
   })
   it('Calls tessera using $TESSERA_JAR', () => {
     expect(pathToTesseraJar('PATH')).toEqual('$TESSERA_JAR')
@@ -51,7 +51,7 @@ describe('Chooses the right paths to the binaries', () => {
     ))
   })
   it('Calls cakeshop using bin folder war', () => {
-    expect(pathToCakeshop('0.11.0-RC2')).toEqual(join(libRootDir(), 'bin/cakeshop/0.11.0-RC2/cakeshop.war'))
+    expect(pathToCakeshop('0.11.0')).toEqual(join(libRootDir(), 'bin/cakeshop/0.11.0/cakeshop.war'))
   })
   it('Calls bootnode using bin folder', () => {
     expect(pathToBootnode()).toEqual(join(libRootDir(), 'bin/bootnode/1.8.27/bootnode'))
@@ -105,7 +105,7 @@ describe('Finds binaries on path', () => {
 
 describe('Downloads binaries', () => {
   const baseNetwork = {
-    quorumVersion: '2.4.0',
+    quorumVersion: '2.5.0',
     transactionManager: '0.10.2',
     cakeshop: 'none',
     consensus: 'raft',
@@ -122,7 +122,7 @@ describe('Downloads binaries', () => {
       },
     }
     await downloadAndCopyBinaries(config)
-    expect(downloadIfMissing).toBeCalledWith('quorum', '2.4.0')
+    expect(downloadIfMissing).toBeCalledWith('quorum', '2.5.0')
     expect(downloadIfMissing).toBeCalledWith('tessera', '0.10.2')
     expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
     expect(downloadIfMissing).not.toBeCalledWith('bootnode', any(String))
@@ -134,12 +134,12 @@ describe('Downloads binaries', () => {
         ...baseNetwork,
         transactionManager: 'none',
         consensus: 'istanbul',
-        cakeshop: '0.11.0-RC2',
+        cakeshop: '0.11.0',
         generateKeys: true,
       },
     }
     await downloadAndCopyBinaries(config)
-    expect(downloadIfMissing).toBeCalledWith('quorum', '2.4.0')
+    expect(downloadIfMissing).toBeCalledWith('quorum', '2.5.0')
     expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
     expect(downloadIfMissing).toBeCalledWith('cakeshop', any(String))
     expect(downloadIfMissing).toBeCalledWith('bootnode', any(String))
@@ -153,7 +153,7 @@ describe('Downloads binaries', () => {
       },
     }
     await downloadAndCopyBinaries(config)
-    expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.4.0')
+    expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.5.0')
     expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
     expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
     expect(downloadIfMissing).not.toBeCalledWith('bootnode', any(String))
@@ -168,7 +168,7 @@ describe('Downloads binaries', () => {
       },
     }
     await downloadAndCopyBinaries(config)
-    expect(downloadIfMissing).toBeCalledWith('quorum', '2.4.0')
+    expect(downloadIfMissing).toBeCalledWith('quorum', '2.5.0')
     expect(downloadIfMissing).toBeCalledWith('tessera', '0.10.2')
     expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
     expect(downloadIfMissing).toBeCalledWith('bootnode', any(String))
@@ -183,7 +183,7 @@ describe('Downloads binaries', () => {
       },
     }
     await downloadAndCopyBinaries(config)
-    expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.4.0')
+    expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.5.0')
     expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
   })
 })

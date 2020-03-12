@@ -24,7 +24,7 @@ isJava11Plus.mockReturnValue(false)
 const baseNetwork = {
   numberNodes: '3',
   consensus: 'raft',
-  quorumVersion: '2.4.0',
+  quorumVersion: '2.5.0',
   transactionManager: '0.10.2',
   cakeshop: 'none',
   deployment: 'bash',
@@ -53,7 +53,7 @@ test('creates 3nodes raft bash tessera', () => {
 test('creates 3nodes raft bash tessera cakeshop', () => {
   const config = createConfigFromAnswers({
     ...baseNetwork,
-    cakeshop: '0.11.0-RC2',
+    cakeshop: '0.11.0',
   })
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
@@ -109,10 +109,10 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
   const config = createConfigFromAnswers({
     numberNodes: '2',
     consensus: 'istanbul',
-    quorumVersion: '2.4.0',
+    quorumVersion: '2.5.0',
     transactionManager: '0.10.2',
     deployment: 'bash',
-    cakeshop: '0.11.0-RC2',
+    cakeshop: '0.11.0',
     generateKeys: false,
     networkId: 10,
     genesisLocation: 'none',

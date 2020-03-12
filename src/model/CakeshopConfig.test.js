@@ -4,10 +4,10 @@ import { generateCakeshopConfig } from './CakeshopConfig'
 const baseNetwork = {
   numberNodes: '3',
   consensus: 'raft',
-  quorumVersion: '2.4.0',
-  transactionManager: '0.10.2',
+  quorumVersion: '2.5.0',
+  transactionManager: '0.10.4',
   deployment: 'bash',
-  cakeshop: '0.11.0-RC2',
+  cakeshop: '0.11.0',
 }
 
 test('creates 3nodes raft dockerFile tessera cakeshop', () => {

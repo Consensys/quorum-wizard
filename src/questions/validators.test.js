@@ -45,9 +45,9 @@ test('rejects network id of less than 0', () => {
 test('Turns cakeshop answer from boolean to version/none', () => {
   expect(transformCakeshopAnswer('No')).toEqual('none')
   isJava11Plus.mockReturnValueOnce(false)
-  expect(transformCakeshopAnswer('Yes')).toEqual('0.11.0-RC2')
+  expect(transformCakeshopAnswer('Yes')).toEqual('0.11.0-J8')
   isJava11Plus.mockReturnValueOnce(true)
-  expect(transformCakeshopAnswer('Yes')).toEqual('0.11.0-RC2-J11')
+  expect(transformCakeshopAnswer('Yes')).toEqual('0.11.0')
 })
 
 test('Disables java choices based on java version', () => {

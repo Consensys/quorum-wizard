@@ -22,9 +22,9 @@ describe('creates a cakeshop directory structure for bash', () => {
   const baseNetwork = {
     numberNodes: '5',
     consensus: 'raft',
-    quorumVersion: '2.4.0',
+    quorumVersion: '2.5.0',
     transactionManager: '0.10.2',
-    cakeshop: '0.11.0-RC2',
+    cakeshop: '0.11.0',
     deployment: 'bash',
   }
   it('creates directory structure for cakeshop files and moves them in', () => {

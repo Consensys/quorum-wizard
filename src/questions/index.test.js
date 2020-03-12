@@ -16,16 +16,16 @@ jest.mock('./customPromptHelper')
 const QUICKSTART_CONFIG = {
   numberNodes: '3',
   consensus: 'raft',
-  quorumVersion: '2.4.0',
+  quorumVersion: '2.5.0',
   transactionManager: '0.10.2',
   deployment: 'bash',
-  cakeshop: '0.11.0-RC2',
+  cakeshop: '0.11.0',
 }
 
 const SIMPLE_CONFIG = {
   numberNodes: '5',
   consensus: 'istanbul',
-  quorumVersion: '2.4.0',
+  quorumVersion: '2.5.0',
   transactionManager: '0.10.2',
   deployment: 'bash',
   cakeshop: 'none',

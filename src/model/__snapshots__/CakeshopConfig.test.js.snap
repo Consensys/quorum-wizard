@@ -25,17 +25,17 @@ Array [
   Object {
     "name": "node1",
     "rpcUrl": "http://localhost:22000",
-    "transactionManagerUrl": "http://localhost:9081/partyinfo/keys",
+    "transactionManagerUrl": "http://localhost:9081",
   },
   Object {
     "name": "node2",
     "rpcUrl": "http://localhost:22001",
-    "transactionManagerUrl": "http://localhost:9082/partyinfo/keys",
+    "transactionManagerUrl": "http://localhost:9082",
   },
   Object {
     "name": "node3",
     "rpcUrl": "http://localhost:22002",
-    "transactionManagerUrl": "http://localhost:9083/partyinfo/keys",
+    "transactionManagerUrl": "http://localhost:9083",
   },
 ]
 `;
@@ -65,17 +65,17 @@ Array [
   Object {
     "name": "node1",
     "rpcUrl": "http://host.docker.internal:22000",
-    "transactionManagerUrl": "http://host.docker.internal:9081/partyinfo/keys",
+    "transactionManagerUrl": "http://host.docker.internal:9081",
   },
   Object {
     "name": "node2",
     "rpcUrl": "http://host.docker.internal:22001",
-    "transactionManagerUrl": "http://host.docker.internal:9082/partyinfo/keys",
+    "transactionManagerUrl": "http://host.docker.internal:9082",
   },
   Object {
     "name": "node3",
     "rpcUrl": "http://host.docker.internal:22002",
-    "transactionManagerUrl": "http://host.docker.internal:9083/partyinfo/keys",
+    "transactionManagerUrl": "http://host.docker.internal:9083",
   },
 ]
 `;

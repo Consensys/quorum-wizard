@@ -10,7 +10,7 @@ isJava11Plus.mockReturnValue(false)
 const baseNetwork = {
   numberNodes: '3',
   consensus: 'raft',
-  quorumVersion: '2.4.0',
+  quorumVersion: '2.5.0',
   transactionManager: '0.10.2',
   deployment: 'bash',
   cakeshop: 'none',
@@ -62,7 +62,7 @@ test('creates 5nodes raft no-TM cakeshop docker config', () => {
     numberNodes: '5',
     transactionManager: 'none',
     deployment: 'docker-compose',
-    cakeshop: '0.11.0-RC2',
+    cakeshop: '0.11.0',
   })
   expect(config).toMatchSnapshot()
 })
@@ -72,7 +72,7 @@ test('creates 7nodes istanbul cakeshop config', () => {
     ...baseNetwork,
     numberNodes: '7',
     consensus: 'istanbul',
-    cakeshop: '0.11.0-RC2',
+    cakeshop: '0.11.0',
   })
   expect(config).toMatchSnapshot()
 })

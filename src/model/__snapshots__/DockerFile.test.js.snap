@@ -3,7 +3,7 @@
 exports[`creates 2nodes raft docker tessera cakeshop custom ports 1`] = `
 "# The following environment variables are substituted if present
 # * QUORUM_CONSENSUS: default to istanbul
-# * QUORUM_DOCKER_IMAGE: default to quorumengineering/quorum:2.4.0
+# * QUORUM_DOCKER_IMAGE: default to quorumengineering/quorum:2.5.0
 # * QUORUM_TX_MANAGER_DOCKER_IMAGE: default to quorumengineering/tessera:0.10.2
 # * QUORUM_GETH_ARGS: extra geth arguments to be included when running geth
 # To use Constellation, set QUORUM_TX_MANAGER_DOCKER_IMAGE to Constellation docker image,
@@ -13,7 +13,7 @@ version: \\"3.6\\"
 x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
-  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.4.0}\\"
+  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
     interval: 3s
@@ -192,7 +192,7 @@ x-tx-manager-def:
     - \\"3080\\"
 x-cakeshop-def:
   &cakeshop-def
-  image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}\\"
+  image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
   expose:
     - \\"8999\\"
   restart: \\"no\\"
@@ -209,7 +209,7 @@ x-cakeshop-def:
       DDIR=/qdata/cakeshop/local
       rm -rf $\${DDIR}
       mkdir -p $\${DDIR}
-      DOCKER_IMAGE=\\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}\\"
+      DOCKER_IMAGE=\\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
       cp /examples/cakeshop/local/application.properties $\${DDIR}/application.properties
       cp /examples/cakeshop/local/cakeshop.json $\${DDIR}/cakeshop.json
       java -Xms128M -Xmx128M -Dcakeshop.config.dir=/qdata/cakeshop -Dlogging.path=/qdata/logs/cakeshop -jar /opt/cakeshop/cakeshop.war
@@ -301,7 +301,7 @@ volumes:
 exports[`creates 3nodes raft docker tessera custom 1`] = `
 "# The following environment variables are substituted if present
 # * QUORUM_CONSENSUS: default to istanbul
-# * QUORUM_DOCKER_IMAGE: default to quorumengineering/quorum:2.4.0
+# * QUORUM_DOCKER_IMAGE: default to quorumengineering/quorum:2.5.0
 # * QUORUM_TX_MANAGER_DOCKER_IMAGE: default to quorumengineering/tessera:0.10.2
 # * QUORUM_GETH_ARGS: extra geth arguments to be included when running geth
 # To use Constellation, set QUORUM_TX_MANAGER_DOCKER_IMAGE to Constellation docker image,
@@ -311,7 +311,7 @@ version: \\"3.6\\"
 x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
-  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.4.0}\\"
+  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
     interval: 3s
@@ -594,7 +594,7 @@ volumes:
 exports[`creates 3nodes raft dockerFile tessera cakeshop 1`] = `
 "# The following environment variables are substituted if present
 # * QUORUM_CONSENSUS: default to istanbul
-# * QUORUM_DOCKER_IMAGE: default to quorumengineering/quorum:2.4.0
+# * QUORUM_DOCKER_IMAGE: default to quorumengineering/quorum:2.5.0
 # * QUORUM_TX_MANAGER_DOCKER_IMAGE: default to quorumengineering/tessera:0.10.2
 # * QUORUM_GETH_ARGS: extra geth arguments to be included when running geth
 # To use Constellation, set QUORUM_TX_MANAGER_DOCKER_IMAGE to Constellation docker image,
@@ -604,7 +604,7 @@ version: \\"3.6\\"
 x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
-  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.4.0}\\"
+  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
     interval: 3s
@@ -783,7 +783,7 @@ x-tx-manager-def:
     - \\"9080\\"
 x-cakeshop-def:
   &cakeshop-def
-  image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}\\"
+  image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
   expose:
     - \\"8999\\"
   restart: \\"no\\"
@@ -800,7 +800,7 @@ x-cakeshop-def:
       DDIR=/qdata/cakeshop/local
       rm -rf $\${DDIR}
       mkdir -p $\${DDIR}
-      DOCKER_IMAGE=\\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}\\"
+      DOCKER_IMAGE=\\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
       cp /examples/cakeshop/local/application.properties $\${DDIR}/application.properties
       cp /examples/cakeshop/local/cakeshop.json $\${DDIR}/cakeshop.json
       java -Xms128M -Xmx128M -Dcakeshop.config.dir=/qdata/cakeshop -Dlogging.path=/qdata/logs/cakeshop -jar /opt/cakeshop/cakeshop.war
@@ -922,7 +922,7 @@ volumes:
 exports[`creates 3nodes raft dockerFile tessera no cakeshop 1`] = `
 "# The following environment variables are substituted if present
 # * QUORUM_CONSENSUS: default to istanbul
-# * QUORUM_DOCKER_IMAGE: default to quorumengineering/quorum:2.4.0
+# * QUORUM_DOCKER_IMAGE: default to quorumengineering/quorum:2.5.0
 # * QUORUM_TX_MANAGER_DOCKER_IMAGE: default to quorumengineering/tessera:0.10.2
 # * QUORUM_GETH_ARGS: extra geth arguments to be included when running geth
 # To use Constellation, set QUORUM_TX_MANAGER_DOCKER_IMAGE to Constellation docker image,
@@ -932,7 +932,7 @@ version: \\"3.6\\"
 x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
-  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.4.0}\\"
+  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
     interval: 3s
@@ -1215,7 +1215,7 @@ volumes:
 exports[`creates 5nodes istanbul dockerFile no tessera cakeshop 1`] = `
 "# The following environment variables are substituted if present
 # * QUORUM_CONSENSUS: default to istanbul
-# * QUORUM_DOCKER_IMAGE: default to quorumengineering/quorum:2.4.0
+# * QUORUM_DOCKER_IMAGE: default to quorumengineering/quorum:2.5.0
 # * QUORUM_TX_MANAGER_DOCKER_IMAGE: default to quorumengineering/tessera:0.10.2
 # * QUORUM_GETH_ARGS: extra geth arguments to be included when running geth
 # To use Constellation, set QUORUM_TX_MANAGER_DOCKER_IMAGE to Constellation docker image,
@@ -1225,7 +1225,7 @@ version: \\"3.6\\"
 x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
-  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.4.0}\\"
+  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
     interval: 3s
@@ -1286,7 +1286,7 @@ x-quorum-def:
     - \\"50400\\"
 x-cakeshop-def:
   &cakeshop-def
-  image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}\\"
+  image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
   expose:
     - \\"8999\\"
   restart: \\"no\\"
@@ -1303,7 +1303,7 @@ x-cakeshop-def:
       DDIR=/qdata/cakeshop/local
       rm -rf $\${DDIR}
       mkdir -p $\${DDIR}
-      DOCKER_IMAGE=\\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0-RC2}\\"
+      DOCKER_IMAGE=\\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
       cp /examples/cakeshop/local/application.properties $\${DDIR}/application.properties
       cp /examples/cakeshop/local/cakeshop.json $\${DDIR}/cakeshop.json
       java -Xms128M -Xmx128M -Dcakeshop.config.dir=/qdata/cakeshop -Dlogging.path=/qdata/logs/cakeshop -jar /opt/cakeshop/cakeshop.war
@@ -1410,7 +1410,7 @@ volumes:
 exports[`creates 5nodes istanbul dockerFile no tessera no cakeshop 1`] = `
 "# The following environment variables are substituted if present
 # * QUORUM_CONSENSUS: default to istanbul
-# * QUORUM_DOCKER_IMAGE: default to quorumengineering/quorum:2.4.0
+# * QUORUM_DOCKER_IMAGE: default to quorumengineering/quorum:2.5.0
 # * QUORUM_TX_MANAGER_DOCKER_IMAGE: default to quorumengineering/tessera:0.10.2
 # * QUORUM_GETH_ARGS: extra geth arguments to be included when running geth
 # To use Constellation, set QUORUM_TX_MANAGER_DOCKER_IMAGE to Constellation docker image,
@@ -1420,7 +1420,7 @@ version: \\"3.6\\"
 x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
-  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.4.0}\\"
+  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
     interval: 3s
