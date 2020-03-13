@@ -9,10 +9,14 @@ export function validateNumberStringInRange(input, low, high) {
 }
 
 export function validateNetworkId(input) {
-  if (input === '1') {
+  const parsedNumber = parseInt(input, 10)
+  if (Number.isNaN(parsedNumber)) {
+    return 'Network ID must be a number'
+  }
+  if (parsedNumber === 1) {
     return 'Ethereum Mainnet has a network id of 1. Please choose another id'
   }
-  if (parseInt(input, 10) < 0) {
+  if (parsedNumber < 0) {
     return 'Network ID must be positive'
   }
   return true
