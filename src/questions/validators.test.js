@@ -42,6 +42,10 @@ test('rejects network id of less than 0', () => {
   expect(validateNetworkId('-1')).toEqual('Network ID must be positive')
 })
 
+test('rejects network id that is not a number', () => {
+  expect(validateNetworkId('n')).toEqual('Network ID must be a number')
+})
+
 test('Turns cakeshop answer from boolean to version/none', () => {
   expect(transformCakeshopAnswer('No')).toEqual('none')
   isJava11Plus.mockReturnValueOnce(false)
