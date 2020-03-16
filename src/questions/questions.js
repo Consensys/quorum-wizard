@@ -121,7 +121,7 @@ export const CAKESHOP = {
 export const KEY_GENERATION = {
   type: 'confirm',
   name: 'generateKeys',
-  message: 'Would you like to generate keys for your network?',
+  message: 'Would you like to generate keys for your network? (selecting \'no\' will use insecure keys that are not suitable for Production use)',
   default: false,
 }
 
