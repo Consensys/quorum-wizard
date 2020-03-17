@@ -69,6 +69,7 @@ services:
     hostname: node1
     ports:
       - "22000:8545"
+      - "23000:8645"
     volumes:
       - vol1:/qdata
       - ./qdata:/examples:ro
@@ -129,6 +130,7 @@ services:
     hostname: node1
     ports:
       - "22000:8545"
+      - "23000:8645"
     volumes:
       - vol1:/qdata
       - ./qdata:/examples:ro
@@ -170,6 +172,7 @@ services:
     hostname: node1
     ports:
       - "22000:8545"
+      - "23000:8645"
     volumes:
       - vol1:/qdata
       - ./qdata:/examples:ro
@@ -223,6 +226,7 @@ services:
     hostname: node1
     ports:
       - "22000:8545"
+      - "23000:8645"
     volumes:
       - vol1:/qdata
       - ./qdata:/examples:ro

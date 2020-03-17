@@ -101,6 +101,7 @@ function buildNodeService(node, i, hasTessera) {
     hostname: node${i + 1}
     ports:
       - "${node.quorum.rpcPort}:8545"
+      - "${node.quorum.wsPort}:8645"
     volumes:
       - vol${i + 1}:/qdata
       - ./qdata:/examples:ro
