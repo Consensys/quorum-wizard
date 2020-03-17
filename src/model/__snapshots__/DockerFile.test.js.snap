@@ -70,8 +70,8 @@ x-quorum-def:
         --password $\${DDIR}/keystore/password.txt \\\\
         \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
   expose:
-    - \\"31000\\"
-    - \\"30400\\"
+    - \\"21000\\"
+    - \\"50400\\"
 x-tx-manager-def:
   &tx-manager-def
   image: \\"\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
@@ -188,8 +188,8 @@ x-tx-manager-def:
           ;;
       esac
   expose:
-    - \\"3000\\"
-    - \\"3080\\"
+    - \\"9000\\"
+    - \\"9080\\"
 x-cakeshop-def:
   &cakeshop-def
   image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
@@ -235,7 +235,7 @@ services:
     << : *tx-manager-def
     hostname: txmanager1
     ports:
-      - \\"5081:3080\\"
+      - \\"5081:9080\\"
     volumes:
       - vol1:/qdata
       - ./qdata:/examples:ro
@@ -264,7 +264,7 @@ services:
     << : *tx-manager-def
     hostname: txmanager2
     ports:
-      - \\"5082:3080\\"
+      - \\"5082:9080\\"
     volumes:
       - vol2:/qdata
       - ./qdata:/examples:ro
@@ -277,7 +277,7 @@ services:
     << : *cakeshop-def
     hostname: cakeshop
     ports:
-      - \\"8999:8999\\"
+      - \\"7999:8999\\"
     volumes:
       - cakeshopvol:/qdata
       - ./qdata:/examples:ro

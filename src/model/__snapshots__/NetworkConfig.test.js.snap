@@ -2,9 +2,9 @@
 
 exports[`creates 5nodes raft no-TM cakeshop docker config 1`] = `
 Object {
-  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": "0.11.0",
+    "cakeshopPort": "8999",
     "configDir": "network/5-nodes-raft-docker-compose/generated",
     "consensus": "raft",
     "customizePorts": false,
@@ -70,9 +70,9 @@ Object {
 
 exports[`creates 5nodes raft no-TM config 1`] = `
 Object {
-  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": "none",
+    "cakeshopPort": "8999",
     "configDir": "network/5-nodes-raft-bash/generated",
     "consensus": "raft",
     "customizePorts": false,
@@ -138,9 +138,9 @@ Object {
 
 exports[`creates 6nodes raft custom config 1`] = `
 Object {
-  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": "none",
+    "cakeshopPort": "8999",
     "configDir": "network/6-nodes-raft-tessera-bash/generated",
     "consensus": "raft",
     "customizePorts": false,
@@ -164,7 +164,6 @@ Object {
         "wsPort": 23000,
       },
       "tm": Object {
-        "enclavePort": 9180,
         "ip": "127.0.0.1",
         "p2pPort": 9001,
         "thirdPartyPort": 9081,
@@ -179,7 +178,6 @@ Object {
         "wsPort": 23001,
       },
       "tm": Object {
-        "enclavePort": 9181,
         "ip": "127.0.0.1",
         "p2pPort": 9002,
         "thirdPartyPort": 9082,
@@ -194,7 +192,6 @@ Object {
         "wsPort": 23002,
       },
       "tm": Object {
-        "enclavePort": 9182,
         "ip": "127.0.0.1",
         "p2pPort": 9003,
         "thirdPartyPort": 9083,
@@ -209,7 +206,6 @@ Object {
         "wsPort": 23003,
       },
       "tm": Object {
-        "enclavePort": 9183,
         "ip": "127.0.0.1",
         "p2pPort": 9004,
         "thirdPartyPort": 9084,
@@ -224,7 +220,6 @@ Object {
         "wsPort": 23004,
       },
       "tm": Object {
-        "enclavePort": 9184,
         "ip": "127.0.0.1",
         "p2pPort": 9005,
         "thirdPartyPort": 9085,
@@ -239,7 +234,6 @@ Object {
         "wsPort": 23005,
       },
       "tm": Object {
-        "enclavePort": 9185,
         "ip": "127.0.0.1",
         "p2pPort": 9006,
         "thirdPartyPort": 9086,
@@ -251,9 +245,9 @@ Object {
 
 exports[`creates 6nodes raft custom docker config 1`] = `
 Object {
-  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": "none",
+    "cakeshopPort": "8999",
     "configDir": "network/6-nodes-raft-tessera-docker-compose/generated",
     "consensus": "raft",
     "customizePorts": false,
@@ -277,7 +271,6 @@ Object {
         "wsPort": 23000,
       },
       "tm": Object {
-        "enclavePort": 9180,
         "ip": "172.16.239.101",
         "p2pPort": 9001,
         "thirdPartyPort": 9081,
@@ -292,7 +285,6 @@ Object {
         "wsPort": 23001,
       },
       "tm": Object {
-        "enclavePort": 9181,
         "ip": "172.16.239.102",
         "p2pPort": 9002,
         "thirdPartyPort": 9082,
@@ -307,7 +299,6 @@ Object {
         "wsPort": 23002,
       },
       "tm": Object {
-        "enclavePort": 9182,
         "ip": "172.16.239.103",
         "p2pPort": 9003,
         "thirdPartyPort": 9083,
@@ -322,7 +313,6 @@ Object {
         "wsPort": 23003,
       },
       "tm": Object {
-        "enclavePort": 9183,
         "ip": "172.16.239.104",
         "p2pPort": 9004,
         "thirdPartyPort": 9084,
@@ -337,7 +327,6 @@ Object {
         "wsPort": 23004,
       },
       "tm": Object {
-        "enclavePort": 9184,
         "ip": "172.16.239.105",
         "p2pPort": 9005,
         "thirdPartyPort": 9085,
@@ -352,7 +341,6 @@ Object {
         "wsPort": 23005,
       },
       "tm": Object {
-        "enclavePort": 9185,
         "ip": "172.16.239.106",
         "p2pPort": 9006,
         "thirdPartyPort": 9086,
@@ -364,9 +352,9 @@ Object {
 
 exports[`creates 7nodes istanbul cakeshop config 1`] = `
 Object {
-  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": "0.11.0",
+    "cakeshopPort": "8999",
     "configDir": "network/7-nodes-istanbul-tessera-bash/generated",
     "consensus": "istanbul",
     "customizePorts": false,
@@ -390,7 +378,6 @@ Object {
         "wsPort": 23000,
       },
       "tm": Object {
-        "enclavePort": 9180,
         "ip": "127.0.0.1",
         "p2pPort": 9001,
         "thirdPartyPort": 9081,
@@ -405,7 +392,6 @@ Object {
         "wsPort": 23001,
       },
       "tm": Object {
-        "enclavePort": 9181,
         "ip": "127.0.0.1",
         "p2pPort": 9002,
         "thirdPartyPort": 9082,
@@ -420,7 +406,6 @@ Object {
         "wsPort": 23002,
       },
       "tm": Object {
-        "enclavePort": 9182,
         "ip": "127.0.0.1",
         "p2pPort": 9003,
         "thirdPartyPort": 9083,
@@ -435,7 +420,6 @@ Object {
         "wsPort": 23003,
       },
       "tm": Object {
-        "enclavePort": 9183,
         "ip": "127.0.0.1",
         "p2pPort": 9004,
         "thirdPartyPort": 9084,
@@ -450,7 +434,6 @@ Object {
         "wsPort": 23004,
       },
       "tm": Object {
-        "enclavePort": 9184,
         "ip": "127.0.0.1",
         "p2pPort": 9005,
         "thirdPartyPort": 9085,
@@ -465,7 +448,6 @@ Object {
         "wsPort": 23005,
       },
       "tm": Object {
-        "enclavePort": 9185,
         "ip": "127.0.0.1",
         "p2pPort": 9006,
         "thirdPartyPort": 9086,
@@ -480,7 +462,6 @@ Object {
         "wsPort": 23006,
       },
       "tm": Object {
-        "enclavePort": 9186,
         "ip": "127.0.0.1",
         "p2pPort": 9007,
         "thirdPartyPort": 9087,
@@ -492,9 +473,9 @@ Object {
 
 exports[`creates 7nodes istanbul config 1`] = `
 Object {
-  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": "none",
+    "cakeshopPort": "8999",
     "configDir": "network/7-nodes-istanbul-tessera-bash/generated",
     "consensus": "istanbul",
     "customizePorts": false,
@@ -518,7 +499,6 @@ Object {
         "wsPort": 23000,
       },
       "tm": Object {
-        "enclavePort": 9180,
         "ip": "127.0.0.1",
         "p2pPort": 9001,
         "thirdPartyPort": 9081,
@@ -533,7 +513,6 @@ Object {
         "wsPort": 23001,
       },
       "tm": Object {
-        "enclavePort": 9181,
         "ip": "127.0.0.1",
         "p2pPort": 9002,
         "thirdPartyPort": 9082,
@@ -548,7 +527,6 @@ Object {
         "wsPort": 23002,
       },
       "tm": Object {
-        "enclavePort": 9182,
         "ip": "127.0.0.1",
         "p2pPort": 9003,
         "thirdPartyPort": 9083,
@@ -563,7 +541,6 @@ Object {
         "wsPort": 23003,
       },
       "tm": Object {
-        "enclavePort": 9183,
         "ip": "127.0.0.1",
         "p2pPort": 9004,
         "thirdPartyPort": 9084,
@@ -578,7 +555,6 @@ Object {
         "wsPort": 23004,
       },
       "tm": Object {
-        "enclavePort": 9184,
         "ip": "127.0.0.1",
         "p2pPort": 9005,
         "thirdPartyPort": 9085,
@@ -593,7 +569,6 @@ Object {
         "wsPort": 23005,
       },
       "tm": Object {
-        "enclavePort": 9185,
         "ip": "127.0.0.1",
         "p2pPort": 9006,
         "thirdPartyPort": 9086,
@@ -608,7 +583,6 @@ Object {
         "wsPort": 23006,
       },
       "tm": Object {
-        "enclavePort": 9186,
         "ip": "127.0.0.1",
         "p2pPort": 9007,
         "thirdPartyPort": 9087,
@@ -620,9 +594,9 @@ Object {
 
 exports[`creates 7nodes istanbul docker config 1`] = `
 Object {
-  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": "none",
+    "cakeshopPort": "8999",
     "configDir": "network/7-nodes-istanbul-tessera-docker-compose/generated",
     "consensus": "istanbul",
     "customizePorts": false,
@@ -646,7 +620,6 @@ Object {
         "wsPort": 23000,
       },
       "tm": Object {
-        "enclavePort": 9180,
         "ip": "172.16.239.101",
         "p2pPort": 9001,
         "thirdPartyPort": 9081,
@@ -661,7 +634,6 @@ Object {
         "wsPort": 23001,
       },
       "tm": Object {
-        "enclavePort": 9181,
         "ip": "172.16.239.102",
         "p2pPort": 9002,
         "thirdPartyPort": 9082,
@@ -676,7 +648,6 @@ Object {
         "wsPort": 23002,
       },
       "tm": Object {
-        "enclavePort": 9182,
         "ip": "172.16.239.103",
         "p2pPort": 9003,
         "thirdPartyPort": 9083,
@@ -691,7 +662,6 @@ Object {
         "wsPort": 23003,
       },
       "tm": Object {
-        "enclavePort": 9183,
         "ip": "172.16.239.104",
         "p2pPort": 9004,
         "thirdPartyPort": 9084,
@@ -706,7 +676,6 @@ Object {
         "wsPort": 23004,
       },
       "tm": Object {
-        "enclavePort": 9184,
         "ip": "172.16.239.105",
         "p2pPort": 9005,
         "thirdPartyPort": 9085,
@@ -721,7 +690,6 @@ Object {
         "wsPort": 23005,
       },
       "tm": Object {
-        "enclavePort": 9185,
         "ip": "172.16.239.106",
         "p2pPort": 9006,
         "thirdPartyPort": 9086,
@@ -736,7 +704,6 @@ Object {
         "wsPort": 23006,
       },
       "tm": Object {
-        "enclavePort": 9186,
         "ip": "172.16.239.107",
         "p2pPort": 9007,
         "thirdPartyPort": 9087,
@@ -748,9 +715,9 @@ Object {
 
 exports[`creates 7nodes istanbul no-TM custom config 1`] = `
 Object {
-  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": "none",
+    "cakeshopPort": "8999",
     "configDir": "network/7-nodes-istanbul-bash/generated",
     "consensus": "istanbul",
     "customizePorts": false,
@@ -834,9 +801,9 @@ Object {
 
 exports[`creates 7nodes istanbul no-TM custom docker config 1`] = `
 Object {
-  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": "none",
+    "cakeshopPort": "8999",
     "configDir": "network/7-nodes-istanbul-docker-compose/generated",
     "consensus": "istanbul",
     "customizePorts": false,
@@ -920,9 +887,9 @@ Object {
 
 exports[`creates quickstart config with java 11+ 1`] = `
 Object {
-  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": "0.11.0",
+    "cakeshopPort": "8999",
     "configDir": "network/3-nodes-raft-tessera-bash/generated",
     "consensus": "raft",
     "customizePorts": false,
@@ -946,7 +913,6 @@ Object {
         "wsPort": 23000,
       },
       "tm": Object {
-        "enclavePort": 9180,
         "ip": "127.0.0.1",
         "p2pPort": 9001,
         "thirdPartyPort": 9081,
@@ -961,7 +927,6 @@ Object {
         "wsPort": 23001,
       },
       "tm": Object {
-        "enclavePort": 9181,
         "ip": "127.0.0.1",
         "p2pPort": 9002,
         "thirdPartyPort": 9082,
@@ -976,7 +941,6 @@ Object {
         "wsPort": 23002,
       },
       "tm": Object {
-        "enclavePort": 9182,
         "ip": "127.0.0.1",
         "p2pPort": 9003,
         "thirdPartyPort": 9083,
@@ -988,9 +952,9 @@ Object {
 
 exports[`creates quickstart setup 1`] = `
 Object {
-  "dockerCustom": undefined,
   "network": Object {
     "cakeshop": "0.11.0-J8",
+    "cakeshopPort": "8999",
     "configDir": "network/3-nodes-raft-tessera-bash/generated",
     "consensus": "raft",
     "customizePorts": false,
@@ -1014,7 +978,6 @@ Object {
         "wsPort": 23000,
       },
       "tm": Object {
-        "enclavePort": 9180,
         "ip": "127.0.0.1",
         "p2pPort": 9001,
         "thirdPartyPort": 9081,
@@ -1029,7 +992,6 @@ Object {
         "wsPort": 23001,
       },
       "tm": Object {
-        "enclavePort": 9181,
         "ip": "127.0.0.1",
         "p2pPort": 9002,
         "thirdPartyPort": 9082,
@@ -1044,7 +1006,6 @@ Object {
         "wsPort": 23002,
       },
       "tm": Object {
-        "enclavePort": 9182,
         "ip": "127.0.0.1",
         "p2pPort": 9003,
         "thirdPartyPort": 9083,

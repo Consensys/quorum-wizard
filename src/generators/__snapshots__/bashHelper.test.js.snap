@@ -60,7 +60,7 @@ java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -ja
     echo \\"Waiting until Cakeshop is running...\\"
     DOWN=false
     set +e
-    result=$(curl -s http://localhost:8999/actuator/health)
+    result=$(curl -s http://localhost:7999/actuator/health)
     set -e
     if [ ! \\"\${result}\\" == \\"{\\\\\\"status\\\\\\":\\\\\\"UP\\\\\\"}\\" ]; then
       echo \\"Cakeshop is not yet listening on http\\"
@@ -75,7 +75,7 @@ java -Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop -ja
     sleep 5
   done
 
-  echo \\"Cakeshop started at http://localhost:8999\\"
+  echo \\"Cakeshop started at http://localhost:7999\\"
   
 echo \\"Successfully started Quorum network.\\"
 echo \\"--------------------------------------------------------------------------------
