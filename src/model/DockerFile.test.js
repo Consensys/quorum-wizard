@@ -77,7 +77,7 @@ test('creates 2nodes raft docker tessera cakeshop custom ports', () => {
         ip: '172.16.239.11',
         devP2pPort: '55001',
         rpcPort: '56000',
-        wsPort: '57001',
+        wsPort: '57000',
         raftPort: '80501',
       },
       tm: {
@@ -91,7 +91,7 @@ test('creates 2nodes raft docker tessera cakeshop custom ports', () => {
         ip: '172.16.239.12',
         devP2pPort: '55001',
         rpcPort: '56001',
-        wsPort: '56001',
+        wsPort: '57001',
         raftPort: '80502',
       },
       tm: {

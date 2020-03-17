@@ -62,6 +62,10 @@ x-quorum-def:
         --rpcaddr 0.0.0.0 \
         --rpcport 8545 \
         --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${QUORUM_CONSENSUS:-istanbul} \
+        --ws \
+        --wsaddr 0.0.0.0 \
+        --wsorigins "*" \
+        --wsport 8645 \
         --port 21000 \
         --unlock 0 \
         --password $${DDIR}/keystore/password.txt \
