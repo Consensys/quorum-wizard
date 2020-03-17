@@ -8,7 +8,10 @@ import {
   writeFile,
 } from '../utils/fileUtils'
 import { generateCakeshopConfig } from '../model/CakeshopConfig'
-import { isCakeshop } from '../model/NetworkConfig'
+import {
+  isCakeshop,
+  isDocker,
+} from '../model/NetworkConfig'
 
 export function buildCakeshopDir(config, qdata) {
   const cakeshopDir = join(qdata, 'cakeshop', 'local')
@@ -23,9 +26,10 @@ function buildPropertiesFile(config) {
     'lib',
     'cakeshop_application.properties.template',
   ))
+  const cakeshopPort = isDocker(config.network.deployment) ? '8999' : config.network.cakeshopPort
   return [
     formatNewLine(properties),
-    `server.port=${config.network.cakeshopPort}`,
+    `server.port=${cakeshopPort}`,
   ].join('')
 }
 
