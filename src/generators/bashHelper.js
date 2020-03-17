@@ -1,7 +1,6 @@
 import { join } from 'path'
 import {
   getFullNetworkPath,
-  includeCakeshop,
 } from './networkCreator'
 import {
   copyFile,
@@ -21,6 +20,7 @@ import {
 import {
   isRaft,
   isTessera,
+  isCakeshop,
 } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { formatTesseraKeysOutput } from './transactionManager'
@@ -94,7 +94,7 @@ export async function buildBash(config) {
   const bashDetails = buildBashScript(config)
   const networkPath = getFullNetworkPath(config)
 
-  if (includeCakeshop(config)) {
+  if (isCakeshop(config.network.cakeshop)) {
     buildCakeshopDir(config, join(networkPath, 'qdata'))
   }
 
@@ -149,7 +149,7 @@ export function setEnvironmentCommand(config) {
   if (isTessera(config.network.transactionManager)) {
     lines.push(`BIN_TESSERA=${pathToTesseraJar(config.network.transactionManager)}`)
   }
-  if (includeCakeshop(config)) {
+  if (isCakeshop(config.network.cakeshop)) {
     lines.push(`BIN_CAKESHOP=${pathToCakeshop(config.network.cakeshop)}`)
   }
   lines.push('')

@@ -66,3 +66,6 @@ x-quorum-def:
         --unlock 0 \
         --password $${DDIR}/keystore/password.txt \
         ${QUORUM_GETH_ARGS:-} $${GETH_ARGS_${QUORUM_CONSENSUS:-istanbul}}
+  expose:
+    - "21000"
+    - "50400"

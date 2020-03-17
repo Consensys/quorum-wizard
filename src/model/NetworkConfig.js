@@ -13,7 +13,7 @@ export function createConfigFromAnswers(answers) {
     genesisLocation = 'none',
     customizePorts = false,
     nodes = [],
-    dockerCustom,
+    cakeshopPort = '8999',
   } = answers
   const networkFolder = createNetworkFolderName(
     numberNodes,
@@ -36,6 +36,7 @@ export function createConfigFromAnswers(answers) {
       cakeshop,
       networkId,
       customizePorts,
+      cakeshopPort,
     },
     nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(
       numberNodes,
@@ -43,7 +44,6 @@ export function createConfigFromAnswers(answers) {
       deployment,
       cakeshop,
     ),
-    dockerCustom,
   }
 }
 
@@ -61,7 +61,6 @@ export function generateNodeConfigs(numberNodes, transactionManager, deployment)
   const raftPort = 50401
   const thirdPartyPort = 9081
   const p2pPort = 9001
-  const enclavePort = 9180
   const nodes = []
 
   for (let i = 0; i < parseInt(numberNodes, 10); i += 1) {
@@ -79,7 +78,6 @@ export function generateNodeConfigs(numberNodes, transactionManager, deployment)
         ip: isDocker(deployment) ? `172.16.239.10${i + 1}` : '127.0.0.1',
         thirdPartyPort: thirdPartyPort + i,
         p2pPort: p2pPort + i,
-        enclavePort: enclavePort + i,
       }
     }
     nodes.push(node)
@@ -105,4 +103,8 @@ export function isIstanbul(consensus) {
 
 export function isRaft(consensus) {
   return consensus === 'raft'
+}
+
+export function isCakeshop(cakeshop) {
+  return cakeshop !== 'none'
 }
