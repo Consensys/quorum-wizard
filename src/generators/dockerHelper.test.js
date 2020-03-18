@@ -1,9 +1,10 @@
 import {
   createDirectory,
   getFullNetworkPath,
-  includeCakeshop,
 } from './networkCreator'
-import { createConfigFromAnswers } from '../model/NetworkConfig'
+import {
+  createConfigFromAnswers,
+} from '../model/NetworkConfig'
 import {
   cwd,
   formatNewLine,
@@ -47,11 +48,10 @@ describe('generates docker-compose directory', () => {
       gethStart: '',
       initStart: [],
     })
-    includeCakeshop.mockReturnValueOnce(false)
     readFileToString.mockReturnValueOnce('test')
     await createDockerCompose(config)
 
-    expect(writeFile).toBeCalledTimes(4)
+    expect(writeFile).toBeCalledTimes(5)
   })
 })
 
@@ -106,7 +106,6 @@ volumes:
   "cakeshopvol":`
     const expected = `quorumDefinitions\ntesseraDefinitions${services}`
 
-    includeCakeshop.mockReturnValueOnce(false)
     readFileToString.mockReturnValueOnce('definitions')
     readFileToString.mockReturnValueOnce('tessera')
     formatNewLine.mockReturnValueOnce('quorumDefinitions\n')
@@ -152,7 +151,6 @@ volumes:
   "cakeshopvol":`
     const expected = `quorumDefinitions${services}`
 
-    includeCakeshop.mockReturnValueOnce(false)
     readFileToString.mockReturnValueOnce('definitions')
     formatNewLine.mockReturnValueOnce('quorumDefinitions\n')
 
@@ -205,7 +203,6 @@ volumes:
   "cakeshopvol":`
     const expected = `quorumDefinitions\ncakeshopDefinitions${services}`
 
-    includeCakeshop.mockReturnValueOnce(true)
     readFileToString.mockReturnValueOnce('quorumDefinitions')
     readFileToString.mockReturnValueOnce('cakeshopDefinitions')
     formatNewLine.mockReturnValueOnce('quorumDefinitions\n')
@@ -274,7 +271,6 @@ volumes:
   "cakeshopvol":`
     const expected = `quorumDefinitions\ntesseraDefinitions\ncakeshopDefinitions${services}`
 
-    includeCakeshop.mockReturnValueOnce(true)
     readFileToString.mockReturnValueOnce('definitions')
     readFileToString.mockReturnValueOnce('tessera')
     readFileToString.mockReturnValueOnce('cakeshop')

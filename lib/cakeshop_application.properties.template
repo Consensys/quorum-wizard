@@ -50,7 +50,6 @@ security.basic.enabled=false
 security.ignored=/**
 server.compression.enabled=true
 server.compression.mime-types=application/json,application/xml,text/html,text/xml,text/plain
-server.port=8999
 spring.main.banner-mode=off
 spring.mvc.view.prefix=/WEB-INF/jsp/
 spring.mvc.view.suffix=.jsp

@@ -1,13 +1,14 @@
 import inquirer from 'inquirer'
 import {
   isBash,
-  isDocker,
   isTessera,
   isRaft,
+  isCakeshop,
 } from '../model/NetworkConfig'
 import {
   getCustomizedBashNodes,
   getCustomizedDockerPorts,
+  getCustomizedCakeshopPort,
 } from './customPromptHelper'
 import {
   CUSTOM_QUESTIONS,
@@ -39,18 +40,20 @@ function getQuestionsForMode(mode) {
 }
 
 async function promptForCustomPorts(answers) {
-  if (isBash(answers.deployment)) {
-    // eslint-disable-next-line no-param-reassign
-    answers.nodes = await getCustomizedBashNodes(
+  // eslint-disable-next-line no-param-reassign
+  answers.nodes = isBash(answers.deployment)
+    ? await getCustomizedBashNodes(
       answers.numberNodes,
       isTessera(answers.transactionManager),
       isRaft(answers.consensus),
     )
-  } else if (isDocker(answers.deployment)) {
-    // eslint-disable-next-line no-param-reassign
-    answers.dockerCustom = await getCustomizedDockerPorts(
+    : await getCustomizedDockerPorts(
+      answers.numberNodes,
       isTessera(answers.transactionManager),
-      isRaft(answers.consensus),
     )
+
+  if (isCakeshop(answers.cakeshop)) {
+    // eslint-disable-next-line no-param-reassign
+    answers.cakeshopPort = await getCustomizedCakeshopPort()
   }
 }

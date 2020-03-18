@@ -98,10 +98,6 @@ export function createStaticNodes(nodes, consensus, configDir) {
   })
 }
 
-export function includeCakeshop(config) {
-  return config.network.cakeshop !== 'none'
-}
-
 function createPeerList(nodes, transactionManager) {
   if (!isTessera(transactionManager)) {
     return []

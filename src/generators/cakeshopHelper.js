@@ -1,25 +1,40 @@
 import { join } from 'path'
 import {
-  copyFile,
   createFolder,
   libRootDir,
   writeJsonFile,
+  readFileToString,
+  formatNewLine,
+  writeFile,
 } from '../utils/fileUtils'
 import { generateCakeshopConfig } from '../model/CakeshopConfig'
-import { includeCakeshop } from './networkCreator'
+import {
+  isCakeshop,
+  isDocker,
+} from '../model/NetworkConfig'
 
 export function buildCakeshopDir(config, qdata) {
   const cakeshopDir = join(qdata, 'cakeshop', 'local')
   createFolder(cakeshopDir, true)
   writeJsonFile(cakeshopDir, 'cakeshop.json', generateCakeshopConfig(config))
-  copyFile(
-    join(libRootDir(), 'lib', 'cakeshop_application.properties.template'),
-    join(cakeshopDir, 'application.properties'),
-  )
+  writeFile(join(cakeshopDir, 'application.properties'), buildPropertiesFile(config), false)
+}
+
+function buildPropertiesFile(config) {
+  const properties = readFileToString(join(
+    libRootDir(),
+    'lib',
+    'cakeshop_application.properties.template',
+  ))
+  const cakeshopPort = isDocker(config.network.deployment) ? '8999' : config.network.cakeshopPort
+  return [
+    formatNewLine(properties),
+    `server.port=${cakeshopPort}`,
+  ].join('')
 }
 
 export function generateCakeshopScript(config) {
-  if (!includeCakeshop(config)) {
+  if (!isCakeshop(config.network.cakeshop)) {
     return ''
   }
   const jvmParams = '-Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop'
@@ -27,11 +42,11 @@ export function generateCakeshopScript(config) {
   return [
     'echo "Starting Cakeshop"',
     startCommand,
-    waitForCakeshopCommand(),
+    waitForCakeshopCommand(config.network.cakeshopPort),
   ].join('\n')
 }
 
-export function waitForCakeshopCommand() {
+export function waitForCakeshopCommand(cakeshopPort) {
   return `
   DOWN=true
   k=10
@@ -40,7 +55,7 @@ export function waitForCakeshopCommand() {
     echo "Waiting until Cakeshop is running..."
     DOWN=false
     set +e
-    result=$(curl -s http://localhost:8999/actuator/health)
+    result=$(curl -s http://localhost:${cakeshopPort}/actuator/health)
     set -e
     if [ ! "\${result}" == "{\\"status\\":\\"UP\\"}" ]; then
       echo "Cakeshop is not yet listening on http"
@@ -55,6 +70,6 @@ export function waitForCakeshopCommand() {
     sleep 5
   done
 
-  echo "Cakeshop started at http://localhost:8999"
+  echo "Cakeshop started at http://localhost:${cakeshopPort}"
   `
 }

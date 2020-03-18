@@ -67,7 +67,6 @@ test('creates 3nodes raft bash tessera custom', () => {
     genesisLocation: 'none',
     customizePorts: false,
     nodes: [],
-    dockerCustom: undefined,
   })
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
@@ -87,7 +86,6 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
         ip: '127.0.0.1',
         thirdPartyPort: '5081',
         p2pPort: '5001',
-        enclavePort: '5181',
       },
     },
     {
@@ -102,7 +100,6 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
         ip: '127.0.0.1',
         thirdPartyPort: '5082',
         p2pPort: '5002',
-        enclavePort: '5182',
       },
     },
   ]
@@ -117,8 +114,8 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
     networkId: 10,
     genesisLocation: 'none',
     customizePorts: true,
+    cakeshopPort: '7999',
     nodes,
-    dockerCustom: undefined,
   })
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()

@@ -113,3 +113,6 @@ x-tx-manager-def:
           exit 1
           ;;
       esac
+  expose:
+    - "9000"
+    - "9080"

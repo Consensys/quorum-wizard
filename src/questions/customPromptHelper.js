@@ -44,21 +44,15 @@ function buildBashQuestions(numberNodes, hasTessera, i, prevAnswers, isRaft) {
     })
     questions.push({
       type: 'input',
-      name: 'tessera3Party',
-      message: `input tessera node ${i + 1} third party port`,
-      default: prevAnswers !== undefined ? incrementPort(prevAnswers.tessera3Party, 1) : '9081',
-    })
-    questions.push({
-      type: 'input',
       name: 'tesseraP2P',
       message: `input tessera node ${i + 1} p2p port`,
       default: prevAnswers !== undefined ? incrementPort(prevAnswers.tesseraP2P, 1) : '9001',
     })
     questions.push({
       type: 'input',
-      name: 'tesseraEnclave',
-      message: `input tessera node ${i + 1} enclave port`,
-      default: prevAnswers !== undefined ? incrementPort(prevAnswers.tesseraEnclave, 1) : '9180',
+      name: 'tessera3Party',
+      message: `input tessera node ${i + 1} third party port`,
+      default: prevAnswers !== undefined ? incrementPort(prevAnswers.tessera3Party, 1) : '9081',
     })
   }
   return questions
@@ -83,9 +77,8 @@ export async function getCustomizedBashNodes(numberNodes, hasTessera, isRaft) {
     if (hasTessera) {
       node.tm = {
         ip: answers.tesseraIP,
-        thirdPartyPort: answers.tessera3Party,
         p2pPort: answers.tesseraP2P,
-        enclavePort: answers.tesseraEnclave,
+        thirdPartyPort: answers.tessera3Party,
       }
     }
     nodes.push(node)
@@ -93,43 +86,66 @@ export async function getCustomizedBashNodes(numberNodes, hasTessera, isRaft) {
   return nodes
 }
 
-export async function getCustomizedDockerPorts(hasTessera, isRaft) {
+function buildDockerQuestions(numberNodes, hasTessera, i, prevAnswers) {
   const questions = []
-  let customDocker = {}
   questions.push({
     type: 'input',
-    name: 'quorumRpcPort',
-    message: 'input quorum rpc port',
-    default: '21000',
+    name: 'quorumRpc',
+    message: `input quorum node ${i + 1} rpc port`,
+    default: prevAnswers !== undefined ? incrementPort(prevAnswers.quorumRpc, 1) : '22000',
   })
-  if (isRaft) {
-    questions.push({
-      type: 'input',
-      name: 'quorumRaftPort',
-      message: 'input quorum raft port',
-      default: '50400',
-    })
-  }
   if (hasTessera) {
     questions.push({
       type: 'input',
-      name: 'tesseraThirdPartyPort',
-      message: 'input tessera third party port',
-      default: '9080',
-    })
-    questions.push({
-      type: 'input',
-      name: 'tesseraP2pPort',
-      message: 'input tessera third p2p port',
-      default: '9000',
+      name: 'tessera3Party',
+      message: `input tessera node ${i + 1} third party port`,
+      default: prevAnswers !== undefined ? incrementPort(prevAnswers.tessera3Party, 1) : '9081',
     })
   }
-  const answers = await inquirer.prompt(questions)
-  customDocker = {
-    ...answers,
-    quorumRaftPort: answers.quorumRaftPort === undefined ? '50400' : answers.quorumRaftPort,
+  return questions
+}
+
+export async function getCustomizedDockerPorts(numberNodes, hasTessera) {
+  let answers
+  const nodes = []
+  const devP2pPort = 21000
+  const wsPort = 23000
+  const raftPort = 50401
+  const p2pPort = 9001
+
+  // eslint-disable no-await-in-loop
+  for (let i = 0; i < parseInt(numberNodes, 10); i += 1) {
+    answers = await inquirer.prompt(buildDockerQuestions(numberNodes, hasTessera, i, answers))
+    const node = {
+      quorum: {
+        ip: `172.16.239.1${i + 1}`,
+        devP2pPort: devP2pPort + i,
+        rpcPort: answers.quorumRpc,
+        wsPort: wsPort + i,
+        raftPort: raftPort + i,
+      },
+    }
+    if (hasTessera) {
+      node.tm = {
+        ip: `172.16.239.10${i + 1}`,
+        thirdPartyPort: answers.tessera3Party,
+        p2pPort: p2pPort + i,
+      }
+    }
+    nodes.push(node)
   }
-  return customDocker
+  return nodes
+}
+
+export async function getCustomizedCakeshopPort() {
+  const question = {
+    type: 'input',
+    name: 'cakeshopPort',
+    message: 'input cakeshop port',
+    default: '8999',
+  }
+  const answer = await inquirer.prompt(question)
+  return answer.cakeshopPort
 }
 
 function numToString(num) {

@@ -2,11 +2,12 @@ import { join } from 'path'
 import { anything } from 'expect'
 import { createConfigFromAnswers } from '../model/NetworkConfig'
 import {
-  copyFile,
   createFolder,
   cwd,
   libRootDir,
   writeJsonFile,
+  readFileToString,
+  writeFile,
 } from '../utils/fileUtils'
 import { buildCakeshopDir } from './cakeshopHelper'
 import {
@@ -37,12 +38,16 @@ describe('creates a cakeshop directory structure for bash', () => {
       'cakeshop.json',
       anything(),
     )
-    expect(copyFile).toBeCalledWith(
+    expect(readFileToString).toBeCalledWith(
       createLibPath(
         'lib',
         'cakeshop_application.properties.template',
       ),
-      createNetPath(config, 'qdata/cakeshop/local', 'application.properties'),
+    )
+    expect(writeFile).toBeCalledWith(
+      createNetPath(config, 'qdata/cakeshop/local/application.properties'),
+      anything(),
+      false,
     )
   })
 })

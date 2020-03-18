@@ -5,76 +5,52 @@ import {
   readFileToString,
   writeFile,
 } from '../utils/fileUtils'
-import {
-  getFullNetworkPath,
-  includeCakeshop,
-} from './networkCreator'
+import { getFullNetworkPath } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
-import { isTessera } from '../model/NetworkConfig'
+import {
+  isTessera,
+  isCakeshop,
+} from '../model/NetworkConfig'
 import { info } from '../utils/log'
 
 export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
-  const hasCakeshop = includeCakeshop(config)
+  const hasCakeshop = isCakeshop(config.network.cakeshop)
 
   const quorumDefinitions = readFileToString(join(
     libRootDir(),
     'lib/docker-compose-definitions-quorum.yml',
   ))
-  const quorumExposedPorts = createCustomQuorumPorts(config.dockerCustom)
+
   const tesseraDefinitions = hasTessera ? readFileToString(join(
     libRootDir(),
     'lib/docker-compose-definitions-tessera.yml',
   )) : ''
-  const tesseraExposedPorts = hasTessera ? createCustomTesseraPorts(config.dockerCustom) : ''
+
   const cakeshopDefinitions = hasCakeshop ? readFileToString(join(
     libRootDir(),
     'lib/docker-compose-definitions-cakeshop.yml',
   )) : ''
 
   let services = config.nodes.map((node, i) => {
-    let allServices = buildNodeService(config, node, i, hasTessera)
+    let allServices = buildNodeService(node, i, hasTessera)
     if (hasTessera) {
-      allServices = [allServices, buildTesseraService(config, node, i, config.dockerCustom)].join('')
+      allServices = [allServices, buildTesseraService(node, i)].join('')
     }
     return allServices
   })
   if (hasCakeshop) {
-    services = [services.join(''), buildCakeshopService()]
+    services = [services.join(''), buildCakeshopService(config.network.cakeshopPort)]
   }
 
   return [
     formatNewLine(quorumDefinitions),
-    formatNewLine(quorumExposedPorts),
     formatNewLine(tesseraDefinitions),
-    formatNewLine(tesseraExposedPorts),
     formatNewLine(cakeshopDefinitions),
     'services:',
     services.join(''),
     buildEndService(config),
   ].join('')
-}
-
-function createCustomQuorumPorts(dockerConfig) {
-  if (dockerConfig === undefined) {
-    return `  expose:
-    - "21000"
-    - "50400"`
-  }
-  return `  expose:
-    - "${dockerConfig.quorumRpcPort}"
-    - "${dockerConfig.quorumRaftPort}"`
-}
-
-function createCustomTesseraPorts(dockerConfig) {
-  if (dockerConfig === undefined) {
-    return `  expose:
-    - "9000"
-    - "9080"`
-  }
-  return `  expose:
-    - "${dockerConfig.tesseraP2pPort}"
-    - "${dockerConfig.tesseraThirdPartyPort}"`
 }
 
 export async function createDockerCompose(config) {
@@ -86,7 +62,7 @@ export async function createDockerCompose(config) {
   const networkPath = getFullNetworkPath(config)
   const qdata = join(networkPath, 'qdata')
 
-  if (includeCakeshop(config)) {
+  if (isCakeshop(config.network.cakeshop)) {
     buildCakeshopDir(config, qdata)
   }
 
@@ -110,7 +86,7 @@ QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/tessera:${config.network.transa
   return env
 }
 
-function buildNodeService(config, node, i, hasTessera) {
+function buildNodeService(node, i, hasTessera) {
   const txManager = hasTessera
     ? `depends_on:
       - txmanager${i + 1}
@@ -135,14 +111,13 @@ function buildNodeService(config, node, i, hasTessera) {
         ipv4_address: 172.16.239.1${i + 1}`
 }
 
-function buildTesseraService(config, node, i, docker) {
-  const port = docker === undefined ? '9080' : docker.tesseraThirdPartyPort
+function buildTesseraService(node, i) {
   return `
   txmanager${i + 1}:
     << : *tx-manager-def
     hostname: txmanager${i + 1}
     ports:
-      - "${node.tm.thirdPartyPort}:${port}"
+      - "${node.tm.thirdPartyPort}:9080"
     volumes:
       - vol${i + 1}:/qdata
       - ./qdata:/examples:ro
@@ -153,13 +128,13 @@ function buildTesseraService(config, node, i, docker) {
       - NODE_ID=${i + 1}`
 }
 
-function buildCakeshopService() {
+function buildCakeshopService(port) {
   return `
   cakeshop:
     << : *cakeshop-def
     hostname: cakeshop
     ports:
-      - "8999:8999"
+      - "${port}:8999"
     volumes:
       - cakeshopvol:/qdata
       - ./qdata:/examples:ro
