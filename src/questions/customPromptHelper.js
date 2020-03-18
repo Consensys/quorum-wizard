@@ -94,6 +94,12 @@ function buildDockerQuestions(numberNodes, hasTessera, i, prevAnswers) {
     message: `input quorum node ${i + 1} rpc port`,
     default: prevAnswers !== undefined ? incrementPort(prevAnswers.quorumRpc, 1) : '22000',
   })
+  questions.push({
+    type: 'input',
+    name: 'quorumWs',
+    message: `input quorum node ${i + 1} ws port`,
+    default: prevAnswers !== undefined ? incrementPort(prevAnswers.quorumWs, 1) : '23000',
+  })
   if (hasTessera) {
     questions.push({
       type: 'input',
@@ -109,7 +115,6 @@ export async function getCustomizedDockerPorts(numberNodes, hasTessera) {
   let answers
   const nodes = []
   const devP2pPort = 21000
-  const wsPort = 23000
   const raftPort = 50401
   const p2pPort = 9001
 
@@ -121,7 +126,7 @@ export async function getCustomizedDockerPorts(numberNodes, hasTessera) {
         ip: `172.16.239.1${i + 1}`,
         devP2pPort: devP2pPort + i,
         rpcPort: answers.quorumRpc,
-        wsPort: wsPort + i,
+        wsPort: answers.quorumWs,
         raftPort: raftPort + i,
       },
     }
