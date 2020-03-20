@@ -2,6 +2,7 @@ import { join } from 'path'
 import { libRootDir } from '../utils/fileUtils'
 import { executeSync } from '../utils/execUtils'
 import {
+  isBash,
   isDocker,
   isIstanbul,
   isTessera,
@@ -70,12 +71,23 @@ export function getGethOnPath() {
   return pathChoices
 }
 
-export function getDownloadableGethChoices() {
-  return getDownloadableChoices(BINARIES.quorum)
+export function getDownloadableGethChoices(deployment) {
+  let choices = getDownloadableChoices(BINARIES.quorum)
+  if (isBash(deployment)) {
+    choices = choices.concat(getGethOnPath())
+  }
+  return choices
 }
 
-export function getDownloadableTesseraChoices() {
-  return getDownloadableChoices(BINARIES.tessera)
+export function getDownloadableTesseraChoices(deployment) {
+  let choices = getDownloadableChoices(BINARIES.tessera)
+  if (isBash(deployment)) {
+    choices = choices.concat(getTesseraOnPath())
+  } else {
+    // allow all options in docker compose mode since local jdk version doesn't matter
+    choices = choices.map((choice) => ({ ...choice, disabled: false }))
+  }
+  return choices.concat('none')
 }
 
 function getDownloadableChoices(versions) {

@@ -6,11 +6,8 @@ import {
 import {
   getDownloadableGethChoices,
   getDownloadableTesseraChoices,
-  getGethOnPath,
-  getTesseraOnPath,
 } from '../generators/binaryHelper'
 import {
-  isBash,
   isRaft,
 } from '../model/NetworkConfig'
 
@@ -87,26 +84,14 @@ export const QUORUM_VERSION = {
   type: 'list',
   name: 'quorumVersion',
   message: 'Which version of Quorum would you like to use?',
-  choices: ({ deployment }) => {
-    let choices = [...getDownloadableGethChoices()]
-    if (isBash(deployment)) {
-      choices = choices.concat(getGethOnPath())
-    }
-    return choices
-  },
+  choices: ({ deployment }) => getDownloadableGethChoices(deployment),
 }
 
 export const TRANSACTION_MANAGER = {
   type: 'list',
   name: 'transactionManager',
   message: 'Choose a version of tessera if you would like to use private transactions in your network, otherwise choose "none"',
-  choices: ({ deployment }) => {
-    let choices = [...getDownloadableTesseraChoices()]
-    if (isBash(deployment)) {
-      choices = choices.concat(getTesseraOnPath())
-    }
-    return choices.concat('none')
-  },
+  choices: ({ deployment }) => getDownloadableTesseraChoices(deployment),
 }
 
 export const CAKESHOP = {
