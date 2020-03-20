@@ -2,6 +2,7 @@ import { join } from 'path'
 import { any } from 'expect'
 import {
   downloadAndCopyBinaries,
+  getDownloadableTesseraChoices,
   getGethOnPath,
   getTesseraOnPath,
   pathToBootnode,
@@ -185,6 +186,29 @@ describe('Downloads binaries', () => {
     await downloadAndCopyBinaries(config)
     expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.5.0')
     expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
+  })
+})
+
+describe('presents the correct binary options', () => {
+  it('disables 0.10.4 if in bash mode and on jdk 8', () => {
+    isJava11Plus.mockReturnValue(false)
+    const choices = getDownloadableTesseraChoices('bash')
+    expect(choices.some((choice) => choice.name === 'Tessera 0.10.4' && typeof choice.disabled === 'string')).toBeTruthy()
+    expect(choices.some((choice) => choice.name === 'Tessera 0.10.2' && choice.disabled === false)).toBeTruthy()
+    expect(choices.includes('none')).toBeTruthy()
+  })
+  it('disables 0.10.2 if in bash mode and on jdk 11+', () => {
+    isJava11Plus.mockReturnValue(true)
+    const choices = getDownloadableTesseraChoices('bash')
+    expect(choices.some((choice) => choice.name === 'Tessera 0.10.4' && choice.disabled === false)).toBeTruthy()
+    expect(choices.some((choice) => choice.name === 'Tessera 0.10.2' && typeof choice.disabled === 'string')).toBeTruthy()
+    expect(choices.includes('none')).toBeTruthy()
+  })
+  it('does not disable tessera options in docker mode', () => {
+    const choices = getDownloadableTesseraChoices('docker-compose')
+    expect(choices.some((choice) => choice.name === 'Tessera 0.10.4' && choice.disabled === false)).toBeTruthy()
+    expect(choices.some((choice) => choice.name === 'Tessera 0.10.2' && choice.disabled === false)).toBeTruthy()
+    expect(choices.includes('none')).toBeTruthy()
   })
 })
 
