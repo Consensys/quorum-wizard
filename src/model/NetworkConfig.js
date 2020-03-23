@@ -14,6 +14,7 @@ export function createConfigFromAnswers(answers) {
     customizePorts = false,
     nodes = [],
     cakeshopPort = '8999',
+    remoteDebug = false,
   } = answers
   const networkFolder = createNetworkFolderName(
     numberNodes,
@@ -37,6 +38,7 @@ export function createConfigFromAnswers(answers) {
       networkId,
       customizePorts,
       cakeshopPort,
+      remoteDebug,
     },
     nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(
       numberNodes,

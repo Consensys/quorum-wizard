@@ -1,25 +1,38 @@
-import { buildBashScript } from './bashHelper'
+import { anything } from 'expect'
+import {
+  buildBashScript,
+  buildBash,
+} from './bashHelper'
 import { createConfigFromAnswers } from '../model/NetworkConfig'
 import {
   cwd,
   libRootDir,
   readFileToString,
+  writeFile,
+  copyFile,
+  createFolder,
+  writeJsonFile,
 } from '../utils/fileUtils'
 import {
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
+  createNetPath,
+  createLibPath,
 } from '../utils/testHelper'
+import { info } from '../utils/log'
 import { generateAccounts } from './consensusHelper'
 import { isJava11Plus } from '../utils/execUtils'
 
 jest.mock('../utils/fileUtils')
 jest.mock('./consensusHelper')
 jest.mock('../utils/execUtils')
+jest.mock('../utils/log')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 generateAccounts.mockReturnValue('accounts')
 readFileToString.mockReturnValue('publicKey')
 isJava11Plus.mockReturnValue(false)
+info.mockReturnValue('log')
 
 const baseNetwork = {
   numberNodes: '3',
@@ -128,4 +141,34 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
   })
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
+})
+
+test('build bash with tessera', () => {
+  const config = createConfigFromAnswers(baseNetwork)
+  buildBash(config)
+  expect(writeFile).toBeCalledWith(createNetPath(config, 'start.sh'), anything(), true)
+  expect(copyFile).toBeCalledWith(createLibPath('lib', 'stop.sh'), createNetPath(config, 'stop.sh'))
+})
+
+test('build bash with tessera and cakeshop', () => {
+  const config = createConfigFromAnswers({
+    ...baseNetwork,
+    cakeshop: '0.11.0',
+  })
+  buildBash(config)
+  expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', 'cakeshop', 'local'), true)
+  expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'qdata', 'cakeshop', 'local'), 'cakeshop.json', anything())
+  expect(writeFile).toBeCalledWith(createNetPath(config, 'qdata', 'cakeshop', 'local', 'application.properties'), anything(), false)
+  expect(writeFile).toBeCalledWith(createNetPath(config, 'start.sh'), anything(), true)
+  expect(copyFile).toBeCalledWith(createLibPath('lib', 'stop.sh'), createNetPath(config, 'stop.sh'))
+})
+
+test('build bash remote debug', () => {
+  const config = createConfigFromAnswers({
+    ...baseNetwork,
+    remoteDebug: true,
+  })
+  buildBash(config)
+  expect(writeFile).toBeCalledWith(createNetPath(config, 'start.sh'), anything(), true)
+  expect(copyFile).toBeCalledWith(createLibPath('lib', 'stop.sh'), createNetPath(config, 'stop.sh'))
 })
