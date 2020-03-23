@@ -76,6 +76,7 @@ describe('prompts the user with different sets of questions based on first choic
     prompt.mockResolvedValue({
       ...CUSTOM_CONFIG,
       cakeshop: '0.11.0',
+      consensus: 'raft',
     })
     await promptUser('custom')
     expect(prompt).toHaveBeenCalledWith(CUSTOM_QUESTIONS)
