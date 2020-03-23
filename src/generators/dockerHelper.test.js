@@ -1,3 +1,4 @@
+import { join } from 'path'
 import {
   createDirectory,
   getFullNetworkPath,
@@ -51,7 +52,74 @@ describe('generates docker-compose directory', () => {
     readFileToString.mockReturnValueOnce('test')
     await createDockerCompose(config)
 
-    expect(writeFile).toBeCalledTimes(5)
+    expect(writeFile).toBeCalledWith(
+      join(getFullNetworkPath(), 'qdata', 'cakeshop', 'local', 'application.properties'),
+      expect.anything(),
+      false,
+    )
+
+    expect(writeFile).toBeCalledWith(
+      join(getFullNetworkPath(), 'docker-compose.yml'),
+      expect.anything(),
+      false,
+    )
+
+    expect(writeFile).toBeCalledWith(
+      join(getFullNetworkPath(), '.env'),
+      expect.anything(),
+      false,
+    )
+
+    expect(writeFile).toBeCalledWith(
+      join(getFullNetworkPath(), 'start.sh'),
+      expect.anything(),
+      true,
+    )
+
+    expect(writeFile).toBeCalledWith(
+      join(getFullNetworkPath(), 'stop.sh'),
+      expect.anything(),
+      true,
+    )
+  })
+  it('given docker details builds files to run docker', async () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      cakeshop: 'none',
+      transactionManager: 'none',
+    })
+
+    createDirectory.mockReturnValueOnce({
+      tesseraStart: '',
+      gethStart: '',
+      initStart: [],
+    })
+    readFileToString.mockReturnValueOnce('test')
+    await createDockerCompose(config)
+
+    expect(writeFile).toBeCalledWith(
+      join(getFullNetworkPath(), 'docker-compose.yml'),
+      expect.anything(),
+      false,
+    )
+
+    expect(writeFile).toBeCalledWith(
+      join(getFullNetworkPath(), '.env'),
+      expect.anything(),
+      false,
+    )
+
+    expect(writeFile).toBeCalledWith(
+      join(getFullNetworkPath(), 'start.sh'),
+      expect.anything(),
+      true,
+    )
+
+    expect(writeFile).toBeCalledWith(
+      join(getFullNetworkPath(), 'stop.sh'),
+      expect.anything(),
+      true,
+    )
   })
 })
 

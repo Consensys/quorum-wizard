@@ -33,8 +33,7 @@ export function createDirectory(config) {
   let keyPath = join(libRootDir(), '7nodes')
   // if user selected to generate keys
   if (config.network.generateKeys) {
-    generateKeys(config, configPath)
-    keyPath = configPath
+    keyPath = generateKeys(config, configPath)
   }
   // always generate consensus genesis
   generateConsensusConfig(

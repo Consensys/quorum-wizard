@@ -59,6 +59,15 @@ test('creates 3nodes raft bash tessera cakeshop', () => {
   expect(bash).toMatchSnapshot()
 })
 
+test('creates 3nodes raft bash no tessera', () => {
+  const config = createConfigFromAnswers({
+    ...baseNetwork,
+    transactionManager: 'none',
+  })
+  const bash = buildBashScript(config).startScript
+  expect(bash).toMatchSnapshot()
+})
+
 test('creates 3nodes raft bash tessera custom', () => {
   const config = createConfigFromAnswers({
     ...baseNetwork,
