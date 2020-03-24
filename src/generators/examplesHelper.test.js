@@ -1,5 +1,6 @@
-import { join } from 'path'
 import {
+  createNetPath,
+  createLibPath,
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
@@ -47,12 +48,28 @@ describe('generates and copies over example scripts', () => {
     )
     expect(loadTesseraPublicKey).toBeCalledWith(config, 2)
   })
+  it('generates public-contract and copies over the 2 example scripts', () => {
+    const config = {
+      network: {
+        name: 'test',
+        transactionManager: 'none',
+      },
+      nodes: [{
+        quorum: {
+          ip: '1.2.3.4',
+          rpcPort: '1234',
+        },
+      }],
+    }
+    generateAndCopyExampleScripts(config)
+    expect(writeFile).toBeCalledWith(
+      createNetPath(config, 'runscript.sh'),
+      expect.anything(),
+      true,
+    )
+    expect(copyFile).toBeCalledWith(
+      createLibPath('lib', 'public-contract.js'),
+      createNetPath(config, 'public-contract.js'),
+    )
+  })
 })
-
-function createLibPath(...relativePaths) {
-  return join(libRootDir(), ...relativePaths)
-}
-
-function createNetPath(config, ...relativePaths) {
-  return join(cwd(), 'network', config.network.name, ...relativePaths)
-}
