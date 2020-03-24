@@ -1,5 +1,3 @@
-# quorum-creator
-
 ## Developing 
 `yarn install` to get all the dependencies.
 

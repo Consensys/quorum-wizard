@@ -1,10 +1,10 @@
 {
-  "name": "quorum-creator",
+  "name": "thewizard",
   "version": "0.1.6",
-  "description": "Tool for walking through the setup of Quorum networks.",
+  "description": "Tool for walking through the setup of networks.",
   "main": "src/index.js",
   "bin": {
-    "quorum-creator": "build/index.js"
+    "thewizard": "build/index.js"
   },
   "preferGlobal": true,
   "files": [
@@ -24,14 +24,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/QuorumEngineering/quorum-creator.git"
+    "url": "git+https://github.com/"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/QuorumEngineering/quorum-creator/issues"
+    "url": "https://github.com/"
   },
-  "homepage": "https://github.com/QuorumEngineering/quorum-creator#readme",
+  "homepage": "https://github.com/",
   "dependencies": {
     "@babel/runtime": "^7.8.3",
     "axios": "^0.19.2",
