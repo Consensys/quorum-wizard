@@ -19,6 +19,7 @@
     "start": "babel src --watch -d build --ignore \"src/**/*.test.js\"  --source-maps inline",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage=true",
     "lint": "eslint \"src/**/*.js\"",
     "fix": "eslint --fix \"src/**/*.js\""
   },
