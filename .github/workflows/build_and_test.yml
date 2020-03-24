@@ -5,9 +5,11 @@ name: Build & Test
 
 on:
   push:
-    branches: [ master ]
+    branches-ignore:
+      - master
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
 
 jobs:
   build:
@@ -23,7 +25,7 @@ jobs:
       - name: Build wizard
         run : |
           yarn install
-          yarn build
+          yarn build &
       - name: Run wizard tests
         run: |
           yarn install
