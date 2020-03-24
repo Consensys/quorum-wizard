@@ -5,4 +5,5 @@ network
 .DS_Store
 build
 bin/
+coverage/
 
