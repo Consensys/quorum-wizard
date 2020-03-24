@@ -1,4 +1,3 @@
-import { join } from 'path'
 import { anything } from 'expect'
 import { createConfigFromAnswers } from '../model/NetworkConfig'
 import {
@@ -11,6 +10,8 @@ import {
 } from '../utils/fileUtils'
 import { buildCakeshopDir } from './cakeshopHelper'
 import {
+  createNetPath,
+  createLibPath,
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
@@ -51,11 +52,3 @@ describe('creates a cakeshop directory structure for bash', () => {
     )
   })
 })
-
-function createLibPath(...relativePaths) {
-  return join(libRootDir(), ...relativePaths)
-}
-
-function createNetPath(config, ...relativePaths) {
-  return join(cwd(), 'network', config.network.name, ...relativePaths)
-}

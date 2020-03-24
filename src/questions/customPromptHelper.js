@@ -124,17 +124,17 @@ export async function getCustomizedDockerPorts(numberNodes, hasTessera) {
     const node = {
       quorum: {
         ip: `172.16.239.1${i + 1}`,
-        devP2pPort: devP2pPort + i,
+        devP2pPort: numToString(devP2pPort + i),
         rpcPort: answers.quorumRpc,
         wsPort: answers.quorumWs,
-        raftPort: raftPort + i,
+        raftPort: numToString(raftPort + i),
       },
     }
     if (hasTessera) {
       node.tm = {
         ip: `172.16.239.10${i + 1}`,
         thirdPartyPort: answers.tessera3Party,
-        p2pPort: p2pPort + i,
+        p2pPort: numToString(p2pPort + i),
       }
     }
     nodes.push(node)
@@ -150,6 +150,7 @@ export async function getCustomizedCakeshopPort() {
     default: '8999',
   }
   const answer = await inquirer.prompt(question)
+
   return answer.cakeshopPort
 }
 

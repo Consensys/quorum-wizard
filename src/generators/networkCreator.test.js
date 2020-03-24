@@ -1,4 +1,3 @@
-import { join } from 'path'
 import { anything } from 'expect'
 import {
   createDirectory,
@@ -17,16 +16,21 @@ import {
   writeJsonFile,
 } from '../utils/fileUtils'
 import {
+  createNetPath,
+  createLibPath,
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
+import { generateKeys } from './keyGen'
 
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
 jest.mock('../model/ConsensusConfig')
+jest.mock('./keyGen')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
+generateKeys.mockReturnValue(`${TEST_LIB_ROOT_DIR}/keyPath`)
 
 const baseNetwork = {
   numberNodes: '5',
@@ -97,6 +101,45 @@ describe('creates a bash network', () => {
         `tessera-config-09-${i}.json`,
         anything(),
       )
+    }
+  })
+})
+
+describe('creates a bash network without tessera', () => {
+  it('rejects invalid network names', () => {
+    const names = ['', '.', '..', '\0', '/']
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      transactionManager: 'none',
+      generateKeys: true,
+    })
+    names.forEach((name) => {
+      config.network.name = name
+      expect(() => createDirectory(config)).toThrow(Error)
+    })
+  })
+
+  it('Creates the correct directory structure and moves files in', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      transactionManager: 'none',
+      generateKeys: true,
+    })
+    createDirectory(config)
+    expect(generateConsensusConfig).toHaveBeenCalled()
+    expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', 'logs'), true)
+    expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', config)
+    for (let i = 1; i < 6; i += 1) {
+      expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', `dd${i}`))
+      expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'qdata', `dd${i}`), 'static-nodes.json', anything())
+      expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'qdata', `dd${i}`), 'permissioned-nodes.json', anything())
+      expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', `dd${i}`, 'geth'))
+      expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', `dd${i}`, 'keystore'))
+      expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', `c${i}`))
+      expect(copyFile).toBeCalledWith(createLibPath('keyPath', `key${i}`, 'key'), createNetPath(config, 'qdata', `dd${i}`, 'keystore', 'key'))
+      expect(copyFile).toBeCalledWith(createLibPath('keyPath', `key${i}`, 'password.txt'), createNetPath(config, 'qdata', `dd${i}`, 'keystore', 'password.txt'))
+      expect(copyFile).toBeCalledWith(createNetPath(config, 'generated', 'genesis.json'), createNetPath(config, 'qdata', `dd${i}`, 'genesis.json'))
+      expect(copyFile).toBeCalledWith(createLibPath('keyPath', `key${i}`, 'nodekey'), createNetPath(config, 'qdata', `dd${i}`, 'geth', 'nodekey'))
     }
   })
 })
@@ -202,11 +245,3 @@ describe('creates static nodes json', () => {
     expect(createStaticNodes(nodes, 'istanbul', testDir)).toEqual(expected)
   })
 })
-
-function createLibPath(...relativePaths) {
-  return join(libRootDir(), ...relativePaths)
-}
-
-function createNetPath(config, ...relativePaths) {
-  return join(cwd(), 'network', config.network.name, ...relativePaths)
-}

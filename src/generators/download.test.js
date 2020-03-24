@@ -1,5 +1,25 @@
-import { overrideProcessValue } from '../utils/testHelper'
-import { getPlatformSpecificUrl } from './download'
+import {
+  overrideProcessValue,
+  TEST_CWD,
+  TEST_LIB_ROOT_DIR,
+} from '../utils/testHelper'
+import {
+  getPlatformSpecificUrl,
+  downloadIfMissing,
+} from './download'
+import {
+  cwd,
+  libRootDir,
+  exists,
+} from '../utils/fileUtils'
+import { info } from '../utils/log'
+
+jest.mock('../utils/fileUtils')
+jest.mock('../utils/log')
+
+cwd.mockReturnValue(TEST_CWD)
+libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
+info.mockReturnValue('info')
 
 describe('Handles different binary file urls', () => {
   let originalPlatform
@@ -42,3 +62,18 @@ const multiplePlatform = {
     'compiled_bin',
   ],
 }
+
+describe('tests download if missing function', () => {
+  it('istanbul that exists', () => {
+    exists.mockReturnValue(true)
+    downloadIfMissing('istanbul', '1.0.1')
+  })
+  it('quorum that exists', () => {
+    exists.mockReturnValue(true)
+    downloadIfMissing('quorum', '2.5.0')
+  })
+  it('tessera that exists', () => {
+    exists.mockReturnValue(true)
+    downloadIfMissing('tessera', '0.10.2')
+  })
+})

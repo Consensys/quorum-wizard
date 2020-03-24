@@ -2,6 +2,7 @@ import { join } from 'path'
 import { any } from 'expect'
 import {
   downloadAndCopyBinaries,
+  getDownloadableGethChoices,
   getDownloadableTesseraChoices,
   getGethOnPath,
   getTesseraOnPath,
@@ -90,6 +91,10 @@ describe('Finds binaries on path', () => {
     expect(executeSync).toHaveBeenLastCalledWith('geth version')
   })
   it('Returns no choices when $TESSERA_JAR not set', () => {
+    const originalEnv = process.env
+    overrideProcessValue('env', { TESSERA_JAR: '' })
+    expect(getTesseraOnPath()).toEqual([])
+    overrideProcessValue('env', originalEnv)
   })
   it('Returns choice when $TESSERA_JAR is set', () => {
     const originalEnv = process.env
@@ -186,6 +191,17 @@ describe('Downloads binaries', () => {
     await downloadAndCopyBinaries(config)
     expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.5.0')
     expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
+  })
+})
+
+describe('presents correct binary options', () => {
+  it('presents available geth options for bash', () => {
+    const choices = getDownloadableGethChoices('bash')
+    expect(choices.some((choice) => choice.name === 'Quorum 2.5.0' && choice.disabled === false)).toBeTruthy()
+  })
+  it('presents available geth options for docker', () => {
+    const choices = getDownloadableGethChoices('docker')
+    expect(choices.some((choice) => choice.name === 'Quorum 2.5.0' && choice.disabled === false)).toBeTruthy()
   })
 })
 
