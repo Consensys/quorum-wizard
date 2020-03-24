@@ -23,8 +23,10 @@ jobs:
         with:
           node-version: 10.x
       - name: Build wizard
-        run: yarn install
-        run: yarn build
+        run: |
+          yarn install
+          yarn build
       - name: Test wizard
-        run: yarn install
-        run: yarn test
+        run: |
+          yarn install
+          yarn test
