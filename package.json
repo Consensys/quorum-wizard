@@ -1,6 +1,6 @@
 {
   "name": "thewizard",
-  "version": "0.1.6",
+  "version": "test",
   "description": "Tool for walking through the setup of networks.",
   "main": "src/index.js",
   "bin": {
