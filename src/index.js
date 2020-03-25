@@ -39,6 +39,12 @@ const { argv } = yargs
   .version()
   .strict()
 
+if (process.platform === 'win32') {
+  console.log('Unfortunately, Windows OS is not yet supported by Quorum tooling.');
+
+  process.exit(1);
+}
+
 createLogger(argv.v)
 debug('Showing debug logs')
 
