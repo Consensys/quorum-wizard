@@ -4,9 +4,7 @@
 name: Build & Test
 
 on:
-  push:
-    branches-ignore:
-      - master
+  push
   pull_request:
     branches:
       - master
@@ -27,10 +25,4 @@ jobs:
           yarn install
           yarn build
       - name: Test wizard
-        run: |
-          yarn install
-          yarn test --coverage
-      - name: Jest Code Coverage Report
-        uses: romeovs/lcov-reporter-action@v0.2.16
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+        run: yarn test
