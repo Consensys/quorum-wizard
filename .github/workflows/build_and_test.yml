@@ -30,7 +30,8 @@ jobs:
         run: |
           yarn install
           yarn test
-      - uses: ziishaned/jest-reporter-action@v0.0.1
+      - name: Jest Code Coverage Report
+        uses: ziishaned/jest-reporter-action@0.1.1
         with:
           github-token: ${{ secrets.TEST_TOKEN }}
           test-command: "yarn test --coverage"
