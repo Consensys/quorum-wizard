@@ -1,3 +1,4 @@
+![](https://github.com/QuorumEngineering/quorum-creator/workflows/Build%20&%20Test/badge.svg)
 ## Developing 
 Clone this repo to your local machine.
 
