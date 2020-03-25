@@ -24,7 +24,6 @@ import {
   loadTesseraPublicKey,
 } from './generators/transactionManager'
 import { downloadAndCopyBinaries } from './generators/binaryHelper'
-import { exitOnError } from 'winston'
 
 const yargs = require('yargs')
 
