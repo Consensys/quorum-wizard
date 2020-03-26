@@ -1,4 +1,3 @@
-import { join } from 'path'
 import {
   copyFile,
   cwd,
@@ -7,6 +6,7 @@ import {
 } from '../utils/fileUtils'
 import { loadTesseraPublicKey } from './transactionManager'
 import { isTessera } from '../model/NetworkConfig'
+import { joinPath } from '../utils/pathUtils'
 
 function generatePrivateContractExample(privateFor) {
   return `
@@ -42,14 +42,14 @@ geth --exec "loadScript(\\"$1\\")" attach "http://localhost:${node.quorum.rpcPor
 
 // eslint-disable-next-line import/prefer-default-export
 export function generateAndCopyExampleScripts(config) {
-  const networkPath = join(cwd(), 'network', config.network.name)
-  writeFile(join(networkPath, 'runscript.sh'), generateRunScript(config), true)
+  const networkPath = joinPath(cwd(), 'network', config.network.name)
+  writeFile(joinPath(networkPath, 'runscript.sh'), generateRunScript(config), true)
   copyFile(
-    join(libRootDir(), 'lib', 'public-contract.js'),
-    join(networkPath, 'public-contract.js'),
+    joinPath(libRootDir(), 'lib', 'public-contract.js'),
+    joinPath(networkPath, 'public-contract.js'),
   )
   if (isTessera(config.network.transactionManager)) {
     const nodeTwoPublicKey = loadTesseraPublicKey(config, 2)
-    writeFile(join(networkPath, 'private-contract.js'), generatePrivateContractExample(nodeTwoPublicKey))
+    writeFile(joinPath(networkPath, 'private-contract.js'), generatePrivateContractExample(nodeTwoPublicKey))
   }
 }

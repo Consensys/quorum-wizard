@@ -1,7 +1,7 @@
-import { join } from 'path'
 import { readFileToString } from '../utils/fileUtils'
 import { isTessera } from '../model/NetworkConfig'
 import { getFullNetworkPath } from './networkCreator'
+import { joinPath } from '../utils/pathUtils'
 
 export function formatTesseraKeysOutput(config) {
   if (!isTessera(config.network.transactionManager)) {
@@ -20,5 +20,5 @@ ${output.join('\n\n')}
 }
 
 export function loadTesseraPublicKey(config, nodeNumber) {
-  return readFileToString(join(getFullNetworkPath(config), 'qdata', `c${nodeNumber}`, 'tm.pub'))
+  return readFileToString(joinPath(getFullNetworkPath(config), 'qdata', `c${nodeNumber}`, 'tm.pub'))
 }

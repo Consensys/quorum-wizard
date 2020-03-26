@@ -1,4 +1,3 @@
-import { join } from 'path'
 import sanitize from 'sanitize-filename'
 import {
   copyFile,
@@ -16,6 +15,7 @@ import {
   isRaft,
   isTessera,
 } from '../model/NetworkConfig'
+import { joinPath } from '../utils/pathUtils'
 
 export function createDirectory(config) {
   // https://nodejs.org/en/knowledge/file-system/security/introduction/
@@ -23,14 +23,14 @@ export function createDirectory(config) {
   const networkPath = getFullNetworkPath(config)
   removeFolder(networkPath)
 
-  const qdata = join(networkPath, 'qdata')
-  const logs = join(qdata, 'logs')
+  const qdata = joinPath(networkPath, 'qdata')
+  const logs = joinPath(qdata, 'logs')
   createFolder(logs, true)
   writeJsonFile(networkPath, 'config.json', config)
 
-  const configPath = join(cwd(), config.network.configDir)
+  const configPath = joinPath(cwd(), config.network.configDir)
   createFolder(configPath, true)
-  let keyPath = join(libRootDir(), '7nodes')
+  let keyPath = joinPath(libRootDir(), '7nodes')
   // if user selected to generate keys
   if (config.network.generateKeys) {
     keyPath = generateKeys(config, configPath)
@@ -49,13 +49,13 @@ export function createDirectory(config) {
 
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
-    const keyFolder = join(keyPath, `key${nodeNumber}`)
-    const quorumDir = join(qdata, `dd${nodeNumber}`)
-    const gethDir = join(quorumDir, 'geth')
-    const keyDir = join(quorumDir, 'keystore')
-    const tmDir = join(qdata, `c${nodeNumber}`)
-    const passwordDestination = join(keyDir, 'password.txt')
-    const genesisDestination = join(quorumDir, 'genesis.json')
+    const keyFolder = joinPath(keyPath, `key${nodeNumber}`)
+    const quorumDir = joinPath(qdata, `dd${nodeNumber}`)
+    const gethDir = joinPath(quorumDir, 'geth')
+    const keyDir = joinPath(quorumDir, 'keystore')
+    const tmDir = joinPath(qdata, `c${nodeNumber}`)
+    const passwordDestination = joinPath(keyDir, 'password.txt')
+    const genesisDestination = joinPath(quorumDir, 'genesis.json')
     createFolder(quorumDir)
     createFolder(gethDir)
     createFolder(keyDir)
@@ -63,13 +63,13 @@ export function createDirectory(config) {
 
     writeJsonFile(quorumDir, 'permissioned-nodes.json', staticNodes)
     writeJsonFile(quorumDir, 'static-nodes.json', staticNodes)
-    copyFile(join(keyFolder, 'key'), join(keyDir, 'key'))
-    copyFile(join(keyFolder, 'nodekey'), join(gethDir, 'nodekey'))
-    copyFile(join(keyFolder, 'password.txt'), passwordDestination)
-    copyFile(join(configPath, 'genesis.json'), genesisDestination)
+    copyFile(joinPath(keyFolder, 'key'), joinPath(keyDir, 'key'))
+    copyFile(joinPath(keyFolder, 'nodekey'), joinPath(gethDir, 'nodekey'))
+    copyFile(joinPath(keyFolder, 'password.txt'), passwordDestination)
+    copyFile(joinPath(configPath, 'genesis.json'), genesisDestination)
     if (isTessera(config.network.transactionManager)) {
-      copyFile(join(keyFolder, 'tm.key'), join(tmDir, 'tm.key'))
-      copyFile(join(keyFolder, 'tm.pub'), join(tmDir, 'tm.pub'))
+      copyFile(joinPath(keyFolder, 'tm.key'), joinPath(tmDir, 'tm.key'))
+      copyFile(joinPath(keyFolder, 'tm.pub'), joinPath(tmDir, 'tm.pub'))
       const tesseraConfig = createConfig(
         tmDir,
         nodeNumber,
@@ -87,7 +87,7 @@ export function createStaticNodes(nodes, consensus, configDir) {
   return nodes.map((node, i) => {
     const nodeNumber = i + 1
     const generatedKeyFolder = `${configDir}/key${nodeNumber}`
-    const enodeId = readFileToString(join(generatedKeyFolder, 'enode'))
+    const enodeId = readFileToString(joinPath(generatedKeyFolder, 'enode'))
 
     let enodeAddress = `enode://${enodeId}@${node.quorum.ip}:${node.quorum.devP2pPort}?discport=0`
     if (isRaft(consensus)) {
@@ -110,5 +110,5 @@ export function getFullNetworkPath(config) {
     throw new Error('Network name was empty or contained invalid characters')
   }
 
-  return join(cwd(), 'network', networkFolderName)
+  return joinPath(cwd(), 'network', networkFolderName)
 }

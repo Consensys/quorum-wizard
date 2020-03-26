@@ -1,4 +1,3 @@
-import { join } from 'path'
 import {
   createFolder,
   libRootDir,
@@ -12,16 +11,17 @@ import {
   isCakeshop,
   isDocker,
 } from '../model/NetworkConfig'
+import { joinPath } from '../utils/pathUtils'
 
 export function buildCakeshopDir(config, qdata) {
-  const cakeshopDir = join(qdata, 'cakeshop', 'local')
+  const cakeshopDir = joinPath(qdata, 'cakeshop', 'local')
   createFolder(cakeshopDir, true)
   writeJsonFile(cakeshopDir, 'cakeshop.json', generateCakeshopConfig(config))
-  writeFile(join(cakeshopDir, 'application.properties'), buildPropertiesFile(config), false)
+  writeFile(joinPath(cakeshopDir, 'application.properties'), buildPropertiesFile(config), false)
 }
 
 function buildPropertiesFile(config) {
-  const properties = readFileToString(join(
+  const properties = readFileToString(joinPath(
     libRootDir(),
     'lib',
     'cakeshop_application.properties.template',

@@ -1,4 +1,3 @@
-import { join } from 'path'
 import {
   getFullNetworkPath,
 } from './networkCreator'
@@ -24,6 +23,7 @@ import {
 } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { formatTesseraKeysOutput } from './transactionManager'
+import { joinPath } from '../utils/pathUtils'
 
 export function buildBashScript(config) {
   const commands = createCommands(config)
@@ -53,17 +53,17 @@ export function createCommands(config) {
 
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
-    const quorumDir = join('qdata', `dd${nodeNumber}`)
-    const tmDir = join('qdata', `c${nodeNumber}`)
-    const genesisLocation = join(quorumDir, 'genesis.json')
-    const keyDir = join(quorumDir, 'keystore')
-    const passwordDestination = join(keyDir, 'password.txt')
-    const logs = join('qdata', 'logs')
+    const quorumDir = joinPath('qdata', `dd${nodeNumber}`)
+    const tmDir = joinPath('qdata', `c${nodeNumber}`)
+    const genesisLocation = joinPath(quorumDir, 'genesis.json')
+    const keyDir = joinPath(quorumDir, 'keystore')
+    const passwordDestination = joinPath(keyDir, 'password.txt')
+    const logs = joinPath('qdata', 'logs')
     const initCommand = `cd ${networkPath} && ${pathToQuorumBinary(config.network.quorumVersion)} --datadir ${quorumDir} init ${genesisLocation} 2>&1`
     initCommands.push(initCommand)
 
     const tmIpcLocation = isTessera(config.network.transactionManager)
-      ? join(tmDir, 'tm.ipc')
+      ? joinPath(tmDir, 'tm.ipc')
       : 'ignore'
     const startCommand = createGethStartCommand(
       config,
@@ -95,12 +95,12 @@ export async function buildBash(config) {
   const networkPath = getFullNetworkPath(config)
 
   if (isCakeshop(config.network.cakeshop)) {
-    buildCakeshopDir(config, join(networkPath, 'qdata'))
+    buildCakeshopDir(config, joinPath(networkPath, 'qdata'))
   }
 
   info('Writing start script...')
-  writeFile(join(networkPath, 'start.sh'), bashDetails.startScript, true)
-  copyFile(join(libRootDir(), 'lib', 'stop.sh'), join(networkPath, 'stop.sh'))
+  writeFile(joinPath(networkPath, 'start.sh'), bashDetails.startScript, true)
+  copyFile(joinPath(libRootDir(), 'lib', 'stop.sh'), joinPath(networkPath, 'stop.sh'))
 
   info('Initializing quorum...')
   bashDetails.initCommands.forEach((command) => executeSync(command))
