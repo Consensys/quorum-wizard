@@ -1,4 +1,3 @@
-import { join } from 'path'
 import {
   generateAccounts,
   generateExtraData,
@@ -16,6 +15,7 @@ import {
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
+import { joinPath } from '../utils/pathUtils'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../utils/web3Helper')
@@ -53,7 +53,7 @@ describe('generates extraData for istanbul genesis', () => {
 
     executeSync.mockReturnValueOnce('validators')
     generateExtraData(nodes, 'testDir', 'keyPath')
-    expect(writeFile).toBeCalledWith(join('testDir', 'istanbul.toml'), expect.anything(), false)
+    expect(writeFile).toBeCalledWith(joinPath('testDir', 'istanbul.toml'), expect.anything(), false)
     expect(executeSync).toBeCalledTimes(1)
   })
 })

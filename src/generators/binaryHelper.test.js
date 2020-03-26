@@ -1,4 +1,4 @@
-import { join } from 'path'
+
 import { any } from 'expect'
 import {
   downloadAndCopyBinaries,
@@ -25,6 +25,7 @@ import {
 } from '../utils/testHelper'
 import { downloadIfMissing } from './download'
 import { info } from '../utils/log'
+import { joinPath } from '../utils/pathUtils'
 
 jest.mock('../generators/download')
 jest.mock('../utils/execUtils')
@@ -41,22 +42,22 @@ describe('Chooses the right paths to the binaries', () => {
     expect(pathToQuorumBinary('PATH')).toEqual('geth')
   })
   it('Calls geth binary in bin folder', () => {
-    expect(pathToQuorumBinary('2.5.0')).toEqual(join(libRootDir(), 'bin/quorum/2.5.0/geth'))
+    expect(pathToQuorumBinary('2.5.0')).toEqual(joinPath(libRootDir(), 'bin/quorum/2.5.0/geth'))
   })
   it('Calls tessera using $TESSERA_JAR', () => {
     expect(pathToTesseraJar('PATH')).toEqual('$TESSERA_JAR')
   })
   it('Calls tessera using bin folder jar', () => {
-    expect(pathToTesseraJar('0.10.2')).toEqual(join(
+    expect(pathToTesseraJar('0.10.2')).toEqual(joinPath(
       libRootDir(),
       'bin/tessera/0.10.2/tessera-app.jar',
     ))
   })
   it('Calls cakeshop using bin folder war', () => {
-    expect(pathToCakeshop('0.11.0')).toEqual(join(libRootDir(), 'bin/cakeshop/0.11.0/cakeshop.war'))
+    expect(pathToCakeshop('0.11.0')).toEqual(joinPath(libRootDir(), 'bin/cakeshop/0.11.0/cakeshop.war'))
   })
   it('Calls bootnode using bin folder', () => {
-    expect(pathToBootnode()).toEqual(join(libRootDir(), 'bin/bootnode/1.8.27/bootnode'))
+    expect(pathToBootnode()).toEqual(joinPath(libRootDir(), 'bin/bootnode/1.8.27/bootnode'))
   })
 })
 

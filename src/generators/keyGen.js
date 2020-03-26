@@ -1,4 +1,3 @@
-import { join } from 'path'
 import { info } from '../utils/log'
 import { executeSync } from '../utils/execUtils'
 import {
@@ -11,6 +10,7 @@ import {
   pathToQuorumBinary,
   pathToTesseraJar,
 } from './binaryHelper'
+import { joinPath } from '../utils/pathUtils'
 
 // eslint-disable-next-line import/prefer-default-export
 export function generateKeys(config, keyPath) {
@@ -18,9 +18,9 @@ export function generateKeys(config, keyPath) {
   info(`Generating ${config.nodes.length} keys for Quorum${tesseraKeyMsg} nodes..`)
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
-    const keyDir = join(keyPath, `key${nodeNumber}`)
+    const keyDir = joinPath(keyPath, `key${nodeNumber}`)
     createFolder(keyDir, true)
-    writeFile(join(keyDir, 'password.txt'), '')
+    writeFile(joinPath(keyDir, 'password.txt'), '')
 
     doExec(keyDir, config)
   })

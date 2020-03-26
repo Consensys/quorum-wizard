@@ -1,3 +1,10 @@
+import { join } from 'path'
+
+export function joinPath(root, ...segments) {
+  const path = join(root, ...segments)
+  verifyPathInsideDirectory(root, path)
+  return path
+}
 
 export function verifyPathInsideDirectory(root, path) {
   if (path === ''

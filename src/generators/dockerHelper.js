@@ -1,4 +1,3 @@
-import { join } from 'path'
 import {
   formatNewLine,
   libRootDir,
@@ -12,22 +11,23 @@ import {
   isCakeshop,
 } from '../model/NetworkConfig'
 import { info } from '../utils/log'
+import { joinPath } from '../utils/pathUtils'
 
 export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
   const hasCakeshop = isCakeshop(config.network.cakeshop)
 
-  const quorumDefinitions = readFileToString(join(
+  const quorumDefinitions = readFileToString(joinPath(
     libRootDir(),
     'lib/docker-compose-definitions-quorum.yml',
   ))
 
-  const tesseraDefinitions = hasTessera ? readFileToString(join(
+  const tesseraDefinitions = hasTessera ? readFileToString(joinPath(
     libRootDir(),
     'lib/docker-compose-definitions-tessera.yml',
   )) : ''
 
-  const cakeshopDefinitions = hasCakeshop ? readFileToString(join(
+  const cakeshopDefinitions = hasCakeshop ? readFileToString(joinPath(
     libRootDir(),
     'lib/docker-compose-definitions-cakeshop.yml',
   )) : ''
@@ -60,7 +60,7 @@ export async function createDockerCompose(config) {
   info('Downloading dependencies...')
 
   const networkPath = getFullNetworkPath(config)
-  const qdata = join(networkPath, 'qdata')
+  const qdata = joinPath(networkPath, 'qdata')
 
   if (isCakeshop(config.network.cakeshop)) {
     buildCakeshopDir(config, qdata)
@@ -69,10 +69,10 @@ export async function createDockerCompose(config) {
   info('Writing start script...')
   const startCommands = 'docker-compose up -d'
 
-  writeFile(join(networkPath, 'docker-compose.yml'), file, false)
-  writeFile(join(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
-  writeFile(join(networkPath, 'start.sh'), startCommands, true)
-  writeFile(join(networkPath, 'stop.sh'), 'docker-compose down', true)
+  writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)
+  writeFile(joinPath(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
+  writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
+  writeFile(joinPath(networkPath, 'stop.sh'), 'docker-compose down', true)
   info('Done')
 }
 

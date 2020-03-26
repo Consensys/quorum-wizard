@@ -1,4 +1,3 @@
-import { join } from 'path'
 import { libRootDir } from '../utils/fileUtils'
 import { executeSync } from '../utils/execUtils'
 import {
@@ -13,6 +12,7 @@ import {
 } from './download'
 import { disableIfWrongJavaVersion } from '../questions/validators'
 import { info } from '../utils/log'
+import { joinPath } from '../utils/pathUtils'
 
 // This method could be improved, but right now it tries to:
 // a. Cache downloads
@@ -115,7 +115,7 @@ export function pathToQuorumBinary(quorumVersion) {
     return 'geth'
   }
   const binary = BINARIES.quorum[quorumVersion]
-  return join(libRootDir(), 'bin', 'quorum', quorumVersion, binary.name)
+  return joinPath(libRootDir(), 'bin', 'quorum', quorumVersion, binary.name)
 }
 
 export function pathToTesseraJar(transactionManager) {
@@ -123,20 +123,20 @@ export function pathToTesseraJar(transactionManager) {
     return '$TESSERA_JAR'
   }
   const binary = BINARIES.tessera[transactionManager]
-  return join(libRootDir(), 'bin', 'tessera', transactionManager, binary.name)
+  return joinPath(libRootDir(), 'bin', 'tessera', transactionManager, binary.name)
 }
 
 export function pathToCakeshop(version) {
   const binary = BINARIES.cakeshop[version]
-  return join(libRootDir(), 'bin', 'cakeshop', version, binary.name)
+  return joinPath(libRootDir(), 'bin', 'cakeshop', version, binary.name)
 }
 
 export function pathToIstanbulTools() {
   const binary = BINARIES.istanbul['1.0.1']
-  return join(libRootDir(), 'bin', 'istanbul', '1.0.1', binary.name)
+  return joinPath(libRootDir(), 'bin', 'istanbul', '1.0.1', binary.name)
 }
 
 export function pathToBootnode() {
   const binary = BINARIES.bootnode['1.8.27']
-  return join(libRootDir(), 'bin', 'bootnode', '1.8.27', binary.name)
+  return joinPath(libRootDir(), 'bin', 'bootnode', '1.8.27', binary.name)
 }

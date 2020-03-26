@@ -1,4 +1,3 @@
-import { join } from 'path'
 import {
   createDirectory,
   getFullNetworkPath,
@@ -22,6 +21,7 @@ import {
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
 import { info } from '../utils/log'
+import { joinPath } from '../utils/pathUtils'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')
@@ -53,31 +53,31 @@ describe('generates docker-compose directory', () => {
     await createDockerCompose(config)
 
     expect(writeFile).toBeCalledWith(
-      join(getFullNetworkPath(), 'qdata', 'cakeshop', 'local', 'application.properties'),
+      joinPath(getFullNetworkPath(), 'qdata', 'cakeshop', 'local', 'application.properties'),
       expect.anything(),
       false,
     )
 
     expect(writeFile).toBeCalledWith(
-      join(getFullNetworkPath(), 'docker-compose.yml'),
+      joinPath(getFullNetworkPath(), 'docker-compose.yml'),
       expect.anything(),
       false,
     )
 
     expect(writeFile).toBeCalledWith(
-      join(getFullNetworkPath(), '.env'),
+      joinPath(getFullNetworkPath(), '.env'),
       expect.anything(),
       false,
     )
 
     expect(writeFile).toBeCalledWith(
-      join(getFullNetworkPath(), 'start.sh'),
+      joinPath(getFullNetworkPath(), 'start.sh'),
       expect.anything(),
       true,
     )
 
     expect(writeFile).toBeCalledWith(
-      join(getFullNetworkPath(), 'stop.sh'),
+      joinPath(getFullNetworkPath(), 'stop.sh'),
       expect.anything(),
       true,
     )
@@ -98,25 +98,25 @@ describe('generates docker-compose directory', () => {
     await createDockerCompose(config)
 
     expect(writeFile).toBeCalledWith(
-      join(getFullNetworkPath(), 'docker-compose.yml'),
+      joinPath(getFullNetworkPath(), 'docker-compose.yml'),
       expect.anything(),
       false,
     )
 
     expect(writeFile).toBeCalledWith(
-      join(getFullNetworkPath(), '.env'),
+      joinPath(getFullNetworkPath(), '.env'),
       expect.anything(),
       false,
     )
 
     expect(writeFile).toBeCalledWith(
-      join(getFullNetworkPath(), 'start.sh'),
+      joinPath(getFullNetworkPath(), 'start.sh'),
       expect.anything(),
       true,
     )
 
     expect(writeFile).toBeCalledWith(
-      join(getFullNetworkPath(), 'stop.sh'),
+      joinPath(getFullNetworkPath(), 'stop.sh'),
       expect.anything(),
       true,
     )

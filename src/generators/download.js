@@ -1,7 +1,4 @@
-import {
-  basename,
-  join,
-} from 'path'
+import { basename } from 'path'
 import axios from 'axios'
 import { createGunzip } from 'zlib'
 import { extract } from 'tar-fs'
@@ -12,6 +9,7 @@ import {
   libRootDir,
 } from '../utils/fileUtils'
 import { info } from '../utils/log'
+import { joinPath } from '../utils/pathUtils'
 
 // eslint-disable-next-line import/prefer-default-export
 export async function downloadIfMissing(name, version) {
@@ -19,8 +17,8 @@ export async function downloadIfMissing(name, version) {
     throw new Error(`Could not find binary info entry for ${name} ${version}`)
   }
   const binaryInfo = BINARIES[name][version]
-  const binDir = join(libRootDir(), 'bin', name, version)
-  const binaryFileLocation = join(binDir, binaryInfo.name)
+  const binDir = joinPath(libRootDir(), 'bin', name, version)
+  const binaryFileLocation = joinPath(binDir, binaryInfo.name)
   if (!exists(binaryFileLocation)) {
     createFolder(binDir, true)
     const url = getPlatformSpecificUrl(binaryInfo)
