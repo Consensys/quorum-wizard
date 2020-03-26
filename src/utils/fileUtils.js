@@ -7,11 +7,8 @@ import {
   copyFileSync,
   readFileSync,
 } from 'fs-extra'
-import {
-  join,
-  resolve,
-} from 'path'
-import { verifyPathInsideDirectory } from './pathUtils'
+import { resolve } from 'path'
+import { joinPath, verifyPathInsideDirectory } from './pathUtils'
 
 // this file is in $ROOT/build/utils/ and the bin, lib, and 7nodes folders are in $ROOT.
 // Go up two folders and cache that path for later use
@@ -30,7 +27,7 @@ export function exists(path) {
 }
 
 export function writeJsonFile(folder, filename, object, space = 2) {
-  writeFileSync(join(folder, filename), JSON.stringify(object, null, space))
+  writeFileSync(joinPath(folder, filename), JSON.stringify(object, null, space))
 }
 
 export function writeFile(filePath, contents, executable = false) {
