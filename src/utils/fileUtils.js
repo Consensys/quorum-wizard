@@ -11,6 +11,7 @@ import {
   join,
   resolve,
 } from 'path'
+import { verifyPathInsideDirectory } from './pathUtils'
 
 // this file is in $ROOT/build/utils/ and the bin, lib, and 7nodes folders are in $ROOT.
 // Go up two folders and cache that path for later use
@@ -40,11 +41,7 @@ export function writeFile(filePath, contents, executable = false) {
 }
 
 export function removeFolder(networkPath = '') {
-  if (networkPath === ''
-    || networkPath === '/'
-    || networkPath.indexOf(cwd()) !== 0) {
-    throw new Error('Tried to remove folder outside of working directory')
-  }
+  verifyPathInsideDirectory(cwd(), networkPath)
 
   if (exists(networkPath)) {
     removeSync(networkPath)
