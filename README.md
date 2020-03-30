@@ -6,7 +6,7 @@ Quorum Wizard is a command line tool that allow users to set up a development Qu
 
 ## Installation
 
-`quorum-wizard` is a command line tool written in Javascript that can be installed as a global NPM module. Make sure you have [Node.js](https://nodejs.org/) installed, which includes `npm`.
+`quorum-wizard` is written in Javascript and designed to be installed as a global NPM module and run from the command line. Make sure you have [Node.js](https://nodejs.org/) installed, which includes the `npm` package manager.
 
 Using npm:
 
