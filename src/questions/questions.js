@@ -30,7 +30,7 @@ We have 3 options to help you start exploring Quorum:
       this option allows you to choose the number of nodes (7 max), consensus mechanism, transaction manager, and the option to deploy cakeshop
 
   3.  Custom Network - In addition to the options available in #2, this selection allows for further customization of your network.
-      Choose to generate keys, customize ports for both bash and docker, use your own genesis file, or change the network id
+      Choose to generate keys, customize ports for both bash and docker, or change the network id
 
 Quorum Creator will generate your startup files and everything required to bring up your network.
 All you need to do is go to the specified location and run ./start.sh
@@ -107,7 +107,7 @@ export const KEY_GENERATION = {
   type: 'confirm',
   name: 'generateKeys',
   message: 'Would you like to generate keys for your network? (selecting \'no\' will use insecure keys that are not suitable for Production use)',
-  default: false,
+  default: true,
 }
 
 export const NETWORK_ID = {

@@ -57,8 +57,6 @@ export async function createDockerCompose(config) {
   info('Building docker-compose file...')
   const file = buildDockerCompose(config)
 
-  info('Downloading dependencies...')
-
   const networkPath = getFullNetworkPath(config)
   const qdata = joinPath(networkPath, 'qdata')
 
