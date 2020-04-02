@@ -30,6 +30,9 @@ quorum-wizard
 
 The wizard will then walk you through setting up a network, either using our quickstart settings (a simple 3-node Quorum network using Raft consensus), or customizing the options to fit your needs.
 
+Sample walkthrough of creating a simple istanbul network with tessera via bash scripts:
+![](wizardRecording.gif)
+
 ## Options
 
 You can also provide these flags when running quorum-wizard:
@@ -42,7 +45,7 @@ You can also provide these flags when running quorum-wizard:
 
 Note: `npx` is also way to run npm modules without the need to actually install the module. Due to quorum-wizard needing to download and cache the quorum binaries during network setup, using `npx quorum-wizard` will not work at this time.
 
-## Developing 
+## Developing
 Clone this repo to your local machine.
 
 `yarn install` to get all the dependencies.
