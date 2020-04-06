@@ -14,6 +14,7 @@ import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
 
 export function buildDockerCompose(config) {
+  const networkName = config.network.name
   const hasTessera = isTessera(config.network.transactionManager)
   const hasCakeshop = isCakeshop(config.network.cakeshop)
 
@@ -33,14 +34,14 @@ export function buildDockerCompose(config) {
   )) : ''
 
   let services = config.nodes.map((node, i) => {
-    let allServices = buildNodeService(node, i, hasTessera)
+    let allServices = buildNodeService(networkName, node, i, hasTessera)
     if (hasTessera) {
-      allServices = [allServices, buildTesseraService(node, i)].join('')
+      allServices = [allServices, buildTesseraService(networkName, node, i)].join('')
     }
     return allServices
   })
   if (hasCakeshop) {
-    services = [services.join(''), buildCakeshopService(config.network.cakeshopPort)]
+    services = [services.join(''), buildCakeshopService(config, networkName)]
   }
 
   return [
@@ -49,7 +50,7 @@ export function buildDockerCompose(config) {
     formatNewLine(cakeshopDefinitions),
     'services:',
     services.join(''),
-    buildEndService(config),
+    buildEndService(config, networkName),
   ].join('')
 }
 
@@ -84,7 +85,7 @@ QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/tessera:${config.network.transa
   return env
 }
 
-function buildNodeService(node, i, hasTessera) {
+function buildNodeService(networkName, node, i, hasTessera) {
   const txManager = hasTessera
     ? `depends_on:
       - txmanager${i + 1}
@@ -101,16 +102,16 @@ function buildNodeService(node, i, hasTessera) {
       - "${node.quorum.rpcPort}:8545"
       - "${node.quorum.wsPort}:8645"
     volumes:
-      - vol${i + 1}:/qdata
+      - ${networkName}-vol${i + 1}:/qdata
       - ./qdata:/examples:ro
     ${txManager}
       - NODE_ID=${i + 1}
     networks:
-      quorum-examples-net:
+      ${networkName}-net:
         ipv4_address: 172.16.239.1${i + 1}`
 }
 
-function buildTesseraService(node, i) {
+function buildTesseraService(networkName, node, i) {
   return `
   txmanager${i + 1}:
     << : *tx-manager-def
@@ -118,41 +119,41 @@ function buildTesseraService(node, i) {
     ports:
       - "${node.tm.thirdPartyPort}:9080"
     volumes:
-      - vol${i + 1}:/qdata
+      - ${networkName}-vol${i + 1}:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      ${networkName}-net:
         ipv4_address: 172.16.239.10${i + 1}
     environment:
       - NODE_ID=${i + 1}`
 }
 
-function buildCakeshopService(port) {
+function buildCakeshopService(config, networkName) {
   return `
   cakeshop:
     << : *cakeshop-def
     hostname: cakeshop
     ports:
-      - "${port}:8999"
+      - "${config.network.cakeshopPort}:8999"
     volumes:
-      - cakeshopvol:/qdata
+      - ${networkName}-cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      ${networkName}-net:
         ipv4_address: 172.16.239.186`
 }
 
-function buildEndService(config) {
+function buildEndService(config, networkName) {
   return `
 networks:
   quorum-examples-net:
-    name: quorum-examples-net
+    name: ${networkName}-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-${config.nodes.map((_, i) => `  "vol${i + 1}":`).join('\n')}
-  "cakeshopvol":`
+${config.nodes.map((_, i) => `  "${networkName}-vol${i + 1}":`).join('\n')}
+  "${networkName}-cakeshopvol":`
 }

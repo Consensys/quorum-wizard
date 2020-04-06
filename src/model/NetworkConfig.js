@@ -49,7 +49,7 @@ export function createConfigFromAnswers(answers) {
   }
 }
 
-function createNetworkFolderName(numberNodes, consensus, transactionManager, deployment) {
+export function createNetworkFolderName(numberNodes, consensus, transactionManager, deployment) {
   const transactionManagerName = !isTessera(transactionManager)
     ? ''
     : 'tessera-'
