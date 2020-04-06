@@ -163,7 +163,7 @@ services:
     environment:
       - NODE_ID=1
 networks:
-  quorum-examples-net:
+  1-nodes-raft-tessera-docker-compose-net:
     name: 1-nodes-raft-tessera-docker-compose-net
     driver: bridge
     ipam:
@@ -209,7 +209,7 @@ services:
       1-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.11
 networks:
-  quorum-examples-net:
+  1-nodes-istanbul-docker-compose-net:
     name: 1-nodes-istanbul-docker-compose-net
     driver: bridge
     ipam:
@@ -262,7 +262,7 @@ services:
       1-nodes-raft-docker-compose-net:
         ipv4_address: 172.16.239.186
 networks:
-  quorum-examples-net:
+  1-nodes-raft-docker-compose-net:
     name: 1-nodes-raft-docker-compose-net
     driver: bridge
     ipam:
@@ -331,7 +331,7 @@ services:
       1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.186
 networks:
-  quorum-examples-net:
+  1-nodes-raft-tessera-docker-compose-net:
     name: 1-nodes-raft-tessera-docker-compose-net
     driver: bridge
     ipam:
