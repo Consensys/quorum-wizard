@@ -45,6 +45,9 @@ export function createDirectory(config) {
   )
 
   const staticNodes = createStaticNodes(config.nodes, config.network.consensus, keyPath)
+  writeJsonFile(configPath, 'permissioned-nodes.json', staticNodes)
+  writeJsonFile(configPath, 'static-nodes.json', staticNodes)
+
   const peerList = createPeerList(config.nodes, config.network.transactionManager)
 
   config.nodes.forEach((node, i) => {
@@ -61,8 +64,8 @@ export function createDirectory(config) {
     createFolder(keyDir)
     createFolder(tmDir)
 
-    writeJsonFile(quorumDir, 'permissioned-nodes.json', staticNodes)
-    writeJsonFile(quorumDir, 'static-nodes.json', staticNodes)
+    copyFile(joinPath(configPath, 'permissioned-nodes.json'), joinPath(quorumDir, 'permissioned-nodes.json'))
+    copyFile(joinPath(configPath, 'static-nodes.json'), joinPath(quorumDir, 'static-nodes.json'))
     copyFile(joinPath(keyFolder, 'key'), joinPath(keyDir, 'key'))
     copyFile(joinPath(keyFolder, 'nodekey'), joinPath(gethDir, 'nodekey'))
     copyFile(joinPath(keyFolder, 'password.txt'), passwordDestination)
