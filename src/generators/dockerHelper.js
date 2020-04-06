@@ -146,7 +146,7 @@ function buildCakeshopService(config, networkName) {
 function buildEndService(config, networkName) {
   return `
 networks:
-  quorum-examples-net:
+  ${networkName}-net:
     name: ${networkName}-net
     driver: bridge
     ipam:
