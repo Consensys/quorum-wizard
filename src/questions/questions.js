@@ -16,7 +16,7 @@ export const INITIAL_MODE = {
   type: 'list',
   name: 'mode',
   message: `
-Welcome to Quorum Creator!
+Welcome to Quorum Wizard!
 
 This tool allows you to easily create bash and docker files to start up a quorum network.
 You can control consensus, privacy, network details and more for a customized setup.
@@ -32,7 +32,7 @@ We have 3 options to help you start exploring Quorum:
   3.  Custom Network - In addition to the options available in #2, this selection allows for further customization of your network.
       Choose to generate keys, customize ports for both bash and docker, use your own genesis file, or change the network id
 
-Quorum Creator will generate your startup files and everything required to bring up your network.
+Quorum Wizard will generate your startup files and everything required to bring up your network.
 All you need to do is go to the specified location and run ./start.sh
 
 `,
