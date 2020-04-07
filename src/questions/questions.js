@@ -55,7 +55,7 @@ export const DEPLOYMENT_TYPE = {
   choices: [
     'bash',
     'docker-compose',
-    // 'kubernetes',
+    'kubernetes',
     // 'vagrant',
   ],
 }

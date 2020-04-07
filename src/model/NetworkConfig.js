@@ -99,6 +99,10 @@ export function isBash(deployment) {
   return deployment === 'bash'
 }
 
+export function isKubernetes(deployment) {
+  return deployment === 'kubernetes'
+}
+
 export function isIstanbul(consensus) {
   return consensus === 'istanbul'
 }
