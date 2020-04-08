@@ -49,6 +49,11 @@ export function createFolder(path, recursive = false) {
   mkdirSync(path, { recursive })
 }
 
+export function copyScript(src, dest) {
+  copyFile(src, dest)
+  chmodSync(dest, '755')
+}
+
 export function copyFile(src, dest) {
   copyFileSync(src, dest)
 }

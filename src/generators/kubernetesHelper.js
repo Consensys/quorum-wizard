@@ -1,8 +1,8 @@
 import {
   formatNewLine,
   libRootDir,
-  cwd,
   writeFile,
+  copyScript,
 } from '../utils/fileUtils'
 import { isTessera } from '../model/NetworkConfig'
 import { getFullNetworkPath } from './networkCreator'
@@ -26,8 +26,9 @@ export async function createKubernetes(config) {
   const networkPath = getFullNetworkPath(config)
 
   info('Writing start script...')
-  const startCommands = 'docker run -v $(pwd)/qubernetes.yaml:/qubernetes/qubernetes.yaml -v $(pwd)/kgenerated:/qubernetes/kgenerated -it  quorumengineering/qubernetes ./quorum-init qubernetes.yaml'
+  const startCommands = 'docker run -v $(pwd)/qubernetes.yaml:/qubernetes/qubernetes.yaml -v $(pwd)/quorum-init:/qubernetes/quorum-init -v $(pwd)/out:/qubernetes/out -it  quorumengineering/qubernetes ./quorum-init qubernetes.yaml'
 
+  copyScript(joinPath(libRootDir(), 'lib', 'quorum-init'), joinPath(networkPath, 'quorum-init'))
   writeFile(joinPath(networkPath, 'qubernetes.yaml'), file, false)
   writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
   writeFile(joinPath(networkPath, 'stop.sh'), 'docker-compose down', true)
