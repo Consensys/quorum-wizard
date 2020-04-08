@@ -1,8 +1,8 @@
-![](https://github.com/QuorumEngineering/quorum-creator/workflows/Build%20&%20Test/badge.svg)
+![](https://github.com/QuorumEngineering/quorum-wizard/workflows/Build%20&%20Test/badge.svg)
 ## Quorum Wizard
 Quorum Wizard is a command line tool that allow users to set up a development Quorum network on their local machine in less than 2 minutes.
 
-![](docs/screenshot.png)
+![](docs/wizardRecording.gif)
 
 ## Installation
 
@@ -30,9 +30,6 @@ quorum-wizard
 
 The wizard will then walk you through setting up a network, either using our quickstart settings (a simple 3-node Quorum network using Raft consensus), or customizing the options to fit your needs.
 
-Sample walkthrough of creating a simple istanbul network with tessera via bash scripts:
-![](wizardRecording.gif)
-
 ## Options
 
 You can also provide these flags when running quorum-wizard:
@@ -56,7 +53,7 @@ Clone this repo to your local machine.
 
 `yarn link` to use your development build when you run the global npm command
 
-`thewizard` to run (alternatively, you can run `node build/index.js`)
+`quorum-wizard` to run (alternatively, you can run `node build/index.js`)
 
 ## Contributing
 Quorum Wizard is built on open source and we invite you to contribute enhancements. Upon review you will be required to complete a Contributor License Agreement (CLA) before we are able to merge. If you have any questions about the contribution process, please feel free to send an email to [info@goquorum.com](mailto:info@goquorum.com).
