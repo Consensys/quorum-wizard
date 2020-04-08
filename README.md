@@ -2,7 +2,7 @@
 ## Quorum Wizard
 Quorum Wizard is a command line tool that allow users to set up a development Quorum network on their local machine in less than 2 minutes.
 
-![](docs/wizardRecording.gif)
+![](docs/quorum-wizard.gif)
 
 ## Installation
 
