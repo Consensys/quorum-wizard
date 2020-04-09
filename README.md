@@ -42,6 +42,10 @@ You can also provide these flags when running quorum-wizard:
 
 Note: `npx` is also way to run npm modules without the need to actually install the module. Due to quorum-wizard needing to download and cache the quorum binaries during network setup, using `npx quorum-wizard` will not work at this time.
 
+## Interacting with the Network
+
+To explore the features of Quorum and deploy a private contract, follow the instructions on [Interacting with the Network](docs/Interacting.md)
+
 ## Developing
 Clone this repo to your local machine.
 
