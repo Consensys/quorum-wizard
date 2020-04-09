@@ -1,7 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`creates 2nodes istanbul bash tessera cakeshop custom ports 1`] = `
-"BIN_GETH=/npm/global/module/dir/bin/quorum/2.5.0/geth
+"echo \\"
+Starting Quorum network...
+\\"
+BIN_GETH=/npm/global/module/dir/bin/quorum/2.5.0/geth
 BIN_TESSERA=/npm/global/module/dir/bin/tessera/0.10.2/tessera-app.jar
 BIN_CAKESHOP=/npm/global/module/dir/bin/cakeshop/0.11.0/cakeshop.war
 
@@ -91,7 +94,10 @@ publicKey
 `;
 
 exports[`creates 3nodes raft bash no tessera 1`] = `
-"BIN_GETH=/npm/global/module/dir/bin/quorum/2.5.0/geth
+"echo \\"
+Starting Quorum network...
+\\"
+BIN_GETH=/npm/global/module/dir/bin/quorum/2.5.0/geth
 
 
 
@@ -105,7 +111,10 @@ echo \\"\\""
 `;
 
 exports[`creates 3nodes raft bash tessera 1`] = `
-"BIN_GETH=/npm/global/module/dir/bin/quorum/2.5.0/geth
+"echo \\"
+Starting Quorum network...
+\\"
+BIN_GETH=/npm/global/module/dir/bin/quorum/2.5.0/geth
 BIN_TESSERA=/npm/global/module/dir/bin/tessera/0.10.2/tessera-app.jar
 
 java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile qdata/c1/tessera-config-09-1.json >> qdata/logs/tessera1.log 2>&1 &
@@ -178,7 +187,10 @@ publicKey
 `;
 
 exports[`creates 3nodes raft bash tessera cakeshop 1`] = `
-"BIN_GETH=/npm/global/module/dir/bin/quorum/2.5.0/geth
+"echo \\"
+Starting Quorum network...
+\\"
+BIN_GETH=/npm/global/module/dir/bin/quorum/2.5.0/geth
 BIN_TESSERA=/npm/global/module/dir/bin/tessera/0.10.2/tessera-app.jar
 BIN_CAKESHOP=/npm/global/module/dir/bin/cakeshop/0.11.0/cakeshop.war
 
@@ -278,7 +290,10 @@ publicKey
 `;
 
 exports[`creates 3nodes raft bash tessera custom 1`] = `
-"BIN_GETH=/npm/global/module/dir/bin/quorum/2.5.0/geth
+"echo \\"
+Starting Quorum network...
+\\"
+BIN_GETH=/npm/global/module/dir/bin/quorum/2.5.0/geth
 BIN_TESSERA=/npm/global/module/dir/bin/tessera/0.10.2/tessera-app.jar
 
 java  -Xms128M -Xmx128M -jar $BIN_TESSERA -configfile qdata/c1/tessera-config-09-1.json >> qdata/logs/tessera1.log 2>&1 &
@@ -351,7 +366,10 @@ publicKey
 `;
 
 exports[`creates quickstart config 1`] = `
-"BIN_GETH=/npm/global/module/dir/bin/quorum/2.5.0/geth
+"echo \\"
+Starting Quorum network...
+\\"
+BIN_GETH=/npm/global/module/dir/bin/quorum/2.5.0/geth
 BIN_TESSERA=/npm/global/module/dir/bin/tessera/0.10.2/tessera-app.jar
 BIN_CAKESHOP=/npm/global/module/dir/bin/cakeshop/0.11.0-J8/cakeshop.war
 
@@ -451,7 +469,10 @@ publicKey
 `;
 
 exports[`creates quickstart config with java 11+ 1`] = `
-"BIN_GETH=/npm/global/module/dir/bin/quorum/2.5.0/geth
+"echo \\"
+Starting Quorum network...
+\\"
+BIN_GETH=/npm/global/module/dir/bin/quorum/2.5.0/geth
 BIN_TESSERA=/npm/global/module/dir/bin/tessera/0.10.4/tessera-app.jar
 BIN_CAKESHOP=/npm/global/module/dir/bin/cakeshop/0.11.0/cakeshop.war
 
