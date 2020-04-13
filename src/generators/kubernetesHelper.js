@@ -3,6 +3,8 @@ import {
   libRootDir,
   writeFile,
   copyScript,
+  createFolder,
+  copyDirectory,
 } from '../utils/fileUtils'
 import { isTessera } from '../model/NetworkConfig'
 import { getFullNetworkPath } from './networkCreator'
@@ -26,6 +28,12 @@ export async function createKubernetes(config) {
   const networkPath = getFullNetworkPath(config)
 
   info('Writing start script...')
+
+  if (!config.network.generateKeys) {
+    createFolder(joinPath(networkPath, 'out', 'config'), true)
+    copyDirectory(joinPath(libRootDir(), '7nodes'), joinPath(networkPath, 'out', 'config'))
+  }
+
   const startCommands = 'docker run -v $(pwd)/qubernetes.yaml:/qubernetes/qubernetes.yaml -v $(pwd)/quorum-init:/qubernetes/quorum-init -v $(pwd)/out:/qubernetes/out -it  quorumengineering/qubernetes ./quorum-init qubernetes.yaml'
 
   copyScript(joinPath(libRootDir(), 'lib', 'quorum-init'), joinPath(networkPath, 'quorum-init'))
@@ -40,6 +48,7 @@ function buildGeneralDetails(config) {
   return `#namespace:
 #  name: quorum-test
 sep_deployment_files: true
+generate_keys: ${config.network.generateKeys}
 nodes:
   number: ${nodeNum}
 service:
@@ -69,7 +78,7 @@ function buildGethDetails(config) {
     id: ${config.network.networkId}
     public: false
   verbosity: 9
-  Geth_Startup_Params: --rpccorsdomain="*"`
+  Geth_Startup_Params: --rpccorsdomain=\\"*\\"`
 }
 
 function buildTesseraDetails(config) {

@@ -5,6 +5,7 @@ import {
   isDocker,
   isIstanbul,
   isTessera,
+  isKubernetes,
 } from '../model/NetworkConfig'
 import {
   BINARIES,
@@ -25,13 +26,14 @@ export async function downloadAndCopyBinaries(config) {
   } = config.network
   const docker = isDocker(deployment)
   const isDockerButNeedsBinaries = docker && generateKeys
+  const kubernetes = isKubernetes(deployment)
 
   // needed no matter what if using istanbul to generate genesis
   if (isIstanbul(consensus)) {
     await downloadIfMissing('istanbul', '1.0.1')
   }
 
-  if (!docker || isDockerButNeedsBinaries) {
+  if ((!docker && !kubernetes) || isDockerButNeedsBinaries) {
     if (generateKeys) {
       await downloadIfMissing('bootnode', '1.8.27')
     }

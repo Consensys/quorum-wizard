@@ -6,6 +6,7 @@ import {
   mkdirSync,
   copyFileSync,
   readFileSync,
+  copySync,
 } from 'fs-extra'
 import { resolve } from 'path'
 import { joinPath, verifyPathInsideDirectory } from './pathUtils'
@@ -56,6 +57,10 @@ export function copyScript(src, dest) {
 
 export function copyFile(src, dest) {
   copyFileSync(src, dest)
+}
+
+export function copyDirectory(src, dest) {
+  copySync(src, dest)
 }
 
 export function readFileToString(file) {

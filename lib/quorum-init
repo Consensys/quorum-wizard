@@ -29,14 +29,16 @@ mkdir -p out/config
 # nodes.
 ./quorum-create-nodes #{@CONFIG_FILE}
 `
-puts ""
-puts "  Generating keys..."
+if @config["generate_keys"]
+  puts ""
+  puts "  Generating keys..."
+  `
+  # generate the keygen script
+  # to generate nodekey, account keys, and
+  # quorum transaction manger (tm.pub,tm.key) keys.
+  ./quorum-keygen #{@CONFIG_FILE}
 `
-# generate the keygen script
-# to generate nodekey, account keys, and
-# quorum transaction manger (tm.pub,tm.key) keys.
-./quorum-keygen #{@CONFIG_FILE}
-`
+end
 
 puts "  Generating Quorum configs..."
 `

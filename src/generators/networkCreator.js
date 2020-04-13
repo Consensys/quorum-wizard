@@ -14,6 +14,7 @@ import { createConfig } from '../model/TesseraConfig'
 import {
   isRaft,
   isTessera,
+  isKubernetes,
 } from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
 
@@ -32,7 +33,7 @@ export function createDirectory(config) {
   createFolder(configPath, true)
   let keyPath = joinPath(libRootDir(), '7nodes')
   // if user selected to generate keys
-  if (config.network.generateKeys) {
+  if (config.network.generateKeys && !isKubernetes(config.network.deployment)) {
     keyPath = generateKeys(config, configPath)
   }
   // always generate consensus genesis
