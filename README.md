@@ -1,4 +1,4 @@
-![](https://github.com/QuorumEngineering/quorum-wizard/workflows/Build%20&%20Test/badge.svg)
+![](https://github.com/jpmorganchase/quorum-wizard/workflows/Build%20&%20Test/badge.svg)
 ## Quorum Wizard
 Quorum Wizard is a command line tool that allow users to set up a development Quorum network on their local machine in less than 2 minutes.
 
@@ -44,7 +44,7 @@ Note: `npx` is also way to run npm modules without the need to actually install 
 
 ## Interacting with the Network
 
-To explore the features of Quorum and deploy a private contract, follow the instructions on [Interacting with the Network](docs/Interacting.md)
+To explore the features of Quorum and deploy a private contract, follow the instructions on [Interacting with the Network](http://docs.goquorum.com/en/latest/Wizard/Interacting/)
 
 ## Troubleshooting
 
