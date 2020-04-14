@@ -1,10 +1,10 @@
 {
-  "name": "thewizard",
+  "name": "quorum-wizard",
   "version": "0.1.9",
   "description": "Tool for walking through the setup of networks.",
   "main": "src/index.js",
   "bin": {
-    "thewizard": "build/index.js"
+    "quorum-wizard": "build/index.js"
   },
   "preferGlobal": true,
   "files": [

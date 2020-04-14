@@ -29,6 +29,7 @@ export function buildBashScript(config) {
   const commands = createCommands(config)
 
   const startScript = [
+    'echo "\nStarting Quorum network...\n"',
     setEnvironmentCommand(config),
     commands.tesseraStart,
     waitForTesseraNodesCommand(config),
