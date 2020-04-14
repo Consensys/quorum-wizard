@@ -6,7 +6,7 @@ Quorum Wizard is a command line tool that allow users to set up a development Qu
 
 ## Installation
 
-`quorum-wizard` is written in Javascript and designed to be installed as a global NPM module and run from the command line. Make sure you have [Node.js](https://nodejs.org/) installed, which includes the `npm` package manager.
+`quorum-wizard` is written in Javascript and designed to be installed as a global NPM module and run from the command line. Make sure you have [Node.js/NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
 
 Using npm:
 
@@ -45,6 +45,13 @@ Note: `npx` is also way to run npm modules without the need to actually install 
 ## Interacting with the Network
 
 To explore the features of Quorum and deploy a private contract, follow the instructions on [Interacting with the Network](docs/Interacting.md)
+
+## Troubleshooting
+
+**EACCES error when doing global npm install**:
+
+- Sometimes npm is installed in a location where the user doesn't have write permissions. On Mac, installing via [Homebrew](https://brew.sh) usually works better than the standalone installer.
+- [Here is the recommended solution from NPM](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally)
 
 ## Developing
 Clone this repo to your local machine.
