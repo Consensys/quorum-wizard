@@ -1,6 +1,6 @@
 {
   "name": "quorum-wizard",
-  "version": "0.1.9",
+  "version": "1.0.0",
   "description": "Tool for walking through the setup of networks.",
   "main": "src/index.js",
   "bin": {
@@ -25,14 +25,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/"
+    "url": "git+https://github.com/jpmorganchase/quorum-wizard"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/"
+    "url": "https://github.com/jpmorganchase/quorum-wizard/issues"
   },
-  "homepage": "https://github.com/",
+  "homepage": "http://docs.goquorum.com/en/latest/Wizard/GettingStarted/",
   "dependencies": {
     "@babel/runtime": "^7.8.3",
     "axios": "^0.19.2",
