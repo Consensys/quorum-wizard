@@ -34,12 +34,16 @@ export async function createKubernetes(config) {
     copyDirectory(joinPath(libRootDir(), '7nodes'), joinPath(networkPath, 'out', 'config'))
   }
 
-  const startCommands = 'docker run -v $(pwd)/qubernetes.yaml:/qubernetes/qubernetes.yaml -v $(pwd)/quorum-init:/qubernetes/quorum-init -v $(pwd)/out:/qubernetes/out -it  quorumengineering/qubernetes ./quorum-init qubernetes.yaml'
+  const startCommands = `
+kind create cluster --name wizard-qube
+docker run -v $(pwd)/qubernetes.yaml:/qubernetes/qubernetes.yaml -v $(pwd)/quorum-init:/qubernetes/quorum-init -v $(pwd)/out:/qubernetes/out -it  quorumengineering/qubernetes ./quorum-init qubernetes.yaml
+kubectl apply -f out -f out/deployments
+  `
 
   copyScript(joinPath(libRootDir(), 'lib', 'quorum-init'), joinPath(networkPath, 'quorum-init'))
   writeFile(joinPath(networkPath, 'qubernetes.yaml'), file, false)
   writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
-  writeFile(joinPath(networkPath, 'stop.sh'), 'docker-compose down', true)
+  writeFile(joinPath(networkPath, 'stop.sh'), 'kind delete cluster --name wizard-qube', true)
   info('Done')
 }
 
