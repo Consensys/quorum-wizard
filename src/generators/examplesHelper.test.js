@@ -48,11 +48,11 @@ describe('generates and copies over example scripts', () => {
       true,
     )
     expect(copyFile).toBeCalledWith(
-      createLibPath('lib', 'public-contract.js'),
-      createNetPath(CONFIG, 'public-contract.js'),
+      createLibPath('lib', 'public_contract.js'),
+      createNetPath(CONFIG, 'public_contract.js'),
     )
     expect(writeFile).toBeCalledWith(
-      createNetPath(CONFIG, 'private-contract.js'),
+      createNetPath(CONFIG, 'private_contract.js'),
       expect.anything(),
     )
     expect(loadTesseraPublicKey).toBeCalledWith(CONFIG, 2)
@@ -72,8 +72,8 @@ describe('generates and copies over example scripts', () => {
       true,
     )
     expect(copyFile).toBeCalledWith(
-      createLibPath('lib', 'public-contract.js'),
-      createNetPath(config, 'public-contract.js'),
+      createLibPath('lib', 'public_contract.js'),
+      createNetPath(config, 'public_contract.js'),
     )
   })
   it('generates the runscript and attach shell scripts for bash', () => {

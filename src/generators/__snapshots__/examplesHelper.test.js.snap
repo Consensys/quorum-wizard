@@ -3,7 +3,7 @@
 exports[`generates and copies over example scripts generates the runscript and attach shell scripts for bash 1`] = `
 "#!/bin/bash
 if [ -z $1 ] || [ ! -f $1 ]; then
-  echo \\"Please provide a valid script file to execute (i.e. ./runscript.sh private-contract.js)\\" >&2
+  echo \\"Please provide a valid script file to execute (i.e. ./runscript.sh private_contract.js)\\" >&2
   exit 1
 fi
 
@@ -32,7 +32,7 @@ $BIN_GETH attach qdata/dd$1/geth.ipc"
 exports[`generates and copies over example scripts generates the runscript and attach shell scripts for bash 3`] = `
 "#!/bin/bash
 if [ -z $1 ] || [ ! -f $1 ]; then
-  echo \\"Please provide a valid script file to execute (i.e. ./runscript.sh private-contract.js)\\" >&2
+  echo \\"Please provide a valid script file to execute (i.e. ./runscript.sh private_contract.js)\\" >&2
   exit 1
 fi
 

@@ -16,7 +16,10 @@ import {
   isTessera,
   isKubernetes,
 } from './model/NetworkConfig'
-import { createDirectory } from './generators/networkCreator'
+import {
+  createDirectory,
+  createNetwork,
+} from './generators/networkCreator'
 import { buildBash } from './generators/bashHelper'
 import { createDockerCompose } from './generators/dockerHelper'
 import { createKubernetes } from './generators/kubernetesHelper'
@@ -67,7 +70,11 @@ async function buildNetwork(mode) {
   const answers = await promptUser(mode)
   const config = createConfigFromAnswers(answers)
   await downloadAndCopyBinaries(config)
-  createDirectory(config)
+  if (!isKubernetes(config.network.deployment)) {
+    createDirectory(config)
+  } else {
+    createNetwork(config)
+  }
   await createScript(config)
   generateAndCopyExampleScripts(config)
   printInstructions(config)

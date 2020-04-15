@@ -41,8 +41,8 @@ $BIN_GETH attach qdata/dd$1/geth.ipc`
 
   const dockerCommand = 'docker-compose exec node$1 /bin/sh -c "geth attach qdata/dd/geth.ipc"'
 
-  const kubernetesCommand = `POD=$(kubectl get pods $NAMESPACE | grep Running | grep $1 |  awk '{print $1}')
-kubectl $NAMESPACE exec -it $POD -c $2 -- /bin/ash -c "geth attach /etc/quorum/qdata/dd/geth.ipc"`
+  const kubernetesCommand = `POD=$(kubectl get pods $NAMESPACE | grep Running | grep 1 | awk '{print $1}')
+kubectl $NAMESPACE exec -it $POD -c quorum -- /bin/ash -c "geth attach /etc/quorum/qdata/dd/geth.ipc"`
 
   switch (config.network.deployment) {
     case 'bash':
@@ -78,9 +78,8 @@ $BIN_GETH --exec "loadScript(\\"$1\\")" attach qdata/dd1/geth.ipc`
   const dockerCommand = `docker cp $1 "$(docker-compose ps -q node1)":/$1
 docker-compose exec node1 /bin/sh -c "geth --exec 'loadScript(\\"$1\\")' attach qdata/dd/geth.ipc"
 `
-  const kubernetesCommand = `POD=$(kubectl get pods $NAMESPACE | grep Running | grep $1 |  awk '{print $1}')
-kubectl $NAMESPACE exec -it $POD -c $2 -- /bin/ash -c "geth --exec 'loadScript(\\"/etc/quorum/qdata/contracts/$1\\")' attach /etc/quorum/qdata/dd/geth.ipc"`
-
+  const kubernetesCommand = `POD=$(kubectl get pods $NAMESPACE | grep Running | grep 1 | awk '{print $1}')
+kubectl $NAMESPACE exec -it $POD -c quorum -- /bin/ash -c "geth --exec 'loadScript(\\"/etc/quorum/qdata/contracts/$1\\")' attach /etc/quorum/qdata/dd/geth.ipc"`
   switch (config.network.deployment) {
     case 'bash':
       return bashCommand
@@ -95,7 +94,7 @@ export function generateRunScript(config) {
   const command = generateRunCommand(config)
   return `#!/bin/bash
 if [ -z $1 ] || [ ! -f $1 ]; then
-  echo "Please provide a valid script file to execute (i.e. ./runscript.sh private-contract.js)" >&2
+  echo "Please provide a valid script file to execute (i.e. ./runscript.sh private_contract.js)" >&2
   exit 1
 fi
 
@@ -109,11 +108,11 @@ export function generateAndCopyExampleScripts(config) {
   writeFile(joinPath(networkPath, 'runscript.sh'), generateRunScript(config), true)
   writeFile(joinPath(networkPath, 'attach.sh'), generateAttachScript(config), true)
   copyFile(
-    joinPath(libRootDir(), 'lib', 'public-contract.js'),
-    joinPath(networkPath, 'public-contract.js'),
+    joinPath(libRootDir(), 'lib', 'public_contract.js'),
+    joinPath(networkPath, 'public_contract.js'),
   )
   if (isTessera(config.network.transactionManager)) {
     const nodeTwoPublicKey = loadTesseraPublicKey(config, 2)
-    writeFile(joinPath(networkPath, 'private-contract.js'), generatePrivateContractExample(nodeTwoPublicKey))
+    writeFile(joinPath(networkPath, 'private_contract.js'), generatePrivateContractExample(nodeTwoPublicKey))
   }
 }

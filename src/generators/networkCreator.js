@@ -14,26 +14,31 @@ import { createConfig } from '../model/TesseraConfig'
 import {
   isRaft,
   isTessera,
-  isKubernetes,
 } from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
+
+export function createNetwork(config) {
+  const networkPath = getFullNetworkPath(config)
+  removeFolder(networkPath)
+  createFolder(networkPath, true)
+  writeJsonFile(networkPath, 'config.json', config)
+  return networkPath
+}
 
 export function createDirectory(config) {
   // https://nodejs.org/en/knowledge/file-system/security/introduction/
 
-  const networkPath = getFullNetworkPath(config)
-  removeFolder(networkPath)
+  const networkPath = createNetwork(config)
 
   const qdata = joinPath(networkPath, 'qdata')
   const logs = joinPath(qdata, 'logs')
   createFolder(logs, true)
-  writeJsonFile(networkPath, 'config.json', config)
 
   const configPath = joinPath(cwd(), config.network.configDir)
   createFolder(configPath, true)
   let keyPath = joinPath(libRootDir(), '7nodes')
   // if user selected to generate keys
-  if (config.network.generateKeys && !isKubernetes(config.network.deployment)) {
+  if (config.network.generateKeys) {
     keyPath = generateKeys(config, configPath)
   }
   // always generate consensus genesis
@@ -65,8 +70,6 @@ export function createDirectory(config) {
 
     writeJsonFile(quorumDir, 'permissioned-nodes.json', staticNodes)
     writeJsonFile(quorumDir, 'static-nodes.json', staticNodes)
-    copyFile(joinPath(configPath, 'permissioned-nodes.json'), joinPath(quorumDir, 'permissioned-nodes.json'))
-    copyFile(joinPath(configPath, 'static-nodes.json'), joinPath(quorumDir, 'static-nodes.json'))
     copyFile(joinPath(keyFolder, 'key'), joinPath(keyDir, 'key'))
     copyFile(joinPath(keyFolder, 'nodekey'), joinPath(gethDir, 'nodekey'))
     copyFile(joinPath(keyFolder, 'password.txt'), passwordDestination)

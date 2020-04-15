@@ -12,6 +12,7 @@ import {
   copyFile,
   createFolder,
   writeJsonFile,
+  exists,
 } from '../utils/fileUtils'
 import {
   TEST_CWD,
@@ -30,6 +31,7 @@ jest.mock('../utils/log')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 generateAccounts.mockReturnValue('accounts')
+exists.mockReturnValue(true)
 readFileToString.mockReturnValue('publicKey')
 isJava11Plus.mockReturnValue(false)
 info.mockReturnValue('log')
