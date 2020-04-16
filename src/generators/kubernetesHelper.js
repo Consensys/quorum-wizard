@@ -1,5 +1,4 @@
 import {
-  formatNewLine,
   libRootDir,
   writeFile,
   copyScript,
@@ -11,12 +10,12 @@ import { getFullNetworkPath } from './networkCreator'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
 
-function buildKubernetes(config) {
+export function buildKubernetes(config) {
   return [
-    formatNewLine(buildGeneralDetails(config)),
-    formatNewLine(buildQuorumDetails(config)),
-    formatNewLine(buildTesseraDetails(config)),
-    formatNewLine(buildGethDetails(config)),
+    buildGeneralDetails(config),
+    buildQuorumDetails(config),
+    buildTesseraDetails(config),
+    buildGethDetails(config),
   ].join('')
 }
 
@@ -60,7 +59,8 @@ service:
 }
 
 function buildQuorumDetails(config) {
-  return `quorum:
+  return `
+quorum:
   consensus: ${config.network.consensus}
   Node_DataDir: /etc/quorum/qdata
   Key_Dir_Base: out/config
@@ -75,7 +75,8 @@ function buildQuorumDetails(config) {
 }
 
 function buildGethDetails(config) {
-  return `geth:
+  return `
+geth:
   Node_RPCPort: 8545
   NodeP2P_ListenAddr: 30303
   network:
@@ -88,7 +89,8 @@ function buildGethDetails(config) {
 function buildTesseraDetails(config) {
   const hasTessera = isTessera(config.network.transactionManager)
   return hasTessera
-    ? `  tm:
+    ? `
+  tm:
     Name: tessera
     Tm_Version: ${config.network.transactionManager}
     Port: ${config.nodes[0].tm.thirdPartyPort}

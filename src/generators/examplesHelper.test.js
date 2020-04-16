@@ -87,12 +87,23 @@ describe('generates and copies over example scripts', () => {
     expect(generateRunScript(config)).toMatchSnapshot()
     expect(generateAttachScript(config)).toMatchSnapshot()
   })
-  it('generates the runscript and attach shell scripts for bash', () => {
+  it('generates the runscript and attach shell scripts for docker', () => {
     const config = {
       ...CONFIG,
       network: {
         ...CONFIG.network,
         deployment: 'docker-compose',
+      },
+    }
+    expect(generateRunScript(config)).toMatchSnapshot()
+    expect(generateAttachScript(config)).toMatchSnapshot()
+  })
+  it('generates the runscript and attach shell scripts for kubernetes', () => {
+    const config = {
+      ...CONFIG,
+      network: {
+        ...CONFIG.network,
+        deployment: 'kubernetes',
       },
     }
     expect(generateRunScript(config)).toMatchSnapshot()
