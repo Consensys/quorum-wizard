@@ -64,7 +64,7 @@ export async function createDockerCompose(config) {
     buildCakeshopDir(config, qdata)
   }
 
-  info('Writing start script...')
+  info('Writing start scripts...')
   const startCommands = 'docker-compose up -d'
 
   writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)

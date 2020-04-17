@@ -91,7 +91,6 @@ export function createCommands(config) {
 
 
 export async function buildBash(config) {
-  info('Building network data directory...')
   const bashDetails = buildBashScript(config)
   const networkPath = getFullNetworkPath(config)
 
@@ -99,7 +98,7 @@ export async function buildBash(config) {
     buildCakeshopDir(config, joinPath(networkPath, 'qdata'))
   }
 
-  info('Writing start script...')
+  info('Writing start scripts...')
   writeFile(joinPath(networkPath, 'start.sh'), bashDetails.startScript, true)
   copyFile(joinPath(libRootDir(), 'lib', 'stop.sh'), joinPath(networkPath, 'stop.sh'))
 

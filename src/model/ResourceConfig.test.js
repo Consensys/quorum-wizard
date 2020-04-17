@@ -24,12 +24,12 @@ test('creates 5nodes raft kubernetes tessera', () => {
   expect(kubernetes).toMatchSnapshot()
 })
 
-test('creates 5nodes istanbul kubernetes no tessera', () => {
-  const config = createConfigFromAnswers({
-    ...baseNetwork,
-    transactionManager: 'none',
-    consensus: 'istanbul',
-  })
-  const kubernetes = buildKubernetesResource(config)
-  expect(kubernetes).toMatchSnapshot()
-})
+// test('creates 5nodes istanbul kubernetes no tessera', () => {
+//   const config = createConfigFromAnswers({
+//     ...baseNetwork,
+//     transactionManager: 'none',
+//     consensus: 'istanbul',
+//   })
+//   const kubernetes = buildKubernetesResource(config)
+//   expect(kubernetes).toMatchSnapshot()
+// })

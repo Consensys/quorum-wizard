@@ -1,4 +1,3 @@
-import { isTessera } from './NetworkConfig'
 
 // eslint-disable-next-line import/prefer-default-export
 export function buildKubernetesResource(config) {
@@ -51,13 +50,10 @@ geth:
 }
 
 function buildTesseraDetails(config) {
-  const hasTessera = isTessera(config.network.transactionManager)
-  return hasTessera
-    ? `
+  return `
   tm:
     Name: tessera
     Tm_Version: ${config.network.transactionManager}
     Port: ${config.nodes[0].tm.thirdPartyPort}
     Tessera_Config_Dir: out/config`
-    : ''
 }

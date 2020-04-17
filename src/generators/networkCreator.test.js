@@ -36,6 +36,7 @@ import { buildKubernetesResource } from '../model/ResourceConfig'
 
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
+jest.mock('../utils/log')
 jest.mock('../model/ConsensusConfig')
 jest.mock('../model/ResourceConfig')
 jest.mock('./keyGen')

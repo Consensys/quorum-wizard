@@ -175,8 +175,24 @@ describe('Downloads binaries', () => {
       },
     }
     await downloadAndCopyBinaries(config)
+    expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.5.0')
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('bootnode', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
+  })
+  it('Downloads correct bins for docker with keygen no tessera', async () => {
+    const config = {
+      network: {
+        ...baseNetwork,
+        transactionManager: 'none',
+        deployment: 'docker-compose',
+        generateKeys: true,
+      },
+    }
+    await downloadAndCopyBinaries(config)
     expect(downloadIfMissing).toBeCalledWith('quorum', '2.5.0')
-    expect(downloadIfMissing).toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
     expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
     expect(downloadIfMissing).toBeCalledWith('bootnode', any(String))
     expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))

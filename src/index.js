@@ -85,7 +85,7 @@ function createDirectory(config) {
     createQdataDirectory(config)
   } else if (isDocker(config.network.deployment)) {
     createNetwork(config)
-    if (config.network.generateKeys) {
+    if (config.network.generateKeys && isTessera(config.network.transactionManager)) {
       generateResourcesRemote(config)
     } else {
       generateResourcesLocally(config)

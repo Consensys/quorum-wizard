@@ -22,8 +22,10 @@ import {
 } from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
+import { info } from '../utils/log'
 
 export function createNetwork(config) {
+  info('Building network directory...')
   const networkPath = getFullNetworkPath(config)
   removeFolder(networkPath)
   createFolder(networkPath, true)
@@ -31,6 +33,7 @@ export function createNetwork(config) {
 }
 
 export function generateResourcesRemote(config) {
+  info('Generating network resources...')
   const configDir = joinPath(cwd(), config.network.configDir)
   const networkPath = getFullNetworkPath(config)
   const remoteOutputDir = joinPath(networkPath, 'out', 'config')
@@ -43,8 +46,9 @@ export function generateResourcesRemote(config) {
     createFolder(remoteOutputDir, true)
     copyDirectory(joinPath(libRootDir(), '7nodes'), remoteOutputDir)
   }
+
   const dockerCommand = `cd ${networkPath}
-  docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/quorum-init:/qubernetes/quorum-init -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./quorum-init qubernetes.yaml
+  docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/quorum-init:/qubernetes/quorum-init -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./quorum-init qubernetes.yaml 2>&1
   find . -type f -name 'UTC*' -execdir mv {} key ';'`
   executeSync(dockerCommand)
 
@@ -56,6 +60,7 @@ export function generateResourcesRemote(config) {
 }
 
 export function generateResourcesLocally(config) {
+  info('Generating network resources...')
   const configDir = joinPath(cwd(), config.network.configDir)
   createFolder(configDir, true)
 
@@ -78,6 +83,7 @@ export function generateResourcesLocally(config) {
 
 export function createQdataDirectory(config) {
   // https://nodejs.org/en/knowledge/file-system/security/introduction/
+  info('Building qdata directory...')
   const networkPath = getFullNetworkPath(config)
   const qdata = joinPath(networkPath, 'qdata')
   const logs = joinPath(qdata, 'logs')
