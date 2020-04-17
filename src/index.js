@@ -17,8 +17,10 @@ import {
   isKubernetes,
 } from './model/NetworkConfig'
 import {
-  createDirectory,
+  createQdataDirectory,
   createNetwork,
+  generateResourcesLocally,
+  generateResourcesRemote,
 } from './generators/networkCreator'
 import { buildBash } from './generators/bashHelper'
 import { createDockerCompose } from './generators/dockerHelper'
@@ -70,14 +72,31 @@ async function buildNetwork(mode) {
   const answers = await promptUser(mode)
   const config = createConfigFromAnswers(answers)
   await downloadAndCopyBinaries(config)
-  if (!isKubernetes(config.network.deployment)) {
-    createDirectory(config)
-  } else {
-    createNetwork(config)
-  }
+  createDirectory(config)
   await createScript(config)
   generateAndCopyExampleScripts(config)
   printInstructions(config)
+}
+
+function createDirectory(config) {
+  if (isBash(config.network.deployment)) {
+    createNetwork(config)
+    generateResourcesLocally(config)
+    createQdataDirectory(config)
+  } else if (isDocker(config.network.deployment)) {
+    createNetwork(config)
+    if (config.network.generateKeys) {
+      generateResourcesRemote(config)
+    } else {
+      generateResourcesLocally(config)
+    }
+    createQdataDirectory(config)
+  } else if (isKubernetes(config.network.deployment)) {
+    createNetwork(config)
+    generateResourcesRemote(config)
+  } else {
+    throw new Error('Only bash, docker, and kubernetes deployments are supported')
+  }
 }
 
 async function createScript(config) {

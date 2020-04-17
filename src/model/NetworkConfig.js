@@ -32,7 +32,7 @@ export function createConfigFromAnswers(answers) {
       permissioned: true,
       genesisFile: genesisLocation,
       generateKeys,
-      configDir: `network/${networkFolder}/generated`,
+      configDir: `network/${networkFolder}/resources`,
       deployment,
       cakeshop,
       networkId,

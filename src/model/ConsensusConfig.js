@@ -5,18 +5,18 @@ import {
 } from '../generators/consensusHelper'
 import { isRaft } from './NetworkConfig'
 
-export function generateConsensusConfig(configDir, keyPath, consensus, nodes, networkId) {
+export function generateConsensusConfig(configDir, consensus, nodes, networkId) {
   writeJsonFile(
     configDir,
     'genesis.json',
     isRaft(consensus)
-      ? generateRaftConfig(nodes, keyPath, networkId)
-      : generateIstanbulConfig(nodes, configDir, keyPath, networkId),
+      ? generateRaftConfig(nodes, configDir, networkId)
+      : generateIstanbulConfig(nodes, configDir, networkId),
   )
 }
 
-export function generateRaftConfig(nodes, keyPath, networkId) {
-  const alloc = generateAccounts(nodes, keyPath)
+export function generateRaftConfig(nodes, configDir, networkId) {
+  const alloc = generateAccounts(nodes, configDir)
   return {
     alloc,
     coinbase: '0x0000000000000000000000000000000000000000',
@@ -42,9 +42,9 @@ export function generateRaftConfig(nodes, keyPath, networkId) {
   }
 }
 
-export function generateIstanbulConfig(nodes, configDir, keyPath, networkId) {
-  const alloc = generateAccounts(nodes, keyPath)
-  const extraData = generateExtraData(nodes, configDir, keyPath)
+export function generateIstanbulConfig(nodes, configDir, networkId) {
+  const alloc = generateAccounts(nodes, configDir)
+  const extraData = generateExtraData(nodes, configDir)
   return {
     alloc,
     coinbase: '0x0000000000000000000000000000000000000000',

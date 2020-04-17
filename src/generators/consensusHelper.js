@@ -7,13 +7,13 @@ import nodekeyToAccount from '../utils/web3Helper'
 import { pathToIstanbulTools } from './binaryHelper'
 import { joinPath } from '../utils/pathUtils'
 
-export function generateAccounts(nodes, keyPath) {
+export function generateAccounts(nodes, configDir) {
   const numNodes = nodes.length
   const accounts = {}
   for (let i = 0; i < parseInt(numNodes, 10); i += 1) {
     const numNode = i + 1
 
-    const keyDir = joinPath(keyPath, `key${numNode}`)
+    const keyDir = joinPath(configDir, `key${numNode}`)
     const keyString = readFileToString(joinPath(keyDir, 'key'))
     const key = `0x${JSON.parse(keyString).address}`
     accounts[key] = { balance: '1000000000000000000000000000' }
@@ -21,11 +21,11 @@ export function generateAccounts(nodes, keyPath) {
   return accounts
 }
 
-export function generateExtraData(nodes, configDir, keyPath) {
+export function generateExtraData(nodes, configDir) {
   const configLines = ['vanity = "0x00"']
   const validators = nodes.map((node, i) => {
     const nodeNumber = i + 1
-    const keyDir = joinPath(keyPath, `key${nodeNumber}`)
+    const keyDir = joinPath(configDir, `key${nodeNumber}`)
     return nodekeyToAccount(`0x${readFileToString(joinPath(keyDir, 'nodekey'))}`)
   })
   configLines.push(`validators = ${JSON.stringify(validators)}`)

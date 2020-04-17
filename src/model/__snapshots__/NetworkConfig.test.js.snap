@@ -5,7 +5,7 @@ Object {
   "network": Object {
     "cakeshop": "0.11.0",
     "cakeshopPort": "8999",
-    "configDir": "network/5-nodes-raft-docker-compose/generated",
+    "configDir": "network/5-nodes-raft-docker-compose/resources",
     "consensus": "raft",
     "customizePorts": false,
     "deployment": "docker-compose",
@@ -74,7 +74,7 @@ Object {
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
-    "configDir": "network/5-nodes-raft-bash/generated",
+    "configDir": "network/5-nodes-raft-bash/resources",
     "consensus": "raft",
     "customizePorts": false,
     "deployment": "bash",
@@ -138,12 +138,81 @@ Object {
 }
 `;
 
+exports[`creates 5nodes raft no-TM kubernetes config 1`] = `
+Object {
+  "network": Object {
+    "cakeshop": "none",
+    "cakeshopPort": "8999",
+    "configDir": "network/5-nodes-raft-kubernetes/resources",
+    "consensus": "raft",
+    "customizePorts": false,
+    "deployment": "kubernetes",
+    "generateKeys": false,
+    "genesisFile": "none",
+    "name": "5-nodes-raft-kubernetes",
+    "networkId": "10",
+    "permissioned": true,
+    "quorumVersion": "2.5.0",
+    "remoteDebug": false,
+    "transactionManager": "none",
+    "verbosity": 5,
+  },
+  "nodes": Array [
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21000,
+        "ip": "127.0.0.1",
+        "raftPort": 50401,
+        "rpcPort": 22000,
+        "wsPort": 23000,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21001,
+        "ip": "127.0.0.1",
+        "raftPort": 50402,
+        "rpcPort": 22001,
+        "wsPort": 23001,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21002,
+        "ip": "127.0.0.1",
+        "raftPort": 50403,
+        "rpcPort": 22002,
+        "wsPort": 23002,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21003,
+        "ip": "127.0.0.1",
+        "raftPort": 50404,
+        "rpcPort": 22003,
+        "wsPort": 23003,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21004,
+        "ip": "127.0.0.1",
+        "raftPort": 50405,
+        "rpcPort": 22004,
+        "wsPort": 23004,
+      },
+    },
+  ],
+}
+`;
+
 exports[`creates 6nodes raft custom config 1`] = `
 Object {
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
-    "configDir": "network/6-nodes-raft-tessera-bash/generated",
+    "configDir": "network/6-nodes-raft-tessera-bash/resources",
     "consensus": "raft",
     "customizePorts": false,
     "deployment": "bash",
@@ -251,7 +320,7 @@ Object {
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
-    "configDir": "network/6-nodes-raft-tessera-docker-compose/generated",
+    "configDir": "network/6-nodes-raft-tessera-docker-compose/resources",
     "consensus": "raft",
     "customizePorts": false,
     "deployment": "docker-compose",
@@ -359,7 +428,7 @@ Object {
   "network": Object {
     "cakeshop": "0.11.0",
     "cakeshopPort": "8999",
-    "configDir": "network/7-nodes-istanbul-tessera-bash/generated",
+    "configDir": "network/7-nodes-istanbul-tessera-bash/resources",
     "consensus": "istanbul",
     "customizePorts": false,
     "deployment": "bash",
@@ -481,7 +550,7 @@ Object {
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
-    "configDir": "network/7-nodes-istanbul-tessera-bash/generated",
+    "configDir": "network/7-nodes-istanbul-tessera-bash/resources",
     "consensus": "istanbul",
     "customizePorts": false,
     "deployment": "bash",
@@ -603,7 +672,7 @@ Object {
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
-    "configDir": "network/7-nodes-istanbul-tessera-docker-compose/generated",
+    "configDir": "network/7-nodes-istanbul-tessera-docker-compose/resources",
     "consensus": "istanbul",
     "customizePorts": false,
     "deployment": "docker-compose",
@@ -720,12 +789,134 @@ Object {
 }
 `;
 
+exports[`creates 7nodes istanbul kubernetes config 1`] = `
+Object {
+  "network": Object {
+    "cakeshop": "none",
+    "cakeshopPort": "8999",
+    "configDir": "network/7-nodes-istanbul-tessera-kubernetes/resources",
+    "consensus": "istanbul",
+    "customizePorts": false,
+    "deployment": "kubernetes",
+    "generateKeys": false,
+    "genesisFile": "none",
+    "name": "7-nodes-istanbul-tessera-kubernetes",
+    "networkId": "10",
+    "permissioned": true,
+    "quorumVersion": "2.5.0",
+    "remoteDebug": false,
+    "transactionManager": "0.10.2",
+    "verbosity": 5,
+  },
+  "nodes": Array [
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21000,
+        "ip": "127.0.0.1",
+        "raftPort": 50401,
+        "rpcPort": 22000,
+        "wsPort": 23000,
+      },
+      "tm": Object {
+        "ip": "127.0.0.1",
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21001,
+        "ip": "127.0.0.1",
+        "raftPort": 50402,
+        "rpcPort": 22001,
+        "wsPort": 23001,
+      },
+      "tm": Object {
+        "ip": "127.0.0.1",
+        "p2pPort": 9002,
+        "thirdPartyPort": 9082,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21002,
+        "ip": "127.0.0.1",
+        "raftPort": 50403,
+        "rpcPort": 22002,
+        "wsPort": 23002,
+      },
+      "tm": Object {
+        "ip": "127.0.0.1",
+        "p2pPort": 9003,
+        "thirdPartyPort": 9083,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21003,
+        "ip": "127.0.0.1",
+        "raftPort": 50404,
+        "rpcPort": 22003,
+        "wsPort": 23003,
+      },
+      "tm": Object {
+        "ip": "127.0.0.1",
+        "p2pPort": 9004,
+        "thirdPartyPort": 9084,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21004,
+        "ip": "127.0.0.1",
+        "raftPort": 50405,
+        "rpcPort": 22004,
+        "wsPort": 23004,
+      },
+      "tm": Object {
+        "ip": "127.0.0.1",
+        "p2pPort": 9005,
+        "thirdPartyPort": 9085,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21005,
+        "ip": "127.0.0.1",
+        "raftPort": 50406,
+        "rpcPort": 22005,
+        "wsPort": 23005,
+      },
+      "tm": Object {
+        "ip": "127.0.0.1",
+        "p2pPort": 9006,
+        "thirdPartyPort": 9086,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 21006,
+        "ip": "127.0.0.1",
+        "raftPort": 50407,
+        "rpcPort": 22006,
+        "wsPort": 23006,
+      },
+      "tm": Object {
+        "ip": "127.0.0.1",
+        "p2pPort": 9007,
+        "thirdPartyPort": 9087,
+      },
+    },
+  ],
+}
+`;
+
 exports[`creates 7nodes istanbul no-TM custom config 1`] = `
 Object {
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
-    "configDir": "network/7-nodes-istanbul-bash/generated",
+    "configDir": "network/7-nodes-istanbul-bash/resources",
     "consensus": "istanbul",
     "customizePorts": false,
     "deployment": "bash",
@@ -812,7 +1003,7 @@ Object {
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
-    "configDir": "network/7-nodes-istanbul-docker-compose/generated",
+    "configDir": "network/7-nodes-istanbul-docker-compose/resources",
     "consensus": "istanbul",
     "customizePorts": false,
     "deployment": "docker-compose",
@@ -899,7 +1090,7 @@ Object {
   "network": Object {
     "cakeshop": "0.11.0",
     "cakeshopPort": "8999",
-    "configDir": "network/3-nodes-raft-tessera-bash/generated",
+    "configDir": "network/3-nodes-raft-tessera-bash/resources",
     "consensus": "raft",
     "customizePorts": false,
     "deployment": "bash",
@@ -965,7 +1156,7 @@ Object {
   "network": Object {
     "cakeshop": "0.11.0-J8",
     "cakeshopPort": "8999",
-    "configDir": "network/3-nodes-raft-tessera-bash/generated",
+    "configDir": "network/3-nodes-raft-tessera-bash/resources",
     "consensus": "raft",
     "customizePorts": false,
     "deployment": "bash",

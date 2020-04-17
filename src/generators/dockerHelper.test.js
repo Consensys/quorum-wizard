@@ -1,7 +1,4 @@
-import {
-  createDirectory,
-  getFullNetworkPath,
-} from './networkCreator'
+import { getFullNetworkPath } from './networkCreator'
 import {
   createConfigFromAnswers,
 } from '../model/NetworkConfig'
@@ -44,11 +41,6 @@ describe('generates docker-compose directory', () => {
   it('given docker details builds files to run docker', async () => {
     const config = createConfigFromAnswers(baseNetwork)
 
-    createDirectory.mockReturnValueOnce({
-      tesseraStart: '',
-      gethStart: '',
-      initStart: [],
-    })
     readFileToString.mockReturnValueOnce('test')
     await createDockerCompose(config)
 
@@ -89,11 +81,6 @@ describe('generates docker-compose directory', () => {
       transactionManager: 'none',
     })
 
-    createDirectory.mockReturnValueOnce({
-      tesseraStart: '',
-      gethStart: '',
-      initStart: [],
-    })
     readFileToString.mockReturnValueOnce('test')
     await createDockerCompose(config)
 
