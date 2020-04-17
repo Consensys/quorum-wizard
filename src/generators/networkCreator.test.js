@@ -3,6 +3,9 @@ import {
   createQdataDirectory,
   createStaticNodes,
   getFullNetworkPath,
+  createNetwork,
+  generateResourcesLocally,
+  generateResourcesRemote,
 } from './networkCreator'
 import {
   createConfigFromAnswers,
@@ -15,22 +18,31 @@ import {
   libRootDir,
   readFileToString,
   writeJsonFile,
+  removeFolder,
+  copyDirectory,
+  copyScript,
+  writeFile,
 } from '../utils/fileUtils'
 import {
   createNetPath,
+  createLibPath,
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
 import { generateKeys } from './keyGen'
 import { joinPath } from '../utils/pathUtils'
+import { generateConsensusConfig } from '../model/ConsensusConfig'
+import { buildKubernetesResource } from '../model/ResourceConfig'
 
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
 jest.mock('../model/ConsensusConfig')
+jest.mock('../model/ResourceConfig')
 jest.mock('./keyGen')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 generateKeys.mockReturnValue(`${TEST_LIB_ROOT_DIR}/keyPath`)
+buildKubernetesResource.mockReturnValue('qubernetes')
 
 const baseNetwork = {
   numberNodes: '5',
@@ -41,7 +53,113 @@ const baseNetwork = {
   deployment: 'bash',
 }
 
-describe('creates a bash network', () => {
+describe('creates network and config from answers', () => {
+  it('rejects invalid network names', () => {
+    const names = ['', '.', '..', '\0', '/']
+    const config = createConfigFromAnswers(baseNetwork)
+    names.forEach((name) => {
+      config.network.name = name
+      expect(() => createNetwork(config)).toThrow(Error)
+    })
+  })
+
+  it('Creates the correct qdata directory structure and moves files in', () => {
+    const config = createConfigFromAnswers(baseNetwork)
+    createNetwork(config)
+
+    expect(removeFolder).toBeCalledWith(createNetPath(config))
+    expect(createFolder).toBeCalledWith(createNetPath(config), true)
+    expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', anything())
+  })
+})
+
+describe('creates network resources locally from answers', () => {
+  it('Creates genesis and static nodes with pregen keys for bash', () => {
+    const config = createConfigFromAnswers(baseNetwork)
+    generateResourcesLocally(config)
+
+    expect(createFolder).toBeCalledWith(createNetPath(config, 'resources'), true)
+    expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'resources'))
+    expect(generateConsensusConfig).toHaveBeenCalled()
+    expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
+  })
+
+  it('Creates genesis and static nodes and generates keys for bash', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      generateKeys: true,
+    })
+    generateResourcesLocally(config)
+
+    expect(createFolder).toBeCalledWith(createNetPath(config, 'resources'), true)
+    expect(generateConsensusConfig).toHaveBeenCalled()
+    expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
+  })
+  it('Creates genesis and static nodes for docker with pregen keys', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      deployment: 'docker-compose',
+    })
+    generateResourcesLocally(config)
+
+    expect(createFolder).toBeCalledWith(createNetPath(config, 'resources'), true)
+    expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'resources'))
+    expect(generateConsensusConfig).toHaveBeenCalled()
+    expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
+  })
+})
+
+describe('creates network resources with remote qubernetes container from answers', () => {
+  it('rejects invalid network names', () => {
+    const names = ['', '.', '..', '\0', '/']
+    const config = createConfigFromAnswers(baseNetwork)
+    names.forEach((name) => {
+      config.network.name = name
+      expect(() => generateResourcesRemote(config)).toThrow(Error)
+    })
+  })
+  it('Creates new resources and keys for docker', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      generateKeys: true,
+      deployment: 'docker-compose',
+    })
+    generateResourcesRemote(config)
+
+    expect(buildKubernetesResource).toHaveBeenCalled()
+    expect(copyScript).toBeCalledWith(createLibPath('lib', 'quorum-init'), createNetPath(config, 'quorum-init'))
+    expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
+    expect(copyDirectory).toBeCalledWith(createNetPath(config, 'out', 'config'), createNetPath(config, 'resources'))
+    expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
+  })
+  it('Creates new resources for kubernetes using pregen keys', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      deployment: 'kubernetes',
+    })
+    generateResourcesRemote(config)
+
+    expect(buildKubernetesResource).toHaveBeenCalled()
+    expect(copyScript).toBeCalledWith(createLibPath('lib', 'quorum-init'), createNetPath(config, 'quorum-init'))
+    expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
+    expect(createFolder).toBeCalledWith(createNetPath(config, 'out', 'config'), true)
+    expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'out', 'config'))
+  })
+  it('Creates new resources for kubernetes with new keys', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      deployment: 'kubernetes',
+      generateKeys: true,
+    })
+    generateResourcesRemote(config)
+
+    expect(buildKubernetesResource).toHaveBeenCalled()
+    expect(copyScript).toBeCalledWith(createLibPath('lib', 'quorum-init'), createNetPath(config, 'quorum-init'))
+    expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
+  })
+})
+
+describe('creates qdata directory for bash network', () => {
   it('rejects invalid network names', () => {
     const names = ['', '.', '..', '\0', '/']
     const config = createConfigFromAnswers(baseNetwork)
@@ -102,13 +220,12 @@ describe('creates a bash network', () => {
   })
 })
 
-describe('creates a bash network without tessera', () => {
+describe('creates qdata directory for bash network no tessera', () => {
   it('rejects invalid network names', () => {
     const names = ['', '.', '..', '\0', '/']
     const config = createConfigFromAnswers({
       ...baseNetwork,
       transactionManager: 'none',
-      generateKeys: true,
     })
     names.forEach((name) => {
       config.network.name = name
@@ -120,7 +237,6 @@ describe('creates a bash network without tessera', () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
       transactionManager: 'none',
-      generateKeys: true,
     })
     createQdataDirectory(config)
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', 'logs'), true)
@@ -158,7 +274,7 @@ describe('creates a bash network without tessera', () => {
   })
 })
 
-describe('creates a docker network', () => {
+describe('creates qdata directory for docker network', () => {
   it('rejects invalid network names', () => {
     const names = ['', '.', '..', '\0', '/']
     const config = createConfigFromAnswers({
