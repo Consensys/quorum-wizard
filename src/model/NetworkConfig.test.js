@@ -77,12 +77,15 @@ test('creates 7nodes istanbul kubernetes config', () => {
   expect(config).toMatchSnapshot()
 })
 
-test('creates 5nodes raft no-TM kubernetes config', () => {
+test('creates 7nodes raft kubernetes custom config', () => {
   const config = createConfigFromAnswers({
     ...baseNetwork,
-    numberNodes: '5',
-    transactionManager: 'none',
+    numberNodes: '7',
     deployment: 'kubernetes',
+    generateKeys: true,
+    networkId: 14,
+    genesisLocation: '',
+    customizePorts: false,
   })
   expect(config).toMatchSnapshot()
 })

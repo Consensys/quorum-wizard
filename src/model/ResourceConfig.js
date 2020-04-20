@@ -30,7 +30,7 @@ quorum:
   Permissioned_Nodes_File: out/config/permissioned-nodes.json
   Genesis_File: out/config/genesis.json
   quorum:
-    Raft_Port: ${config.nodes[0].quorum.raftPort}
+    Raft_Port: 50401
     Quorum_Version: ${config.network.quorumVersion}
   storage:
     Type: PVC
@@ -54,6 +54,6 @@ function buildTesseraDetails(config) {
   tm:
     Name: tessera
     Tm_Version: ${config.network.transactionManager}
-    Port: ${config.nodes[0].tm.thirdPartyPort}
+    Port: 9001
     Tessera_Config_Dir: out/config`
 }

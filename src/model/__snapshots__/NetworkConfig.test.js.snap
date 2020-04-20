@@ -138,75 +138,6 @@ Object {
 }
 `;
 
-exports[`creates 5nodes raft no-TM kubernetes config 1`] = `
-Object {
-  "network": Object {
-    "cakeshop": "none",
-    "cakeshopPort": "8999",
-    "configDir": "network/5-nodes-raft-kubernetes/resources",
-    "consensus": "raft",
-    "customizePorts": false,
-    "deployment": "kubernetes",
-    "generateKeys": false,
-    "genesisFile": "none",
-    "name": "5-nodes-raft-kubernetes",
-    "networkId": "10",
-    "permissioned": true,
-    "quorumVersion": "2.5.0",
-    "remoteDebug": false,
-    "transactionManager": "none",
-    "verbosity": 5,
-  },
-  "nodes": Array [
-    Object {
-      "quorum": Object {
-        "devP2pPort": 21000,
-        "ip": "127.0.0.1",
-        "raftPort": 50401,
-        "rpcPort": 22000,
-        "wsPort": 23000,
-      },
-    },
-    Object {
-      "quorum": Object {
-        "devP2pPort": 21001,
-        "ip": "127.0.0.1",
-        "raftPort": 50402,
-        "rpcPort": 22001,
-        "wsPort": 23001,
-      },
-    },
-    Object {
-      "quorum": Object {
-        "devP2pPort": 21002,
-        "ip": "127.0.0.1",
-        "raftPort": 50403,
-        "rpcPort": 22002,
-        "wsPort": 23002,
-      },
-    },
-    Object {
-      "quorum": Object {
-        "devP2pPort": 21003,
-        "ip": "127.0.0.1",
-        "raftPort": 50404,
-        "rpcPort": 22003,
-        "wsPort": 23003,
-      },
-    },
-    Object {
-      "quorum": Object {
-        "devP2pPort": 21004,
-        "ip": "127.0.0.1",
-        "raftPort": 50405,
-        "rpcPort": 22004,
-        "wsPort": 23004,
-      },
-    },
-  ],
-}
-`;
-
 exports[`creates 6nodes raft custom config 1`] = `
 Object {
   "network": Object {
@@ -811,10 +742,10 @@ Object {
   "nodes": Array [
     Object {
       "quorum": Object {
-        "devP2pPort": 21000,
+        "devP2pPort": 30303,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 22000,
+        "rpcPort": 8545,
         "wsPort": 23000,
       },
       "tm": Object {
@@ -825,86 +756,86 @@ Object {
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 21001,
+        "devP2pPort": 30303,
         "ip": "127.0.0.1",
-        "raftPort": 50402,
-        "rpcPort": 22001,
-        "wsPort": 23001,
+        "raftPort": 50401,
+        "rpcPort": 8545,
+        "wsPort": 23000,
       },
       "tm": Object {
         "ip": "127.0.0.1",
-        "p2pPort": 9002,
-        "thirdPartyPort": 9082,
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
       },
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 21002,
+        "devP2pPort": 30303,
         "ip": "127.0.0.1",
-        "raftPort": 50403,
-        "rpcPort": 22002,
-        "wsPort": 23002,
+        "raftPort": 50401,
+        "rpcPort": 8545,
+        "wsPort": 23000,
       },
       "tm": Object {
         "ip": "127.0.0.1",
-        "p2pPort": 9003,
-        "thirdPartyPort": 9083,
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
       },
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 21003,
+        "devP2pPort": 30303,
         "ip": "127.0.0.1",
-        "raftPort": 50404,
-        "rpcPort": 22003,
-        "wsPort": 23003,
+        "raftPort": 50401,
+        "rpcPort": 8545,
+        "wsPort": 23000,
       },
       "tm": Object {
         "ip": "127.0.0.1",
-        "p2pPort": 9004,
-        "thirdPartyPort": 9084,
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
       },
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 21004,
+        "devP2pPort": 30303,
         "ip": "127.0.0.1",
-        "raftPort": 50405,
-        "rpcPort": 22004,
-        "wsPort": 23004,
+        "raftPort": 50401,
+        "rpcPort": 8545,
+        "wsPort": 23000,
       },
       "tm": Object {
         "ip": "127.0.0.1",
-        "p2pPort": 9005,
-        "thirdPartyPort": 9085,
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
       },
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 21005,
+        "devP2pPort": 30303,
         "ip": "127.0.0.1",
-        "raftPort": 50406,
-        "rpcPort": 22005,
-        "wsPort": 23005,
+        "raftPort": 50401,
+        "rpcPort": 8545,
+        "wsPort": 23000,
       },
       "tm": Object {
         "ip": "127.0.0.1",
-        "p2pPort": 9006,
-        "thirdPartyPort": 9086,
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
       },
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 21006,
+        "devP2pPort": 30303,
         "ip": "127.0.0.1",
-        "raftPort": 50407,
-        "rpcPort": 22006,
-        "wsPort": 23006,
+        "raftPort": 50401,
+        "rpcPort": 8545,
+        "wsPort": 23000,
       },
       "tm": Object {
         "ip": "127.0.0.1",
-        "p2pPort": 9007,
-        "thirdPartyPort": 9087,
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
       },
     },
   ],
@@ -1079,6 +1010,128 @@ Object {
         "raftPort": 50407,
         "rpcPort": 22006,
         "wsPort": 23006,
+      },
+    },
+  ],
+}
+`;
+
+exports[`creates 7nodes raft kubernetes custom config 1`] = `
+Object {
+  "network": Object {
+    "cakeshop": "none",
+    "cakeshopPort": "8999",
+    "configDir": "network/7-nodes-raft-tessera-kubernetes/resources",
+    "consensus": "raft",
+    "customizePorts": false,
+    "deployment": "kubernetes",
+    "generateKeys": true,
+    "genesisFile": "",
+    "name": "7-nodes-raft-tessera-kubernetes",
+    "networkId": 14,
+    "permissioned": true,
+    "quorumVersion": "2.5.0",
+    "remoteDebug": false,
+    "transactionManager": "0.10.2",
+    "verbosity": 5,
+  },
+  "nodes": Array [
+    Object {
+      "quorum": Object {
+        "devP2pPort": 30303,
+        "ip": "127.0.0.1",
+        "raftPort": 50401,
+        "rpcPort": 8545,
+        "wsPort": 23000,
+      },
+      "tm": Object {
+        "ip": "127.0.0.1",
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 30303,
+        "ip": "127.0.0.1",
+        "raftPort": 50401,
+        "rpcPort": 8545,
+        "wsPort": 23000,
+      },
+      "tm": Object {
+        "ip": "127.0.0.1",
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 30303,
+        "ip": "127.0.0.1",
+        "raftPort": 50401,
+        "rpcPort": 8545,
+        "wsPort": 23000,
+      },
+      "tm": Object {
+        "ip": "127.0.0.1",
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 30303,
+        "ip": "127.0.0.1",
+        "raftPort": 50401,
+        "rpcPort": 8545,
+        "wsPort": 23000,
+      },
+      "tm": Object {
+        "ip": "127.0.0.1",
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 30303,
+        "ip": "127.0.0.1",
+        "raftPort": 50401,
+        "rpcPort": 8545,
+        "wsPort": 23000,
+      },
+      "tm": Object {
+        "ip": "127.0.0.1",
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 30303,
+        "ip": "127.0.0.1",
+        "raftPort": 50401,
+        "rpcPort": 8545,
+        "wsPort": 23000,
+      },
+      "tm": Object {
+        "ip": "127.0.0.1",
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
+      },
+    },
+    Object {
+      "quorum": Object {
+        "devP2pPort": 30303,
+        "ip": "127.0.0.1",
+        "raftPort": 50401,
+        "rpcPort": 8545,
+        "wsPort": 23000,
+      },
+      "tm": Object {
+        "ip": "127.0.0.1",
+        "p2pPort": 9001,
+        "thirdPartyPort": 9081,
       },
     },
   ],

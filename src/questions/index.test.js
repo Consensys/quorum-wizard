@@ -93,4 +93,14 @@ describe('prompts the user with different sets of questions based on first choic
     expect(getCustomizedBashNodes).toHaveBeenCalledTimes(0)
     expect(getCustomizedDockerPorts).toHaveBeenCalledTimes(1)
   })
+  it('customize, kubernetes ports', async () => {
+    prompt.mockResolvedValue({
+      ...CUSTOM_CONFIG,
+      deployment: 'kubernetes',
+    })
+    await promptUser('custom')
+    expect(prompt).toHaveBeenCalledWith(CUSTOM_QUESTIONS)
+    expect(getCustomizedBashNodes).toHaveBeenCalledTimes(0)
+    expect(getCustomizedDockerPorts).toHaveBeenCalledTimes(0)
+  })
 })

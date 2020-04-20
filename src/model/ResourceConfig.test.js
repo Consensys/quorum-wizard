@@ -14,7 +14,7 @@ const baseNetwork = {
   consensus: 'raft',
   quorumVersion: '2.5.0',
   transactionManager: '0.10.2',
-  cakeshop: '0.11.0',
+  cakeshop: 'none',
   deployment: 'kubernetes',
 }
 
@@ -24,12 +24,13 @@ test('creates 5nodes raft kubernetes tessera', () => {
   expect(kubernetes).toMatchSnapshot()
 })
 
-// test('creates 5nodes istanbul kubernetes no tessera', () => {
-//   const config = createConfigFromAnswers({
-//     ...baseNetwork,
-//     transactionManager: 'none',
-//     consensus: 'istanbul',
-//   })
-//   const kubernetes = buildKubernetesResource(config)
-//   expect(kubernetes).toMatchSnapshot()
-// })
+test('creates 7nodes istanbul kubernetes generate keys', () => {
+  const config = createConfigFromAnswers({
+    ...baseNetwork,
+    numberNodes: '7',
+    consensus: 'istanbul',
+    generateKeys: true,
+  })
+  const kubernetes = buildKubernetesResource(config)
+  expect(kubernetes).toMatchSnapshot()
+})

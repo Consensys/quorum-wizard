@@ -9,6 +9,7 @@ import {
 } from '../generators/binaryHelper'
 import {
   isRaft,
+  isKubernetes,
 } from '../model/NetworkConfig'
 
 
@@ -100,6 +101,7 @@ export const CAKESHOP = {
   message: 'Do you want to run Cakeshop (our chain explorer) with your network?',
   choices: ['No', 'Yes'],
   default: 'No',
+  when: (answers) => !isKubernetes(answers.deployment),
   filter: transformCakeshopAnswer,
 }
 
@@ -129,6 +131,7 @@ export const CUSTOMIZE_PORTS = {
   type: 'confirm',
   name: 'customizePorts',
   message: 'Would you like to customize your node ports?',
+  when: (answers) => !isKubernetes(answers.deployment),
   default: false,
 }
 
