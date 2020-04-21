@@ -50,8 +50,9 @@ kubectl $NAMESPACE exec -it $POD -c quorum -- /bin/ash -c "geth attach /etc/quor
     case 'docker-compose':
       return dockerCommand
     case 'kubernetes':
-    default:
       return kubernetesCommand
+    default:
+      return ''
   }
 }
 
@@ -86,8 +87,9 @@ kubectl $NAMESPACE exec -it $POD -c quorum -- /bin/ash -c "geth --exec 'loadScri
     case 'docker-compose':
       return dockerCommand
     case 'kubernetes':
-    default:
       return kubernetesCommand
+    default:
+      return ''
   }
 }
 export function generateRunScript(config) {

@@ -98,7 +98,7 @@ export async function buildBash(config) {
     buildCakeshopDir(config, joinPath(networkPath, 'qdata'))
   }
 
-  info('Writing start scripts...')
+  info('Writing start script...')
   writeFile(joinPath(networkPath, 'start.sh'), bashDetails.startScript, true)
   copyFile(joinPath(libRootDir(), 'lib', 'stop.sh'), joinPath(networkPath, 'stop.sh'))
 

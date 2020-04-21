@@ -29,7 +29,7 @@ const baseNetwork = {
   consensus: 'raft',
   quorumVersion: '2.5.0',
   transactionManager: '0.10.2',
-  cakeshop: '0.11.0',
+  cakeshop: 'none',
   deployment: 'kubernetes',
 }
 

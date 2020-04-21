@@ -19,7 +19,7 @@ export const INITIAL_MODE = {
   message: `
 Welcome to Quorum Wizard!
 
-This tool allows you to easily create bash and docker files to start up a quorum network.
+This tool allows you to easily create bash, docker, and kubernetes files to start up a quorum network.
 You can control consensus, privacy, network details and more for a customized setup.
 Additionally you can choose to deploy our chain explorer, Cakeshop, to easily view and monitor your network.
 
