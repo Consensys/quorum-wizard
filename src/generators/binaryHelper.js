@@ -1,4 +1,4 @@
-import { libRootDir } from '../utils/fileUtils'
+import { wizardHomeDir } from '../utils/fileUtils'
 import { executeSync } from '../utils/execUtils'
 import {
   isBash,
@@ -115,7 +115,7 @@ export function pathToQuorumBinary(quorumVersion) {
     return 'geth'
   }
   const binary = BINARIES.quorum[quorumVersion]
-  return joinPath(libRootDir(), 'bin', 'quorum', quorumVersion, binary.name)
+  return joinPath(wizardHomeDir(), 'bin', 'quorum', quorumVersion, binary.name)
 }
 
 export function pathToTesseraJar(transactionManager) {
@@ -123,20 +123,20 @@ export function pathToTesseraJar(transactionManager) {
     return '$TESSERA_JAR'
   }
   const binary = BINARIES.tessera[transactionManager]
-  return joinPath(libRootDir(), 'bin', 'tessera', transactionManager, binary.name)
+  return joinPath(wizardHomeDir(), 'bin', 'tessera', transactionManager, binary.name)
 }
 
 export function pathToCakeshop(version) {
   const binary = BINARIES.cakeshop[version]
-  return joinPath(libRootDir(), 'bin', 'cakeshop', version, binary.name)
+  return joinPath(wizardHomeDir(), 'bin', 'cakeshop', version, binary.name)
 }
 
 export function pathToIstanbulTools() {
   const binary = BINARIES.istanbul['1.0.1']
-  return joinPath(libRootDir(), 'bin', 'istanbul', '1.0.1', binary.name)
+  return joinPath(wizardHomeDir(), 'bin', 'istanbul', '1.0.1', binary.name)
 }
 
 export function pathToBootnode() {
   const binary = BINARIES.bootnode['1.8.27']
-  return joinPath(libRootDir(), 'bin', 'bootnode', '1.8.27', binary.name)
+  return joinPath(wizardHomeDir(), 'bin', 'bootnode', '1.8.27', binary.name)
 }

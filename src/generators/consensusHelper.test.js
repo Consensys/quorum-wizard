@@ -7,6 +7,7 @@ import {
   cwd,
   libRootDir,
   readFileToString,
+  wizardHomeDir,
   writeFile,
 } from '../utils/fileUtils'
 import { generateNodeConfigs } from '../model/NetworkConfig'
@@ -22,6 +23,7 @@ jest.mock('../utils/web3Helper')
 jest.mock('../utils/execUtils')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
+wizardHomeDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 
 describe('generates accounts for genesis', () => {
   it('creates allocation account json given nodes', () => {

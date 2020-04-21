@@ -12,10 +12,12 @@ import {
   copyFile,
   createFolder,
   writeJsonFile,
+  wizardHomeDir,
 } from '../utils/fileUtils'
 import {
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
+  TEST_WIZARD_HOME_DIR,
   createNetPath,
   createLibPath,
 } from '../utils/testHelper'
@@ -29,6 +31,7 @@ jest.mock('../utils/execUtils')
 jest.mock('../utils/log')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
+wizardHomeDir.mockReturnValue(TEST_WIZARD_HOME_DIR)
 generateAccounts.mockReturnValue('accounts')
 readFileToString.mockReturnValue('publicKey')
 isJava11Plus.mockReturnValue(false)

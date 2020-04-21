@@ -1,7 +1,7 @@
 import {
   overrideProcessValue,
   TEST_CWD,
-  TEST_LIB_ROOT_DIR,
+  TEST_WIZARD_HOME_DIR,
 } from '../utils/testHelper'
 import {
   getPlatformSpecificUrl,
@@ -9,8 +9,8 @@ import {
 } from './download'
 import {
   cwd,
-  libRootDir,
   exists,
+  wizardHomeDir,
 } from '../utils/fileUtils'
 import { info } from '../utils/log'
 
@@ -18,7 +18,7 @@ jest.mock('../utils/fileUtils')
 jest.mock('../utils/log')
 
 cwd.mockReturnValue(TEST_CWD)
-libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
+wizardHomeDir.mockReturnValue(TEST_WIZARD_HOME_DIR)
 info.mockReturnValue('info')
 
 describe('Handles different binary file urls', () => {
