@@ -6,6 +6,7 @@ import {
   mkdirSync,
   copyFileSync,
   readFileSync,
+  copySync,
 } from 'fs-extra'
 import { resolve } from 'path'
 import { joinPath, verifyPathInsideDirectory } from './pathUtils'
@@ -49,8 +50,17 @@ export function createFolder(path, recursive = false) {
   mkdirSync(path, { recursive })
 }
 
+export function copyScript(src, dest) {
+  copyFile(src, dest)
+  chmodSync(dest, '755')
+}
+
 export function copyFile(src, dest) {
   copyFileSync(src, dest)
+}
+
+export function copyDirectory(src, dest) {
+  copySync(src, dest)
 }
 
 export function readFileToString(file) {

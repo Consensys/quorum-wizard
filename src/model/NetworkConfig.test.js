@@ -67,6 +67,29 @@ test('creates 5nodes raft no-TM cakeshop docker config', () => {
   expect(config).toMatchSnapshot()
 })
 
+test('creates 7nodes istanbul kubernetes config', () => {
+  const config = createConfigFromAnswers({
+    ...baseNetwork,
+    numberNodes: '7',
+    consensus: 'istanbul',
+    deployment: 'kubernetes',
+  })
+  expect(config).toMatchSnapshot()
+})
+
+test('creates 7nodes raft kubernetes custom config', () => {
+  const config = createConfigFromAnswers({
+    ...baseNetwork,
+    numberNodes: '7',
+    deployment: 'kubernetes',
+    generateKeys: true,
+    networkId: 14,
+    genesisLocation: '',
+    customizePorts: false,
+  })
+  expect(config).toMatchSnapshot()
+})
+
 test('creates 7nodes istanbul cakeshop config', () => {
   const config = createConfigFromAnswers({
     ...baseNetwork,

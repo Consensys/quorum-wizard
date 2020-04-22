@@ -14,10 +14,17 @@ import {
   isBash,
   isDocker,
   isTessera,
+  isKubernetes,
 } from './model/NetworkConfig'
-import { createDirectory } from './generators/networkCreator'
+import {
+  createQdataDirectory,
+  createNetwork,
+  generateResourcesLocally,
+  generateResourcesRemote,
+} from './generators/networkCreator'
 import { buildBash } from './generators/bashHelper'
 import { createDockerCompose } from './generators/dockerHelper'
+import { createKubernetes } from './generators/kubernetesHelper'
 import { generateAndCopyExampleScripts } from './generators/examplesHelper'
 import {
   formatTesseraKeysOutput,
@@ -71,13 +78,36 @@ async function buildNetwork(mode) {
   printInstructions(config)
 }
 
+function createDirectory(config) {
+  if (isBash(config.network.deployment)) {
+    createNetwork(config)
+    generateResourcesLocally(config)
+    createQdataDirectory(config)
+  } else if (isDocker(config.network.deployment)) {
+    createNetwork(config)
+    if (config.network.generateKeys && isTessera(config.network.transactionManager)) {
+      generateResourcesRemote(config)
+    } else {
+      generateResourcesLocally(config)
+    }
+    createQdataDirectory(config)
+  } else if (isKubernetes(config.network.deployment)) {
+    createNetwork(config)
+    generateResourcesRemote(config)
+  } else {
+    throw new Error('Only bash, docker, and kubernetes deployments are supported')
+  }
+}
+
 async function createScript(config) {
   if (isBash(config.network.deployment)) {
     await buildBash(config)
   } else if (isDocker(config.network.deployment)) {
     await createDockerCompose(config)
+  } else if (isKubernetes(config.network.deployment)) {
+    await createKubernetes(config)
   } else {
-    throw new Error('Only bash and docker deployments are supported')
+    throw new Error('Only bash, docker, and kubernetes deployments are supported')
   }
 }
 

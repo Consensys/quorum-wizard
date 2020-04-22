@@ -25,7 +25,6 @@ export function generateKeys(config, keyPath) {
     doExec(keyDir, config)
   })
   info('Keys were generated')
-  return keyPath
 }
 
 function doExec(keyDir, config) {

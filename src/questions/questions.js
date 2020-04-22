@@ -9,6 +9,7 @@ import {
 } from '../generators/binaryHelper'
 import {
   isRaft,
+  isKubernetes,
 } from '../model/NetworkConfig'
 
 
@@ -18,7 +19,7 @@ export const INITIAL_MODE = {
   message: `
 Welcome to Quorum Wizard!
 
-This tool allows you to easily create bash and docker files to start up a quorum network.
+This tool allows you to easily create bash, docker, and kubernetes files to start up a quorum network.
 You can control consensus, privacy, network details and more for a customized setup.
 Additionally you can choose to deploy our chain explorer, Cakeshop, to easily view and monitor your network.
 
@@ -55,7 +56,7 @@ export const DEPLOYMENT_TYPE = {
   choices: [
     'bash',
     'docker-compose',
-    // 'kubernetes',
+    'kubernetes',
     // 'vagrant',
   ],
 }
@@ -100,6 +101,7 @@ export const CAKESHOP = {
   message: 'Do you want to run Cakeshop (our chain explorer) with your network?',
   choices: ['No', 'Yes'],
   default: 'No',
+  when: (answers) => !isKubernetes(answers.deployment),
   filter: transformCakeshopAnswer,
 }
 
@@ -129,6 +131,7 @@ export const CUSTOMIZE_PORTS = {
   type: 'confirm',
   name: 'customizePorts',
   message: 'Would you like to customize your node ports?',
+  when: (answers) => !isKubernetes(answers.deployment),
   default: false,
 }
 

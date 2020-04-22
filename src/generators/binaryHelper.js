@@ -2,9 +2,10 @@ import { libRootDir } from '../utils/fileUtils'
 import { executeSync } from '../utils/execUtils'
 import {
   isBash,
-  isDocker,
   isIstanbul,
   isTessera,
+  isKubernetes,
+  isDocker,
 } from '../model/NetworkConfig'
 import {
   BINARIES,
@@ -23,15 +24,18 @@ export async function downloadAndCopyBinaries(config) {
   const {
     transactionManager, cakeshop, deployment, generateKeys, quorumVersion, consensus,
   } = config.network
+  const bash = isBash(deployment)
   const docker = isDocker(deployment)
-  const isDockerButNeedsBinaries = docker && generateKeys
+  const tessera = isTessera(transactionManager)
+  const isDockerButNeedsBinaries = docker && generateKeys && !tessera
+  const kubernetes = isKubernetes(deployment)
 
   // needed no matter what if using istanbul to generate genesis
-  if (isIstanbul(consensus)) {
+  if (isIstanbul(consensus) && !kubernetes) {
     await downloadIfMissing('istanbul', '1.0.1')
   }
 
-  if (!docker || isDockerButNeedsBinaries) {
+  if (bash || isDockerButNeedsBinaries) {
     if (generateKeys) {
       await downloadIfMissing('bootnode', '1.8.27')
     }
@@ -87,7 +91,7 @@ export function getDownloadableTesseraChoices(deployment) {
     // allow all options in docker compose mode since local jdk version doesn't matter
     choices = choices.map((choice) => ({ ...choice, disabled: false }))
   }
-  return choices.concat('none')
+  return isKubernetes(deployment) ? choices : choices.concat('none')
 }
 
 function getDownloadableChoices(versions) {

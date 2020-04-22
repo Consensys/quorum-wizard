@@ -175,10 +175,56 @@ describe('Downloads binaries', () => {
       },
     }
     await downloadAndCopyBinaries(config)
+    expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.5.0')
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('bootnode', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
+  })
+  it('Downloads correct bins for docker with keygen no tessera', async () => {
+    const config = {
+      network: {
+        ...baseNetwork,
+        transactionManager: 'none',
+        deployment: 'docker-compose',
+        generateKeys: true,
+      },
+    }
+    await downloadAndCopyBinaries(config)
     expect(downloadIfMissing).toBeCalledWith('quorum', '2.5.0')
-    expect(downloadIfMissing).toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
     expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
     expect(downloadIfMissing).toBeCalledWith('bootnode', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
+  })
+  it('Downloads correct bins for kubernetes, no keygen', async () => {
+    const config = {
+      network: {
+        ...baseNetwork,
+        deployment: 'kubernetes',
+        generateKeys: false,
+      },
+    }
+    await downloadAndCopyBinaries(config)
+    expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.5.0')
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('bootnode', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
+  })
+  it('Downloads correct bins for kubernetes with keygen', async () => {
+    const config = {
+      network: {
+        ...baseNetwork,
+        deployment: 'kubernetes',
+        generateKeys: true,
+      },
+    }
+    await downloadAndCopyBinaries(config)
+    expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.5.0')
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('bootnode', any(String))
     expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
   })
   it('Does not download geth and tessera when on path', async () => {
@@ -226,6 +272,12 @@ describe('presents the correct binary options', () => {
     expect(choices.some((choice) => choice.name === 'Tessera 0.10.4' && choice.disabled === false)).toBeTruthy()
     expect(choices.some((choice) => choice.name === 'Tessera 0.10.2' && choice.disabled === false)).toBeTruthy()
     expect(choices.includes('none')).toBeTruthy()
+  })
+  it('forces and doesnt disable tessera options in kubernetes mode', () => {
+    const choices = getDownloadableTesseraChoices('kubernetes')
+    expect(choices.some((choice) => choice.name === 'Tessera 0.10.4' && choice.disabled === false)).toBeTruthy()
+    expect(choices.some((choice) => choice.name === 'Tessera 0.10.2' && choice.disabled === false)).toBeTruthy()
+    expect(choices.includes('none')).not.toBeTruthy()
   })
 })
 

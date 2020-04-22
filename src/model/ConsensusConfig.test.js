@@ -32,7 +32,7 @@ test('creates 5nodes istanbul genesis', () => {
     '0x0000000000000000000000000000000000000000000000000000000000000000f8aff86994dea501aa3315db296f1ce0f7d264c6c812b2088a942da3b70ed4e94ad02641ef83d33727d86da41e78945a4a874f95cd8f0758dea8f6719cd686aedc30e994d34cb7199598f100f76eed6fdfe962b37a66b7dc9499fc6e8ac3f567ae9ee11559e0fa686513aa9e74b8410000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0',
   )
 
-  const genesis = generateIstanbulConfig(5, 'testDir', 'keyPath', 10)
+  const genesis = generateIstanbulConfig(5, 'testDir', 10)
   expect(genesis).toMatchSnapshot()
 })
 
@@ -41,7 +41,7 @@ test('generates raft consensus file', () => {
   const accts = '{"0x59b64581638fd8311423e007c5131b0d9287d069":{"balance":"1000000000000000000000000000"},"0x4e03a788769f04bb8ec13826d1efe6cd9ca46190":{"balance":"1000000000000000000000000000"},"0xb01a34cca09374a58068eda1c2d7e472f39ef413":{"balance":"1000000000000000000000000000"}, "0xdbd868dd04daf492b783587f50bdd82fbf9bda3f":{"balance":"1000000000000000000000000000"}, "0x62fdbfa6bebe19c812f3bceb3d2d16b00563862c":{"balance":"1000000000000000000000000000"}}'
   generateAccounts
     .mockReturnValueOnce(JSON.parse(accts))
-  generateConsensusConfig('testConfigDir', 'keyPath', 'raft', nodes, 10)
+  generateConsensusConfig('testConfigDir', 'raft', nodes, 10)
   expect(writeJsonFile).toBeCalledWith('testConfigDir', 'genesis.json', anything())
 })
 
@@ -50,6 +50,6 @@ test('generates istanbul consensus file', () => {
   const accts = '{"0x59b64581638fd8311423e007c5131b0d9287d069":{"balance":"1000000000000000000000000000"},"0x4e03a788769f04bb8ec13826d1efe6cd9ca46190":{"balance":"1000000000000000000000000000"},"0xb01a34cca09374a58068eda1c2d7e472f39ef413":{"balance":"1000000000000000000000000000"}, "0xdbd868dd04daf492b783587f50bdd82fbf9bda3f":{"balance":"1000000000000000000000000000"}, "0x62fdbfa6bebe19c812f3bceb3d2d16b00563862c":{"balance":"1000000000000000000000000000"}}'
   generateAccounts
     .mockReturnValueOnce(JSON.parse(accts))
-  generateConsensusConfig('testConfigDir', 'keyPath', 'istanbul', nodes, 10)
+  generateConsensusConfig('testConfigDir', 'istanbul', nodes, 10)
   expect(writeJsonFile).toBeCalledWith('testConfigDir', 'genesis.json', anything())
 })
