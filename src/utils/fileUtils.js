@@ -1,3 +1,4 @@
+import { homedir } from 'os'
 import {
   existsSync,
   writeFileSync,
@@ -21,6 +22,10 @@ export function cwd() {
 
 export function libRootDir() {
   return libRoot
+}
+
+export function wizardHomeDir() {
+  return joinPath(homedir(), '.quorum-wizard')
 }
 
 export function exists(path) {

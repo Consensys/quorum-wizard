@@ -1,10 +1,15 @@
+import { homedir } from 'os'
+import { join } from 'path'
 import { existsSync, removeSync } from 'fs-extra'
-import { removeFolder } from './fileUtils'
-import { verifyPathInsideDirectory } from './pathUtils'
+import { removeFolder, wizardHomeDir } from './fileUtils'
+import { joinPath, verifyPathInsideDirectory } from './pathUtils'
 
 jest.mock('fs-extra')
+jest.mock('os')
 jest.mock('./pathUtils')
 existsSync.mockReturnValue(true)
+homedir.mockReturnValue('/path/to/user/home')
+
 
 describe('safely removes network folder', () => {
   it('does not try to remove when verification throws error', () => {
@@ -23,4 +28,9 @@ describe('safely removes network folder', () => {
     expect(() => removeFolder(networkPath)).not.toThrow(new Error('some error'))
     expect(removeSync).toHaveBeenCalledWith(networkPath)
   })
+})
+
+test('returns the quorum wizard dot folder inside the user\'s home folder', () => {
+  joinPath.mockImplementation((...segments) => join(...segments))
+  expect(wizardHomeDir()).toEqual('/path/to/user/home/.quorum-wizard')
 })

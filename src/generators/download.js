@@ -6,7 +6,7 @@ import { createWriteStream } from 'fs'
 import {
   createFolder,
   exists,
-  libRootDir,
+  wizardHomeDir,
 } from '../utils/fileUtils'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
@@ -17,7 +17,7 @@ export async function downloadIfMissing(name, version) {
     throw new Error(`Could not find binary info entry for ${name} ${version}`)
   }
   const binaryInfo = BINARIES[name][version]
-  const binDir = joinPath(libRootDir(), 'bin', name, version)
+  const binDir = joinPath(wizardHomeDir(), 'bin', name, version)
   const binaryFileLocation = joinPath(binDir, binaryInfo.name)
   if (!exists(binaryFileLocation)) {
     createFolder(binDir, true)
