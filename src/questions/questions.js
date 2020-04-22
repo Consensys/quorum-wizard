@@ -6,6 +6,7 @@ import {
 import {
   getDownloadableGethChoices,
   getDownloadableTesseraChoices,
+  getAllGethChoices,
 } from '../generators/binaryHelper'
 import {
   isRaft,
@@ -87,6 +88,14 @@ export const QUORUM_VERSION = {
   choices: ({ deployment }) => getDownloadableGethChoices(deployment),
 }
 
+export const QUORUM_ALL_VERSIONS = {
+  type: 'list',
+  name: 'quorumVersionMore',
+  message: 'Choose a later version of quorum',
+  choices: ({ deployment }) => getAllGethChoices(deployment),
+  when: ({ quorumVersion }) => quorumVersion === 'select older versions',
+}
+
 export const TRANSACTION_MANAGER = {
   type: 'list',
   name: 'transactionManager',
@@ -138,6 +147,7 @@ export const SIMPLE_QUESTIONS = [
   CONSENSUS_MODE,
   NUMBER_NODES,
   QUORUM_VERSION,
+  QUORUM_ALL_VERSIONS,
   TRANSACTION_MANAGER,
   CAKESHOP,
 ]

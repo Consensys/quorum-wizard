@@ -11,12 +11,28 @@ import {
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
 
+export async function getVersions(name) {
+  const url = `https://api.bintray.com/packages/quorumengineering/${name}`
+  const response = await axios({
+    url,
+    method: 'GET',
+  })
+  return response.data.versions
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export async function downloadIfMissing(name, version) {
-  if (BINARIES[name] === undefined || BINARIES[name][version] === undefined) {
-    throw new Error(`Could not find binary info entry for ${name} ${version}`)
+  let binaryInfo
+  switch (name) {
+    case 'geth':
+      binaryInfo = createQuorumBinaryInfo(version)
+      break
+    case 'istanbul':
+      binaryInfo = createIstanbulBinaryInfo(version)
+      break
+    default:
+      info('no binary available')
   }
-  const binaryInfo = BINARIES[name][version]
   const binDir = joinPath(libRootDir(), 'bin', name, version)
   const binaryFileLocation = joinPath(binDir, binaryInfo.name)
   if (!exists(binaryFileLocation)) {
@@ -79,10 +95,38 @@ export function getPlatformSpecificUrl({ url }) {
   return platformUrl
 }
 
+function createQuorumBinaryInfo(version) {
+  return {
+    name: 'geth',
+    description: `Quorum ${version}`,
+    url: {
+      darwin: `https://bintray.com/quorumengineering/quorum/download_file?file_path=${version}/geth_${version}_darwin_amd64.tar.gz`,
+      linux: `https://bintray.com/quorumengineering/quorum/download_file?file_path=${version}/geth_${version}_linux_amd64.tar.gz`,
+    },
+    type: 'tar.gz',
+    files: [
+      'geth',
+    ],
+  }
+}
+
+function createIstanbulBinaryInfo(version) {
+  return {
+    name: 'istanbul',
+    url: {
+      darwin: `https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_${version}_darwin_amd64.tar.gz`,
+      linux: `https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_${version}_linux_amd64.tar.gz`,
+    },
+    type: 'tar.gz',
+    files: [
+      'istanbul',
+    ],
+  }
+}
 
 export const BINARIES = {
   quorum: {
-    '2.5.0': {
+    'v2.5.0': {
       name: 'geth',
       description: 'Quorum 2.5.0',
       url: {

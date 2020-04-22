@@ -9,6 +9,8 @@ import {
 import {
   BINARIES,
   downloadIfMissing,
+  // getVersions,
+  getVersions,
 } from './download'
 import { disableIfWrongJavaVersion } from '../questions/validators'
 import { info } from '../utils/log'
@@ -71,12 +73,26 @@ export function getGethOnPath() {
   return pathChoices
 }
 
-export function getDownloadableGethChoices(deployment) {
-  let choices = getDownloadableChoices(BINARIES.quorum)
+export async function getDownloadableGethChoices(deployment) {
+  const choices = await getVersions('quorum/geth')
+  let latestChoice = [choices[0]]
+  if (isBash(deployment)) {
+    latestChoice = latestChoice.concat(getGethOnPath())
+  }
+  latestChoice = latestChoice.concat('select older versions')
+  return latestChoice
+}
+
+export async function getAllGethChoices(deployment) {
+  let choices = await getVersions('quorum/geth')
   if (isBash(deployment)) {
     choices = choices.concat(getGethOnPath())
   }
   return choices
+}
+
+export async function getLatestIstanbul() {
+  return [await getVersions('istanbul-tools/istanbul')[0]]
 }
 
 export function getDownloadableTesseraChoices(deployment) {
