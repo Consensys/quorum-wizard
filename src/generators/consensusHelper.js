@@ -3,7 +3,7 @@ import {
   writeFile,
 } from '../utils/fileUtils'
 import { executeSync } from '../utils/execUtils'
-import nodekeyToAccount from '../utils/web3Helper'
+import nodekeyToAccount from '../utils/accountHelper'
 import { pathToIstanbulTools } from './binaryHelper'
 import { joinPath } from '../utils/pathUtils'
 

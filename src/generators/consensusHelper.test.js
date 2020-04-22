@@ -2,7 +2,7 @@ import {
   generateAccounts,
   generateExtraData,
 } from './consensusHelper'
-import nodekeyToAccount from '../utils/web3Helper'
+import nodekeyToAccount from '../utils/accountHelper'
 import {
   cwd,
   libRootDir,
@@ -19,7 +19,7 @@ import {
 import { joinPath } from '../utils/pathUtils'
 
 jest.mock('../utils/fileUtils')
-jest.mock('../utils/web3Helper')
+jest.mock('../utils/accountHelper')
 jest.mock('../utils/execUtils')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
