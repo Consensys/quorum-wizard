@@ -194,10 +194,10 @@ describe('Downloads binaries', () => {
       },
     }
     await downloadAndCopyBinaries(config)
-    expect(downloadIfMissing).toBeCalledWith('quorum', '2.5.0')
+    expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.5.0')
     expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
     expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
-    expect(downloadIfMissing).toBeCalledWith('bootnode', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('bootnode', any(String))
     expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
   })
   it('Downloads correct bins for kubernetes, no keygen', async () => {

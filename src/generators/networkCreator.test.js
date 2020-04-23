@@ -245,7 +245,6 @@ describe('creates qdata directory for bash network no tessera', () => {
       expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', `dd${i}`))
       expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', `dd${i}`, 'geth'))
       expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', `dd${i}`, 'keystore'))
-      expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', `c${i}`))
       expect(copyFile).toBeCalledWith(
         joinPath(getFullNetworkPath(config), 'resources', 'permissioned-nodes.json'),
         joinPath(createNetPath(config, `qdata/dd${i}`), 'permissioned-nodes.json'),
