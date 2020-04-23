@@ -1,4 +1,4 @@
-
+import { isKubernetes } from './NetworkConfig'
 // eslint-disable-next-line import/prefer-default-export
 export function buildKubernetesResource(config) {
   return [
@@ -15,6 +15,7 @@ function buildGeneralDetails(config) {
 #  name: quorum-test
 sep_deployment_files: true
 generate_keys: ${config.network.generateKeys}
+generate_deployment: ${isKubernetes(config.network.deployment)}
 nodes:
   number: ${nodeNum}
 service:

@@ -33,7 +33,7 @@ export function createNetwork(config) {
 }
 
 export function generateResourcesRemote(config) {
-  info('Generating network resources...')
+  info('Generating network resources remotely...')
   const configDir = joinPath(cwd(), config.network.configDir)
   const networkPath = getFullNetworkPath(config)
   const remoteOutputDir = joinPath(networkPath, 'out', 'config')
@@ -60,7 +60,7 @@ export function generateResourcesRemote(config) {
 }
 
 export function generateResourcesLocally(config) {
-  info('Generating network resources...')
+  info('Generating network resources locally...')
   const configDir = joinPath(cwd(), config.network.configDir)
   createFolder(configDir, true)
 
@@ -105,7 +105,6 @@ export function createQdataDirectory(config) {
     createFolder(quorumDir)
     createFolder(gethDir)
     createFolder(keyDir)
-    createFolder(tmDir)
 
     copyFile(joinPath(configPath, 'permissioned-nodes.json'), joinPath(quorumDir, 'permissioned-nodes.json'))
     copyFile(joinPath(configPath, 'permissioned-nodes.json'), joinPath(quorumDir, 'static-nodes.json'))
@@ -114,6 +113,7 @@ export function createQdataDirectory(config) {
     copyFile(joinPath(keySource, 'password.txt'), passwordDestination)
     copyFile(joinPath(configPath, 'genesis.json'), genesisDestination)
     if (isTessera(config.network.transactionManager)) {
+      createFolder(tmDir)
       copyFile(joinPath(keySource, 'tm.key'), joinPath(tmDir, 'tm.key'))
       copyFile(joinPath(keySource, 'tm.pub'), joinPath(tmDir, 'tm.pub'))
       const tesseraConfig = createConfig(

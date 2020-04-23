@@ -5,7 +5,6 @@ import {
   isIstanbul,
   isTessera,
   isKubernetes,
-  isDocker,
 } from '../model/NetworkConfig'
 import {
   BINARIES,
@@ -25,9 +24,6 @@ export async function downloadAndCopyBinaries(config) {
     transactionManager, cakeshop, deployment, generateKeys, quorumVersion, consensus,
   } = config.network
   const bash = isBash(deployment)
-  const docker = isDocker(deployment)
-  const tessera = isTessera(transactionManager)
-  const isDockerButNeedsBinaries = docker && generateKeys && !tessera
   const kubernetes = isKubernetes(deployment)
 
   // needed no matter what if using istanbul to generate genesis
@@ -35,7 +31,7 @@ export async function downloadAndCopyBinaries(config) {
     await downloadIfMissing('istanbul', '1.0.1')
   }
 
-  if (bash || isDockerButNeedsBinaries) {
+  if (bash) {
     if (generateKeys) {
       await downloadIfMissing('bootnode', '1.8.27')
     }
@@ -48,7 +44,7 @@ export async function downloadAndCopyBinaries(config) {
       await downloadIfMissing('tessera', tesseraVersion)
     }
 
-    if (!docker && cakeshop !== 'none') {
+    if (cakeshop !== 'none') {
       await downloadIfMissing('cakeshop', cakeshop)
     }
   }
