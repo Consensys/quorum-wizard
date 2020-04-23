@@ -50,14 +50,18 @@ puts "  Generating Quorum configs..."
 
 puts ""
 puts  "  Base quorum resources have been generated. "
-puts  "  Running ./qubernetes to generate Kubernetes resources."
-puts ""
-`
-./qubernetes #{@CONFIG_FILE}
-`
-@Kubectl_Cmd="  $> kubectl apply -f out"
-if @sep_deployment_files
-  @Kubectl_Cmd="  $> kubectl apply -f out -f out/deployments"
+
+if @config["generate_deployment"]
+  puts  "  Running ./qubernetes to generate Kubernetes resources."
+  puts ""
+
+  `
+  ./qubernetes #{@CONFIG_FILE}
+  `
+  @Kubectl_Cmd="  $> kubectl apply -f out"
+  if @sep_deployment_files
+    @Kubectl_Cmd="  $> kubectl apply -f out -f out/deployments"
+  end
+  puts("  To deploy to kubernetes run:")
+  puts(@Kubectl_Cmd)
 end
-puts("  To deploy to kubernetes run:")
-puts(@Kubectl_Cmd)
