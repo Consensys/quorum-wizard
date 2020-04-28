@@ -8,6 +8,7 @@ import {
   getDownloadableTesseraChoices,
 } from '../generators/binaryHelper'
 import {
+  defaultNetworkName,
   isRaft,
   isKubernetes,
 } from '../model/NetworkConfig'
@@ -135,6 +136,16 @@ export const CUSTOMIZE_PORTS = {
   default: false,
 }
 
+export const NETWORK_NAME = {
+  type: 'input',
+  name: 'name',
+  message: 'What would you like to call this network?',
+  default: (answers) => defaultNetworkName(answers.numberNodes,
+    answers.consensus,
+    answers.transactionManager,
+    answers.deployment),
+}
+
 export const QUICKSTART_QUESTIONS = []
 export const SIMPLE_QUESTIONS = [
   DEPLOYMENT_TYPE,
@@ -143,6 +154,7 @@ export const SIMPLE_QUESTIONS = [
   QUORUM_VERSION,
   TRANSACTION_MANAGER,
   CAKESHOP,
+  NETWORK_NAME,
 ]
 export const CUSTOM_QUESTIONS = [
   ...SIMPLE_QUESTIONS,
