@@ -29,7 +29,6 @@ import {
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
-import { generateKeys } from './keyGen'
 import { joinPath } from '../utils/pathUtils'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { buildKubernetesResource } from '../model/ResourceConfig'
@@ -42,7 +41,6 @@ jest.mock('../model/ResourceConfig')
 jest.mock('./keyGen')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
-generateKeys.mockReturnValue(`${TEST_LIB_ROOT_DIR}/keyPath`)
 buildKubernetesResource.mockReturnValue('qubernetes')
 
 const baseNetwork = {
@@ -75,9 +73,9 @@ describe('creates network and config from answers', () => {
 })
 
 describe('creates network resources locally from answers', () => {
-  it('Creates genesis and static nodes with pregen keys for bash', () => {
+  it('Creates genesis and static nodes with pregen keys for bash', async () => {
     const config = createConfigFromAnswers(baseNetwork)
-    generateResourcesLocally(config)
+    await generateResourcesLocally(config)
 
     expect(createFolder).toBeCalledWith(createNetPath(config, 'resources'), true)
     expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'resources'))
@@ -85,23 +83,23 @@ describe('creates network resources locally from answers', () => {
     expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
   })
 
-  it('Creates genesis and static nodes and generates keys for bash', () => {
+  it('Creates genesis and static nodes and generates keys for bash', async () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
       generateKeys: true,
     })
-    generateResourcesLocally(config)
+    await generateResourcesLocally(config)
 
     expect(createFolder).toBeCalledWith(createNetPath(config, 'resources'), true)
     expect(generateConsensusConfig).toHaveBeenCalled()
     expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
   })
-  it('Creates genesis and static nodes for docker with pregen keys', () => {
+  it('Creates genesis and static nodes for docker with pregen keys', async () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
       deployment: 'docker-compose',
     })
-    generateResourcesLocally(config)
+    await generateResourcesLocally(config)
 
     expect(createFolder).toBeCalledWith(createNetPath(config, 'resources'), true)
     expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'resources'))

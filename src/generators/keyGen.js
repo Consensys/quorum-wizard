@@ -1,5 +1,5 @@
 import { info } from '../utils/log'
-import { executeSync } from '../utils/execUtils'
+import { execute } from '../utils/execUtils'
 import {
   createFolder,
   writeFile,
@@ -13,17 +13,19 @@ import {
 import { joinPath } from '../utils/pathUtils'
 
 // eslint-disable-next-line import/prefer-default-export
-export function generateKeys(config, keyPath) {
+export async function generateKeys(config, keyPath) {
   const tesseraKeyMsg = isTessera(config.network.transactionManager) ? ' and Tessera' : ''
   info(`Generating ${config.nodes.length} keys for Quorum${tesseraKeyMsg} nodes..`)
-  config.nodes.forEach((node, i) => {
+  const keygenProcesses = config.nodes.map((node, i) => {
     const nodeNumber = i + 1
     const keyDir = joinPath(keyPath, `key${nodeNumber}`)
     createFolder(keyDir, true)
     writeFile(joinPath(keyDir, 'password.txt'), '')
 
-    doExec(keyDir, config)
+    return doExec(keyDir, config)
   })
+
+  await Promise.all(keygenProcesses)
   info('Keys were generated')
 }
 
@@ -34,8 +36,9 @@ function doExec(keyDir, config) {
   find . -type f -name 'UTC*' -execdir mv {} key ';'
   `
   if (isTessera(config.network.transactionManager)) {
-    cmd += `java -jar ${pathToTesseraJar(config.network.transactionManager)} -keygen -filename tm`
+    // blank password for now using `< /dev/null` to automatically answer password prompts
+    cmd += `java -jar ${pathToTesseraJar(config.network.transactionManager)} -keygen -filename tm < /dev/null`
   }
 
-  executeSync(cmd)
+  return execute(cmd)
 }
