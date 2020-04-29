@@ -29,7 +29,6 @@ mkdir -p out/config
 # nodes.
 ./quorum-create-nodes #{@CONFIG_FILE}
 `
-if @config["generate_keys"]
   puts ""
   puts "  Generating keys..."
   `
@@ -38,7 +37,6 @@ if @config["generate_keys"]
   # quorum transaction manger (tm.pub,tm.key) keys.
   ./quorum-keygen #{@CONFIG_FILE}
 `
-end
 
 puts "  Generating Quorum configs..."
 `
@@ -51,7 +49,7 @@ puts "  Generating Quorum configs..."
 puts ""
 puts  "  Base quorum resources have been generated. "
 
-if @config["generate_deployment"]
+if !@config["skip_deployment"]
   puts  "  Running ./qubernetes to generate Kubernetes resources."
   puts ""
 

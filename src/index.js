@@ -118,6 +118,7 @@ function printInstructions(config) {
   info('Quorum network created')
   info('')
   if (isKubernetes(config.network.deployment)) {
+    info('Running the kubernetes deployment is currently only supported on minikube.')
     info('Before starting the network please make sure minikube is running and kubectl is installed and setup properly')
     info('Check out our qubernetes project docs for more info: https://github.com/jpmorganchase/qubernetes')
     info('')

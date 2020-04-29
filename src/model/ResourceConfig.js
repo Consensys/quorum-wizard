@@ -14,8 +14,7 @@ function buildGeneralDetails(config) {
   return `#namespace:
 #  name: quorum-test
 sep_deployment_files: true
-generate_keys: ${config.network.generateKeys}
-generate_deployment: ${isKubernetes(config.network.deployment)}
+skip_deployment: ${!isKubernetes(config.network.deployment)}
 nodes:
   number: ${nodeNum}
 service:
