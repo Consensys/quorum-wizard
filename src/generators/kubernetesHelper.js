@@ -13,6 +13,18 @@ export async function createKubernetes(config) {
 
   info('Writing start script...')
   const startCommands = `
+# check minikube is running
+minikube ip
+EXIT_CODE=$?
+
+if [[ EXIT_CODE -ne 0 ]];
+then
+  printf "Error: minikube is not running, please install and start before running this script.\n"
+  printf "For more information, see our qubernetes project: https://github.com/jpmorganchase/qubernetes"
+  exit $EXIT_CODE
+fi
+
+# check kubectl is installed
 kubectl version > /dev/null
 EXIT_CODE=$?
 
