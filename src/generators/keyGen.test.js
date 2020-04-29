@@ -5,7 +5,7 @@ import {
   pathToBootnode,
   pathToTesseraJar,
 } from './binaryHelper'
-import { executeSync } from '../utils/execUtils'
+import { execute } from '../utils/execUtils'
 import {
   createFolder,
   writeFile,
@@ -25,7 +25,7 @@ cwd.mockReturnValue(TEST_CWD)
 info.mockReturnValue('log')
 
 describe('generates keys', () => {
-  it('generates quorum keys', () => {
+  it('generates quorum keys', async () => {
     const config = {
       network: {
         transactionManager: 'none',
@@ -35,7 +35,7 @@ describe('generates keys', () => {
     }
     pathToQuorumBinary.mockReturnValueOnce('quorumPath')
     pathToBootnode.mockReturnValue('bootnodePath')
-    generateKeys(config, joinPath(createNetPath(config), 'keyPath'))
+    await generateKeys(config, joinPath(createNetPath(config), 'keyPath'))
     const keyNum = config.nodes.length
 
     const expected = `cd ${joinPath(createNetPath(config), 'keyPath')}/key${keyNum} && quorumPath account new --keystore ${joinPath(createNetPath(config), 'keyPath')}/key${keyNum} --password password.txt 2>&1
@@ -45,10 +45,10 @@ describe('generates keys', () => {
   `
     expect(createFolder).toBeCalledWith(joinPath(createNetPath(config), 'keyPath', `key${keyNum}`), true)
     expect(writeFile).toBeCalledWith(joinPath(createNetPath(config), 'keyPath', `key${keyNum}`, 'password.txt'), '')
-    expect(executeSync).toHaveBeenCalledWith(expected)
+    expect(execute).toHaveBeenCalledWith(expected)
   })
 
-  it('generates quorum and tessera keys', () => {
+  it('generates quorum and tessera keys', async () => {
     const config = {
       network: {
         transactionManager: 'tessera',
@@ -59,17 +59,17 @@ describe('generates keys', () => {
     pathToQuorumBinary.mockReturnValueOnce('quorumPath')
     pathToBootnode.mockReturnValueOnce('bootnodePath')
     pathToTesseraJar.mockReturnValueOnce('tesseraPath')
-    generateKeys(config, joinPath(createNetPath(config), 'keyPath'))
+    await generateKeys(config, joinPath(createNetPath(config), 'keyPath'))
     const keyNum = config.nodes.length
 
     const withTessera = `cd ${joinPath(createNetPath(config), 'keyPath')}/key${keyNum} && quorumPath account new --keystore ${joinPath(createNetPath(config), 'keyPath')}/key${keyNum} --password password.txt 2>&1
   bootnodePath -genkey=nodekey
   bootnodePath --nodekey=nodekey --writeaddress > enode
   find . -type f -name 'UTC*' -execdir mv {} key ';'
-  java -jar tesseraPath -keygen -filename tm`
+  java -jar tesseraPath -keygen -filename tm < /dev/null`
 
     expect(createFolder).toBeCalledWith(joinPath(createNetPath(config), 'keyPath', `key${keyNum}`), true)
     expect(writeFile).toBeCalledWith(joinPath(createNetPath(config), 'keyPath', `key${keyNum}`, 'password.txt'), '')
-    expect(executeSync).toHaveBeenCalledWith(withTessera)
+    expect(execute).toHaveBeenCalledWith(withTessera)
   })
 })

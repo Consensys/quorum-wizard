@@ -1,7 +1,19 @@
-import { execSync } from 'child_process'
+import { exec, execSync } from 'child_process'
 
 export function executeSync(command, options) {
   return execSync(command, options)
+}
+
+export async function execute(command, options) {
+  return new Promise((resolve, reject) => {
+    exec(command, options, (e, stdout, stderr) => {
+      if (e) {
+        reject(e, stderr)
+      } else {
+        resolve(stdout)
+      }
+    })
+  })
 }
 
 let JAVA_VERSION
