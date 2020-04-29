@@ -48,9 +48,21 @@ export function generateResourcesRemote(config) {
   }
 
   const dockerCommand = `cd ${networkPath}
+  ## make sure docker is installed
+  docker ps > /dev/null
+  EXIT_CODE=$?
+
+  if [[ EXIT_CODE -ne 0 ]];
+  then
+    exit $EXIT_CODE
+  fi
   docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/quorum-init:/qubernetes/quorum-init -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./quorum-init qubernetes.yaml 2>&1
   find . -type f -name 'UTC*' -execdir mv {} key ';'`
-  executeSync(dockerCommand)
+  try {
+    executeSync(dockerCommand)
+  } catch (e) {
+    throw new Error('Remote generation failed')
+  }
 
   if (isDocker(config.network.deployment)) {
     copyDirectory(remoteOutputDir, configDir)

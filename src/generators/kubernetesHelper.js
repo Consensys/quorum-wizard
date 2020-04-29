@@ -13,11 +13,21 @@ export async function createKubernetes(config) {
 
   info('Writing start script...')
   const startCommands = `
-kind create cluster --name ${config.network.name}-qube
+kubectl version > /dev/null
+EXIT_CODE=$?
+
+if [[ EXIT_CODE -ne 0 ]];
+then
+  printf "Error: kubectl is not running, please install kubectl before running this script.\n"
+  printf "For more information, see our qubernetes project: https://github.com/jpmorganchase/qubernetes"
+  exit $EXIT_CODE
+fi
+
 kubectl apply -f out -f out/deployments
+echo "\nRun 'kubectl get pods' to check status of pods\n"
 `
 
   writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
-  writeFile(joinPath(networkPath, 'stop.sh'), `kind delete cluster --name ${config.network.name}-qube`, true)
+  writeFile(joinPath(networkPath, 'stop.sh'), 'kubectl delete -f out -f out/deployments', true)
   info('Done')
 }

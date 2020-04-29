@@ -55,6 +55,7 @@ if (process.platform === 'win32') {
 createLogger(argv.v)
 debug('Showing debug logs')
 
+
 if (argv.q) {
   buildNetwork('quickstart')
 } else {
@@ -114,7 +115,14 @@ async function createScript(config) {
 function printInstructions(config) {
   info(formatTesseraKeysOutput(config))
   info('')
-  info('Quorum network created. Run the following commands to start your network:')
+  info('Quorum network created')
+  info('')
+  if (isKubernetes(config.network.deployment)) {
+    info('Before starting the network please make sure kubectl is installed and setup properly')
+    info('Check out our qubernetes project docs for more info: https://github.com/jpmorganchase/qubernetes')
+    info('')
+  }
+  info('Run the following commands to start your network:')
   info('')
   info(`cd network/${config.network.name}`)
   info('./start.sh')
