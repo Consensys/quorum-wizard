@@ -2,6 +2,7 @@ import { isJava11Plus } from '../utils/execUtils'
 
 export function createConfigFromAnswers(answers) {
   const {
+    name,
     numberNodes = 3,
     consensus = 'raft',
     quorumVersion = '2.5.0',
@@ -16,12 +17,8 @@ export function createConfigFromAnswers(answers) {
     cakeshopPort = '8999',
     remoteDebug = false,
   } = answers
-  const networkFolder = createNetworkFolderName(
-    numberNodes,
-    consensus,
-    transactionManager,
-    deployment,
-  )
+  const networkFolder = name
+    || defaultNetworkName(numberNodes, consensus, transactionManager, deployment)
   return {
     network: {
       name: networkFolder,
@@ -49,7 +46,7 @@ export function createConfigFromAnswers(answers) {
   }
 }
 
-function createNetworkFolderName(numberNodes, consensus, transactionManager, deployment) {
+export function defaultNetworkName(numberNodes, consensus, transactionManager, deployment) {
   const transactionManagerName = !isTessera(transactionManager)
     ? ''
     : 'tessera-'
