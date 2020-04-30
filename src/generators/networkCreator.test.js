@@ -32,6 +32,7 @@ import {
 import { joinPath } from '../utils/pathUtils'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { buildKubernetesResource } from '../model/ResourceConfig'
+import { executeSync } from '../utils/execUtils'
 
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
@@ -155,6 +156,18 @@ describe('creates network resources with remote qubernetes container from answer
     expect(buildKubernetesResource).toHaveBeenCalled()
     expect(copyScript).toBeCalledWith(createLibPath('lib', 'quorum-init'), createNetPath(config, 'quorum-init'))
     expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
+  })
+  it('Execution of docker container fails', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      generateKeys: true,
+      deployment: 'docker-compose',
+    })
+
+    executeSync.mockImplementationOnce(() => {
+      throw new Error('docker not running')
+    })
+    expect(() => generateResourcesRemote(config)).toThrow(Error)
   })
 })
 
