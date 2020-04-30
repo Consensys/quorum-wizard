@@ -12,7 +12,15 @@ export async function createKubernetes(config) {
   const networkPath = getFullNetworkPath(config)
 
   info('Writing start script...')
-  const startCommands = `
+
+  writeFile(joinPath(networkPath, 'start.sh'), createStartScript(), true)
+  writeFile(joinPath(networkPath, 'stop.sh'), 'kubectl delete -f out -f out/deployments', true)
+  writeFile(joinPath(networkPath, 'getEndpoints.sh'), createEndpointScript(), true)
+  info('Done')
+}
+
+function createStartScript() {
+  return `
 # check minikube is running
 minikube ip > /dev/null 2>&1
 EXIT_CODE=$?
@@ -38,11 +46,6 @@ fi
 kubectl apply -f out -f out/deployments
 echo "\nRun 'kubectl get pods' to check status of pods\n"
 `
-
-  writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
-  writeFile(joinPath(networkPath, 'stop.sh'), 'kubectl delete -f out -f out/deployments', true)
-  writeFile(joinPath(networkPath, 'getEndpoints.sh'), createEndpointScript(), true)
-  info('Done')
 }
 
 function createEndpointScript() {

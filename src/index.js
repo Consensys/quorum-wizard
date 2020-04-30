@@ -136,4 +136,9 @@ function printInstructions(config) {
     info('To use run ./runscript private-contract.js from the network folder')
     info('')
   }
+  if (isKubernetes(config.network.deployment)) {
+    info('A script to retrieve the quorum rpc and tessera 3rd party endpoints to use with remix or cakeshop is provided')
+    info('To use run ./getEndpoints.sh from the network folder')
+    info('')
+  }
 }
