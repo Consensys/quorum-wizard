@@ -14,28 +14,25 @@ end
 puts "using config file: " + @CONFIG_FILE
 
 @config                = YAML.load_file(@CONFIG_FILE)
-# Generate deployments in a single file, or in separate files.
-@sep_deployment_files=false
-if @config["sep_deployment_files"] != nil
-  @sep_deployment_files = @config["sep_deployment_files"]
-end
 
 `
 # create the output directory if
 # it doesn't exist
 mkdir -p out/config
+
 # generate the nodes.yaml
 # file for the set number of
 # nodes.
 ./quorum-create-nodes #{@CONFIG_FILE}
+
 `
-  puts ""
-  puts "  Generating keys..."
-  `
-  # generate the keygen script
-  # to generate nodekey, account keys, and
-  # quorum transaction manger (tm.pub,tm.key) keys.
-  ./quorum-keygen #{@CONFIG_FILE}
+puts ""
+puts "  Generating keys..."
+`
+# generate the keygen script
+# to generate nodekey, account keys, and
+# quorum transaction manger (tm.pub,tm.key) keys.
+./quorum-keygen #{@CONFIG_FILE}
 `
 
 puts "  Generating Quorum configs..."
@@ -48,18 +45,3 @@ puts "  Generating Quorum configs..."
 
 puts ""
 puts  "  Base quorum resources have been generated. "
-
-if !@config["skip_deployment"]
-  puts  "  Running ./qubernetes to generate Kubernetes resources."
-  puts ""
-
-  `
-  ./qubernetes #{@CONFIG_FILE}
-  `
-  @Kubectl_Cmd="  $> kubectl apply -f out"
-  if @sep_deployment_files
-    @Kubectl_Cmd="  $> kubectl apply -f out -f out/deployments"
-  end
-  puts("  To deploy to kubernetes run:")
-  puts(@Kubectl_Cmd)
-end

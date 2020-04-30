@@ -1,4 +1,3 @@
-import { isKubernetes } from './NetworkConfig'
 // eslint-disable-next-line import/prefer-default-export
 export function buildKubernetesResource(config) {
   return [
@@ -14,7 +13,7 @@ function buildGeneralDetails(config) {
   return `#namespace:
 #  name: quorum-test
 sep_deployment_files: true
-skip_deployment: ${!isKubernetes(config.network.deployment)}
+skip_out_directory: true
 nodes:
   number: ${nodeNum}
 service:

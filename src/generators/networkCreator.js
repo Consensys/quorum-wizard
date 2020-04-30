@@ -19,6 +19,7 @@ import {
   isRaft,
   isTessera,
   isDocker,
+  isKubernetes,
 } from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
@@ -40,6 +41,7 @@ export function generateResourcesRemote(config) {
 
   const file = buildKubernetesResource(config)
   copyScript(joinPath(libRootDir(), 'lib', 'quorum-init'), joinPath(networkPath, 'quorum-init'))
+  copyScript(joinPath(libRootDir(), 'lib', 'qube-init'), joinPath(networkPath, 'qube-init'))
   writeFile(joinPath(networkPath, 'qubernetes.yaml'), file, false)
 
   if (!config.network.generateKeys) {
@@ -47,6 +49,7 @@ export function generateResourcesRemote(config) {
     copyDirectory(joinPath(libRootDir(), '7nodes'), remoteOutputDir)
   }
 
+  const initScript = isKubernetes(config.network.deployment) ? 'qube-init' : 'quorum-init'
   const dockerCommand = `cd ${networkPath}
   ## make sure docker is installed
   docker ps > /dev/null
@@ -56,7 +59,7 @@ export function generateResourcesRemote(config) {
   then
     exit $EXIT_CODE
   fi
-  docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/quorum-init:/qubernetes/quorum-init -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./quorum-init qubernetes.yaml 2>&1
+  docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/quorum-init:/qubernetes/quorum-init -v ${networkPath}/qube-init:/qubernetes/qube-init -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./${initScript} qubernetes.yaml 2>&1
   find . -type f -name 'UTC*' -execdir mv {} key ';'`
   try {
     executeSync(dockerCommand)
