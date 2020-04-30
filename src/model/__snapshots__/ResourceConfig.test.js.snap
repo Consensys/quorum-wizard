@@ -4,8 +4,7 @@ exports[`creates 5nodes raft kubernetes tessera 1`] = `
 "#namespace:
 #  name: quorum-test
 sep_deployment_files: true
-generate_keys: false
-generate_deployment: true
+skip_deployment: false
 nodes:
   number: 5
 service:
@@ -41,8 +40,7 @@ exports[`creates 7nodes istanbul docker generate keys 1`] = `
 "#namespace:
 #  name: quorum-test
 sep_deployment_files: true
-generate_keys: true
-generate_deployment: false
+skip_deployment: true
 nodes:
   number: 7
 service:
@@ -78,8 +76,7 @@ exports[`creates 7nodes istanbul docker generate keys no tessera 1`] = `
 "#namespace:
 #  name: quorum-test
 sep_deployment_files: true
-generate_keys: true
-generate_deployment: false
+skip_deployment: true
 nodes:
   number: 7
 service:
@@ -115,8 +112,7 @@ exports[`creates 7nodes istanbul kubernetes generate keys 1`] = `
 "#namespace:
 #  name: quorum-test
 sep_deployment_files: true
-generate_keys: true
-generate_deployment: true
+skip_deployment: false
 nodes:
   number: 7
 service:

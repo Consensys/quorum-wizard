@@ -130,6 +130,15 @@ x-tx-manager-def:
               \\"app\\":\\"ThirdParty\\",
               \\"enabled\\": true,
               \\"serverAddress\\": \\"http://$$(hostname -i):9080\\",
+              \\"cors\\": {
+                \\"allowedMethods\\": [
+                  \\"GET\\",
+                  \\"OPTIONS\\"
+                ],
+                \\"allowedOrigins\\": [
+                  \\"*\\"
+                ]
+              },
               \\"communicationType\\" : \\"REST\\"
             },
             {
@@ -434,6 +443,15 @@ x-tx-manager-def:
               \\"app\\":\\"ThirdParty\\",
               \\"enabled\\": true,
               \\"serverAddress\\": \\"http://$$(hostname -i):9080\\",
+              \\"cors\\": {
+                \\"allowedMethods\\": [
+                  \\"GET\\",
+                  \\"OPTIONS\\"
+                ],
+                \\"allowedOrigins\\": [
+                  \\"*\\"
+                ]
+              },
               \\"communicationType\\" : \\"REST\\"
             },
             {
@@ -734,6 +752,15 @@ x-tx-manager-def:
               \\"app\\":\\"ThirdParty\\",
               \\"enabled\\": true,
               \\"serverAddress\\": \\"http://$$(hostname -i):9080\\",
+              \\"cors\\": {
+                \\"allowedMethods\\": [
+                  \\"GET\\",
+                  \\"OPTIONS\\"
+                ],
+                \\"allowedOrigins\\": [
+                  \\"*\\"
+                ]
+              },
               \\"communicationType\\" : \\"REST\\"
             },
             {
@@ -1069,6 +1096,15 @@ x-tx-manager-def:
               \\"app\\":\\"ThirdParty\\",
               \\"enabled\\": true,
               \\"serverAddress\\": \\"http://$$(hostname -i):9080\\",
+              \\"cors\\": {
+                \\"allowedMethods\\": [
+                  \\"GET\\",
+                  \\"OPTIONS\\"
+                ],
+                \\"allowedOrigins\\": [
+                  \\"*\\"
+                ]
+              },
               \\"communicationType\\" : \\"REST\\"
             },
             {
