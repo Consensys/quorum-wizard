@@ -169,29 +169,35 @@ export const QUESTIONS = [
   CUSTOMIZE_PORTS,
 ]
 
+export const QUICKSTART_ANSWERS = {
+  name: '3-nodes-raft-tessera-bash',
+  numberNodes: 3,
+  consensus: 'raft',
+  quorumVersion: '2.5.0',
+  transactionManager: isJava11Plus() ? '0.10.4' : '0.10.2',
+  deployment: 'bash',
+  cakeshop: isJava11Plus() ? '0.11.0' : '0.11.0-J8',
+  generateKeys: false,
+  networkId: '10',
+  customizePorts: false,
+}
+
+export const SIMPLE_ANSWERS = {
+  generateKeys: false,
+  networkId: '10',
+  customizePorts: false,
+}
+
+export const CUSTOM_ANSWERS = {}
+
 export function getPrefilledAnswersForMode(mode) {
   switch (mode) {
     case 'quickstart':
-      return {
-        name: '3-nodes-raft-tessera-bash',
-        numberNodes: 3,
-        consensus: 'raft',
-        quorumVersion: '2.5.0',
-        transactionManager: isJava11Plus() ? '0.10.4' : '0.10.2',
-        deployment: 'bash',
-        cakeshop: isJava11Plus() ? '0.11.0' : '0.11.0-J8',
-        generateKeys: false,
-        networkId: '10',
-        customizePorts: false,
-      }
+      return QUICKSTART_ANSWERS
     case 'simple':
-      return {
-        generateKeys: false,
-        networkId: '10',
-        customizePorts: false,
-      }
+      return SIMPLE_ANSWERS
     case 'custom':
-      return {}
+      return CUSTOM_ANSWERS
     default:
       throw new Error(`Unknown option: ${mode}`)
   }
