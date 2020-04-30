@@ -141,6 +141,7 @@ export const NETWORK_NAME = {
   type: 'input',
   name: 'name',
   message: 'What would you like to call this network?',
+  validate: (input) => input.trim() !== '' || 'Network name must not be blank.',
   default: (answers) => defaultNetworkName(answers.numberNodes,
     answers.consensus,
     answers.transactionManager,
