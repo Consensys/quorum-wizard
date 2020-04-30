@@ -30,7 +30,7 @@ export async function downloadIfMissing(name, version) {
       responseType: 'stream',
     })
 
-    info(`Saving to ${binaryFileLocation}`)
+    info(`Unpacking to ${binaryFileLocation}`)
     if (binaryInfo.type === 'tar.gz') {
       const extractorStream = response.data.pipe(createGunzip())
         .pipe(extract(binDir, {
@@ -46,7 +46,7 @@ export async function downloadIfMissing(name, version) {
         }))
       return new Promise((resolve, reject) => {
         extractorStream.on('finish', () => {
-          info('Done')
+          info(`Saved to ${binaryFileLocation}`)
           resolve()
         })
         extractorStream.on('error', reject)
@@ -56,7 +56,7 @@ export async function downloadIfMissing(name, version) {
     response.data.pipe(writer)
     return new Promise((resolve, reject) => {
       writer.on('finish', () => {
-        info('Done')
+        info(`Saved to ${binaryFileLocation}`)
         resolve()
       })
       writer.on('error', reject)

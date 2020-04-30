@@ -25,29 +25,32 @@ export async function downloadAndCopyBinaries(config) {
   } = config.network
   const bash = isBash(deployment)
   const kubernetes = isKubernetes(deployment)
+  const downloads = []
 
   // needed no matter what if using istanbul to generate genesis
   if (isIstanbul(consensus) && !kubernetes) {
-    await downloadIfMissing('istanbul', '1.0.1')
+    downloads.push(downloadIfMissing('istanbul', '1.0.1'))
   }
 
   if (bash) {
     if (generateKeys) {
-      await downloadIfMissing('bootnode', '1.8.27')
+      downloads.push(downloadIfMissing('bootnode', '1.8.27'))
     }
 
     if (quorumVersion !== 'PATH') {
-      await downloadIfMissing('quorum', quorumVersion)
+      downloads.push(downloadIfMissing('quorum', quorumVersion))
     }
     const tesseraVersion = transactionManager
     if (tesseraVersion !== 'PATH' && isTessera(tesseraVersion)) {
-      await downloadIfMissing('tessera', tesseraVersion)
+      downloads.push(downloadIfMissing('tessera', tesseraVersion))
     }
 
     if (cakeshop !== 'none') {
-      await downloadIfMissing('cakeshop', cakeshop)
+      downloads.push(downloadIfMissing('cakeshop', cakeshop))
     }
   }
+
+  await Promise.all(downloads)
 }
 
 export function getGethOnPath() {

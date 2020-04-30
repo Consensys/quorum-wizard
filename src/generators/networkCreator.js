@@ -74,13 +74,13 @@ export function generateResourcesRemote(config) {
   }
 }
 
-export function generateResourcesLocally(config) {
+export async function generateResourcesLocally(config) {
   info('Generating network resources locally...')
   const configDir = joinPath(cwd(), config.network.configDir)
   createFolder(configDir, true)
 
   if (config.network.generateKeys) {
-    generateKeys(config, configDir)
+    await generateKeys(config, configDir)
   } else {
     copyDirectory(joinPath(libRootDir(), '7nodes'), configDir)
   }

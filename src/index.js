@@ -73,23 +73,23 @@ async function buildNetwork(mode) {
   const answers = await promptUser(mode)
   const config = createConfigFromAnswers(answers)
   await downloadAndCopyBinaries(config)
-  createDirectory(config)
+  await createDirectory(config)
   await createScript(config)
   generateAndCopyExampleScripts(config)
   printInstructions(config)
 }
 
-function createDirectory(config) {
+async function createDirectory(config) {
   if (isBash(config.network.deployment)) {
     createNetwork(config)
-    generateResourcesLocally(config)
+    await generateResourcesLocally(config)
     createQdataDirectory(config)
   } else if (isDocker(config.network.deployment)) {
     createNetwork(config)
     if (config.network.generateKeys) {
       generateResourcesRemote(config)
     } else {
-      generateResourcesLocally(config)
+      await generateResourcesLocally(config)
     }
     createQdataDirectory(config)
   } else if (isKubernetes(config.network.deployment)) {
