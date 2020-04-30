@@ -742,10 +742,10 @@ Object {
   "nodes": Array [
     Object {
       "quorum": Object {
-        "devP2pPort": 30303,
+        "devP2pPort": 21000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 8545,
+        "rpcPort": 22000,
         "wsPort": 23000,
       },
       "tm": Object {
@@ -756,10 +756,10 @@ Object {
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 30303,
+        "devP2pPort": 21000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 8545,
+        "rpcPort": 22000,
         "wsPort": 23000,
       },
       "tm": Object {
@@ -770,10 +770,10 @@ Object {
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 30303,
+        "devP2pPort": 21000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 8545,
+        "rpcPort": 22000,
         "wsPort": 23000,
       },
       "tm": Object {
@@ -784,10 +784,10 @@ Object {
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 30303,
+        "devP2pPort": 21000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 8545,
+        "rpcPort": 22000,
         "wsPort": 23000,
       },
       "tm": Object {
@@ -798,10 +798,10 @@ Object {
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 30303,
+        "devP2pPort": 21000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 8545,
+        "rpcPort": 22000,
         "wsPort": 23000,
       },
       "tm": Object {
@@ -812,10 +812,10 @@ Object {
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 30303,
+        "devP2pPort": 21000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 8545,
+        "rpcPort": 22000,
         "wsPort": 23000,
       },
       "tm": Object {
@@ -826,10 +826,10 @@ Object {
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 30303,
+        "devP2pPort": 21000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 8545,
+        "rpcPort": 22000,
         "wsPort": 23000,
       },
       "tm": Object {
@@ -1038,10 +1038,10 @@ Object {
   "nodes": Array [
     Object {
       "quorum": Object {
-        "devP2pPort": 30303,
+        "devP2pPort": 21000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 8545,
+        "rpcPort": 22000,
         "wsPort": 23000,
       },
       "tm": Object {
@@ -1052,10 +1052,10 @@ Object {
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 30303,
+        "devP2pPort": 21000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 8545,
+        "rpcPort": 22000,
         "wsPort": 23000,
       },
       "tm": Object {
@@ -1066,10 +1066,10 @@ Object {
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 30303,
+        "devP2pPort": 21000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 8545,
+        "rpcPort": 22000,
         "wsPort": 23000,
       },
       "tm": Object {
@@ -1080,10 +1080,10 @@ Object {
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 30303,
+        "devP2pPort": 21000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 8545,
+        "rpcPort": 22000,
         "wsPort": 23000,
       },
       "tm": Object {
@@ -1094,10 +1094,10 @@ Object {
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 30303,
+        "devP2pPort": 21000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 8545,
+        "rpcPort": 22000,
         "wsPort": 23000,
       },
       "tm": Object {
@@ -1108,10 +1108,10 @@ Object {
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 30303,
+        "devP2pPort": 21000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 8545,
+        "rpcPort": 22000,
         "wsPort": 23000,
       },
       "tm": Object {
@@ -1122,10 +1122,10 @@ Object {
     },
     Object {
       "quorum": Object {
-        "devP2pPort": 30303,
+        "devP2pPort": 21000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
-        "rpcPort": 8545,
+        "rpcPort": 22000,
         "wsPort": 23000,
       },
       "tm": Object {

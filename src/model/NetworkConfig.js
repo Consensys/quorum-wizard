@@ -57,8 +57,8 @@ function createNetworkFolderName(numberNodes, consensus, transactionManager, dep
 }
 
 export function generateNodeConfigs(numberNodes, transactionManager, deployment) {
-  const devP2pPort = isKubernetes(deployment) ? 30303 : 21000
-  const rpcPort = isKubernetes(deployment) ? 8545 : 22000
+  const devP2pPort = 21000
+  const rpcPort = 22000
   const wsPort = 23000
   const raftPort = 50401
   const thirdPartyPort = 9081
