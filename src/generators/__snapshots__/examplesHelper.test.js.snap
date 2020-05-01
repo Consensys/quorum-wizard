@@ -66,7 +66,7 @@ if [ -z $1 ] || [ ! -f $1 ]; then
 fi
 
 POD=$(kubectl get pods $NAMESPACE | grep Running | grep 1 | awk '{print $1}')
-kubectl $NAMESPACE exec -it $POD -c quorum -- /bin/ash -c \\"geth --exec 'loadScript(\\\\\\"/etc/quorum/qdata/contracts/$1\\\\\\")' attach /etc/quorum/qdata/dd/geth.ipc\\"
+kubectl $NAMESPACE exec -it $POD -c quorum -- /etc/quorum/qdata/contracts/runscript.sh /etc/quorum/qdata/contracts/$1
 "
 `;
 
@@ -84,5 +84,5 @@ if [ \\"$1\\" -lt 1 ] || [ \\"$1\\" -gt $NUMBER_OF_NODES ]; then
 fi
 
 POD=$(kubectl get pods $NAMESPACE | grep Running | grep 1 | awk '{print $1}')
-kubectl $NAMESPACE exec -it $POD -c quorum -- /bin/ash -c \\"geth attach /etc/quorum/qdata/dd/geth.ipc\\""
+kubectl $NAMESPACE exec -it $POD -c quorum -- /geth-helpers/geth-attach.sh"
 `;
