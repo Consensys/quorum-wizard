@@ -24,14 +24,17 @@ export async function getVersions(name) {
 export async function downloadIfMissing(name, version) {
   let binaryInfo
   switch (name) {
-    case 'geth':
+    case 'quorum':
       binaryInfo = createQuorumBinaryInfo(version)
       break
     case 'istanbul':
       binaryInfo = createIstanbulBinaryInfo(version)
       break
+    case 'bootnode':
+      binaryInfo = createBootnodeBinaryInfo(version)
+      break
     default:
-      info('no binary available')
+      binaryInfo = BINARIES[name][version]
   }
   const binDir = joinPath(wizardHomeDir(), 'bin', name, version)
   const binaryFileLocation = joinPath(binDir, binaryInfo.name)
@@ -95,7 +98,7 @@ export function getPlatformSpecificUrl({ url }) {
   return platformUrl
 }
 
-function createQuorumBinaryInfo(version) {
+export function createQuorumBinaryInfo(version) {
   return {
     name: 'geth',
     description: `Quorum ${version}`,
@@ -110,7 +113,7 @@ function createQuorumBinaryInfo(version) {
   }
 }
 
-function createIstanbulBinaryInfo(version) {
+export function createIstanbulBinaryInfo(version) {
   return {
     name: 'istanbul',
     url: {
@@ -124,22 +127,21 @@ function createIstanbulBinaryInfo(version) {
   }
 }
 
-export const BINARIES = {
-  quorum: {
-    'v2.5.0': {
-      name: 'geth',
-      description: 'Quorum 2.5.0',
-      url: {
-        darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.5.0/geth_v2.5.0_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.5.0/geth_v2.5.0_linux_amd64.tar.gz',
-      },
-      type: 'tar.gz',
-      files: [
-        'geth',
-      ],
+export function createBootnodeBinaryInfo(version) {
+  return {
+    name: 'bootnode',
+    url: {
+      darwin: `https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_${version}_darwin_amd64.tar.gz`,
+      linux: `https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_${version}_linux_amd64.tar.gz`,
     },
-  },
+    type: 'tar.gz',
+    files: [
+      'bootnode',
+    ],
+  }
+}
 
+export const BINARIES = {
   tessera: {
     '0.10.4': {
       name: 'tessera-app.jar',
@@ -167,34 +169,6 @@ export const BINARIES = {
       description: 'Cakeshop 0.11.0-J8',
       url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0/cakeshop-0.11.0-J8.war',
       type: 'jar8',
-    },
-  },
-
-  istanbul: {
-    '1.0.1': {
-      name: 'istanbul',
-      url: {
-        darwin: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.1_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.1_linux_amd64.tar.gz',
-      },
-      type: 'tar.gz',
-      files: [
-        'istanbul',
-      ],
-    },
-  },
-
-  bootnode: {
-    '1.8.27': {
-      name: 'bootnode',
-      url: {
-        darwin: 'https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v1.8.27_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v1.8.27_linux_amd64.tar.gz',
-      },
-      type: 'tar.gz',
-      files: [
-        'bootnode',
-      ],
     },
   },
 }

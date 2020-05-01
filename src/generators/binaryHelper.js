@@ -9,6 +9,9 @@ import {
 } from '../model/NetworkConfig'
 import {
   BINARIES,
+  createQuorumBinaryInfo,
+  createIstanbulBinaryInfo,
+  createBootnodeBinaryInfo,
   downloadIfMissing,
   // getVersions,
   getVersions,
@@ -35,12 +38,13 @@ export async function downloadAndCopyBinaries(config) {
 
   // needed no matter what if using istanbul to generate genesis
   if (isIstanbul(consensus) && !kubernetes) {
-    downloads.push(downloadIfMissing('istanbul', '1.0.1'))
+    // const version = await getLatestIstanbul()
+    downloads.push(downloadIfMissing('istanbul', 'v1.0.1'))
   }
 
   if (bash || isDockerButNeedsBinaries) {
     if (generateKeys) {
-      downloads.push(downloadIfMissing('bootnode', '1.8.27'))
+      downloads.push(downloadIfMissing('bootnode', 'v1.8.27'))
     }
 
     if (quorumVersion !== 'PATH') {
@@ -99,7 +103,13 @@ export async function getAllGethChoices(deployment) {
 }
 
 export async function getLatestIstanbul() {
-  return [await getVersions('istanbul-tools/istanbul')[0]]
+  const choices = await getVersions('istanbul-tools/istanbul')
+  return choices[0]
+}
+
+export async function getLatestBootnode() {
+  const choices = await getVersions('geth-bootnode/bootnode')
+  return choices[0]
 }
 
 export function getDownloadableTesseraChoices(deployment) {
@@ -137,7 +147,7 @@ export function pathToQuorumBinary(quorumVersion) {
   if (quorumVersion === 'PATH') {
     return 'geth'
   }
-  const binary = BINARIES.quorum[quorumVersion]
+  const binary = createQuorumBinaryInfo(quorumVersion)
   return joinPath(wizardHomeDir(), 'bin', 'quorum', quorumVersion, binary.name)
 }
 
@@ -155,11 +165,11 @@ export function pathToCakeshop(version) {
 }
 
 export function pathToIstanbulTools() {
-  const binary = BINARIES.istanbul['1.0.1']
-  return joinPath(wizardHomeDir(), 'bin', 'istanbul', '1.0.1', binary.name)
+  const binary = createIstanbulBinaryInfo('v1.0.1')
+  return joinPath(wizardHomeDir(), 'bin', 'istanbul', 'v1.0.1', binary.name)
 }
 
 export function pathToBootnode() {
-  const binary = BINARIES.bootnode['1.8.27']
-  return joinPath(wizardHomeDir(), 'bin', 'bootnode', '1.8.27', binary.name)
+  const binary = createBootnodeBinaryInfo('v1.8.27')
+  return joinPath(wizardHomeDir(), 'bin', 'bootnode', 'v1.8.27', binary.name)
 }
