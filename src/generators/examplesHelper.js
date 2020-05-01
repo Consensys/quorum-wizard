@@ -42,7 +42,7 @@ $BIN_GETH attach qdata/dd$1/geth.ipc`
   const dockerCommand = 'docker-compose exec node$1 /bin/sh -c "geth attach qdata/dd/geth.ipc"'
 
   const kubernetesCommand = `POD=$(kubectl get pods $NAMESPACE | grep Running | grep 1 | awk '{print $1}')
-kubectl $NAMESPACE exec -it $POD -c quorum -- /bin/ash -c "geth attach /etc/quorum/qdata/dd/geth.ipc"`
+kubectl $NAMESPACE exec -it $POD -c quorum -- /geth-helpers/geth-attach.sh`
 
   switch (config.network.deployment) {
     case 'bash':
@@ -80,7 +80,7 @@ $BIN_GETH --exec "loadScript(\\"$1\\")" attach qdata/dd1/geth.ipc`
 docker-compose exec node1 /bin/sh -c "geth --exec 'loadScript(\\"$1\\")' attach qdata/dd/geth.ipc"
 `
   const kubernetesCommand = `POD=$(kubectl get pods $NAMESPACE | grep Running | grep 1 | awk '{print $1}')
-kubectl $NAMESPACE exec -it $POD -c quorum -- /bin/ash -c "geth --exec 'loadScript(\\"/etc/quorum/qdata/contracts/$1\\")' attach /etc/quorum/qdata/dd/geth.ipc"`
+kubectl $NAMESPACE exec -it $POD -c quorum -- /etc/quorum/qdata/contracts/runscript.sh /etc/quorum/qdata/contracts/$1`
   switch (config.network.deployment) {
     case 'bash':
       return bashCommand

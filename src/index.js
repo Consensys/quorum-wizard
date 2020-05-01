@@ -86,11 +86,7 @@ async function createDirectory(config) {
     createQdataDirectory(config)
   } else if (isDocker(config.network.deployment)) {
     createNetwork(config)
-    if (config.network.generateKeys) {
-      generateResourcesRemote(config)
-    } else {
-      await generateResourcesLocally(config)
-    }
+    generateResourcesRemote(config)
     createQdataDirectory(config)
   } else if (isKubernetes(config.network.deployment)) {
     createNetwork(config)

@@ -15,7 +15,7 @@ export async function createKubernetes(config) {
 
   writeFile(joinPath(networkPath, 'start.sh'), createStartScript(), true)
   writeFile(joinPath(networkPath, 'stop.sh'), 'kubectl delete -f out -f out/deployments', true)
-  writeFile(joinPath(networkPath, 'getEndpoints.sh'), createEndpointScript(), true)
+  writeFile(joinPath(networkPath, 'getEndpoints.sh'), createEndpointScript(config), true)
   info('Done')
 }
 
@@ -48,9 +48,19 @@ echo "\nRun 'kubectl get pods' to check status of pods\n"
 `
 }
 
-function createEndpointScript() {
+function createEndpointScript(config) {
   return `
 #!/bin/bash
+NUMBER_OF_NODES=${config.nodes.length}
+case "$1" in ("" | *[!0-9]*)
+  echo 'Please provide the number of the node to get endpoints for (i.e. ./getEndpoints.sh 2)' >&2
+  exit 1
+esac
+
+if [ "$1" -lt 1 ] || [ "$1" -gt $NUMBER_OF_NODES ]; then
+  echo "$1 is not a valid node number. Must be between 1 and $NUMBER_OF_NODES." >&2
+  exit 1
+fi
 
 IP_ADDRESS=$(minikube ip)
 

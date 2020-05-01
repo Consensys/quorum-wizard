@@ -24,15 +24,14 @@ export async function downloadAndCopyBinaries(config) {
     transactionManager, cakeshop, deployment, generateKeys, quorumVersion, consensus,
   } = config.network
   const bash = isBash(deployment)
-  const kubernetes = isKubernetes(deployment)
+
   const downloads = []
 
-  // needed no matter what if using istanbul to generate genesis
-  if (isIstanbul(consensus) && !kubernetes) {
-    downloads.push(downloadIfMissing('istanbul', '1.0.1'))
-  }
-
   if (bash) {
+    if (isIstanbul(consensus)) {
+      downloads.push(downloadIfMissing('istanbul', '1.0.1'))
+    }
+
     if (generateKeys) {
       downloads.push(downloadIfMissing('bootnode', '1.8.27'))
     }
