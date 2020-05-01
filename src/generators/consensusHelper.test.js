@@ -2,11 +2,12 @@ import {
   generateAccounts,
   generateExtraData,
 } from './consensusHelper'
-import nodekeyToAccount from '../utils/web3Helper'
+import nodekeyToAccount from '../utils/accountHelper'
 import {
   cwd,
   libRootDir,
   readFileToString,
+  wizardHomeDir,
   writeFile,
 } from '../utils/fileUtils'
 import { generateNodeConfigs } from '../model/NetworkConfig'
@@ -14,14 +15,16 @@ import { executeSync } from '../utils/execUtils'
 import {
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
+  TEST_WIZARD_HOME_DIR,
 } from '../utils/testHelper'
 import { joinPath } from '../utils/pathUtils'
 
 jest.mock('../utils/fileUtils')
-jest.mock('../utils/web3Helper')
+jest.mock('../utils/accountHelper')
 jest.mock('../utils/execUtils')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
+wizardHomeDir.mockReturnValue(TEST_WIZARD_HOME_DIR)
 
 describe('generates accounts for genesis', () => {
   it('creates allocation account json given nodes', () => {

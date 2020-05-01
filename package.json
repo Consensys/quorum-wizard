@@ -32,6 +32,13 @@
   "bugs": {
     "url": "https://github.com/jpmorganchase/quorum-wizard/issues"
   },
+  "keywords": [
+    "quorum",
+    "tessera",
+    "cakeshop",
+    "ethereum",
+    "wizard"
+  ],
   "homepage": "http://docs.goquorum.com/en/latest/Wizard/GettingStarted/",
   "dependencies": {
     "@babel/runtime": "^7.8.3",
@@ -43,7 +50,7 @@
     "sanitize-filename": "^1.6.3",
     "source-map-support": "^0.5.16",
     "tar-fs": "^2.0.0",
-    "web3": "^1.2.6",
+    "ethers": "^4.0.0",
     "winston": "^3.2.1",
     "yargs": "^15.1.0"
   },

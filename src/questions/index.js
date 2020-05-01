@@ -4,6 +4,7 @@ import {
   isTessera,
   isRaft,
   isCakeshop,
+  isDocker,
 } from '../model/NetworkConfig'
 import {
   getCustomizedBashNodes,
@@ -40,17 +41,20 @@ function getQuestionsForMode(mode) {
 }
 
 async function promptForCustomPorts(answers) {
-  // eslint-disable-next-line no-param-reassign
-  answers.nodes = isBash(answers.deployment)
-    ? await getCustomizedBashNodes(
+  if (isBash(answers.deployment)) {
+    // eslint-disable-next-line no-param-reassign
+    answers.nodes = await getCustomizedBashNodes(
       answers.numberNodes,
       isTessera(answers.transactionManager),
       isRaft(answers.consensus),
     )
-    : await getCustomizedDockerPorts(
+  } else if (isDocker(answers.deployment)) {
+    // eslint-disable-next-line no-param-reassign
+    answers.nodes = await getCustomizedDockerPorts(
       answers.numberNodes,
       isTessera(answers.transactionManager),
     )
+  }
 
   if (isCakeshop(answers.cakeshop)) {
     // eslint-disable-next-line no-param-reassign

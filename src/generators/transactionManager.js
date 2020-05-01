@@ -1,5 +1,8 @@
 import { readFileToString } from '../utils/fileUtils'
-import { isTessera } from '../model/NetworkConfig'
+import {
+  isTessera,
+  isKubernetes,
+} from '../model/NetworkConfig'
 import { getFullNetworkPath } from './networkCreator'
 import { joinPath } from '../utils/pathUtils'
 
@@ -20,5 +23,8 @@ ${output.join('\n\n')}
 }
 
 export function loadTesseraPublicKey(config, nodeNumber) {
-  return readFileToString(joinPath(getFullNetworkPath(config), 'qdata', `c${nodeNumber}`, 'tm.pub'))
+  const keyPath = isKubernetes(config.network.deployment)
+    ? joinPath(getFullNetworkPath(config), 'out', 'config', `key${nodeNumber}`)
+    : joinPath(getFullNetworkPath(config), 'qdata', `c${nodeNumber}`)
+  return readFileToString(joinPath(keyPath, 'tm.pub'))
 }

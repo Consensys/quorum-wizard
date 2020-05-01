@@ -91,7 +91,6 @@ export function createCommands(config) {
 
 
 export async function buildBash(config) {
-  info('Building network data directory...')
   const bashDetails = buildBashScript(config)
   const networkPath = getFullNetworkPath(config)
 
