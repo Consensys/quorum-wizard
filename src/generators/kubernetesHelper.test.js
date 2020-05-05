@@ -15,6 +15,7 @@ import {
 } from '../utils/testHelper'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
+import { LATEST_QUORUM, LATEST_TESSERA } from './download'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')
@@ -27,8 +28,8 @@ info.mockReturnValue('log')
 const baseNetwork = {
   numberNodes: '5',
   consensus: 'raft',
-  quorumVersion: '2.5.0',
-  transactionManager: '0.10.2',
+  quorumVersion: LATEST_QUORUM,
+  transactionManager: LATEST_TESSERA,
   cakeshop: 'none',
   deployment: 'kubernetes',
 }

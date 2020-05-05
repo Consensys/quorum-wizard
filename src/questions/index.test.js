@@ -11,6 +11,7 @@ import {
   getCustomizedDockerPorts,
 } from './customPromptHelper'
 import { exists } from '../utils/fileUtils'
+import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 
 jest.mock('inquirer')
 jest.mock('./customPromptHelper')
@@ -21,17 +22,17 @@ exists.mockReturnValue(false)
 const QUICKSTART_CONFIG = {
   numberNodes: '3',
   consensus: 'raft',
-  quorumVersion: '2.5.0',
-  transactionManager: '0.10.2',
+  quorumVersion: LATEST_QUORUM,
+  transactionManager: LATEST_TESSERA,
   deployment: 'bash',
-  cakeshop: '0.11.0',
+  cakeshop: LATEST_CAKESHOP,
 }
 
 const SIMPLE_CONFIG = {
   numberNodes: '5',
   consensus: 'istanbul',
-  quorumVersion: '2.5.0',
-  transactionManager: '0.10.2',
+  quorumVersion: LATEST_QUORUM,
+  transactionManager: LATEST_TESSERA,
   deployment: 'bash',
   cakeshop: 'none',
 }
@@ -107,7 +108,7 @@ describe('prompts the user with different sets of questions based on first choic
   it('customize, bash ports', async () => {
     prompt.mockResolvedValue({
       ...CUSTOM_CONFIG,
-      cakeshop: '0.11.0',
+      cakeshop: LATEST_CAKESHOP,
       consensus: 'raft',
     })
     await promptUser('custom')
