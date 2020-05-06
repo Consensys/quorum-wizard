@@ -32,6 +32,7 @@ import { joinPath } from '../utils/pathUtils'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { buildKubernetesResource } from '../model/ResourceConfig'
 import { executeSync } from '../utils/execUtils'
+import { LATEST_QUORUM, LATEST_TESSERA } from './download'
 
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
@@ -46,8 +47,8 @@ buildKubernetesResource.mockReturnValue('qubernetes')
 const baseNetwork = {
   numberNodes: '5',
   consensus: 'raft',
-  quorumVersion: '2.5.0',
-  transactionManager: '0.10.2',
+  quorumVersion: LATEST_QUORUM,
+  transactionManager: LATEST_TESSERA,
   cakeshop: 'none',
   deployment: 'bash',
 }

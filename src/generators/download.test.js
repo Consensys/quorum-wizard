@@ -5,7 +5,7 @@ import {
 } from '../utils/testHelper'
 import {
   getPlatformSpecificUrl,
-  downloadIfMissing,
+  downloadIfMissing, LATEST_QUORUM, LATEST_TESSERA,
 } from './download'
 import {
   cwd,
@@ -70,10 +70,10 @@ describe('tests download if missing function', () => {
   })
   it('quorum that exists', () => {
     exists.mockReturnValue(true)
-    downloadIfMissing('quorum', '2.5.0')
+    downloadIfMissing('quorum', LATEST_QUORUM)
   })
   it('tessera that exists', () => {
     exists.mockReturnValue(true)
-    downloadIfMissing('tessera', '0.10.2')
+    downloadIfMissing('tessera', LATEST_TESSERA)
   })
 })

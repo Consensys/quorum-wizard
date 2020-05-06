@@ -7,6 +7,7 @@ import {
 } from './customPromptHelper'
 import { CUSTOM_ANSWERS, QUESTIONS } from './questions'
 import { exists } from '../utils/fileUtils'
+import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 
 jest.mock('inquirer')
 jest.mock('../generators/networkCreator')
@@ -16,8 +17,8 @@ exists.mockReturnValue(false)
 const SIMPLE_CONFIG = {
   numberNodes: '5',
   consensus: 'istanbul',
-  quorumVersion: '2.5.0',
-  transactionManager: '0.10.2',
+  quorumVersion: LATEST_QUORUM,
+  transactionManager: LATEST_TESSERA,
   deployment: 'bash',
   cakeshop: 'none',
 }
@@ -212,7 +213,7 @@ describe('build customized node info from custom prompts', () => {
     it('customize, bash ports', async () => {
       prompt.mockResolvedValue({
         ...CUSTOM_CONFIG,
-        cakeshop: '0.11.0',
+        cakeshop: LATEST_CAKESHOP,
         consensus: 'raft',
       })
       await promptUser('custom')

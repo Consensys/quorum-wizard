@@ -9,6 +9,7 @@ import { buildCakeshopDir } from './cakeshopHelper'
 import {
   isTessera,
   isCakeshop,
+  isQuorum260Plus,
 } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
@@ -86,6 +87,10 @@ QUORUM_WS_PORT=${config.containerPorts.quorum.wsPort}`
 QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/tessera:${config.network.transactionManager}
 TESSERA_P2P_PORT=${config.containerPorts.tm.p2pPort}
 TESSERA_3PARTY_PORT=${config.containerPorts.tm.thirdPartyPort}`)
+  }
+  if (isQuorum260Plus(config.network.quorumVersion)) {
+    env = env.concat(`
+QUORUM_GETH_ARGS="--allow-insecure-unlock"`)
   }
   return env
 }
