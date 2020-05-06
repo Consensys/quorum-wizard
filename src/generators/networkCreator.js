@@ -68,6 +68,7 @@ export function generateResourcesRemote(config) {
       dockerCommand += `
       sed -i '' 's,%THIS_PRIV_KEY%,/qdata/tm/tm.key,g' ${networkPath}/out/config/tessera-config-9.0.json
       sed -i '' 's,%THIS_PUB_KEY%,/qdata/tm/tm.pub,g' ${networkPath}/out/config/tessera-config-9.0.json
+      sed -i '' 's,etc/quorum/,,g' ${networkPath}/out/config/tessera-config-9.0.json
       sed -i '' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/txmanager\\1/g' ${networkPath}/out/config/tessera-config-9.0.json`
     }
   }
