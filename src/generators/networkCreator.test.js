@@ -20,7 +20,6 @@ import {
   writeJsonFile,
   removeFolder,
   copyDirectory,
-  copyScript,
   writeFile,
 } from '../utils/fileUtils'
 import {
@@ -127,7 +126,6 @@ describe('creates network resources with remote qubernetes container from answer
     generateResourcesRemote(config)
 
     expect(buildKubernetesResource).toHaveBeenCalled()
-    expect(copyScript).toBeCalledWith(createLibPath('lib', 'quorum-init'), createNetPath(config, 'quorum-init'))
     expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
     expect(copyDirectory).toBeCalledWith(createNetPath(config, 'out', 'config'), createNetPath(config, 'resources'))
     expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
@@ -140,7 +138,6 @@ describe('creates network resources with remote qubernetes container from answer
     generateResourcesRemote(config)
 
     expect(buildKubernetesResource).toHaveBeenCalled()
-    expect(copyScript).toBeCalledWith(createLibPath('lib', 'quorum-init'), createNetPath(config, 'quorum-init'))
     expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
     expect(createFolder).toBeCalledWith(createNetPath(config, 'out', 'config'), true)
     expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'out', 'config'))
@@ -154,7 +151,6 @@ describe('creates network resources with remote qubernetes container from answer
     generateResourcesRemote(config)
 
     expect(buildKubernetesResource).toHaveBeenCalled()
-    expect(copyScript).toBeCalledWith(createLibPath('lib', 'quorum-init'), createNetPath(config, 'quorum-init'))
     expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
   })
   it('Execution of docker container fails', () => {
@@ -343,11 +339,6 @@ describe('creates qdata directory for docker network', () => {
         joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'tm.pub'),
         createNetPath(config, `qdata/c${i}/tm.pub`),
       )
-      expect(writeJsonFile).toBeCalledWith(
-        createNetPath(config, `qdata/c${i}`),
-        `tessera-config-09-${i}.json`,
-        anything(),
-      )
     }
   })
 })
@@ -355,7 +346,7 @@ describe('creates qdata directory for docker network', () => {
 describe('creates static nodes json', () => {
   it('Creates a raft static nodes json from enode ids', () => {
     const testDir = 'resources'
-    const nodes = generateNodeConfigs(3)
+    const nodes = generateNodeConfigs(3, 'none', 'bash')
     const expected = [
       'enode://abc@127.0.0.1:21000?discport=0&raftport=50401',
       'enode://def@127.0.0.1:21001?discport=0&raftport=50402',
@@ -370,7 +361,7 @@ describe('creates static nodes json', () => {
 
   it('Creates an istanbul static nodes json from enode ids', () => {
     const testDir = 'resources'
-    const nodes = generateNodeConfigs(3)
+    const nodes = generateNodeConfigs(3, 'none', 'bash')
     const expected = [
       'enode://abc@127.0.0.1:21000?discport=0',
       'enode://def@127.0.0.1:21001?discport=0',

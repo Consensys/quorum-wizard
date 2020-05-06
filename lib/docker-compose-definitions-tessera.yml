@@ -51,7 +51,7 @@ x-tx-manager-def:
             {
               "app":"ThirdParty",
               "enabled": true,
-              "serverAddress": "http://$$(hostname -i):9080",
+              "serverAddress": "http://$$(hostname -i):${TESSERA_3PARTY_PORT:-9080}",
               "cors": {
                 "allowedMethods": [
                   "GET",
@@ -72,7 +72,7 @@ x-tx-manager-def:
             {
               "app":"P2P",
               "enabled": true,
-              "serverAddress": "http://$$(hostname -i):9000",
+              "serverAddress": "http://$$(hostname -i):${TESSERA_P2P_PORT:-9000}",
               "sslConfig": {
                 "tls": "OFF"
               },
@@ -81,25 +81,25 @@ x-tx-manager-def:
             ],
             "peer": [
                {
-                   "url": "http://txmanager1:9000"
+                   "url": "http://txmanager1:${TESSERA_P2P_PORT:-9000}"
                },
                {
-                   "url": "http://txmanager2:9000"
+                   "url": "http://txmanager2:${TESSERA_P2P_PORT:-9000}"
                },
                {
-                   "url": "http://txmanager3:9000"
+                   "url": "http://txmanager3:${TESSERA_P2P_PORT:-9000}"
                },
                {
-                   "url": "http://txmanager4:9000"
+                   "url": "http://txmanager4:${TESSERA_P2P_PORT:-9000}"
                },
                {
-                   "url": "http://txmanager5:9000"
+                   "url": "http://txmanager5:${TESSERA_P2P_PORT:-9000}"
                },
                {
-                   "url": "http://txmanager6:9000"
+                   "url": "http://txmanager6:${TESSERA_P2P_PORT:-9000}"
                },
                {
-                   "url": "http://txmanager7:9000"
+                   "url": "http://txmanager7:${TESSERA_P2P_PORT:-9000}"
                }
             ],
             "keys": {
@@ -123,5 +123,5 @@ x-tx-manager-def:
           ;;
       esac
   expose:
-    - "9000"
-    - "9080"
+    - "${TESSERA_P2P_PORT:-9000}"
+    - "${TESSERA_3PARTY_PORT:-9080}"
