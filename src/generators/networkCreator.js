@@ -67,12 +67,9 @@ export function generateResourcesRemote(config) {
     if (isTessera(config.network.transactionManager)) {
       dockerCommand += `
       sed -i '' 's,%THIS_PRIV_KEY%,/qdata/tm/tm.key,g' ${networkPath}/out/config/tessera-config-9.0.json
-      sed -i '' 's,%THIS_PUB_KEY%,/qdata/tm/tm.pub,g' ${networkPath}/out/config/tessera-config-9.0.json`
+      sed -i '' 's,%THIS_PUB_KEY%,/qdata/tm/tm.pub,g' ${networkPath}/out/config/tessera-config-9.0.json
+      sed -i '' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/txmanager\\1/g' ${networkPath}/out/config/tessera-config-9.0.json`
     }
-    config.nodes.forEach((node, i) => {
-      dockerCommand += `
-      sed -i '' 's/%QUORUM-NODE${i + 1}_SERVICE_HOST%/${config.nodes[i].tm.ip}/g' ${networkPath}/out/config/tessera-config-9.0.json`
-    })
   }
 
   try {
