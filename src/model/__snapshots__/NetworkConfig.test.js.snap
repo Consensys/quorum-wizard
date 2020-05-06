@@ -26,7 +26,7 @@ Object {
     "name": "5-nodes-raft-docker-compose",
     "networkId": "10",
     "permissioned": true,
-    "quorumVersion": "2.5.0",
+    "quorumVersion": "2.6.0",
     "remoteDebug": false,
     "transactionManager": "none",
     "verbosity": 5,
@@ -96,7 +96,7 @@ Object {
     "name": "5-nodes-raft-bash",
     "networkId": "10",
     "permissioned": true,
-    "quorumVersion": "2.5.0",
+    "quorumVersion": "2.6.0",
     "remoteDebug": false,
     "transactionManager": "none",
     "verbosity": 5,
@@ -166,9 +166,9 @@ Object {
     "name": "6-nodes-raft-tessera-bash",
     "networkId": 10,
     "permissioned": true,
-    "quorumVersion": "2.5.0",
+    "quorumVersion": "2.6.0",
     "remoteDebug": false,
-    "transactionManager": "0.10.2",
+    "transactionManager": "0.10.5",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -286,9 +286,9 @@ Object {
     "name": "6-nodes-raft-tessera-docker-compose",
     "networkId": 10,
     "permissioned": true,
-    "quorumVersion": "2.5.0",
+    "quorumVersion": "2.6.0",
     "remoteDebug": false,
-    "transactionManager": "0.10.2",
+    "transactionManager": "0.10.5",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -395,9 +395,9 @@ Object {
     "name": "7-nodes-istanbul-tessera-bash",
     "networkId": "10",
     "permissioned": true,
-    "quorumVersion": "2.5.0",
+    "quorumVersion": "2.6.0",
     "remoteDebug": false,
-    "transactionManager": "0.10.2",
+    "transactionManager": "0.10.5",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -518,9 +518,9 @@ Object {
     "name": "7-nodes-istanbul-tessera-bash",
     "networkId": "10",
     "permissioned": true,
-    "quorumVersion": "2.5.0",
+    "quorumVersion": "2.6.0",
     "remoteDebug": false,
-    "transactionManager": "0.10.2",
+    "transactionManager": "0.10.5",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -652,9 +652,9 @@ Object {
     "name": "7-nodes-istanbul-tessera-docker-compose",
     "networkId": "10",
     "permissioned": true,
-    "quorumVersion": "2.5.0",
+    "quorumVersion": "2.6.0",
     "remoteDebug": false,
-    "transactionManager": "0.10.2",
+    "transactionManager": "0.10.5",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -786,9 +786,9 @@ Object {
     "name": "7-nodes-istanbul-tessera-kubernetes",
     "networkId": "10",
     "permissioned": true,
-    "quorumVersion": "2.5.0",
+    "quorumVersion": "2.6.0",
     "remoteDebug": false,
-    "transactionManager": "0.10.2",
+    "transactionManager": "0.10.5",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -909,7 +909,7 @@ Object {
     "name": "7-nodes-istanbul-bash",
     "networkId": 12,
     "permissioned": true,
-    "quorumVersion": "2.5.0",
+    "quorumVersion": "2.6.0",
     "remoteDebug": false,
     "transactionManager": "none",
     "verbosity": 5,
@@ -1008,7 +1008,7 @@ Object {
     "name": "7-nodes-istanbul-docker-compose",
     "networkId": 10,
     "permissioned": true,
-    "quorumVersion": "2.5.0",
+    "quorumVersion": "2.6.0",
     "remoteDebug": false,
     "transactionManager": "none",
     "verbosity": 5,
@@ -1107,9 +1107,9 @@ Object {
     "name": "7-nodes-raft-tessera-kubernetes",
     "networkId": 14,
     "permissioned": true,
-    "quorumVersion": "2.5.0",
+    "quorumVersion": "2.6.0",
     "remoteDebug": false,
-    "transactionManager": "0.10.2",
+    "transactionManager": "0.10.5",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -1215,7 +1215,7 @@ Object {
 }
 `;
 
-exports[`creates quickstart config with java 11+ 1`] = `
+exports[`creates quickstart config 1`] = `
 Object {
   "containerPorts": Object {},
   "network": Object {
@@ -1230,9 +1230,9 @@ Object {
     "name": "3-nodes-raft-tessera-bash",
     "networkId": "10",
     "permissioned": true,
-    "quorumVersion": "2.5.0",
+    "quorumVersion": "2.6.0",
     "remoteDebug": false,
-    "transactionManager": "0.10.4",
+    "transactionManager": "0.10.5",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -1282,7 +1282,7 @@ Object {
 }
 `;
 
-exports[`creates quickstart setup 1`] = `
+exports[`creates quickstart setup with java 8 1`] = `
 Object {
   "containerPorts": Object {},
   "network": Object {
@@ -1297,7 +1297,7 @@ Object {
     "name": "3-nodes-raft-tessera-bash",
     "networkId": "10",
     "permissioned": true,
-    "quorumVersion": "2.5.0",
+    "quorumVersion": "2.6.0",
     "remoteDebug": false,
     "transactionManager": "0.10.2",
     "verbosity": 5,
