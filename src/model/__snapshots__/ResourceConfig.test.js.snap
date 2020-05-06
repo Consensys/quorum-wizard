@@ -17,13 +17,13 @@ quorum:
   Genesis_File: out/config/genesis.json
   quorum:
     Raft_Port: 50401
-    Quorum_Version: 2.5.0
+    Quorum_Version: 2.6.0
   storage:
     Type: PVC
     Capacity: 200Mi
   tm:
     Name: tessera
-    Tm_Version: 0.10.2
+    Tm_Version: 0.10.5
     Port: 9001
     Tessera_Config_Dir: out/config
 geth:
@@ -53,13 +53,13 @@ quorum:
   Genesis_File: out/config/genesis.json
   quorum:
     Raft_Port: 50401
-    Quorum_Version: 2.5.0
+    Quorum_Version: 2.6.0
   storage:
     Type: PVC
     Capacity: 200Mi
   tm:
     Name: tessera
-    Tm_Version: 0.10.2
+    Tm_Version: 0.10.5
     Port: 9001
     Tessera_Config_Dir: out/config
 geth:

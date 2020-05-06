@@ -1,12 +1,13 @@
 import { buildDockerCompose } from '../generators/dockerHelper'
 import { createConfigFromAnswers } from './NetworkConfig'
+import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 
 test('creates 3nodes raft dockerFile tessera no cakeshop', () => {
   const config = createConfigFromAnswers({
     numberNodes: '3',
     consensus: 'raft',
-    quorumVersion: '2.5.0',
-    transactionManager: '0.10.2',
+    quorumVersion: LATEST_QUORUM,
+    transactionManager: LATEST_TESSERA,
     deployment: 'docker-compose',
     cakeshop: 'none',
   })
@@ -18,7 +19,7 @@ test('creates 5nodes istanbul dockerFile no tessera no cakeshop', () => {
   const config = createConfigFromAnswers({
     numberNodes: '5',
     consensus: 'istanbul',
-    quorumVersion: '2.5.0',
+    quorumVersion: LATEST_QUORUM,
     transactionManager: 'none',
     deployment: 'docker-compose',
     cakeshop: 'none',
@@ -31,10 +32,10 @@ test('creates 3nodes raft dockerFile tessera cakeshop', () => {
   const config = createConfigFromAnswers({
     numberNodes: '3',
     consensus: 'raft',
-    quorumVersion: '2.5.0',
-    transactionManager: '0.10.2',
+    quorumVersion: LATEST_QUORUM,
+    transactionManager: LATEST_TESSERA,
     deployment: 'docker-compose',
-    cakeshop: '0.11.0',
+    cakeshop: LATEST_CAKESHOP,
   })
   const docker = buildDockerCompose(config)
   expect(docker).toMatchSnapshot()
@@ -44,10 +45,10 @@ test('creates 5nodes istanbul dockerFile no tessera cakeshop', () => {
   const config = createConfigFromAnswers({
     numberNodes: '5',
     consensus: 'istanbul',
-    quorumVersion: '2.5.0',
+    quorumVersion: LATEST_QUORUM,
     transactionManager: 'none',
     deployment: 'docker-compose',
-    cakeshop: '0.11.0',
+    cakeshop: LATEST_CAKESHOP,
   })
   const docker = buildDockerCompose(config)
   expect(docker).toMatchSnapshot()
@@ -57,7 +58,7 @@ test('creates 3nodes raft docker tessera custom', () => {
   const config = createConfigFromAnswers({
     numberNodes: '3',
     consensus: 'raft',
-    transactionManager: '0.10.2',
+    transactionManager: LATEST_TESSERA,
     deployment: 'docker-compose',
     cakeshop: 'none',
     generateKeys: false,
@@ -105,9 +106,9 @@ test('creates 2nodes raft docker tessera cakeshop custom ports', () => {
   const config = createConfigFromAnswers({
     numberNodes: '2',
     consensus: 'raft',
-    transactionManager: '0.10.2',
+    transactionManager: LATEST_TESSERA,
     deployment: 'docker-compose',
-    cakeshop: '0.11.0',
+    cakeshop: LATEST_CAKESHOP,
     generateKeys: false,
     networkId: 10,
     genesisLocation: 'none',

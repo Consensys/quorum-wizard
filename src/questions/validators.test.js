@@ -5,6 +5,7 @@ import {
   validateNumberStringInRange,
 } from './validators'
 import { isJava11Plus } from '../utils/execUtils'
+import { LATEST_CAKESHOP, LATEST_CAKESHOP_J8 } from '../generators/download'
 
 jest.mock('../utils/execUtils')
 
@@ -49,9 +50,9 @@ test('rejects network id that is not a number', () => {
 test('Turns cakeshop answer from boolean to version/none', () => {
   expect(transformCakeshopAnswer('No')).toEqual('none')
   isJava11Plus.mockReturnValueOnce(false)
-  expect(transformCakeshopAnswer('Yes')).toEqual('0.11.0-J8')
+  expect(transformCakeshopAnswer('Yes')).toEqual(LATEST_CAKESHOP_J8)
   isJava11Plus.mockReturnValueOnce(true)
-  expect(transformCakeshopAnswer('Yes')).toEqual('0.11.0')
+  expect(transformCakeshopAnswer('Yes')).toEqual(LATEST_CAKESHOP)
 })
 
 test('Disables java choices based on java version', () => {

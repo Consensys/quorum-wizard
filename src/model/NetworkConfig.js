@@ -1,14 +1,22 @@
+import cmp from 'semver-compare'
 import { isJava11Plus } from '../utils/execUtils'
+import {
+  LATEST_CAKESHOP,
+  LATEST_CAKESHOP_J8,
+  LATEST_QUORUM,
+  LATEST_TESSERA,
+  LATEST_TESSERA_J8,
+} from '../generators/download'
 
 export function createConfigFromAnswers(answers) {
   const {
     name,
     numberNodes = 3,
     consensus = 'raft',
-    quorumVersion = '2.5.0',
-    transactionManager = isJava11Plus() ? '0.10.4' : '0.10.2',
+    quorumVersion = LATEST_QUORUM,
+    transactionManager = isJava11Plus() ? LATEST_TESSERA : LATEST_TESSERA_J8,
     deployment = 'bash',
-    cakeshop = isJava11Plus() ? '0.11.0' : '0.11.0-J8',
+    cakeshop = isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8,
     generateKeys = false,
     networkId = '10',
     genesisLocation = 'none',
@@ -111,4 +119,8 @@ export function isRaft(consensus) {
 
 export function isCakeshop(cakeshop) {
   return cakeshop !== 'none'
+}
+
+export function isQuorum260Plus(quorumVersion) {
+  return cmp(quorumVersion, '2.6.0') >= 0
 }
