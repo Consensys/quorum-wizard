@@ -146,13 +146,6 @@ export function createQdataDirectory(config) {
         writeJsonFile(tmDir, `tessera-config-09-${nodeNumber}.json`, tesseraConfig)
       } else if (isDocker(config.network.deployment)) {
         copyFile(joinPath(configPath, 'tessera-config-9.0.json'), joinPath(tmDir, 'tessera-config-09.json'))
-        const insertIpCommand = `sed -i '' 's/%THIS_SERVICE_HOST%/${node.tm.ip}/g' ${tmDir}/tessera-config-09.json`
-
-        try {
-          executeSync(insertIpCommand)
-        } catch (e) {
-          throw new Error('Tessera config conversion failed')
-        }
       }
     }
   })

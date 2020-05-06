@@ -37,10 +37,12 @@ x-tx-manager-def:
 
           echo Config type $${TESSERA_CONFIG_TYPE}
 
-          sed -i 's,%THIS_PRIV_KEY%,/qdata/tm/tm.key,g' $${DDIR}/tessera-config$${TESSERA_CONFIG_TYPE}.json
-          sed -i 's,%THIS_PUB_KEY%,/qdata/tm/tm.pub,g' $${DDIR}/tessera-config$${TESSERA_CONFIG_TYPE}.json
+          HOSTNAME=$$(hostname -i)
+          sed -i "s,%THIS_PRIV_KEY%,$${DDIR}/tm.key,g" $${DDIR}/tessera-config$${TESSERA_CONFIG_TYPE}.json
+          sed -i "s,%THIS_PUB_KEY%,$${DDIR}/tm.pub,g" $${DDIR}/tessera-config$${TESSERA_CONFIG_TYPE}.json
           sed -i 's,etc/quorum/,,g' $${DDIR}/tessera-config$${TESSERA_CONFIG_TYPE}.json
           sed -i 's/%QUORUM-NODE\([0-9]\)_SERVICE_HOST%/txmanager\1/g' $${DDIR}/tessera-config$${TESSERA_CONFIG_TYPE}.json
+          sed -i "s/%THIS_SERVICE_HOST%/$${HOSTNAME}/g" $${DDIR}/tessera-config$${TESSERA_CONFIG_TYPE}.json
 
           cat $${DDIR}/tessera-config$${TESSERA_CONFIG_TYPE}.json
           java -Xms128M -Xmx128M -jar /tessera/tessera-app.jar -configfile $${DDIR}/tessera-config$${TESSERA_CONFIG_TYPE}.json
