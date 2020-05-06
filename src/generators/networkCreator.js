@@ -64,6 +64,15 @@ export function generateResourcesRemote(config) {
   if (isDocker(config.network.deployment)) {
     dockerCommand += `
     sed -i '' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/172.16.239.1\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
+    if (isTessera(config.network.transactionManager)) {
+      dockerCommand += `
+      sed -i '' 's,%THIS_PRIV_KEY%,/qdata/tm/tm.key,g' ${networkPath}/out/config/tessera-config-9.0.json
+      sed -i '' 's,%THIS_PUB_KEY%,/qdata/tm/tm.pub,g' ${networkPath}/out/config/tessera-config-9.0.json`
+    }
+    config.nodes.forEach((node, i) => {
+      dockerCommand += `
+      sed -i '' 's/%QUORUM-NODE${i + 1}_SERVICE_HOST%/${config.nodes[i].tm.ip}/g' ${networkPath}/out/config/tessera-config-9.0.json`
+    })
   }
 
   try {
@@ -144,6 +153,15 @@ export function createQdataDirectory(config) {
           peerList,
         )
         writeJsonFile(tmDir, `tessera-config-09-${nodeNumber}.json`, tesseraConfig)
+      } else if (isDocker(config.network.deployment)) {
+        copyFile(joinPath(configPath, 'tessera-config-9.0.json'), joinPath(tmDir, 'tessera-config-09.json'))
+        const insertIpCommand = `sed -i '' 's/%THIS_SERVICE_HOST%/${node.tm.ip}/g' ${tmDir}/tessera-config-09.json`
+
+        try {
+          executeSync(insertIpCommand)
+        } catch (e) {
+          throw new Error('Tessera config conversion failed')
+        }
       }
     }
   })
