@@ -16,7 +16,7 @@ quorum:
   Permissioned_Nodes_File: out/config/permissioned-nodes.json
   Genesis_File: out/config/genesis.json
   quorum:
-    Raft_Port: 50401
+    Raft_Port: 50400
     Quorum_Version: 2.5.0
   storage:
     Type: PVC
@@ -24,11 +24,12 @@ quorum:
   tm:
     Name: tessera
     Tm_Version: 0.10.2
-    Port: 9001
+    Port: 9000
+    3Party_Port: 9080
     Tessera_Config_Dir: out/config
 geth:
   Node_RPCPort: 8545
-  NodeP2P_ListenAddr: 30303
+  NodeP2P_ListenAddr: 21000
   network:
     id: 10
     public: false
@@ -52,7 +53,7 @@ quorum:
   Permissioned_Nodes_File: out/config/permissioned-nodes.json
   Genesis_File: out/config/genesis.json
   quorum:
-    Raft_Port: 50401
+    Raft_Port: 50400
     Quorum_Version: 2.5.0
   storage:
     Type: PVC
@@ -60,11 +61,12 @@ quorum:
   tm:
     Name: tessera
     Tm_Version: 0.10.2
-    Port: 9001
+    Port: 9000
+    3Party_Port: 9080
     Tessera_Config_Dir: out/config
 geth:
   Node_RPCPort: 8545
-  NodeP2P_ListenAddr: 30303
+  NodeP2P_ListenAddr: 21000
   network:
     id: 10
     public: false
@@ -88,7 +90,7 @@ quorum:
   Permissioned_Nodes_File: out/config/permissioned-nodes.json
   Genesis_File: out/config/genesis.json
   quorum:
-    Raft_Port: 50401
+    Raft_Port: 50400
     Quorum_Version: 2.5.0
   storage:
     Type: PVC
@@ -96,11 +98,12 @@ quorum:
   tm:
     Name: tessera
     Tm_Version: 0.10.2
-    Port: 9001
+    Port: 9000
+    3Party_Port: 9080
     Tessera_Config_Dir: out/config
 geth:
   Node_RPCPort: 8545
-  NodeP2P_ListenAddr: 30303
+  NodeP2P_ListenAddr: 21000
   network:
     id: 10
     public: false
@@ -124,7 +127,7 @@ quorum:
   Permissioned_Nodes_File: out/config/permissioned-nodes.json
   Genesis_File: out/config/genesis.json
   quorum:
-    Raft_Port: 50401
+    Raft_Port: 50400
     Quorum_Version: 2.5.0
   storage:
     Type: PVC
@@ -132,11 +135,12 @@ quorum:
   tm:
     Name: tessera
     Tm_Version: 0.10.2
-    Port: 9001
+    Port: 9000
+    3Party_Port: 9080
     Tessera_Config_Dir: out/config
 geth:
   Node_RPCPort: 8545
-  NodeP2P_ListenAddr: 30303
+  NodeP2P_ListenAddr: 21000
   network:
     id: 10
     public: false
