@@ -12,6 +12,7 @@ import {
   isRaft,
   isKubernetes,
 } from '../model/NetworkConfig'
+import { isJava11Plus } from '../utils/execUtils'
 
 
 export const INITIAL_MODE = {
@@ -140,26 +141,64 @@ export const NETWORK_NAME = {
   type: 'input',
   name: 'name',
   message: 'What would you like to call this network?',
+  validate: (input) => input.trim() !== '' || 'Network name must not be blank.',
   default: (answers) => defaultNetworkName(answers.numberNodes,
     answers.consensus,
     answers.transactionManager,
     answers.deployment),
 }
 
-export const QUICKSTART_QUESTIONS = []
-export const SIMPLE_QUESTIONS = [
+export const NETWORK_CONFIRM = {
+  type: 'confirm',
+  name: 'overwrite',
+  message: (answers) => `A network with the name '${answers.name}' already exists. Do you want to overwrite it?`,
+  default: false,
+}
+
+export const QUESTIONS = [
   DEPLOYMENT_TYPE,
   CONSENSUS_MODE,
   NUMBER_NODES,
   QUORUM_VERSION,
   TRANSACTION_MANAGER,
   CAKESHOP,
-  NETWORK_NAME,
-]
-export const CUSTOM_QUESTIONS = [
-  ...SIMPLE_QUESTIONS,
   KEY_GENERATION,
   NETWORK_ID,
   // GENESIS_LOCATION,
+  NETWORK_NAME,
   CUSTOMIZE_PORTS,
 ]
+
+export const QUICKSTART_ANSWERS = {
+  name: '3-nodes-raft-tessera-bash',
+  numberNodes: 3,
+  consensus: 'raft',
+  quorumVersion: '2.5.0',
+  transactionManager: isJava11Plus() ? '0.10.4' : '0.10.2',
+  deployment: 'bash',
+  cakeshop: isJava11Plus() ? '0.11.0' : '0.11.0-J8',
+  generateKeys: false,
+  networkId: '10',
+  customizePorts: false,
+}
+
+export const SIMPLE_ANSWERS = {
+  generateKeys: false,
+  networkId: '10',
+  customizePorts: false,
+}
+
+export const CUSTOM_ANSWERS = {}
+
+export function getPrefilledAnswersForMode(mode) {
+  switch (mode) {
+    case 'quickstart':
+      return QUICKSTART_ANSWERS
+    case 'simple':
+      return SIMPLE_ANSWERS
+    case 'custom':
+      return CUSTOM_ANSWERS
+    default:
+      throw new Error(`Unknown option: ${mode}`)
+  }
+}

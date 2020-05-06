@@ -5,9 +5,13 @@ import {
   getCustomizedDockerPorts,
   getCustomizedCakeshopPort,
 } from './customPromptHelper'
-import { CUSTOM_QUESTIONS } from './questions'
+import { CUSTOM_ANSWERS, QUESTIONS } from './questions'
+import { exists } from '../utils/fileUtils'
 
 jest.mock('inquirer')
+jest.mock('../generators/networkCreator')
+jest.mock('../utils/fileUtils')
+exists.mockReturnValue(false)
 
 const SIMPLE_CONFIG = {
   numberNodes: '5',
@@ -212,7 +216,7 @@ describe('build customized node info from custom prompts', () => {
         consensus: 'raft',
       })
       await promptUser('custom')
-      expect(prompt).toHaveBeenCalledWith(CUSTOM_QUESTIONS)
+      expect(prompt).toHaveBeenCalledWith(QUESTIONS, CUSTOM_ANSWERS)
     })
     it('customize, docker ports', async () => {
       prompt.mockResolvedValue({
@@ -220,7 +224,7 @@ describe('build customized node info from custom prompts', () => {
         deployment: 'docker-compose',
       })
       await promptUser('custom')
-      expect(prompt).toHaveBeenCalledWith(CUSTOM_QUESTIONS)
+      expect(prompt).toHaveBeenCalledWith(QUESTIONS, CUSTOM_ANSWERS)
     })
   })
 })
