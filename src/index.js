@@ -72,7 +72,9 @@ if (argv.q) {
 async function buildNetwork(mode) {
   const answers = await promptUser(mode)
   const config = createConfigFromAnswers(answers)
-  await downloadAndCopyBinaries(config)
+  if (isBash(config.network.deployment)) {
+    await downloadAndCopyBinaries(config)
+  }
   await createDirectory(config)
   await createScript(config)
   generateAndCopyExampleScripts(config)

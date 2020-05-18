@@ -13,7 +13,6 @@ function buildGeneralDetails(config) {
   return `#namespace:
 #  name: quorum-test
 sep_deployment_files: true
-skip_out_directory: true
 nodes:
   number: ${nodeNum}
 service:
