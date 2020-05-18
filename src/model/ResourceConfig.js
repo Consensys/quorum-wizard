@@ -1,4 +1,3 @@
-
 // eslint-disable-next-line import/prefer-default-export
 export function buildKubernetesResource(config) {
   return [
@@ -14,7 +13,6 @@ function buildGeneralDetails(config) {
   return `#namespace:
 #  name: quorum-test
 sep_deployment_files: true
-generate_keys: ${config.network.generateKeys}
 nodes:
   number: ${nodeNum}
 service:
@@ -30,7 +28,7 @@ quorum:
   Permissioned_Nodes_File: out/config/permissioned-nodes.json
   Genesis_File: out/config/genesis.json
   quorum:
-    Raft_Port: 50401
+    Raft_Port: ${config.containerPorts.quorum.raftPort}
     Quorum_Version: ${config.network.quorumVersion}
   storage:
     Type: PVC
@@ -40,8 +38,8 @@ quorum:
 function buildGethDetails(config) {
   return `
 geth:
-  Node_RPCPort: 8545
-  NodeP2P_ListenAddr: 30303
+  Node_RPCPort: ${config.containerPorts.quorum.rpcPort}
+  NodeP2P_ListenAddr: ${config.containerPorts.quorum.p2pPort}
   network:
     id: ${config.network.networkId}
     public: false
@@ -54,6 +52,7 @@ function buildTesseraDetails(config) {
   tm:
     Name: tessera
     Tm_Version: ${config.network.transactionManager}
-    Port: 9001
+    Port: ${config.containerPorts.tm.p2pPort}
+    3Party_Port: ${config.containerPorts.tm.thirdPartyPort}
     Tessera_Config_Dir: out/config`
 }

@@ -35,9 +35,9 @@ export function buildDockerCompose(config) {
   )) : ''
 
   let services = config.nodes.map((node, i) => {
-    let allServices = buildNodeService(networkName, node, i, hasTessera)
+    let allServices = buildNodeService(config, networkName, node, i, hasTessera)
     if (hasTessera) {
-      allServices = [allServices, buildTesseraService(networkName, node, i)].join('')
+      allServices = [allServices, buildTesseraService(config, node, i)].join('')
     }
     return allServices
   })
@@ -78,10 +78,16 @@ export async function createDockerCompose(config) {
 
 function createEnvFile(config, hasTessera) {
   let env = `QUORUM_CONSENSUS=${config.network.consensus}
-QUORUM_DOCKER_IMAGE=quorumengineering/quorum:${config.network.quorumVersion}`
+QUORUM_DOCKER_IMAGE=quorumengineering/quorum:${config.network.quorumVersion}
+QUORUM_P2P_PORT=${config.containerPorts.quorum.p2pPort}
+QUORUM_RAFT_PORT=${config.containerPorts.quorum.raftPort}
+QUORUM_RPC_PORT=${config.containerPorts.quorum.rpcPort}
+QUORUM_WS_PORT=${config.containerPorts.quorum.wsPort}`
   if (hasTessera) {
     env = env.concat(`
-QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/tessera:${config.network.transactionManager}`)
+QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/tessera:${config.network.transactionManager}
+TESSERA_P2P_PORT=${config.containerPorts.tm.p2pPort}
+TESSERA_3PARTY_PORT=${config.containerPorts.tm.thirdPartyPort}`)
   }
   if (isQuorum260Plus(config.network.quorumVersion)) {
     env = env.concat(`
@@ -90,7 +96,7 @@ QUORUM_GETH_ARGS="--allow-insecure-unlock"`)
   return env
 }
 
-function buildNodeService(networkName, node, i, hasTessera) {
+function buildNodeService(config, networkName, node, i, hasTessera) {
   const txManager = hasTessera
     ? `depends_on:
       - txmanager${i + 1}
@@ -104,8 +110,8 @@ function buildNodeService(networkName, node, i, hasTessera) {
     << : *quorum-def
     hostname: node${i + 1}
     ports:
-      - "${node.quorum.rpcPort}:8545"
-      - "${node.quorum.wsPort}:8645"
+      - "${node.quorum.rpcPort}:${config.containerPorts.quorum.rpcPort}"
+      - "${node.quorum.wsPort}:${config.containerPorts.quorum.wsPort}"
     volumes:
       - ${networkName}-vol${i + 1}:/qdata
       - ./qdata:/examples:ro
@@ -116,13 +122,13 @@ function buildNodeService(networkName, node, i, hasTessera) {
         ipv4_address: 172.16.239.1${i + 1}`
 }
 
-function buildTesseraService(networkName, node, i) {
+function buildTesseraService(config, networkName, node, i) {
   return `
   txmanager${i + 1}:
     << : *tx-manager-def
     hostname: txmanager${i + 1}
     ports:
-      - "${node.tm.thirdPartyPort}:9080"
+      - "${node.tm.thirdPartyPort}:${config.containerPorts.tm.thirdPartyPort}"
     volumes:
       - ${networkName}-vol${i + 1}:/qdata
       - ./qdata:/examples:ro

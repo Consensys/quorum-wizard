@@ -8,7 +8,6 @@ import {
   removeFolder,
   writeJsonFile,
   copyDirectory,
-  copyScript,
   writeFile,
 } from '../utils/fileUtils'
 import { generateKeys } from './keyGen'
@@ -19,6 +18,8 @@ import {
   isRaft,
   isTessera,
   isDocker,
+  isKubernetes,
+  isBash,
 } from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
@@ -33,13 +34,12 @@ export function createNetwork(config) {
 }
 
 export function generateResourcesRemote(config) {
-  info('Generating network resources...')
+  info('Generating network resources in docker container...')
   const configDir = joinPath(cwd(), config.network.configDir)
   const networkPath = getFullNetworkPath(config)
   const remoteOutputDir = joinPath(networkPath, 'out', 'config')
 
   const file = buildKubernetesResource(config)
-  copyScript(joinPath(libRootDir(), 'lib', 'quorum-init'), joinPath(networkPath, 'quorum-init'))
   writeFile(joinPath(networkPath, 'qubernetes.yaml'), file, false)
 
   if (!config.network.generateKeys) {
@@ -47,20 +47,39 @@ export function generateResourcesRemote(config) {
     copyDirectory(joinPath(libRootDir(), '7nodes'), remoteOutputDir)
   }
 
-  const dockerCommand = `cd ${networkPath}
-  docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/quorum-init:/qubernetes/quorum-init -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./quorum-init qubernetes.yaml 2>&1
-  find . -type f -name 'UTC*' -execdir mv {} key ';'`
-  executeSync(dockerCommand)
+  const initScript = isKubernetes(config.network.deployment) ? 'qube-init' : 'quorum-init'
+  let dockerCommand = `cd ${networkPath}
+  ## make sure docker is installed
+  docker ps > /dev/null
+  EXIT_CODE=$?
+
+  if [[ EXIT_CODE -ne 0 ]];
+  then
+    exit $EXIT_CODE
+  fi
+  docker pull quorumengineering/qubernetes:latest
+  
+  docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./${initScript} --action=update qubernetes.yaml 2>&1
+  find . -type f -name 'UTC*' -execdir mv {} key ';'
+  `
 
   if (isDocker(config.network.deployment)) {
+    dockerCommand += `
+    sed -i '' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/172.16.239.1\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
+  }
+
+  try {
+    executeSync(dockerCommand)
+  } catch (e) {
+    throw new Error('Remote generation failed')
+  }
+  if (isDocker(config.network.deployment)) {
     copyDirectory(remoteOutputDir, configDir)
-    const staticNodes = createStaticNodes(config.nodes, config.network.consensus, remoteOutputDir)
-    writeJsonFile(configDir, 'permissioned-nodes.json', staticNodes)
   }
 }
 
 export async function generateResourcesLocally(config) {
-  info('Generating network resources...')
+  info('Generating network resources locally...')
   const configDir = joinPath(cwd(), config.network.configDir)
   createFolder(configDir, true)
 
@@ -105,7 +124,6 @@ export function createQdataDirectory(config) {
     createFolder(quorumDir)
     createFolder(gethDir)
     createFolder(keyDir)
-    createFolder(tmDir)
 
     copyFile(joinPath(configPath, 'permissioned-nodes.json'), joinPath(quorumDir, 'permissioned-nodes.json'))
     copyFile(joinPath(configPath, 'permissioned-nodes.json'), joinPath(quorumDir, 'static-nodes.json'))
@@ -114,17 +132,21 @@ export function createQdataDirectory(config) {
     copyFile(joinPath(keySource, 'password.txt'), passwordDestination)
     copyFile(joinPath(configPath, 'genesis.json'), genesisDestination)
     if (isTessera(config.network.transactionManager)) {
+      createFolder(tmDir)
       copyFile(joinPath(keySource, 'tm.key'), joinPath(tmDir, 'tm.key'))
       copyFile(joinPath(keySource, 'tm.pub'), joinPath(tmDir, 'tm.pub'))
-      const tesseraConfig = createConfig(
-        tmDir,
-        nodeNumber,
-        node.tm.ip,
-        node.tm.thirdPartyPort,
-        node.tm.p2pPort,
-        peerList,
-      )
-      writeJsonFile(tmDir, `tessera-config-09-${nodeNumber}.json`, tesseraConfig)
+
+      if (isBash(config.network.deployment)) {
+        const tesseraConfig = createConfig(
+          tmDir,
+          nodeNumber,
+          node.tm.ip,
+          node.tm.thirdPartyPort,
+          node.tm.p2pPort,
+          peerList,
+        )
+        writeJsonFile(tmDir, `tessera-config-09-${nodeNumber}.json`, tesseraConfig)
+      }
     }
   })
 }
