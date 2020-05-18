@@ -1,10 +1,11 @@
-import { libRootDir } from '../utils/fileUtils'
+import { wizardHomeDir } from '../utils/fileUtils'
 import { executeSync } from '../utils/execUtils'
 import {
   isBash,
-  isDocker,
   isIstanbul,
   isTessera,
+  isKubernetes,
+  isDocker,
 } from '../model/NetworkConfig'
 import {
   BINARIES,
@@ -23,31 +24,37 @@ export async function downloadAndCopyBinaries(config) {
   const {
     transactionManager, cakeshop, deployment, generateKeys, quorumVersion, consensus,
   } = config.network
+  const bash = isBash(deployment)
   const docker = isDocker(deployment)
-  const isDockerButNeedsBinaries = docker && generateKeys
+  const tessera = isTessera(transactionManager)
+  const isDockerButNeedsBinaries = docker && generateKeys && !tessera
+  const kubernetes = isKubernetes(deployment)
+  const downloads = []
 
   // needed no matter what if using istanbul to generate genesis
-  if (isIstanbul(consensus)) {
-    await downloadIfMissing('istanbul', '1.0.1')
+  if (isIstanbul(consensus) && !kubernetes) {
+    downloads.push(downloadIfMissing('istanbul', '1.0.1'))
   }
 
-  if (!docker || isDockerButNeedsBinaries) {
+  if (bash || isDockerButNeedsBinaries) {
     if (generateKeys) {
-      await downloadIfMissing('bootnode', '1.8.27')
+      downloads.push(downloadIfMissing('bootnode', '1.8.27'))
     }
 
     if (quorumVersion !== 'PATH') {
-      await downloadIfMissing('quorum', quorumVersion)
+      downloads.push(downloadIfMissing('quorum', quorumVersion))
     }
     const tesseraVersion = transactionManager
     if (tesseraVersion !== 'PATH' && isTessera(tesseraVersion)) {
-      await downloadIfMissing('tessera', tesseraVersion)
+      downloads.push(downloadIfMissing('tessera', tesseraVersion))
     }
 
     if (!docker && cakeshop !== 'none') {
-      await downloadIfMissing('cakeshop', cakeshop)
+      downloads.push(downloadIfMissing('cakeshop', cakeshop))
     }
   }
+
+  await Promise.all(downloads)
 }
 
 export function getGethOnPath() {
@@ -87,7 +94,7 @@ export function getDownloadableTesseraChoices(deployment) {
     // allow all options in docker compose mode since local jdk version doesn't matter
     choices = choices.map((choice) => ({ ...choice, disabled: false }))
   }
-  return choices.concat('none')
+  return isKubernetes(deployment) ? choices : choices.concat('none')
 }
 
 function getDownloadableChoices(versions) {
@@ -115,7 +122,7 @@ export function pathToQuorumBinary(quorumVersion) {
     return 'geth'
   }
   const binary = BINARIES.quorum[quorumVersion]
-  return joinPath(libRootDir(), 'bin', 'quorum', quorumVersion, binary.name)
+  return joinPath(wizardHomeDir(), 'bin', 'quorum', quorumVersion, binary.name)
 }
 
 export function pathToTesseraJar(transactionManager) {
@@ -123,20 +130,20 @@ export function pathToTesseraJar(transactionManager) {
     return '$TESSERA_JAR'
   }
   const binary = BINARIES.tessera[transactionManager]
-  return joinPath(libRootDir(), 'bin', 'tessera', transactionManager, binary.name)
+  return joinPath(wizardHomeDir(), 'bin', 'tessera', transactionManager, binary.name)
 }
 
 export function pathToCakeshop(version) {
   const binary = BINARIES.cakeshop[version]
-  return joinPath(libRootDir(), 'bin', 'cakeshop', version, binary.name)
+  return joinPath(wizardHomeDir(), 'bin', 'cakeshop', version, binary.name)
 }
 
 export function pathToIstanbulTools() {
   const binary = BINARIES.istanbul['1.0.1']
-  return joinPath(libRootDir(), 'bin', 'istanbul', '1.0.1', binary.name)
+  return joinPath(wizardHomeDir(), 'bin', 'istanbul', '1.0.1', binary.name)
 }
 
 export function pathToBootnode() {
   const binary = BINARIES.bootnode['1.8.27']
-  return joinPath(libRootDir(), 'bin', 'bootnode', '1.8.27', binary.name)
+  return joinPath(wizardHomeDir(), 'bin', 'bootnode', '1.8.27', binary.name)
 }

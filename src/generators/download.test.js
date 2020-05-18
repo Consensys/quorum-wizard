@@ -1,16 +1,16 @@
 import {
   overrideProcessValue,
   TEST_CWD,
-  TEST_LIB_ROOT_DIR,
+  TEST_WIZARD_HOME_DIR,
 } from '../utils/testHelper'
 import {
   getPlatformSpecificUrl,
-  downloadIfMissing,
+  downloadIfMissing, LATEST_QUORUM, LATEST_TESSERA,
 } from './download'
 import {
   cwd,
-  libRootDir,
   exists,
+  wizardHomeDir,
 } from '../utils/fileUtils'
 import { info } from '../utils/log'
 
@@ -18,7 +18,7 @@ jest.mock('../utils/fileUtils')
 jest.mock('../utils/log')
 
 cwd.mockReturnValue(TEST_CWD)
-libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
+wizardHomeDir.mockReturnValue(TEST_WIZARD_HOME_DIR)
 info.mockReturnValue('info')
 
 describe('Handles different binary file urls', () => {
@@ -70,10 +70,10 @@ describe('tests download if missing function', () => {
   })
   it('quorum that exists', () => {
     exists.mockReturnValue(true)
-    downloadIfMissing('quorum', '2.5.0')
+    downloadIfMissing('quorum', LATEST_QUORUM)
   })
   it('tessera that exists', () => {
     exists.mockReturnValue(true)
-    downloadIfMissing('tessera', '0.10.2')
+    downloadIfMissing('tessera', LATEST_TESSERA)
   })
 })

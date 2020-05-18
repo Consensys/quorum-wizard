@@ -18,12 +18,16 @@ import {
 import {
   cwd,
   libRootDir,
+  wizardHomeDir,
 } from '../utils/fileUtils'
 import {
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
+  TEST_WIZARD_HOME_DIR,
 } from '../utils/testHelper'
-import { downloadIfMissing } from './download'
+import {
+  downloadIfMissing, LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA, LATEST_TESSERA_J8,
+} from './download'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
 
@@ -33,6 +37,7 @@ jest.mock('../utils/fileUtils')
 jest.mock('../utils/log')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
+wizardHomeDir.mockReturnValue(TEST_WIZARD_HOME_DIR)
 downloadIfMissing.mockReturnValue(Promise.resolve())
 isJava11Plus.mockReturnValue(false)
 info.mockReturnValue('log')
@@ -42,22 +47,22 @@ describe('Chooses the right paths to the binaries', () => {
     expect(pathToQuorumBinary('PATH')).toEqual('geth')
   })
   it('Calls geth binary in bin folder', () => {
-    expect(pathToQuorumBinary('2.5.0')).toEqual(joinPath(libRootDir(), 'bin/quorum/2.5.0/geth'))
+    expect(pathToQuorumBinary(LATEST_QUORUM)).toEqual(joinPath(wizardHomeDir(), 'bin/quorum/', LATEST_QUORUM, '/geth'))
   })
   it('Calls tessera using $TESSERA_JAR', () => {
     expect(pathToTesseraJar('PATH')).toEqual('$TESSERA_JAR')
   })
   it('Calls tessera using bin folder jar', () => {
-    expect(pathToTesseraJar('0.10.2')).toEqual(joinPath(
-      libRootDir(),
-      'bin/tessera/0.10.2/tessera-app.jar',
+    expect(pathToTesseraJar(LATEST_TESSERA)).toEqual(joinPath(
+      wizardHomeDir(),
+      'bin/tessera/', LATEST_TESSERA, '/tessera-app.jar',
     ))
   })
   it('Calls cakeshop using bin folder war', () => {
-    expect(pathToCakeshop('0.11.0')).toEqual(joinPath(libRootDir(), 'bin/cakeshop/0.11.0/cakeshop.war'))
+    expect(pathToCakeshop(LATEST_CAKESHOP)).toEqual(joinPath(wizardHomeDir(), 'bin/cakeshop/', LATEST_CAKESHOP, '/cakeshop.war'))
   })
   it('Calls bootnode using bin folder', () => {
-    expect(pathToBootnode()).toEqual(joinPath(libRootDir(), 'bin/bootnode/1.8.27/bootnode'))
+    expect(pathToBootnode()).toEqual(joinPath(wizardHomeDir(), 'bin/bootnode/1.8.27/bootnode'))
   })
 })
 
@@ -112,8 +117,8 @@ describe('Finds binaries on path', () => {
 
 describe('Downloads binaries', () => {
   const baseNetwork = {
-    quorumVersion: '2.5.0',
-    transactionManager: '0.10.2',
+    quorumVersion: LATEST_QUORUM,
+    transactionManager: LATEST_TESSERA,
     cakeshop: 'none',
     consensus: 'raft',
     generateKeys: false,
@@ -129,8 +134,8 @@ describe('Downloads binaries', () => {
       },
     }
     await downloadAndCopyBinaries(config)
-    expect(downloadIfMissing).toBeCalledWith('quorum', '2.5.0')
-    expect(downloadIfMissing).toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).toBeCalledWith('quorum', LATEST_QUORUM)
+    expect(downloadIfMissing).toBeCalledWith('tessera', LATEST_TESSERA)
     expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
     expect(downloadIfMissing).not.toBeCalledWith('bootnode', any(String))
     expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
@@ -141,13 +146,13 @@ describe('Downloads binaries', () => {
         ...baseNetwork,
         transactionManager: 'none',
         consensus: 'istanbul',
-        cakeshop: '0.11.0',
+        cakeshop: LATEST_CAKESHOP,
         generateKeys: true,
       },
     }
     await downloadAndCopyBinaries(config)
-    expect(downloadIfMissing).toBeCalledWith('quorum', '2.5.0')
-    expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).toBeCalledWith('quorum', LATEST_QUORUM)
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', LATEST_TESSERA)
     expect(downloadIfMissing).toBeCalledWith('cakeshop', any(String))
     expect(downloadIfMissing).toBeCalledWith('bootnode', any(String))
     expect(downloadIfMissing).toBeCalledWith('istanbul', any(String))
@@ -160,8 +165,8 @@ describe('Downloads binaries', () => {
       },
     }
     await downloadAndCopyBinaries(config)
-    expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.5.0')
-    expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).not.toBeCalledWith('quorum', LATEST_QUORUM)
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', LATEST_TESSERA)
     expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
     expect(downloadIfMissing).not.toBeCalledWith('bootnode', any(String))
     expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
@@ -175,10 +180,56 @@ describe('Downloads binaries', () => {
       },
     }
     await downloadAndCopyBinaries(config)
-    expect(downloadIfMissing).toBeCalledWith('quorum', '2.5.0')
-    expect(downloadIfMissing).toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).not.toBeCalledWith('quorum', LATEST_QUORUM)
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', LATEST_TESSERA)
+    expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('bootnode', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
+  })
+  it('Downloads correct bins for docker with keygen no tessera', async () => {
+    const config = {
+      network: {
+        ...baseNetwork,
+        transactionManager: 'none',
+        deployment: 'docker-compose',
+        generateKeys: true,
+      },
+    }
+    await downloadAndCopyBinaries(config)
+    expect(downloadIfMissing).toBeCalledWith('quorum', LATEST_QUORUM)
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', LATEST_TESSERA)
     expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
     expect(downloadIfMissing).toBeCalledWith('bootnode', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
+  })
+  it('Downloads correct bins for kubernetes, no keygen', async () => {
+    const config = {
+      network: {
+        ...baseNetwork,
+        deployment: 'kubernetes',
+        generateKeys: false,
+      },
+    }
+    await downloadAndCopyBinaries(config)
+    expect(downloadIfMissing).not.toBeCalledWith('quorum', LATEST_QUORUM)
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', LATEST_TESSERA)
+    expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('bootnode', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
+  })
+  it('Downloads correct bins for kubernetes with keygen', async () => {
+    const config = {
+      network: {
+        ...baseNetwork,
+        deployment: 'kubernetes',
+        generateKeys: true,
+      },
+    }
+    await downloadAndCopyBinaries(config)
+    expect(downloadIfMissing).not.toBeCalledWith('quorum', LATEST_QUORUM)
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', LATEST_TESSERA)
+    expect(downloadIfMissing).not.toBeCalledWith('cakeshop', any(String))
+    expect(downloadIfMissing).not.toBeCalledWith('bootnode', any(String))
     expect(downloadIfMissing).not.toBeCalledWith('istanbul', any(String))
   })
   it('Does not download geth and tessera when on path', async () => {
@@ -190,42 +241,48 @@ describe('Downloads binaries', () => {
       },
     }
     await downloadAndCopyBinaries(config)
-    expect(downloadIfMissing).not.toBeCalledWith('quorum', '2.5.0')
-    expect(downloadIfMissing).not.toBeCalledWith('tessera', '0.10.2')
+    expect(downloadIfMissing).not.toBeCalledWith('quorum', LATEST_QUORUM)
+    expect(downloadIfMissing).not.toBeCalledWith('tessera', LATEST_TESSERA)
   })
 })
 
 describe('presents correct binary options', () => {
   it('presents available geth options for bash', () => {
     const choices = getDownloadableGethChoices('bash')
-    expect(choices.some((choice) => choice.name === 'Quorum 2.5.0' && choice.disabled === false)).toBeTruthy()
+    expect(choices.some((choice) => choice.name === `Quorum ${LATEST_QUORUM}` && choice.disabled === false)).toBeTruthy()
   })
   it('presents available geth options for docker', () => {
     const choices = getDownloadableGethChoices('docker')
-    expect(choices.some((choice) => choice.name === 'Quorum 2.5.0' && choice.disabled === false)).toBeTruthy()
+    expect(choices.some((choice) => choice.name === `Quorum ${LATEST_QUORUM}` && choice.disabled === false)).toBeTruthy()
   })
 })
 
 describe('presents the correct binary options', () => {
-  it('disables 0.10.4 if in bash mode and on jdk 8', () => {
+  it('disables java 11 jars if in bash mode and on jdk 8', () => {
     isJava11Plus.mockReturnValue(false)
     const choices = getDownloadableTesseraChoices('bash')
-    expect(choices.some((choice) => choice.name === 'Tessera 0.10.4' && typeof choice.disabled === 'string')).toBeTruthy()
-    expect(choices.some((choice) => choice.name === 'Tessera 0.10.2' && choice.disabled === false)).toBeTruthy()
+    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && typeof choice.disabled === 'string')).toBeTruthy()
+    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && choice.disabled === false)).toBeTruthy()
     expect(choices.includes('none')).toBeTruthy()
   })
   it('disables 0.10.2 if in bash mode and on jdk 11+', () => {
     isJava11Plus.mockReturnValue(true)
     const choices = getDownloadableTesseraChoices('bash')
-    expect(choices.some((choice) => choice.name === 'Tessera 0.10.4' && choice.disabled === false)).toBeTruthy()
-    expect(choices.some((choice) => choice.name === 'Tessera 0.10.2' && typeof choice.disabled === 'string')).toBeTruthy()
+    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && choice.disabled === false)).toBeTruthy()
+    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && typeof choice.disabled === 'string')).toBeTruthy()
     expect(choices.includes('none')).toBeTruthy()
   })
   it('does not disable tessera options in docker mode', () => {
     const choices = getDownloadableTesseraChoices('docker-compose')
-    expect(choices.some((choice) => choice.name === 'Tessera 0.10.4' && choice.disabled === false)).toBeTruthy()
-    expect(choices.some((choice) => choice.name === 'Tessera 0.10.2' && choice.disabled === false)).toBeTruthy()
+    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && choice.disabled === false)).toBeTruthy()
+    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && choice.disabled === false)).toBeTruthy()
     expect(choices.includes('none')).toBeTruthy()
+  })
+  it('forces and doesnt disable tessera options in kubernetes mode', () => {
+    const choices = getDownloadableTesseraChoices('kubernetes')
+    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && choice.disabled === false)).toBeTruthy()
+    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && choice.disabled === false)).toBeTruthy()
+    expect(choices.includes('none')).not.toBeTruthy()
   })
 })
 

@@ -1,13 +1,14 @@
 import { createConfigFromAnswers } from './NetworkConfig'
 import { generateCakeshopConfig } from './CakeshopConfig'
+import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 
 const baseNetwork = {
   numberNodes: '3',
   consensus: 'raft',
-  quorumVersion: '2.5.0',
-  transactionManager: '0.10.4',
+  quorumVersion: LATEST_QUORUM,
+  transactionManager: LATEST_TESSERA,
   deployment: 'bash',
-  cakeshop: '0.11.0',
+  cakeshop: LATEST_CAKESHOP,
 }
 
 test('creates 3nodes raft dockerFile tessera cakeshop', () => {

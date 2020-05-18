@@ -20,6 +20,7 @@ import {
   isRaft,
   isTessera,
   isCakeshop,
+  isQuorum260Plus,
 } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { formatTesseraKeysOutput } from './transactionManager'
@@ -29,6 +30,7 @@ export function buildBashScript(config) {
   const commands = createCommands(config)
 
   const startScript = [
+    'echo "\nStarting Quorum network...\n"',
     setEnvironmentCommand(config),
     commands.tesseraStart,
     waitForTesseraNodesCommand(config),
@@ -90,7 +92,6 @@ export function createCommands(config) {
 
 
 export async function buildBash(config) {
-  info('Building network data directory...')
   const bashDetails = buildBashScript(config)
   const networkPath = getFullNetworkPath(config)
 
@@ -108,12 +109,15 @@ export async function buildBash(config) {
 }
 
 export function createGethStartCommand(config, node, passwordDestination, nodeNumber, tmIpcPath) {
-  const { verbosity, networkId, consensus } = config.network
+  const {
+    verbosity, networkId, consensus, quorumVersion,
+  } = config.network
   const {
     devP2pPort, rpcPort, raftPort, wsPort,
   } = node.quorum
+  const quorum26Flags = isQuorum260Plus(quorumVersion) ? '--allow-insecure-unlock' : ''
 
-  const args = `--nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --ws --wsaddr 0.0.0.0 --wsorigins=* --emitcheckpoints --unlock 0 --password ${passwordDestination}`
+  const args = `--nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --ws --wsaddr 0.0.0.0 --wsorigins=* --emitcheckpoints --unlock 0 --password ${passwordDestination} ${quorum26Flags}`
   const consensusArgs = isRaft(consensus)
     ? `--raft --raftport ${raftPort}`
     : '--istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1'

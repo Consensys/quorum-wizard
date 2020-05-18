@@ -1,13 +1,22 @@
+import cmp from 'semver-compare'
 import { isJava11Plus } from '../utils/execUtils'
+import {
+  LATEST_CAKESHOP,
+  LATEST_CAKESHOP_J8,
+  LATEST_QUORUM,
+  LATEST_TESSERA,
+  LATEST_TESSERA_J8,
+} from '../generators/download'
 
 export function createConfigFromAnswers(answers) {
   const {
+    name,
     numberNodes = 3,
     consensus = 'raft',
-    quorumVersion = '2.5.0',
-    transactionManager = isJava11Plus() ? '0.10.4' : '0.10.2',
+    quorumVersion = LATEST_QUORUM,
+    transactionManager = isJava11Plus() ? LATEST_TESSERA : LATEST_TESSERA_J8,
     deployment = 'bash',
-    cakeshop = isJava11Plus() ? '0.11.0' : '0.11.0-J8',
+    cakeshop = isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8,
     generateKeys = false,
     networkId = '10',
     genesisLocation = 'none',
@@ -16,12 +25,8 @@ export function createConfigFromAnswers(answers) {
     cakeshopPort = '8999',
     remoteDebug = false,
   } = answers
-  const networkFolder = createNetworkFolderName(
-    numberNodes,
-    consensus,
-    transactionManager,
-    deployment,
-  )
+  const networkFolder = name
+    || defaultNetworkName(numberNodes, consensus, transactionManager, deployment)
   return {
     network: {
       name: networkFolder,
@@ -32,7 +37,7 @@ export function createConfigFromAnswers(answers) {
       permissioned: true,
       genesisFile: genesisLocation,
       generateKeys,
-      configDir: `network/${networkFolder}/generated`,
+      configDir: `network/${networkFolder}/resources`,
       deployment,
       cakeshop,
       networkId,
@@ -49,7 +54,7 @@ export function createConfigFromAnswers(answers) {
   }
 }
 
-export function createNetworkFolderName(numberNodes, consensus, transactionManager, deployment) {
+export function defaultNetworkName(numberNodes, consensus, transactionManager, deployment) {
   const transactionManagerName = !isTessera(transactionManager)
     ? ''
     : 'tessera-'
@@ -57,8 +62,8 @@ export function createNetworkFolderName(numberNodes, consensus, transactionManag
 }
 
 export function generateNodeConfigs(numberNodes, transactionManager, deployment) {
-  const devP2pPort = 21000
-  const rpcPort = 22000
+  const devP2pPort = isKubernetes(deployment) ? 30303 : 21000
+  const rpcPort = isKubernetes(deployment) ? 8545 : 22000
   const wsPort = 23000
   const raftPort = 50401
   const thirdPartyPort = 9081
@@ -66,20 +71,21 @@ export function generateNodeConfigs(numberNodes, transactionManager, deployment)
   const nodes = []
 
   for (let i = 0; i < parseInt(numberNodes, 10); i += 1) {
+    const increment = isKubernetes(deployment) ? 0 : i
     const node = {
       quorum: {
-        ip: isDocker(deployment) ? `172.16.239.1${i + 1}` : '127.0.0.1',
-        devP2pPort: devP2pPort + i,
-        rpcPort: rpcPort + i,
-        wsPort: wsPort + i,
-        raftPort: raftPort + i,
+        ip: isDocker(deployment) ? `172.16.239.1${increment + 1}` : '127.0.0.1',
+        devP2pPort: devP2pPort + increment,
+        rpcPort: rpcPort + increment,
+        wsPort: wsPort + increment,
+        raftPort: raftPort + increment,
       },
     }
     if (isTessera(transactionManager)) {
       node.tm = {
-        ip: isDocker(deployment) ? `172.16.239.10${i + 1}` : '127.0.0.1',
-        thirdPartyPort: thirdPartyPort + i,
-        p2pPort: p2pPort + i,
+        ip: isDocker(deployment) ? `172.16.239.10${increment + 1}` : '127.0.0.1',
+        thirdPartyPort: thirdPartyPort + increment,
+        p2pPort: p2pPort + increment,
       }
     }
     nodes.push(node)
@@ -99,6 +105,10 @@ export function isBash(deployment) {
   return deployment === 'bash'
 }
 
+export function isKubernetes(deployment) {
+  return deployment === 'kubernetes'
+}
+
 export function isIstanbul(consensus) {
   return consensus === 'istanbul'
 }
@@ -109,4 +119,8 @@ export function isRaft(consensus) {
 
 export function isCakeshop(cakeshop) {
   return cakeshop !== 'none'
+}
+
+export function isQuorum260Plus(quorumVersion) {
+  return cmp(quorumVersion, '2.6.0') >= 0
 }

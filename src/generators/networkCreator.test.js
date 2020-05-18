@@ -1,7 +1,11 @@
 import { anything } from 'expect'
 import {
-  createDirectory,
+  createQdataDirectory,
   createStaticNodes,
+  getFullNetworkPath,
+  createNetwork,
+  generateResourcesLocally,
+  generateResourcesRemote,
 } from './networkCreator'
 import {
   createConfigFromAnswers,
@@ -14,6 +18,10 @@ import {
   libRootDir,
   readFileToString,
   writeJsonFile,
+  removeFolder,
+  copyDirectory,
+  copyScript,
+  writeFile,
 } from '../utils/fileUtils'
 import {
   createNetPath,
@@ -21,79 +29,186 @@ import {
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
+import { joinPath } from '../utils/pathUtils'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
-import { generateKeys } from './keyGen'
+import { buildKubernetesResource } from '../model/ResourceConfig'
+import { LATEST_QUORUM, LATEST_TESSERA } from './download'
 
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
+jest.mock('../utils/log')
 jest.mock('../model/ConsensusConfig')
+jest.mock('../model/ResourceConfig')
 jest.mock('./keyGen')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
-generateKeys.mockReturnValue(`${TEST_LIB_ROOT_DIR}/keyPath`)
+buildKubernetesResource.mockReturnValue('qubernetes')
 
 const baseNetwork = {
   numberNodes: '5',
   consensus: 'raft',
-  quorumVersion: '2.5.0',
-  transactionManager: '0.10.2',
+  quorumVersion: LATEST_QUORUM,
+  transactionManager: LATEST_TESSERA,
   cakeshop: 'none',
   deployment: 'bash',
 }
 
-describe('creates a bash network', () => {
+describe('creates network and config from answers', () => {
   it('rejects invalid network names', () => {
     const names = ['', '.', '..', '\0', '/']
     const config = createConfigFromAnswers(baseNetwork)
     names.forEach((name) => {
       config.network.name = name
-      expect(() => createDirectory(config)).toThrow(Error)
+      expect(() => createNetwork(config)).toThrow(Error)
     })
   })
 
-  it('Creates the correct directory structure and moves files in', () => {
+  it('Creates the correct qdata directory structure and moves files in', () => {
     const config = createConfigFromAnswers(baseNetwork)
-    createDirectory(config)
+    createNetwork(config)
+
+    expect(removeFolder).toBeCalledWith(createNetPath(config))
+    expect(createFolder).toBeCalledWith(createNetPath(config), true)
+    expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', anything())
+  })
+})
+
+describe('creates network resources locally from answers', () => {
+  it('Creates genesis and static nodes with pregen keys for bash', async () => {
+    const config = createConfigFromAnswers(baseNetwork)
+    await generateResourcesLocally(config)
+
+    expect(createFolder).toBeCalledWith(createNetPath(config, 'resources'), true)
+    expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'resources'))
     expect(generateConsensusConfig).toHaveBeenCalled()
+    expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
+  })
+
+  it('Creates genesis and static nodes and generates keys for bash', async () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      generateKeys: true,
+    })
+    await generateResourcesLocally(config)
+
+    expect(createFolder).toBeCalledWith(createNetPath(config, 'resources'), true)
+    expect(generateConsensusConfig).toHaveBeenCalled()
+    expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
+  })
+  it('Creates genesis and static nodes for docker with pregen keys', async () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      deployment: 'docker-compose',
+    })
+    await generateResourcesLocally(config)
+
+    expect(createFolder).toBeCalledWith(createNetPath(config, 'resources'), true)
+    expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'resources'))
+    expect(generateConsensusConfig).toHaveBeenCalled()
+    expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
+  })
+})
+
+describe('creates network resources with remote qubernetes container from answers', () => {
+  it('rejects invalid network names', () => {
+    const names = ['', '.', '..', '\0', '/']
+    const config = createConfigFromAnswers(baseNetwork)
+    names.forEach((name) => {
+      config.network.name = name
+      expect(() => generateResourcesRemote(config)).toThrow(Error)
+    })
+  })
+  it('Creates new resources and keys for docker', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      generateKeys: true,
+      deployment: 'docker-compose',
+    })
+    generateResourcesRemote(config)
+
+    expect(buildKubernetesResource).toHaveBeenCalled()
+    expect(copyScript).toBeCalledWith(createLibPath('lib', 'quorum-init'), createNetPath(config, 'quorum-init'))
+    expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
+    expect(copyDirectory).toBeCalledWith(createNetPath(config, 'out', 'config'), createNetPath(config, 'resources'))
+    expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
+  })
+  it('Creates new resources for kubernetes using pregen keys', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      deployment: 'kubernetes',
+    })
+    generateResourcesRemote(config)
+
+    expect(buildKubernetesResource).toHaveBeenCalled()
+    expect(copyScript).toBeCalledWith(createLibPath('lib', 'quorum-init'), createNetPath(config, 'quorum-init'))
+    expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
+    expect(createFolder).toBeCalledWith(createNetPath(config, 'out', 'config'), true)
+    expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'out', 'config'))
+  })
+  it('Creates new resources for kubernetes with new keys', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      deployment: 'kubernetes',
+      generateKeys: true,
+    })
+    generateResourcesRemote(config)
+
+    expect(buildKubernetesResource).toHaveBeenCalled()
+    expect(copyScript).toBeCalledWith(createLibPath('lib', 'quorum-init'), createNetPath(config, 'quorum-init'))
+    expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
+  })
+})
+
+describe('creates qdata directory for bash network', () => {
+  it('rejects invalid network names', () => {
+    const names = ['', '.', '..', '\0', '/']
+    const config = createConfigFromAnswers(baseNetwork)
+    names.forEach((name) => {
+      config.network.name = name
+      expect(() => createQdataDirectory(config)).toThrow(Error)
+    })
+  })
+
+  it('Creates the correct qdata directory structure and moves files in', () => {
+    const config = createConfigFromAnswers(baseNetwork)
+    createQdataDirectory(config)
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/logs'), true)
-    expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', config)
     for (let i = 1; i < 6; i += 1) {
       expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}`))
-      expect(writeJsonFile).toBeCalledWith(
-        createNetPath(config, `qdata/dd${i}`),
-        'static-nodes.json',
-        anything(),
-      )
-      expect(writeJsonFile).toBeCalledWith(
-        createNetPath(config, `qdata/dd${i}`),
-        'permissioned-nodes.json',
-        anything(),
-      )
       expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}/geth`))
       expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}/keystore`))
       expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/c${i}`))
       expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/key`),
+        joinPath(getFullNetworkPath(config), 'resources', 'permissioned-nodes.json'),
+        joinPath(createNetPath(config, `qdata/dd${i}`), 'permissioned-nodes.json'),
+      )
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', 'permissioned-nodes.json'),
+        joinPath(createNetPath(config, `qdata/dd${i}`), 'static-nodes.json'),
+      )
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'key'),
         createNetPath(config, `qdata/dd${i}/keystore`, 'key'),
       )
       expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/password.txt`),
-        createNetPath(config, `qdata/dd${i}/keystore`, 'password.txt'),
-      )
-      expect(copyFile).toBeCalledWith(
-        createNetPath(config, 'generated', 'genesis.json'),
-        createNetPath(config, `qdata/dd${i}`, 'genesis.json'),
-      )
-      expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/nodekey`),
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'nodekey'),
         createNetPath(config, `qdata/dd${i}/geth`, 'nodekey'),
       )
       expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/tm.key`),
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'password.txt'),
+        createNetPath(config, `qdata/dd${i}/keystore`, 'password.txt'),
+      )
+
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', 'genesis.json'),
+        createNetPath(config, `qdata/dd${i}`, 'genesis.json'),
+      )
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'tm.key'),
         createNetPath(config, `qdata/c${i}/tm.key`),
       )
       expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/tm.pub`),
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'tm.pub'),
         createNetPath(config, `qdata/c${i}/tm.pub`),
       )
       expect(writeJsonFile).toBeCalledWith(
@@ -105,46 +220,61 @@ describe('creates a bash network', () => {
   })
 })
 
-describe('creates a bash network without tessera', () => {
+describe('creates qdata directory for bash network no tessera', () => {
   it('rejects invalid network names', () => {
     const names = ['', '.', '..', '\0', '/']
     const config = createConfigFromAnswers({
       ...baseNetwork,
       transactionManager: 'none',
-      generateKeys: true,
     })
     names.forEach((name) => {
       config.network.name = name
-      expect(() => createDirectory(config)).toThrow(Error)
+      expect(() => createQdataDirectory(config)).toThrow(Error)
     })
   })
 
-  it('Creates the correct directory structure and moves files in', () => {
+  it('Creates the correct qdata directory structure and moves files in', () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
       transactionManager: 'none',
-      generateKeys: true,
     })
-    createDirectory(config)
-    expect(generateConsensusConfig).toHaveBeenCalled()
+    createQdataDirectory(config)
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', 'logs'), true)
-    expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', config)
     for (let i = 1; i < 6; i += 1) {
       expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', `dd${i}`))
-      expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'qdata', `dd${i}`), 'static-nodes.json', anything())
-      expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'qdata', `dd${i}`), 'permissioned-nodes.json', anything())
       expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', `dd${i}`, 'geth'))
       expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', `dd${i}`, 'keystore'))
       expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', `c${i}`))
-      expect(copyFile).toBeCalledWith(createLibPath('keyPath', `key${i}`, 'key'), createNetPath(config, 'qdata', `dd${i}`, 'keystore', 'key'))
-      expect(copyFile).toBeCalledWith(createLibPath('keyPath', `key${i}`, 'password.txt'), createNetPath(config, 'qdata', `dd${i}`, 'keystore', 'password.txt'))
-      expect(copyFile).toBeCalledWith(createNetPath(config, 'generated', 'genesis.json'), createNetPath(config, 'qdata', `dd${i}`, 'genesis.json'))
-      expect(copyFile).toBeCalledWith(createLibPath('keyPath', `key${i}`, 'nodekey'), createNetPath(config, 'qdata', `dd${i}`, 'geth', 'nodekey'))
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', 'permissioned-nodes.json'),
+        joinPath(createNetPath(config, `qdata/dd${i}`), 'permissioned-nodes.json'),
+      )
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', 'permissioned-nodes.json'),
+        joinPath(createNetPath(config, `qdata/dd${i}`), 'static-nodes.json'),
+      )
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'key'),
+        createNetPath(config, `qdata/dd${i}/keystore`, 'key'),
+      )
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'nodekey'),
+        createNetPath(config, `qdata/dd${i}/geth`, 'nodekey'),
+      )
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'password.txt'),
+        createNetPath(config, `qdata/dd${i}/keystore`, 'password.txt'),
+      )
+
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', 'genesis.json'),
+        createNetPath(config, `qdata/dd${i}`, 'genesis.json'),
+      )
     }
   })
 })
 
-describe('creates a docker network', () => {
+describe('creates qdata directory for docker network', () => {
   it('rejects invalid network names', () => {
     const names = ['', '.', '..', '\0', '/']
     const config = createConfigFromAnswers({
@@ -153,56 +283,53 @@ describe('creates a docker network', () => {
     })
     names.forEach((name) => {
       config.network.name = name
-      expect(() => createDirectory(config)).toThrow(Error)
+      expect(() => createQdataDirectory(config)).toThrow(Error)
     })
   })
 
-  it('Creates the correct directory structure and moves files in', () => {
+  it('Creates the correct qdata directory structure and moves files in', () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
       deployment: 'docker-compose',
     })
-    createDirectory(config)
-    expect(generateConsensusConfig).toHaveBeenCalled()
+    createQdataDirectory(config)
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/logs'), true)
-    expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', config)
     for (let i = 1; i < 6; i += 1) {
       expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}`))
-      expect(writeJsonFile).toBeCalledWith(
-        createNetPath(config, `qdata/dd${i}`),
-        'static-nodes.json',
-        anything(),
-      )
-      expect(writeJsonFile).toBeCalledWith(
-        createNetPath(config, `qdata/dd${i}`),
-        'permissioned-nodes.json',
-        anything(),
-      )
       expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}/geth`))
       expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/dd${i}/keystore`))
       expect(createFolder).toBeCalledWith(createNetPath(config, `qdata/c${i}`))
       expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/key`),
+        joinPath(getFullNetworkPath(config), 'resources', 'permissioned-nodes.json'),
+        joinPath(createNetPath(config, `qdata/dd${i}`), 'permissioned-nodes.json'),
+      )
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', 'permissioned-nodes.json'),
+        joinPath(createNetPath(config, `qdata/dd${i}`), 'static-nodes.json'),
+      )
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'key'),
         createNetPath(config, `qdata/dd${i}/keystore`, 'key'),
       )
       expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/password.txt`),
-        createNetPath(config, `qdata/dd${i}/keystore`, 'password.txt'),
-      )
-      expect(copyFile).toBeCalledWith(
-        createNetPath(config, 'generated', 'genesis.json'),
-        createNetPath(config, `qdata/dd${i}`, 'genesis.json'),
-      )
-      expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/nodekey`),
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'nodekey'),
         createNetPath(config, `qdata/dd${i}/geth`, 'nodekey'),
       )
       expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/tm.key`),
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'password.txt'),
+        createNetPath(config, `qdata/dd${i}/keystore`, 'password.txt'),
+      )
+
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', 'genesis.json'),
+        createNetPath(config, `qdata/dd${i}`, 'genesis.json'),
+      )
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'tm.key'),
         createNetPath(config, `qdata/c${i}/tm.key`),
       )
       expect(copyFile).toBeCalledWith(
-        createLibPath(`7nodes/key${i}/tm.pub`),
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'tm.pub'),
         createNetPath(config, `qdata/c${i}/tm.pub`),
       )
       expect(writeJsonFile).toBeCalledWith(
@@ -216,7 +343,7 @@ describe('creates a docker network', () => {
 
 describe('creates static nodes json', () => {
   it('Creates a raft static nodes json from enode ids', () => {
-    const testDir = 'generated'
+    const testDir = 'resources'
     const nodes = generateNodeConfigs(3)
     const expected = [
       'enode://abc@127.0.0.1:21000?discport=0&raftport=50401',
@@ -231,7 +358,7 @@ describe('creates static nodes json', () => {
   })
 
   it('Creates an istanbul static nodes json from enode ids', () => {
-    const testDir = 'generated'
+    const testDir = 'resources'
     const nodes = generateNodeConfigs(3)
     const expected = [
       'enode://abc@127.0.0.1:21000?discport=0',

@@ -6,7 +6,7 @@ import { createWriteStream } from 'fs'
 import {
   createFolder,
   exists,
-  libRootDir,
+  wizardHomeDir,
 } from '../utils/fileUtils'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
@@ -17,7 +17,7 @@ export async function downloadIfMissing(name, version) {
     throw new Error(`Could not find binary info entry for ${name} ${version}`)
   }
   const binaryInfo = BINARIES[name][version]
-  const binDir = joinPath(libRootDir(), 'bin', name, version)
+  const binDir = joinPath(wizardHomeDir(), 'bin', name, version)
   const binaryFileLocation = joinPath(binDir, binaryInfo.name)
   if (!exists(binaryFileLocation)) {
     createFolder(binDir, true)
@@ -30,7 +30,7 @@ export async function downloadIfMissing(name, version) {
       responseType: 'stream',
     })
 
-    info(`Saving to ${binaryFileLocation}`)
+    info(`Unpacking to ${binaryFileLocation}`)
     if (binaryInfo.type === 'tar.gz') {
       const extractorStream = response.data.pipe(createGunzip())
         .pipe(extract(binDir, {
@@ -46,7 +46,7 @@ export async function downloadIfMissing(name, version) {
         }))
       return new Promise((resolve, reject) => {
         extractorStream.on('finish', () => {
-          info('Done')
+          info(`Saved to ${binaryFileLocation}`)
           resolve()
         })
         extractorStream.on('error', reject)
@@ -56,7 +56,7 @@ export async function downloadIfMissing(name, version) {
     response.data.pipe(writer)
     return new Promise((resolve, reject) => {
       writer.on('finish', () => {
-        info('Done')
+        info(`Saved to ${binaryFileLocation}`)
         resolve()
       })
       writer.on('error', reject)
@@ -79,9 +79,26 @@ export function getPlatformSpecificUrl({ url }) {
   return platformUrl
 }
 
+export const LATEST_QUORUM = '2.6.0'
+export const LATEST_TESSERA = '0.10.5'
+export const LATEST_TESSERA_J8 = '0.10.2'
+export const LATEST_CAKESHOP = '0.11.0'
+export const LATEST_CAKESHOP_J8 = '0.11.0-J8'
 
 export const BINARIES = {
   quorum: {
+    '2.6.0': {
+      name: 'geth',
+      description: 'Quorum 2.6.0',
+      url: {
+        darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.6.0/geth_v2.6.0_darwin_amd64.tar.gz',
+        linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.6.0/geth_v2.6.0_linux_amd64.tar.gz',
+      },
+      type: 'tar.gz',
+      files: [
+        'geth',
+      ],
+    },
     '2.5.0': {
       name: 'geth',
       description: 'Quorum 2.5.0',
@@ -97,6 +114,12 @@ export const BINARIES = {
   },
 
   tessera: {
+    '0.10.5': {
+      name: 'tessera-app.jar',
+      description: 'Tessera 0.10.5',
+      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.5/tessera-app-0.10.5-app.jar',
+      type: 'jar',
+    },
     '0.10.4': {
       name: 'tessera-app.jar',
       description: 'Tessera 0.10.4',

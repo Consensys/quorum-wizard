@@ -7,49 +7,95 @@ import {
   readFileToString,
   removeFolder,
   writeJsonFile,
+  copyDirectory,
+  copyScript,
+  writeFile,
 } from '../utils/fileUtils'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
+import { buildKubernetesResource } from '../model/ResourceConfig'
 import {
   isRaft,
   isTessera,
+  isDocker,
 } from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
+import { executeSync } from '../utils/execUtils'
+import { info } from '../utils/log'
 
-export function createDirectory(config) {
-  // https://nodejs.org/en/knowledge/file-system/security/introduction/
-
+export function createNetwork(config) {
+  info('Building network directory...')
   const networkPath = getFullNetworkPath(config)
   removeFolder(networkPath)
-
-  const qdata = joinPath(networkPath, 'qdata')
-  const logs = joinPath(qdata, 'logs')
-  createFolder(logs, true)
+  createFolder(networkPath, true)
   writeJsonFile(networkPath, 'config.json', config)
+}
 
-  const configPath = joinPath(cwd(), config.network.configDir)
-  createFolder(configPath, true)
-  let keyPath = joinPath(libRootDir(), '7nodes')
-  // if user selected to generate keys
-  if (config.network.generateKeys) {
-    keyPath = generateKeys(config, configPath)
+export function generateResourcesRemote(config) {
+  info('Generating network resources...')
+  const configDir = joinPath(cwd(), config.network.configDir)
+  const networkPath = getFullNetworkPath(config)
+  const remoteOutputDir = joinPath(networkPath, 'out', 'config')
+
+  const file = buildKubernetesResource(config)
+  copyScript(joinPath(libRootDir(), 'lib', 'quorum-init'), joinPath(networkPath, 'quorum-init'))
+  writeFile(joinPath(networkPath, 'qubernetes.yaml'), file, false)
+
+  if (!config.network.generateKeys) {
+    createFolder(remoteOutputDir, true)
+    copyDirectory(joinPath(libRootDir(), '7nodes'), remoteOutputDir)
   }
-  // always generate consensus genesis
+
+  const dockerCommand = `cd ${networkPath}
+  docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/quorum-init:/qubernetes/quorum-init -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./quorum-init qubernetes.yaml 2>&1
+  find . -type f -name 'UTC*' -execdir mv {} key ';'`
+  executeSync(dockerCommand)
+
+  if (isDocker(config.network.deployment)) {
+    copyDirectory(remoteOutputDir, configDir)
+    const staticNodes = createStaticNodes(config.nodes, config.network.consensus, remoteOutputDir)
+    writeJsonFile(configDir, 'permissioned-nodes.json', staticNodes)
+  }
+}
+
+export async function generateResourcesLocally(config) {
+  info('Generating network resources...')
+  const configDir = joinPath(cwd(), config.network.configDir)
+  createFolder(configDir, true)
+
+  if (config.network.generateKeys) {
+    await generateKeys(config, configDir)
+  } else {
+    copyDirectory(joinPath(libRootDir(), '7nodes'), configDir)
+  }
+
   generateConsensusConfig(
-    configPath,
-    keyPath,
+    configDir,
     config.network.consensus,
     config.nodes,
     config.network.networkId,
   )
 
-  const staticNodes = createStaticNodes(config.nodes, config.network.consensus, keyPath)
+  const staticNodes = createStaticNodes(config.nodes, config.network.consensus, configDir)
+  writeJsonFile(configDir, 'permissioned-nodes.json', staticNodes)
+}
+
+export function createQdataDirectory(config) {
+  // https://nodejs.org/en/knowledge/file-system/security/introduction/
+  info('Building qdata directory...')
+  const networkPath = getFullNetworkPath(config)
+  const qdata = joinPath(networkPath, 'qdata')
+  const logs = joinPath(qdata, 'logs')
+  createFolder(logs, true)
+
+  const configPath = joinPath(cwd(), config.network.configDir)
+
   const peerList = createPeerList(config.nodes, config.network.transactionManager)
 
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
-    const keyFolder = joinPath(keyPath, `key${nodeNumber}`)
+    const keySource = joinPath(configPath, `key${nodeNumber}`)
     const quorumDir = joinPath(qdata, `dd${nodeNumber}`)
     const gethDir = joinPath(quorumDir, 'geth')
     const keyDir = joinPath(quorumDir, 'keystore')
@@ -61,15 +107,15 @@ export function createDirectory(config) {
     createFolder(keyDir)
     createFolder(tmDir)
 
-    writeJsonFile(quorumDir, 'permissioned-nodes.json', staticNodes)
-    writeJsonFile(quorumDir, 'static-nodes.json', staticNodes)
-    copyFile(joinPath(keyFolder, 'key'), joinPath(keyDir, 'key'))
-    copyFile(joinPath(keyFolder, 'nodekey'), joinPath(gethDir, 'nodekey'))
-    copyFile(joinPath(keyFolder, 'password.txt'), passwordDestination)
+    copyFile(joinPath(configPath, 'permissioned-nodes.json'), joinPath(quorumDir, 'permissioned-nodes.json'))
+    copyFile(joinPath(configPath, 'permissioned-nodes.json'), joinPath(quorumDir, 'static-nodes.json'))
+    copyFile(joinPath(keySource, 'key'), joinPath(keyDir, 'key'))
+    copyFile(joinPath(keySource, 'nodekey'), joinPath(gethDir, 'nodekey'))
+    copyFile(joinPath(keySource, 'password.txt'), passwordDestination)
     copyFile(joinPath(configPath, 'genesis.json'), genesisDestination)
     if (isTessera(config.network.transactionManager)) {
-      copyFile(joinPath(keyFolder, 'tm.key'), joinPath(tmDir, 'tm.key'))
-      copyFile(joinPath(keyFolder, 'tm.pub'), joinPath(tmDir, 'tm.pub'))
+      copyFile(joinPath(keySource, 'tm.key'), joinPath(tmDir, 'tm.key'))
+      copyFile(joinPath(keySource, 'tm.pub'), joinPath(tmDir, 'tm.pub'))
       const tesseraConfig = createConfig(
         tmDir,
         nodeNumber,

@@ -19,6 +19,14 @@ describe('Gets java versions', () => {
     execSync.mockReturnValueOnce('13.0')
     expect(runJavaVersionLookup()).toEqual(13)
   })
+  it('parses java 14 (no decimal) correctly', () => {
+    execSync.mockReturnValueOnce('14')
+    expect(runJavaVersionLookup()).toEqual(14)
+  })
+  it('falls back to 11 on empty result', () => {
+    execSync.mockReturnValueOnce('')
+    expect(() => runJavaVersionLookup()).toThrow(new Error('Could not read Java version number. Please make sure Java is installed on your machine.'))
+  })
   it('caches getJavaVersion', () => {
     execSync.mockReturnValueOnce('1.8')
     expect(isJava11Plus()).toEqual(false)

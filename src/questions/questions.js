@@ -8,17 +8,27 @@ import {
   getDownloadableTesseraChoices,
 } from '../generators/binaryHelper'
 import {
+  defaultNetworkName,
   isRaft,
+  isKubernetes,
 } from '../model/NetworkConfig'
+import { isJava11Plus } from '../utils/execUtils'
+import {
+  LATEST_CAKESHOP,
+  LATEST_CAKESHOP_J8,
+  LATEST_QUORUM,
+  LATEST_TESSERA,
+  LATEST_TESSERA_J8,
+} from '../generators/download'
 
 
 export const INITIAL_MODE = {
   type: 'list',
   name: 'mode',
   message: `
-Welcome to Quorum Creator!
+Welcome to Quorum Wizard!
 
-This tool allows you to easily create bash and docker files to start up a quorum network.
+This tool allows you to easily create bash, docker, and kubernetes files to start up a quorum network.
 You can control consensus, privacy, network details and more for a customized setup.
 Additionally you can choose to deploy our chain explorer, Cakeshop, to easily view and monitor your network.
 
@@ -32,7 +42,7 @@ We have 3 options to help you start exploring Quorum:
   3.  Custom Network - In addition to the options available in #2, this selection allows for further customization of your network.
       Choose to generate keys, customize ports for both bash and docker, or change the network id
 
-Quorum Creator will generate your startup files and everything required to bring up your network.
+Quorum Wizard will generate your startup files and everything required to bring up your network.
 All you need to do is go to the specified location and run ./start.sh
 
 `,
@@ -55,7 +65,7 @@ export const DEPLOYMENT_TYPE = {
   choices: [
     'bash',
     'docker-compose',
-    // 'kubernetes',
+    'kubernetes',
     // 'vagrant',
   ],
 }
@@ -100,6 +110,7 @@ export const CAKESHOP = {
   message: 'Do you want to run Cakeshop (our chain explorer) with your network?',
   choices: ['No', 'Yes'],
   default: 'No',
+  when: (answers) => !isKubernetes(answers.deployment),
   filter: transformCakeshopAnswer,
 }
 
@@ -129,22 +140,72 @@ export const CUSTOMIZE_PORTS = {
   type: 'confirm',
   name: 'customizePorts',
   message: 'Would you like to customize your node ports?',
+  when: (answers) => !isKubernetes(answers.deployment),
   default: false,
 }
 
-export const QUICKSTART_QUESTIONS = []
-export const SIMPLE_QUESTIONS = [
+export const NETWORK_NAME = {
+  type: 'input',
+  name: 'name',
+  message: 'What would you like to call this network?',
+  validate: (input) => input.trim() !== '' || 'Network name must not be blank.',
+  default: (answers) => defaultNetworkName(answers.numberNodes,
+    answers.consensus,
+    answers.transactionManager,
+    answers.deployment),
+}
+
+export const NETWORK_CONFIRM = {
+  type: 'confirm',
+  name: 'overwrite',
+  message: (answers) => `A network with the name '${answers.name}' already exists. Do you want to overwrite it?`,
+  default: false,
+}
+
+export const QUESTIONS = [
   DEPLOYMENT_TYPE,
   CONSENSUS_MODE,
   NUMBER_NODES,
   QUORUM_VERSION,
   TRANSACTION_MANAGER,
   CAKESHOP,
-]
-export const CUSTOM_QUESTIONS = [
-  ...SIMPLE_QUESTIONS,
   KEY_GENERATION,
   NETWORK_ID,
   // GENESIS_LOCATION,
+  NETWORK_NAME,
   CUSTOMIZE_PORTS,
 ]
+
+export const QUICKSTART_ANSWERS = {
+  name: '3-nodes-raft-tessera-bash',
+  numberNodes: 3,
+  consensus: 'raft',
+  quorumVersion: LATEST_QUORUM,
+  transactionManager: isJava11Plus() ? LATEST_TESSERA : LATEST_TESSERA_J8,
+  deployment: 'bash',
+  cakeshop: isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8,
+  generateKeys: false,
+  networkId: '10',
+  customizePorts: false,
+}
+
+export const SIMPLE_ANSWERS = {
+  generateKeys: false,
+  networkId: '10',
+  customizePorts: false,
+}
+
+export const CUSTOM_ANSWERS = {}
+
+export function getPrefilledAnswersForMode(mode) {
+  switch (mode) {
+    case 'quickstart':
+      return QUICKSTART_ANSWERS
+    case 'simple':
+      return SIMPLE_ANSWERS
+    case 'custom':
+      return CUSTOM_ANSWERS
+    default:
+      throw new Error(`Unknown option: ${mode}`)
+  }
+}

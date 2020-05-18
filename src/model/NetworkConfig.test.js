@@ -1,8 +1,9 @@
-import { createConfigFromAnswers } from './NetworkConfig'
+import { createConfigFromAnswers, isQuorum260Plus } from './NetworkConfig'
 import { isJava11Plus } from '../utils/execUtils'
+import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 
 jest.mock('../utils/execUtils')
-isJava11Plus.mockReturnValue(false)
+isJava11Plus.mockReturnValue(true)
 
 // rather than having big test jsons that we match to, we can just use snapshot
 // tests, where it will compare against the last time you ran and if it's
@@ -10,22 +11,22 @@ isJava11Plus.mockReturnValue(false)
 const baseNetwork = {
   numberNodes: '3',
   consensus: 'raft',
-  quorumVersion: '2.5.0',
-  transactionManager: '0.10.2',
+  quorumVersion: LATEST_QUORUM,
+  transactionManager: LATEST_TESSERA,
   deployment: 'bash',
   cakeshop: 'none',
 }
 
-test('creates quickstart setup', () => {
+test('creates quickstart config', () => {
   const config = createConfigFromAnswers({})
   expect(config).toMatchSnapshot()
 })
 
-test('creates quickstart config with java 11+', () => {
-  isJava11Plus.mockReturnValue(true)
+test('creates quickstart setup with java 8', () => {
+  isJava11Plus.mockReturnValue(false)
   const config = createConfigFromAnswers({})
   expect(config).toMatchSnapshot()
-  isJava11Plus.mockReturnValue(false)
+  isJava11Plus.mockReturnValue(true)
 })
 
 test('creates 7nodes istanbul config', () => {
@@ -62,7 +63,30 @@ test('creates 5nodes raft no-TM cakeshop docker config', () => {
     numberNodes: '5',
     transactionManager: 'none',
     deployment: 'docker-compose',
-    cakeshop: '0.11.0',
+    cakeshop: LATEST_CAKESHOP,
+  })
+  expect(config).toMatchSnapshot()
+})
+
+test('creates 7nodes istanbul kubernetes config', () => {
+  const config = createConfigFromAnswers({
+    ...baseNetwork,
+    numberNodes: '7',
+    consensus: 'istanbul',
+    deployment: 'kubernetes',
+  })
+  expect(config).toMatchSnapshot()
+})
+
+test('creates 7nodes raft kubernetes custom config', () => {
+  const config = createConfigFromAnswers({
+    ...baseNetwork,
+    numberNodes: '7',
+    deployment: 'kubernetes',
+    generateKeys: true,
+    networkId: 14,
+    genesisLocation: '',
+    customizePorts: false,
   })
   expect(config).toMatchSnapshot()
 })
@@ -72,7 +96,7 @@ test('creates 7nodes istanbul cakeshop config', () => {
     ...baseNetwork,
     numberNodes: '7',
     consensus: 'istanbul',
-    cakeshop: '0.11.0',
+    cakeshop: LATEST_CAKESHOP,
   })
   expect(config).toMatchSnapshot()
 })
@@ -129,4 +153,10 @@ test('creates 7nodes istanbul no-TM custom docker config', () => {
     customizePorts: false,
   })
   expect(config).toMatchSnapshot()
+})
+
+test('tests if quorum version is 2.6.0 or higher', () => {
+  expect(isQuorum260Plus('2.6.1')).toBeTruthy()
+  expect(isQuorum260Plus('2.6.0')).toBeTruthy()
+  expect(isQuorum260Plus('2.5.0')).not.toBeTruthy()
 })

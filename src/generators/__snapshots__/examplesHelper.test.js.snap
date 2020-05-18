@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`generates and copies over example scripts generates the runscript and attach shell scripts for bash 1`] = `
+"#!/bin/bash
+if [ -z $1 ] || [ ! -f $1 ]; then
+  echo \\"Please provide a valid script file to execute (i.e. ./runscript.sh private_contract.js)\\" >&2
+  exit 1
+fi
+
+BIN_GETH=path/to/binary
+$BIN_GETH --exec \\"loadScript(\\\\\\"$1\\\\\\")\\" attach qdata/dd1/geth.ipc
+"
+`;
+
+exports[`generates and copies over example scripts generates the runscript and attach shell scripts for bash 2`] = `
+"#!/bin/bash
+NUMBER_OF_NODES=1
+case \\"$1\\" in (\\"\\" | *[!0-9]*)
+  echo 'Please provide the number of the node to attach to (i.e. ./attach.sh 2)' >&2
+  exit 1
+esac
+
+if [ \\"$1\\" -lt 1 ] || [ \\"$1\\" -gt $NUMBER_OF_NODES ]; then
+  echo \\"$1 is not a valid node number. Must be between 1 and $NUMBER_OF_NODES.\\" >&2
+  exit 1
+fi
+
+BIN_GETH=path/to/binary
+$BIN_GETH attach qdata/dd$1/geth.ipc"
+`;
+
+exports[`generates and copies over example scripts generates the runscript and attach shell scripts for docker 1`] = `
+"#!/bin/bash
+if [ -z $1 ] || [ ! -f $1 ]; then
+  echo \\"Please provide a valid script file to execute (i.e. ./runscript.sh private_contract.js)\\" >&2
+  exit 1
+fi
+
+docker cp $1 \\"$(docker-compose ps -q node1)\\":/$1
+docker-compose exec node1 /bin/sh -c \\"geth --exec 'loadScript(\\\\\\"$1\\\\\\")' attach qdata/dd/geth.ipc\\"
+
+"
+`;
+
+exports[`generates and copies over example scripts generates the runscript and attach shell scripts for docker 2`] = `
+"#!/bin/bash
+NUMBER_OF_NODES=1
+case \\"$1\\" in (\\"\\" | *[!0-9]*)
+  echo 'Please provide the number of the node to attach to (i.e. ./attach.sh 2)' >&2
+  exit 1
+esac
+
+if [ \\"$1\\" -lt 1 ] || [ \\"$1\\" -gt $NUMBER_OF_NODES ]; then
+  echo \\"$1 is not a valid node number. Must be between 1 and $NUMBER_OF_NODES.\\" >&2
+  exit 1
+fi
+
+docker-compose exec node$1 /bin/sh -c \\"geth attach qdata/dd/geth.ipc\\""
+`;
+
+exports[`generates and copies over example scripts generates the runscript and attach shell scripts for kubernetes 1`] = `
+"#!/bin/bash
+if [ -z $1 ] || [ ! -f $1 ]; then
+  echo \\"Please provide a valid script file to execute (i.e. ./runscript.sh private_contract.js)\\" >&2
+  exit 1
+fi
+
+POD=$(kubectl get pods $NAMESPACE | grep Running | grep 1 | awk '{print $1}')
+kubectl $NAMESPACE exec -it $POD -c quorum -- /bin/ash -c \\"geth --exec 'loadScript(\\\\\\"/etc/quorum/qdata/contracts/$1\\\\\\")' attach /etc/quorum/qdata/dd/geth.ipc\\"
+"
+`;
+
+exports[`generates and copies over example scripts generates the runscript and attach shell scripts for kubernetes 2`] = `
+"#!/bin/bash
+NUMBER_OF_NODES=1
+case \\"$1\\" in (\\"\\" | *[!0-9]*)
+  echo 'Please provide the number of the node to attach to (i.e. ./attach.sh 2)' >&2
+  exit 1
+esac
+
+if [ \\"$1\\" -lt 1 ] || [ \\"$1\\" -gt $NUMBER_OF_NODES ]; then
+  echo \\"$1 is not a valid node number. Must be between 1 and $NUMBER_OF_NODES.\\" >&2
+  exit 1
+fi
+
+POD=$(kubectl get pods $NAMESPACE | grep Running | grep 1 | awk '{print $1}')
+kubectl $NAMESPACE exec -it $POD -c quorum -- /bin/ash -c \\"geth attach /etc/quorum/qdata/dd/geth.ipc\\""
+`;

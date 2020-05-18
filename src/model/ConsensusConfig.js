@@ -5,18 +5,18 @@ import {
 } from '../generators/consensusHelper'
 import { isRaft } from './NetworkConfig'
 
-export function generateConsensusConfig(configDir, keyPath, consensus, nodes, networkId) {
+export function generateConsensusConfig(configDir, consensus, nodes, networkId) {
   writeJsonFile(
     configDir,
     'genesis.json',
     isRaft(consensus)
-      ? generateRaftConfig(nodes, keyPath, networkId)
-      : generateIstanbulConfig(nodes, configDir, keyPath, networkId),
+      ? generateRaftConfig(nodes, configDir, networkId)
+      : generateIstanbulConfig(nodes, configDir, networkId),
   )
 }
 
-export function generateRaftConfig(nodes, keyPath, networkId) {
-  const alloc = generateAccounts(nodes, keyPath)
+export function generateRaftConfig(nodes, configDir, networkId) {
+  const alloc = generateAccounts(nodes, configDir)
   return {
     alloc,
     coinbase: '0x0000000000000000000000000000000000000000',
@@ -24,12 +24,19 @@ export function generateRaftConfig(nodes, keyPath, networkId) {
       homesteadBlock: 0,
       byzantiumBlock: 0,
       constantinopleBlock: 0,
+      istanbulBlock: 0,
+      petersburgBlock: 0,
       chainId: parseInt(networkId, 10),
       eip150Block: 0,
       eip155Block: 0,
       eip150Hash: '0x0000000000000000000000000000000000000000000000000000000000000000',
       eip158Block: 0,
-      maxCodeSize: 35,
+      maxCodeSizeConfig: [
+        {
+          block: 0,
+          size: 32,
+        },
+      ],
       isQuorum: true,
     },
     difficulty: '0x0',
@@ -42,9 +49,9 @@ export function generateRaftConfig(nodes, keyPath, networkId) {
   }
 }
 
-export function generateIstanbulConfig(nodes, configDir, keyPath, networkId) {
-  const alloc = generateAccounts(nodes, keyPath)
-  const extraData = generateExtraData(nodes, configDir, keyPath)
+export function generateIstanbulConfig(nodes, configDir, networkId) {
+  const alloc = generateAccounts(nodes, configDir)
+  const extraData = generateExtraData(nodes, configDir)
   return {
     alloc,
     coinbase: '0x0000000000000000000000000000000000000000',
@@ -52,12 +59,19 @@ export function generateIstanbulConfig(nodes, configDir, keyPath, networkId) {
       homesteadBlock: 0,
       byzantiumBlock: 0,
       constantinopleBlock: 0,
+      istanbulBlock: 0,
+      petersburgBlock: 0,
       chainId: parseInt(networkId, 10),
       eip150Block: 0,
       eip155Block: 0,
       eip150Hash: '0x0000000000000000000000000000000000000000000000000000000000000000',
       eip158Block: 0,
-      maxCodeSize: 35,
+      maxCodeSizeConfig: [
+        {
+          block: 0,
+          size: 32,
+        },
+      ],
       isQuorum: true,
       istanbul: {
         epoch: 30000,
