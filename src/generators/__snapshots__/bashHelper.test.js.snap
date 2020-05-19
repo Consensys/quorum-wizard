@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
-#!/bin/bash
+
 exports[`creates 2nodes istanbul bash tessera cakeshop custom ports 1`] = `
-"echo \\"
+"#!/bin/bash
+echo \\"
 Starting Quorum network...
 \\"
 BIN_GETH=/path/to/user/home/.quorum-wizard/bin/quorum/2.6.0/geth
@@ -94,7 +95,8 @@ publicKey
 `;
 
 exports[`creates 3nodes raft bash no tessera 1`] = `
-"echo \\"
+"#!/bin/bash
+echo \\"
 Starting Quorum network...
 \\"
 BIN_GETH=/path/to/user/home/.quorum-wizard/bin/quorum/2.6.0/geth
@@ -111,7 +113,8 @@ echo \\"\\""
 `;
 
 exports[`creates 3nodes raft bash tessera 1`] = `
-"echo \\"
+"#!/bin/bash
+echo \\"
 Starting Quorum network...
 \\"
 BIN_GETH=/path/to/user/home/.quorum-wizard/bin/quorum/2.6.0/geth
@@ -187,7 +190,8 @@ publicKey
 `;
 
 exports[`creates 3nodes raft bash tessera cakeshop 1`] = `
-"echo \\"
+"#!/bin/bash
+echo \\"
 Starting Quorum network...
 \\"
 BIN_GETH=/path/to/user/home/.quorum-wizard/bin/quorum/2.6.0/geth
@@ -290,7 +294,8 @@ publicKey
 `;
 
 exports[`creates 3nodes raft bash tessera custom 1`] = `
-"echo \\"
+"#!/bin/bash
+echo \\"
 Starting Quorum network...
 \\"
 BIN_GETH=/path/to/user/home/.quorum-wizard/bin/quorum/2.6.0/geth
@@ -366,7 +371,8 @@ publicKey
 `;
 
 exports[`creates quickstart config 1`] = `
-"echo \\"
+"#!/bin/bash
+echo \\"
 Starting Quorum network...
 \\"
 BIN_GETH=/path/to/user/home/.quorum-wizard/bin/quorum/2.6.0/geth
@@ -469,7 +475,8 @@ publicKey
 `;
 
 exports[`creates quickstart config with java 8 1`] = `
-"echo \\"
+"#!/bin/bash
+echo \\"
 Starting Quorum network...
 \\"
 BIN_GETH=/path/to/user/home/.quorum-wizard/bin/quorum/2.6.0/geth
@@ -572,7 +579,8 @@ publicKey
 `;
 
 exports[`creates quickstart start script without insecure unlock flag on quorum pre-2.6.0 1`] = `
-"echo \\"
+"#!/bin/bash
+echo \\"
 Starting Quorum network...
 \\"
 BIN_GETH=/path/to/user/home/.quorum-wizard/bin/quorum/2.5.0/geth
