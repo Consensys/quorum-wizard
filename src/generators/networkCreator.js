@@ -24,6 +24,7 @@ import {
 import { joinPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
 import { info } from '../utils/log'
+import { buildDockerIp } from '../utils/subnetUtils'
 
 export function createNetwork(config) {
   info('Building network directory...')
@@ -58,14 +59,14 @@ export function generateResourcesRemote(config) {
     exit $EXIT_CODE
   fi
   docker pull quorumengineering/qubernetes:latest
-  
-  docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./${initScript} --action=update qubernetes.yaml 2>&1
+
+  docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out  apratt3377/qubernetes ./${initScript} --action=update qubernetes.yaml 2>&1
   find . -type f -name 'UTC*' -execdir mv {} key ';'
   `
 
   if (isDocker(config.network.deployment)) {
     dockerCommand += `
-    sed -i '' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/172.16.239.1\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
+    sed -i '' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/${buildDockerIp(config.containerPorts.dockerSubnet, '1')}\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
   }
 
   try {

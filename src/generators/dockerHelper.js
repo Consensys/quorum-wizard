@@ -13,6 +13,10 @@ import {
 } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
+import {
+  cidrhost,
+  buildDockerIp,
+} from '../utils/subnetUtils'
 
 export function buildDockerCompose(config) {
   const networkName = config.network.name
@@ -37,7 +41,7 @@ export function buildDockerCompose(config) {
   let services = config.nodes.map((node, i) => {
     let allServices = buildNodeService(config, networkName, node, i, hasTessera)
     if (hasTessera) {
-      allServices = [allServices, buildTesseraService(config, node, i)].join('')
+      allServices = [allServices, buildTesseraService(config, networkName, node, i)].join('')
     }
     return allServices
   })
@@ -66,8 +70,12 @@ export async function createDockerCompose(config) {
     buildCakeshopDir(config, qdata)
   }
 
+  const dockerIp = buildDockerIp(config.containerPorts.dockerSubnet, '10')
+
   info('Writing start script...')
-  const startCommands = 'docker-compose up -d'
+  const startCommands = `
+  sed -i '' 's,%DOCKER_IP%,${dockerIp},g' docker-compose.yml
+  docker-compose up -d`
 
   writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)
   writeFile(joinPath(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
@@ -119,7 +127,7 @@ function buildNodeService(config, networkName, node, i, hasTessera) {
       - NODE_ID=${i + 1}
     networks:
       ${networkName}-net:
-        ipv4_address: 172.16.239.1${i + 1}`
+        ipv4_address: ${node.quorum.ip}`
 }
 
 function buildTesseraService(config, networkName, node, i) {
@@ -134,7 +142,7 @@ function buildTesseraService(config, networkName, node, i) {
       - ./qdata:/examples:ro
     networks:
       ${networkName}-net:
-        ipv4_address: 172.16.239.10${i + 1}
+        ipv4_address: ${node.tm.ip}
     environment:
       - NODE_ID=${i + 1}`
 }
@@ -151,7 +159,7 @@ function buildCakeshopService(config, networkName) {
       - ./qdata:/examples:ro
     networks:
       ${networkName}-net:
-        ipv4_address: 172.16.239.186`
+        ipv4_address: ${cidrhost(config.containerPorts.dockerSubnet, 2)}`
 }
 
 function buildEndService(config, networkName) {
@@ -163,7 +171,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.16.239.0/24
+        - subnet: ${config.containerPorts.dockerSubnet}
 volumes:
 ${config.nodes.map((_, i) => `  "${networkName}-vol${i + 1}":`).join('\n')}
   "${networkName}-cakeshopvol":`
