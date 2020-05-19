@@ -60,7 +60,7 @@ export function generateResourcesRemote(config) {
   fi
   docker pull quorumengineering/qubernetes:latest
 
-  docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out  apratt3377/qubernetes ./${initScript} --action=update qubernetes.yaml 2>&1
+  docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./${initScript} --action=update qubernetes.yaml 2>&1
   find . -type f -name 'UTC*' -execdir mv {} key ';'
   `
 
