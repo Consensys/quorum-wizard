@@ -1,5 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
-
+#!/bin/bash
 exports[`creates 2nodes istanbul bash tessera cakeshop custom ports 1`] = `
 "echo \\"
 Starting Quorum network...
