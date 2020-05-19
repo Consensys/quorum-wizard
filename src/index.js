@@ -55,6 +55,7 @@ if (process.platform === 'win32') {
 createLogger(argv.v)
 debug('Showing debug logs')
 
+
 if (argv.q) {
   buildNetwork('quickstart')
 } else {
@@ -71,7 +72,9 @@ if (argv.q) {
 async function buildNetwork(mode) {
   const answers = await promptUser(mode)
   const config = createConfigFromAnswers(answers)
-  await downloadAndCopyBinaries(config)
+  if (isBash(config.network.deployment)) {
+    await downloadAndCopyBinaries(config)
+  }
   await createDirectory(config)
   await createScript(config)
   generateAndCopyExampleScripts(config)
@@ -85,11 +88,7 @@ async function createDirectory(config) {
     createQdataDirectory(config)
   } else if (isDocker(config.network.deployment)) {
     createNetwork(config)
-    if (config.network.generateKeys && isTessera(config.network.transactionManager)) {
-      generateResourcesRemote(config)
-    } else {
-      await generateResourcesLocally(config)
-    }
+    generateResourcesRemote(config)
     createQdataDirectory(config)
   } else if (isKubernetes(config.network.deployment)) {
     createNetwork(config)
@@ -114,7 +113,15 @@ async function createScript(config) {
 function printInstructions(config) {
   info(formatTesseraKeysOutput(config))
   info('')
-  info('Quorum network created. Run the following commands to start your network:')
+  info('Quorum network created')
+  info('')
+  if (isKubernetes(config.network.deployment)) {
+    info('Running the kubernetes deployment is currently only supported on minikube.')
+    info('Before starting the network please make sure minikube is running and kubectl is installed and setup properly')
+    info('Check out our qubernetes project docs for more info: https://github.com/jpmorganchase/qubernetes')
+    info('')
+  }
+  info('Run the following commands to start your network:')
   info('')
   info(`cd network/${config.network.name}`)
   info('./start.sh')
@@ -125,6 +132,11 @@ function printInstructions(config) {
   if (isTessera(config.network.transactionManager)) {
     info(`A private simpleStorage contract was created with privateFor set to use Node 2's public key: ${loadTesseraPublicKey(config, 2)}`)
     info('To use run ./runscript private-contract.js from the network folder')
+    info('')
+  }
+  if (isKubernetes(config.network.deployment)) {
+    info('A script to retrieve the quorum rpc and tessera 3rd party endpoints to use with remix or cakeshop is provided')
+    info('To use run ./getEndpoints.sh from the network folder')
     info('')
   }
 }

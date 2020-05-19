@@ -35,3 +35,28 @@ test('creates 7nodes istanbul kubernetes generate keys', () => {
   const kubernetes = buildKubernetesResource(config)
   expect(kubernetes).toMatchSnapshot()
 })
+
+test('creates 7nodes istanbul docker generate keys', () => {
+  const config = createConfigFromAnswers({
+    ...baseNetwork,
+    numberNodes: '7',
+    deployment: 'docker-compose',
+    consensus: 'istanbul',
+    generateKeys: true,
+  })
+  const kubernetes = buildKubernetesResource(config)
+  expect(kubernetes).toMatchSnapshot()
+})
+
+test('creates 7nodes istanbul docker generate keys no tessera', () => {
+  const config = createConfigFromAnswers({
+    ...baseNetwork,
+    numberNodes: '7',
+    deployment: 'docker-compose',
+    consensus: 'istanbul',
+    transactionManger: 'none',
+    generateKeys: true,
+  })
+  const kubernetes = buildKubernetesResource(config)
+  expect(kubernetes).toMatchSnapshot()
+})

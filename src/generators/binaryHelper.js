@@ -5,7 +5,6 @@ import {
   isIstanbul,
   isTessera,
   isKubernetes,
-  isDocker,
 } from '../model/NetworkConfig'
 import {
   BINARIES,
@@ -17,41 +16,33 @@ import { joinPath } from '../utils/pathUtils'
 
 // This method could be improved, but right now it tries to:
 // a. Cache downloads
-// b. Only download if necessary for keygen or istanbul
-// c. Don't download if using docker (except stuff for keygen/istanbul)
+// b. Only download if necessary for bash deployments
 export async function downloadAndCopyBinaries(config) {
   info('Downloading dependencies...')
   const {
-    transactionManager, cakeshop, deployment, generateKeys, quorumVersion, consensus,
+    transactionManager, cakeshop, generateKeys, quorumVersion, consensus,
   } = config.network
-  const bash = isBash(deployment)
-  const docker = isDocker(deployment)
-  const tessera = isTessera(transactionManager)
-  const isDockerButNeedsBinaries = docker && generateKeys && !tessera
-  const kubernetes = isKubernetes(deployment)
+
   const downloads = []
 
-  // needed no matter what if using istanbul to generate genesis
-  if (isIstanbul(consensus) && !kubernetes) {
+  if (isIstanbul(consensus)) {
     downloads.push(downloadIfMissing('istanbul', '1.0.1'))
   }
 
-  if (bash || isDockerButNeedsBinaries) {
-    if (generateKeys) {
-      downloads.push(downloadIfMissing('bootnode', '1.8.27'))
-    }
+  if (generateKeys) {
+    downloads.push(downloadIfMissing('bootnode', '1.8.27'))
+  }
 
-    if (quorumVersion !== 'PATH') {
-      downloads.push(downloadIfMissing('quorum', quorumVersion))
-    }
-    const tesseraVersion = transactionManager
-    if (tesseraVersion !== 'PATH' && isTessera(tesseraVersion)) {
-      downloads.push(downloadIfMissing('tessera', tesseraVersion))
-    }
+  if (quorumVersion !== 'PATH') {
+    downloads.push(downloadIfMissing('quorum', quorumVersion))
+  }
+  const tesseraVersion = transactionManager
+  if (tesseraVersion !== 'PATH' && isTessera(tesseraVersion)) {
+    downloads.push(downloadIfMissing('tessera', tesseraVersion))
+  }
 
-    if (!docker && cakeshop !== 'none') {
-      downloads.push(downloadIfMissing('cakeshop', cakeshop))
-    }
+  if (cakeshop !== 'none') {
+    downloads.push(downloadIfMissing('cakeshop', cakeshop))
   }
 
   await Promise.all(downloads)
