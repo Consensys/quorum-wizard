@@ -84,6 +84,8 @@ export const LATEST_TESSERA = '0.10.5'
 export const LATEST_TESSERA_J8 = '0.10.2'
 export const LATEST_CAKESHOP = '0.11.0'
 export const LATEST_CAKESHOP_J8 = '0.11.0-J8'
+export const LATEST_ISTANBUL_TOOLS = '1.0.2'
+export const LATEST_BOOTNODE = '1.9.7'
 
 export const BINARIES = {
   quorum: {
@@ -150,11 +152,11 @@ export const BINARIES = {
   },
 
   istanbul: {
-    '1.0.1': {
+    '1.0.2': {
       name: 'istanbul',
       url: {
-        darwin: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.1_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.1_linux_amd64.tar.gz',
+        darwin: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.2_darwin_amd64.tar.gz',
+        linux: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.2_linux_amd64.tar.gz',
       },
       type: 'tar.gz',
       files: [
@@ -164,11 +166,11 @@ export const BINARIES = {
   },
 
   bootnode: {
-    '1.8.27': {
+    '1.9.7': {
       name: 'bootnode',
       url: {
-        darwin: 'https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v1.8.27_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v1.8.27_linux_amd64.tar.gz',
+        darwin: 'https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v1.9.7_darwin_amd64.tar.gz',
+        linux: 'https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v1.9.7_linux_amd64.tar.gz',
       },
       type: 'tar.gz',
       files: [
