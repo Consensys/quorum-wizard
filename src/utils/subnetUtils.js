@@ -28,6 +28,18 @@ export function cidrsubnet(cidr, newBits, netNum) {
 export function cidrhost(cidr, hostNum) {
   const ipv4 = new ipaddress.Address4(cidr)
   const hostNumBig = new BigInteger(hostNum.toString())
+
+  const parentLen = ipv4.subnetMask
+  const hostLen = 32 - parentLen
+
+  // calculate max host num
+  let maxHostNum = new BigInteger('1')
+  maxHostNum <<= new BigInteger(hostLen.toString()) // eslint-disable-line no-bitwise
+  maxHostNum -= new BigInteger('1')
+
+  if (hostNum > maxHostNum) {
+    throw new Error(`prefix of ${parentLen} does not accommodate a host numbered ${hostNum}`)
+  }
   const startingAddrBig = ipv4.startAddress().bigInteger()
   const newAddrBig = startingAddrBig.add(hostNumBig)
 
