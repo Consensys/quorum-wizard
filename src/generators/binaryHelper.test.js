@@ -26,7 +26,12 @@ import {
   TEST_WIZARD_HOME_DIR,
 } from '../utils/testHelper'
 import {
-  downloadIfMissing, LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA, LATEST_TESSERA_J8,
+  downloadIfMissing,
+  LATEST_BOOTNODE,
+  LATEST_CAKESHOP,
+  LATEST_QUORUM,
+  LATEST_TESSERA,
+  LATEST_TESSERA_J8,
 } from './download'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
@@ -47,7 +52,7 @@ describe('Chooses the right paths to the binaries', () => {
     expect(pathToQuorumBinary('PATH')).toEqual('geth')
   })
   it('Calls geth binary in bin folder', () => {
-    expect(pathToQuorumBinary(LATEST_QUORUM)).toEqual(joinPath(wizardHomeDir(), 'bin/quorum/', LATEST_QUORUM, '/geth'))
+    expect(pathToQuorumBinary(LATEST_QUORUM)).toEqual(joinPath(wizardHomeDir(), 'bin/quorum', LATEST_QUORUM, 'geth'))
   })
   it('Calls tessera using $TESSERA_JAR', () => {
     expect(pathToTesseraJar('PATH')).toEqual('$TESSERA_JAR')
@@ -55,14 +60,14 @@ describe('Chooses the right paths to the binaries', () => {
   it('Calls tessera using bin folder jar', () => {
     expect(pathToTesseraJar(LATEST_TESSERA)).toEqual(joinPath(
       wizardHomeDir(),
-      'bin/tessera/', LATEST_TESSERA, '/tessera-app.jar',
+      'bin/tessera', LATEST_TESSERA, 'tessera-app.jar',
     ))
   })
   it('Calls cakeshop using bin folder war', () => {
-    expect(pathToCakeshop(LATEST_CAKESHOP)).toEqual(joinPath(wizardHomeDir(), 'bin/cakeshop/', LATEST_CAKESHOP, '/cakeshop.war'))
+    expect(pathToCakeshop(LATEST_CAKESHOP)).toEqual(joinPath(wizardHomeDir(), 'bin/cakeshop', LATEST_CAKESHOP, 'cakeshop.war'))
   })
   it('Calls bootnode using bin folder', () => {
-    expect(pathToBootnode()).toEqual(joinPath(wizardHomeDir(), 'bin/bootnode/1.8.27/bootnode'))
+    expect(pathToBootnode()).toEqual(joinPath(wizardHomeDir(), 'bin/bootnode', LATEST_BOOTNODE, 'bootnode'))
   })
 })
 
