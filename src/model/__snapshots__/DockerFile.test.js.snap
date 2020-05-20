@@ -32,7 +32,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -298,7 +298,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       2-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.186
+        ipv4_address: docker_ip
 networks:
   2-nodes-raft-tessera-docker-compose-net:
     name: 2-nodes-raft-tessera-docker-compose-net
@@ -306,7 +306,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.16.239.0/24
+        - subnet: docker_subnet
 volumes:
   \\"2-nodes-raft-tessera-docker-compose-vol1\\":
   \\"2-nodes-raft-tessera-docker-compose-vol2\\":
@@ -345,7 +345,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -533,7 +533,7 @@ services:
       - NODE_ID=1
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.11
+        ipv4_address: docker_ip
   txmanager1:
     << : *tx-manager-def
     hostname: txmanager1
@@ -544,7 +544,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.101
+        ipv4_address: docker_ip
     environment:
       - NODE_ID=1
   node2:
@@ -563,7 +563,7 @@ services:
       - NODE_ID=2
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.12
+        ipv4_address: docker_ip
   txmanager2:
     << : *tx-manager-def
     hostname: txmanager2
@@ -574,7 +574,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.102
+        ipv4_address: docker_ip
     environment:
       - NODE_ID=2
   node3:
@@ -593,7 +593,7 @@ services:
       - NODE_ID=3
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.13
+        ipv4_address: docker_ip
   txmanager3:
     << : *tx-manager-def
     hostname: txmanager3
@@ -604,7 +604,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.103
+        ipv4_address: docker_ip
     environment:
       - NODE_ID=3
 networks:
@@ -614,7 +614,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.16.239.0/24
+        - subnet: docker_subnet
 volumes:
   \\"3-nodes-raft-tessera-docker-compose-vol1\\":
   \\"3-nodes-raft-tessera-docker-compose-vol2\\":
@@ -654,7 +654,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -866,7 +866,7 @@ services:
       - NODE_ID=1
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.11
+        ipv4_address: docker_ip
   txmanager1:
     << : *tx-manager-def
     hostname: txmanager1
@@ -877,7 +877,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.101
+        ipv4_address: docker_ip
     environment:
       - NODE_ID=1
   node2:
@@ -896,7 +896,7 @@ services:
       - NODE_ID=2
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.12
+        ipv4_address: docker_ip
   txmanager2:
     << : *tx-manager-def
     hostname: txmanager2
@@ -907,7 +907,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.102
+        ipv4_address: docker_ip
     environment:
       - NODE_ID=2
   node3:
@@ -926,7 +926,7 @@ services:
       - NODE_ID=3
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.13
+        ipv4_address: docker_ip
   txmanager3:
     << : *tx-manager-def
     hostname: txmanager3
@@ -937,7 +937,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.103
+        ipv4_address: docker_ip
     environment:
       - NODE_ID=3
   cakeshop:
@@ -950,7 +950,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.186
+        ipv4_address: docker_ip
 networks:
   3-nodes-raft-tessera-docker-compose-net:
     name: 3-nodes-raft-tessera-docker-compose-net
@@ -958,7 +958,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.16.239.0/24
+        - subnet: docker_subnet
 volumes:
   \\"3-nodes-raft-tessera-docker-compose-vol1\\":
   \\"3-nodes-raft-tessera-docker-compose-vol2\\":
@@ -998,7 +998,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1186,7 +1186,7 @@ services:
       - NODE_ID=1
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.11
+        ipv4_address: docker_ip
   txmanager1:
     << : *tx-manager-def
     hostname: txmanager1
@@ -1197,7 +1197,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.101
+        ipv4_address: docker_ip
     environment:
       - NODE_ID=1
   node2:
@@ -1216,7 +1216,7 @@ services:
       - NODE_ID=2
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.12
+        ipv4_address: docker_ip
   txmanager2:
     << : *tx-manager-def
     hostname: txmanager2
@@ -1227,7 +1227,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.102
+        ipv4_address: docker_ip
     environment:
       - NODE_ID=2
   node3:
@@ -1246,7 +1246,7 @@ services:
       - NODE_ID=3
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.13
+        ipv4_address: docker_ip
   txmanager3:
     << : *tx-manager-def
     hostname: txmanager3
@@ -1257,7 +1257,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.103
+        ipv4_address: docker_ip
     environment:
       - NODE_ID=3
 networks:
@@ -1267,7 +1267,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.16.239.0/24
+        - subnet: docker_subnet
 volumes:
   \\"3-nodes-raft-tessera-docker-compose-vol1\\":
   \\"3-nodes-raft-tessera-docker-compose-vol2\\":
@@ -1307,7 +1307,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1390,7 +1390,7 @@ services:
       - NODE_ID=1
     networks:
       5-nodes-istanbul-docker-compose-net:
-        ipv4_address: 172.16.239.11
+        ipv4_address: docker_ip
   node2:
     << : *quorum-def
     hostname: node2
@@ -1405,7 +1405,7 @@ services:
       - NODE_ID=2
     networks:
       5-nodes-istanbul-docker-compose-net:
-        ipv4_address: 172.16.239.12
+        ipv4_address: docker_ip
   node3:
     << : *quorum-def
     hostname: node3
@@ -1420,7 +1420,7 @@ services:
       - NODE_ID=3
     networks:
       5-nodes-istanbul-docker-compose-net:
-        ipv4_address: 172.16.239.13
+        ipv4_address: docker_ip
   node4:
     << : *quorum-def
     hostname: node4
@@ -1435,7 +1435,7 @@ services:
       - NODE_ID=4
     networks:
       5-nodes-istanbul-docker-compose-net:
-        ipv4_address: 172.16.239.14
+        ipv4_address: docker_ip
   node5:
     << : *quorum-def
     hostname: node5
@@ -1450,7 +1450,7 @@ services:
       - NODE_ID=5
     networks:
       5-nodes-istanbul-docker-compose-net:
-        ipv4_address: 172.16.239.15
+        ipv4_address: docker_ip
   cakeshop:
     << : *cakeshop-def
     hostname: cakeshop
@@ -1461,7 +1461,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       5-nodes-istanbul-docker-compose-net:
-        ipv4_address: 172.16.239.186
+        ipv4_address: docker_ip
 networks:
   5-nodes-istanbul-docker-compose-net:
     name: 5-nodes-istanbul-docker-compose-net
@@ -1469,7 +1469,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.16.239.0/24
+        - subnet: docker_subnet
 volumes:
   \\"5-nodes-istanbul-docker-compose-vol1\\":
   \\"5-nodes-istanbul-docker-compose-vol2\\":
@@ -1511,7 +1511,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1570,7 +1570,7 @@ services:
       - NODE_ID=1
     networks:
       5-nodes-istanbul-docker-compose-net:
-        ipv4_address: 172.16.239.11
+        ipv4_address: docker_ip
   node2:
     << : *quorum-def
     hostname: node2
@@ -1585,7 +1585,7 @@ services:
       - NODE_ID=2
     networks:
       5-nodes-istanbul-docker-compose-net:
-        ipv4_address: 172.16.239.12
+        ipv4_address: docker_ip
   node3:
     << : *quorum-def
     hostname: node3
@@ -1600,7 +1600,7 @@ services:
       - NODE_ID=3
     networks:
       5-nodes-istanbul-docker-compose-net:
-        ipv4_address: 172.16.239.13
+        ipv4_address: docker_ip
   node4:
     << : *quorum-def
     hostname: node4
@@ -1615,7 +1615,7 @@ services:
       - NODE_ID=4
     networks:
       5-nodes-istanbul-docker-compose-net:
-        ipv4_address: 172.16.239.14
+        ipv4_address: docker_ip
   node5:
     << : *quorum-def
     hostname: node5
@@ -1630,7 +1630,7 @@ services:
       - NODE_ID=5
     networks:
       5-nodes-istanbul-docker-compose-net:
-        ipv4_address: 172.16.239.15
+        ipv4_address: docker_ip
 networks:
   5-nodes-istanbul-docker-compose-net:
     name: 5-nodes-istanbul-docker-compose-net
@@ -1638,7 +1638,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.16.239.0/24
+        - subnet: docker_subnet
 volumes:
   \\"5-nodes-istanbul-docker-compose-vol1\\":
   \\"5-nodes-istanbul-docker-compose-vol2\\":
