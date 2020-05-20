@@ -1,5 +1,3 @@
-import { debug } from './log'
-
 const ipaddress = require('ip-address')
 const { BigInteger } = require('jsbn')
 
@@ -46,9 +44,7 @@ export function getRandomInt(min, max) {
 export function getDockerSubnet() {
   // min=1, max=254
   const randomNetNum = getRandomInt(1, 255)
-  const subnet = cidrsubnet('172.16.0.0/16', 8, randomNetNum)
-  debug('subnet ', subnet, 'random ', randomNetNum)
-  return subnet
+  return cidrsubnet('172.16.0.0/16', 8, randomNetNum)
 }
 
 export function buildDockerIp(ip, end) {

@@ -20,14 +20,17 @@ import {
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from './download'
+import { cidrhost } from '../utils/subnetUtils'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')
 jest.mock('../utils/log')
+jest.mock('../utils/subnetUtils')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 getFullNetworkPath.mockReturnValue(`${TEST_CWD}/test-network`)
 info.mockReturnValue('log')
+cidrhost.mockReturnValue('docker_ip')
 
 const baseNetwork = {
   numberNodes: '5',
@@ -36,6 +39,19 @@ const baseNetwork = {
   transactionManager: LATEST_TESSERA,
   cakeshop: LATEST_CAKESHOP,
   deployment: 'docker-compose',
+  containerPorts: {
+    dockerSubnet: 'docker_subnet',
+    quorum: {
+      rpcPort: 8545,
+      p2pPort: 21000,
+      raftPort: 50400,
+      wsPort: 8645,
+    },
+    tm: {
+      p2pPort: 9000,
+      thirdPartyPort: 9080,
+    },
+  },
 }
 
 describe('generates docker-compose directory', () => {
@@ -136,7 +152,7 @@ services:
       - NODE_ID=1
     networks:
       1-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.11
+        ipv4_address: docker_ip
   txmanager1:
     << : *tx-manager-def
     hostname: txmanager1
@@ -147,7 +163,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       1-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.101
+        ipv4_address: docker_ip
     environment:
       - NODE_ID=1
 networks:
@@ -157,7 +173,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.16.239.0/24
+        - subnet: docker_subnet
 volumes:
   "1-nodes-raft-tessera-docker-compose-vol1":
   "1-nodes-raft-tessera-docker-compose-cakeshopvol":`
@@ -195,7 +211,7 @@ services:
       - NODE_ID=1
     networks:
       1-nodes-istanbul-docker-compose-net:
-        ipv4_address: 172.16.239.11
+        ipv4_address: docker_ip
 networks:
   1-nodes-istanbul-docker-compose-net:
     name: 1-nodes-istanbul-docker-compose-net
@@ -203,7 +219,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.16.239.0/24
+        - subnet: docker_subnet
 volumes:
   "1-nodes-istanbul-docker-compose-vol1":
   "1-nodes-istanbul-docker-compose-cakeshopvol":`
@@ -237,7 +253,7 @@ services:
       - NODE_ID=1
     networks:
       1-nodes-raft-docker-compose-net:
-        ipv4_address: 172.16.239.11
+        ipv4_address: docker_ip
   cakeshop:
     << : *cakeshop-def
     hostname: cakeshop
@@ -248,7 +264,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       1-nodes-raft-docker-compose-net:
-        ipv4_address: 172.16.239.186
+        ipv4_address: docker_ip
 networks:
   1-nodes-raft-docker-compose-net:
     name: 1-nodes-raft-docker-compose-net
@@ -256,7 +272,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.16.239.0/24
+        - subnet: docker_subnet
 volumes:
   "1-nodes-raft-docker-compose-vol1":
   "1-nodes-raft-docker-compose-cakeshopvol":`
@@ -293,7 +309,7 @@ services:
       - NODE_ID=1
     networks:
       1-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.11
+        ipv4_address: docker_ip
   txmanager1:
     << : *tx-manager-def
     hostname: txmanager1
@@ -304,7 +320,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       1-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.101
+        ipv4_address: docker_ip
     environment:
       - NODE_ID=1
   cakeshop:
@@ -317,7 +333,7 @@ services:
       - ./qdata:/examples:ro
     networks:
       1-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.186
+        ipv4_address: docker_ip
 networks:
   1-nodes-raft-tessera-docker-compose-net:
     name: 1-nodes-raft-tessera-docker-compose-net
@@ -325,7 +341,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.16.239.0/24
+        - subnet: docker_subnet
 volumes:
   "1-nodes-raft-tessera-docker-compose-vol1":
   "1-nodes-raft-tessera-docker-compose-cakeshopvol":`

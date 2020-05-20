@@ -8,10 +8,12 @@ import {
 import { CUSTOM_ANSWERS, QUESTIONS } from './questions'
 import { exists } from '../utils/fileUtils'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import { cidrhost } from '../utils/subnetUtils'
 
 jest.mock('inquirer')
 jest.mock('../generators/networkCreator')
 jest.mock('../utils/fileUtils')
+jest.mock('../utils/subnetUtils')
 exists.mockReturnValue(false)
 
 const SIMPLE_CONFIG = {
@@ -153,6 +155,11 @@ describe('build customized node info from custom prompts', () => {
       ...TESSERA_DOCKER_NODE2,
     })
 
+    cidrhost.mockReturnValueOnce('172.16.239.11')
+    cidrhost.mockReturnValueOnce('172.16.239.101')
+    cidrhost.mockReturnValueOnce('172.16.239.12')
+    cidrhost.mockReturnValueOnce('172.16.239.102')
+
     const expected = [{
       quorum: {
         devP2pPort: '21000', ip: '172.16.239.11', raftPort: '50401', rpcPort: '22000', wsPort: '23000',
@@ -181,6 +188,9 @@ describe('build customized node info from custom prompts', () => {
     prompt.mockResolvedValueOnce({
       ...QUORUM_DOCKER_NODE2,
     })
+
+    cidrhost.mockReturnValueOnce('172.16.239.11')
+    cidrhost.mockReturnValueOnce('172.16.239.12')
 
     const expected = [{
       quorum: {

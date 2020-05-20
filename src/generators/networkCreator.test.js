@@ -33,6 +33,7 @@ import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { buildKubernetesResource } from '../model/ResourceConfig'
 import { executeSync } from '../utils/execUtils'
 import { LATEST_QUORUM, LATEST_TESSERA } from './download'
+import { cidrhost } from '../utils/subnetUtils'
 
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
@@ -40,9 +41,11 @@ jest.mock('../utils/log')
 jest.mock('../model/ConsensusConfig')
 jest.mock('../model/ResourceConfig')
 jest.mock('./keyGen')
+jest.mock('../utils/subnetUtils')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 buildKubernetesResource.mockReturnValue('qubernetes')
+cidrhost.mockReturnValue('docker_ip')
 
 const baseNetwork = {
   numberNodes: '5',
@@ -112,7 +115,12 @@ describe('creates network resources locally from answers', () => {
 describe('creates network resources with remote qubernetes container from answers', () => {
   it('rejects invalid network names', () => {
     const names = ['', '.', '..', '\0', '/']
-    const config = createConfigFromAnswers(baseNetwork)
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      containerPorts: {
+        dockerSubnet: 'docker_ip',
+      },
+    })
     names.forEach((name) => {
       config.network.name = name
       expect(() => generateResourcesRemote(config)).toThrow(Error)
@@ -123,6 +131,9 @@ describe('creates network resources with remote qubernetes container from answer
       ...baseNetwork,
       generateKeys: true,
       deployment: 'docker-compose',
+      containerPorts: {
+        dockerSubnet: 'docker_ip',
+      },
     })
     generateResourcesRemote(config)
 

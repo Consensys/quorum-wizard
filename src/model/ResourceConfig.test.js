@@ -8,7 +8,9 @@ import { LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')
+jest.mock('../utils/subnetUtils')
 getFullNetworkPath.mockReturnValue(`${TEST_CWD}/test-network`)
+
 
 const baseNetwork = {
   numberNodes: '5',
@@ -17,6 +19,19 @@ const baseNetwork = {
   transactionManager: LATEST_TESSERA,
   cakeshop: 'none',
   deployment: 'kubernetes',
+  containerPorts: {
+    dockerSubnet: 'docker_subnet',
+    quorum: {
+      rpcPort: 8545,
+      p2pPort: 21000,
+      raftPort: 50400,
+      wsPort: 8645,
+    },
+    tm: {
+      p2pPort: 9000,
+      thirdPartyPort: 9080,
+    },
+  },
 }
 
 test('creates 5nodes raft kubernetes tessera', () => {

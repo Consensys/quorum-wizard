@@ -1,6 +1,10 @@
 import { createConfigFromAnswers } from './NetworkConfig'
 import { generateCakeshopConfig } from './CakeshopConfig'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import { cidrhost } from '../utils/subnetUtils'
+
+jest.mock('../utils/subnetUtils')
+cidrhost.mockReturnValue('172.16.239.11')
 
 const baseNetwork = {
   numberNodes: '3',

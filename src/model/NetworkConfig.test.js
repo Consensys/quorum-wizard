@@ -1,9 +1,12 @@
 import { createConfigFromAnswers, isQuorum260Plus } from './NetworkConfig'
 import { isJava11Plus } from '../utils/execUtils'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import { cidrhost } from '../utils/subnetUtils'
 
+jest.mock('../utils/subnetUtils')
 jest.mock('../utils/execUtils')
 isJava11Plus.mockReturnValue(true)
+cidrhost.mockReturnValue('docker_ip')
 
 // rather than having big test jsons that we match to, we can just use snapshot
 // tests, where it will compare against the last time you ran and if it's
@@ -53,6 +56,19 @@ test('creates 7nodes istanbul docker config', () => {
     numberNodes: '7',
     consensus: 'istanbul',
     deployment: 'docker-compose',
+    containerPorts: {
+      dockerSubnet: 'docker_subnet',
+      quorum: {
+        rpcPort: 8545,
+        p2pPort: 21000,
+        raftPort: 50400,
+        wsPort: 8645,
+      },
+      tm: {
+        p2pPort: 9000,
+        thirdPartyPort: 9080,
+      },
+    },
   })
   expect(config).toMatchSnapshot()
 })
@@ -64,6 +80,19 @@ test('creates 5nodes raft no-TM cakeshop docker config', () => {
     transactionManager: 'none',
     deployment: 'docker-compose',
     cakeshop: LATEST_CAKESHOP,
+    containerPorts: {
+      dockerSubnet: 'docker_subnet',
+      quorum: {
+        rpcPort: 8545,
+        p2pPort: 21000,
+        raftPort: 50400,
+        wsPort: 8645,
+      },
+      tm: {
+        p2pPort: 9000,
+        thirdPartyPort: 9080,
+      },
+    },
   })
   expect(config).toMatchSnapshot()
 })
@@ -74,6 +103,19 @@ test('creates 7nodes istanbul kubernetes config', () => {
     numberNodes: '7',
     consensus: 'istanbul',
     deployment: 'kubernetes',
+    containerPorts: {
+      dockerSubnet: '',
+      quorum: {
+        rpcPort: 8545,
+        p2pPort: 21000,
+        raftPort: 50400,
+        wsPort: 8645,
+      },
+      tm: {
+        p2pPort: 9000,
+        thirdPartyPort: 9080,
+      },
+    },
   })
   expect(config).toMatchSnapshot()
 })
@@ -87,6 +129,19 @@ test('creates 7nodes raft kubernetes custom config', () => {
     networkId: 14,
     genesisLocation: '',
     customizePorts: false,
+    containerPorts: {
+      dockerSubnet: '',
+      quorum: {
+        rpcPort: 8545,
+        p2pPort: 21000,
+        raftPort: 50400,
+        wsPort: 8645,
+      },
+      tm: {
+        p2pPort: 9000,
+        thirdPartyPort: 9080,
+      },
+    },
   })
   expect(config).toMatchSnapshot()
 })
@@ -136,6 +191,19 @@ test('creates 6nodes raft custom docker config', () => {
     networkId: 10,
     genesisLocation: '',
     customizePorts: false,
+    containerPorts: {
+      dockerSubnet: 'docker_subnet',
+      quorum: {
+        rpcPort: 8545,
+        p2pPort: 21000,
+        raftPort: 50400,
+        wsPort: 8645,
+      },
+      tm: {
+        p2pPort: 9000,
+        thirdPartyPort: 9080,
+      },
+    },
   })
   expect(config).toMatchSnapshot()
 })
@@ -151,6 +219,19 @@ test('creates 7nodes istanbul no-TM custom docker config', () => {
     networkId: 10,
     genesisLocation: '',
     customizePorts: false,
+    containerPorts: {
+      dockerSubnet: 'docker_subnet',
+      quorum: {
+        rpcPort: 8545,
+        p2pPort: 21000,
+        raftPort: 50400,
+        wsPort: 8645,
+      },
+      tm: {
+        p2pPort: 9000,
+        thirdPartyPort: 9080,
+      },
+    },
   })
   expect(config).toMatchSnapshot()
 })
