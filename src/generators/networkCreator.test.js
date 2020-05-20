@@ -98,54 +98,83 @@ describe('creates network resources locally from answers', () => {
     expect(generateConsensusConfig).toHaveBeenCalled()
     expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
   })
-  it('Creates genesis and static nodes for docker with pregen keys', async () => {
-    const config = createConfigFromAnswers({
-      ...baseNetwork,
-      deployment: 'docker-compose',
-    })
-    await generateResourcesLocally(config)
-
-    expect(createFolder).toBeCalledWith(createNetPath(config, 'resources'), true)
-    expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'resources'))
-    expect(generateConsensusConfig).toHaveBeenCalled()
-    expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
-  })
 })
 
 describe('creates network resources with remote qubernetes container from answers', () => {
   it('rejects invalid network names', () => {
     const names = ['', '.', '..', '\0', '/']
-    const config = createConfigFromAnswers({
-      ...baseNetwork,
-      containerPorts: {
-        dockerSubnet: 'docker_ip',
-      },
-    })
+    const config = createConfigFromAnswers(baseNetwork)
     names.forEach((name) => {
       config.network.name = name
       expect(() => generateResourcesRemote(config)).toThrow(Error)
     })
   })
-  it('Creates new resources and keys for docker', () => {
+  it('Creates new resources and keys for docker using pregen keys', () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
-      generateKeys: true,
       deployment: 'docker-compose',
       containerPorts: {
-        dockerSubnet: 'docker_ip',
+        dockerSubnet: 'docker_subnet',
+        quorum: {
+          rpcPort: 8545,
+          p2pPort: 21000,
+          raftPort: 50400,
+          wsPort: 8645,
+        },
+        tm: {
+          p2pPort: 9000,
+          thirdPartyPort: 9080,
+        },
       },
     })
     generateResourcesRemote(config)
 
     expect(buildKubernetesResource).toHaveBeenCalled()
     expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
-    expect(copyDirectory).toBeCalledWith(createNetPath(config, 'out', 'config'), createNetPath(config, 'resources'))
-    expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
+    expect(createFolder).toBeCalledWith(createNetPath(config, 'out', 'config'), true)
+    expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'out', 'config'))
+  })
+  it('Creates new resources and keys for docker with new keys', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      generateKeys: true,
+      deployment: 'docker-compose',
+      containerPorts: {
+        dockerSubnet: 'docker_subnet',
+        quorum: {
+          rpcPort: 8545,
+          p2pPort: 21000,
+          raftPort: 50400,
+          wsPort: 8645,
+        },
+        tm: {
+          p2pPort: 9000,
+          thirdPartyPort: 9080,
+        },
+      },
+    })
+    generateResourcesRemote(config)
+
+    expect(buildKubernetesResource).toHaveBeenCalled()
+    expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
   })
   it('Creates new resources for kubernetes using pregen keys', () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
       deployment: 'kubernetes',
+      containerPorts: {
+        dockerSubnet: '',
+        quorum: {
+          rpcPort: 8545,
+          p2pPort: 21000,
+          raftPort: 50400,
+          wsPort: 8645,
+        },
+        tm: {
+          p2pPort: 9000,
+          thirdPartyPort: 9080,
+        },
+      },
     })
     generateResourcesRemote(config)
 
@@ -159,6 +188,19 @@ describe('creates network resources with remote qubernetes container from answer
       ...baseNetwork,
       deployment: 'kubernetes',
       generateKeys: true,
+      containerPorts: {
+        dockerSubnet: '',
+        quorum: {
+          rpcPort: 8545,
+          p2pPort: 21000,
+          raftPort: 50400,
+          wsPort: 8645,
+        },
+        tm: {
+          p2pPort: 9000,
+          thirdPartyPort: 9080,
+        },
+      },
     })
     generateResourcesRemote(config)
 
@@ -170,6 +212,19 @@ describe('creates network resources with remote qubernetes container from answer
       ...baseNetwork,
       generateKeys: true,
       deployment: 'docker-compose',
+      containerPorts: {
+        dockerSubnet: 'docker_subnet',
+        quorum: {
+          rpcPort: 8545,
+          p2pPort: 21000,
+          raftPort: 50400,
+          wsPort: 8645,
+        },
+        tm: {
+          p2pPort: 9000,
+          thirdPartyPort: 9080,
+        },
+      },
     })
 
     executeSync.mockImplementationOnce(() => {
@@ -299,6 +354,19 @@ describe('creates qdata directory for docker network', () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
       deployment: 'docker-compose',
+      containerPorts: {
+        dockerSubnet: 'docker_subnet',
+        quorum: {
+          rpcPort: 8545,
+          p2pPort: 21000,
+          raftPort: 50400,
+          wsPort: 8645,
+        },
+        tm: {
+          p2pPort: 9000,
+          thirdPartyPort: 9080,
+        },
+      },
     })
     names.forEach((name) => {
       config.network.name = name
@@ -310,6 +378,19 @@ describe('creates qdata directory for docker network', () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
       deployment: 'docker-compose',
+      containerPorts: {
+        dockerSubnet: 'docker_subnet',
+        quorum: {
+          rpcPort: 8545,
+          p2pPort: 21000,
+          raftPort: 50400,
+          wsPort: 8645,
+        },
+        tm: {
+          p2pPort: 9000,
+          thirdPartyPort: 9080,
+        },
+      },
     })
     createQdataDirectory(config)
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/logs'), true)
