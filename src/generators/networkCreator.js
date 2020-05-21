@@ -34,7 +34,7 @@ export function createNetwork(config) {
 }
 
 export function generateResourcesRemote(config) {
-  info('Generating network resources in docker container...')
+  info('Pulling latest docker container and generating network resources...')
   const configDir = joinPath(cwd(), config.network.configDir)
   const networkPath = getFullNetworkPath(config)
   const remoteOutputDir = joinPath(networkPath, 'out', 'config')
@@ -57,8 +57,9 @@ export function generateResourcesRemote(config) {
   then
     exit $EXIT_CODE
   fi
+
   docker pull quorumengineering/qubernetes:latest
-  
+
   docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./${initScript} --action=update qubernetes.yaml 2>&1
   find . -type f -name 'UTC*' -execdir mv {} key ';'
   `
