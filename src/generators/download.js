@@ -84,7 +84,7 @@ export const LATEST_TESSERA = '0.10.5'
 export const LATEST_TESSERA_J8 = '0.10.2'
 export const LATEST_CAKESHOP = '0.11.0'
 export const LATEST_CAKESHOP_J8 = '0.11.0-J8'
-export const LATEST_ISTANBUL_TOOLS = '1.0.2'
+export const LATEST_ISTANBUL_TOOLS = '1.0.3'
 export const LATEST_BOOTNODE = '1.9.7'
 
 export const BINARIES = {
@@ -152,11 +152,11 @@ export const BINARIES = {
   },
 
   istanbul: {
-    '1.0.2': {
+    '1.0.3': {
       name: 'istanbul',
       url: {
-        darwin: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.2_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.2_linux_amd64.tar.gz',
+        darwin: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.3_darwin_amd64.tar.gz',
+        linux: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.3_linux_amd64.tar.gz',
       },
       type: 'tar.gz',
       files: [
