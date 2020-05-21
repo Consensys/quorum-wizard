@@ -340,6 +340,10 @@ describe('creates qdata directory for docker network', () => {
         joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'tm.pub'),
         createNetPath(config, `qdata/c${i}/tm.pub`),
       )
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', 'tessera-config-9.0.json'),
+        joinPath(createNetPath(config, `qdata/c${i}`), 'tessera-config-09.json'),
+      )
     }
   })
 })
