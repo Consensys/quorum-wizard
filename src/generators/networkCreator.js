@@ -147,7 +147,7 @@ export function createQdataDirectory(config) {
           peerList,
         )
         writeJsonFile(tmDir, `tessera-config-09-${nodeNumber}.json`, tesseraConfig)
-      } else if (isDocker(config.network.deployment)) {
+      } else {
         copyFile(joinPath(configPath, 'tessera-config-9.0.json'), joinPath(tmDir, 'tessera-config-09.json'))
       }
     }
