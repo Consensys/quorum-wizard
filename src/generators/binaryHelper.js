@@ -9,6 +9,8 @@ import {
 import {
   BINARIES,
   downloadIfMissing,
+  LATEST_BOOTNODE,
+  LATEST_ISTANBUL_TOOLS,
 } from './download'
 import { disableIfWrongJavaVersion } from '../questions/validators'
 import { info } from '../utils/log'
@@ -26,11 +28,11 @@ export async function downloadAndCopyBinaries(config) {
   const downloads = []
 
   if (isIstanbul(consensus)) {
-    downloads.push(downloadIfMissing('istanbul', '1.0.1'))
+    downloads.push(downloadIfMissing('istanbul', LATEST_ISTANBUL_TOOLS))
   }
 
   if (generateKeys) {
-    downloads.push(downloadIfMissing('bootnode', '1.8.27'))
+    downloads.push(downloadIfMissing('bootnode', LATEST_BOOTNODE))
   }
 
   if (quorumVersion !== 'PATH') {
@@ -130,11 +132,11 @@ export function pathToCakeshop(version) {
 }
 
 export function pathToIstanbulTools() {
-  const binary = BINARIES.istanbul['1.0.1']
-  return joinPath(wizardHomeDir(), 'bin', 'istanbul', '1.0.1', binary.name)
+  const binary = BINARIES.istanbul[LATEST_ISTANBUL_TOOLS]
+  return joinPath(wizardHomeDir(), 'bin', 'istanbul', LATEST_ISTANBUL_TOOLS, binary.name)
 }
 
 export function pathToBootnode() {
-  const binary = BINARIES.bootnode['1.8.27']
-  return joinPath(wizardHomeDir(), 'bin', 'bootnode', '1.8.27', binary.name)
+  const binary = BINARIES.bootnode[LATEST_BOOTNODE]
+  return joinPath(wizardHomeDir(), 'bin', 'bootnode', LATEST_BOOTNODE, binary.name)
 }
