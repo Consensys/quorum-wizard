@@ -19,7 +19,6 @@ import {
 } from '../utils/subnetUtils'
 
 export function buildDockerCompose(config) {
-  const networkName = config.network.name
   const hasTessera = isTessera(config.network.transactionManager)
   const hasCakeshop = isCakeshop(config.network.cakeshop)
 
@@ -39,14 +38,14 @@ export function buildDockerCompose(config) {
   )) : ''
 
   let services = config.nodes.map((node, i) => {
-    let allServices = buildNodeService(config, networkName, node, i, hasTessera)
+    let allServices = buildNodeService(config, node, i, hasTessera)
     if (hasTessera) {
-      allServices = [allServices, buildTesseraService(config, networkName, node, i)].join('')
+      allServices = [allServices, buildTesseraService(config, node, i)].join('')
     }
     return allServices
   })
   if (hasCakeshop) {
-    services = [services.join(''), buildCakeshopService(config, networkName)]
+    services = [services.join(''), buildCakeshopService(config)]
   }
 
   return [
@@ -55,7 +54,7 @@ export function buildDockerCompose(config) {
     formatNewLine(cakeshopDefinitions),
     'services:',
     services.join(''),
-    buildEndService(config, networkName),
+    buildEndService(config),
   ].join('')
 }
 
@@ -104,7 +103,8 @@ QUORUM_GETH_ARGS="--allow-insecure-unlock"`)
   return env
 }
 
-function buildNodeService(config, networkName, node, i, hasTessera) {
+function buildNodeService(config, node, i, hasTessera) {
+  const networkName = config.network.name
   const txManager = hasTessera
     ? `depends_on:
       - txmanager${i + 1}
@@ -130,7 +130,8 @@ function buildNodeService(config, networkName, node, i, hasTessera) {
         ipv4_address: ${node.quorum.ip}`
 }
 
-function buildTesseraService(config, networkName, node, i) {
+function buildTesseraService(config, node, i) {
+  const networkName = config.network.name
   return `
   txmanager${i + 1}:
     << : *tx-manager-def
@@ -147,7 +148,8 @@ function buildTesseraService(config, networkName, node, i) {
       - NODE_ID=${i + 1}`
 }
 
-function buildCakeshopService(config, networkName) {
+function buildCakeshopService(config) {
+  const networkName = config.network.name
   return `
   cakeshop:
     << : *cakeshop-def
@@ -162,7 +164,8 @@ function buildCakeshopService(config, networkName) {
         ipv4_address: ${cidrhost(config.containerPorts.dockerSubnet, 2)}`
 }
 
-function buildEndService(config, networkName) {
+function buildEndService(config) {
+  const networkName = config.network.name
   return `
 networks:
   ${networkName}-net:

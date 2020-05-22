@@ -20,6 +20,19 @@ const baseNetwork = {
   cakeshop: 'none',
 }
 
+const containerPortInfo = {
+  quorum: {
+    rpcPort: 8545,
+    p2pPort: 21000,
+    raftPort: 50400,
+    wsPort: 8645,
+  },
+  tm: {
+    p2pPort: 9000,
+    thirdPartyPort: 9080,
+  },
+}
+
 test('creates quickstart config', () => {
   const config = createConfigFromAnswers({})
   expect(config).toMatchSnapshot()
@@ -58,16 +71,7 @@ test('creates 7nodes istanbul docker config', () => {
     deployment: 'docker-compose',
     containerPorts: {
       dockerSubnet: 'docker_subnet',
-      quorum: {
-        rpcPort: 8545,
-        p2pPort: 21000,
-        raftPort: 50400,
-        wsPort: 8645,
-      },
-      tm: {
-        p2pPort: 9000,
-        thirdPartyPort: 9080,
-      },
+      ...containerPortInfo,
     },
   })
   expect(config).toMatchSnapshot()
@@ -82,16 +86,7 @@ test('creates 5nodes raft no-TM cakeshop docker config', () => {
     cakeshop: LATEST_CAKESHOP,
     containerPorts: {
       dockerSubnet: 'docker_subnet',
-      quorum: {
-        rpcPort: 8545,
-        p2pPort: 21000,
-        raftPort: 50400,
-        wsPort: 8645,
-      },
-      tm: {
-        p2pPort: 9000,
-        thirdPartyPort: 9080,
-      },
+      ...containerPortInfo,
     },
   })
   expect(config).toMatchSnapshot()
@@ -105,16 +100,7 @@ test('creates 7nodes istanbul kubernetes config', () => {
     deployment: 'kubernetes',
     containerPorts: {
       dockerSubnet: '',
-      quorum: {
-        rpcPort: 8545,
-        p2pPort: 21000,
-        raftPort: 50400,
-        wsPort: 8645,
-      },
-      tm: {
-        p2pPort: 9000,
-        thirdPartyPort: 9080,
-      },
+      ...containerPortInfo,
     },
   })
   expect(config).toMatchSnapshot()
@@ -131,16 +117,7 @@ test('creates 7nodes raft kubernetes custom config', () => {
     customizePorts: false,
     containerPorts: {
       dockerSubnet: '',
-      quorum: {
-        rpcPort: 8545,
-        p2pPort: 21000,
-        raftPort: 50400,
-        wsPort: 8645,
-      },
-      tm: {
-        p2pPort: 9000,
-        thirdPartyPort: 9080,
-      },
+      ...containerPortInfo,
     },
   })
   expect(config).toMatchSnapshot()
@@ -193,16 +170,7 @@ test('creates 6nodes raft custom docker config', () => {
     customizePorts: false,
     containerPorts: {
       dockerSubnet: 'docker_subnet',
-      quorum: {
-        rpcPort: 8545,
-        p2pPort: 21000,
-        raftPort: 50400,
-        wsPort: 8645,
-      },
-      tm: {
-        p2pPort: 9000,
-        thirdPartyPort: 9080,
-      },
+      ...containerPortInfo,
     },
   })
   expect(config).toMatchSnapshot()
@@ -221,16 +189,7 @@ test('creates 7nodes istanbul no-TM custom docker config', () => {
     customizePorts: false,
     containerPorts: {
       dockerSubnet: 'docker_subnet',
-      quorum: {
-        rpcPort: 8545,
-        p2pPort: 21000,
-        raftPort: 50400,
-        wsPort: 8645,
-      },
-      tm: {
-        p2pPort: 9000,
-        thirdPartyPort: 9080,
-      },
+      ...containerPortInfo,
     },
   })
   expect(config).toMatchSnapshot()

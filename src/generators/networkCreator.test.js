@@ -56,6 +56,19 @@ const baseNetwork = {
   deployment: 'bash',
 }
 
+const containerPortInfo = {
+  quorum: {
+    rpcPort: 8545,
+    p2pPort: 21000,
+    raftPort: 50400,
+    wsPort: 8645,
+  },
+  tm: {
+    p2pPort: 9000,
+    thirdPartyPort: 9080,
+  },
+}
+
 describe('creates network and config from answers', () => {
   it('rejects invalid network names', () => {
     const names = ['', '.', '..', '\0', '/']
@@ -115,16 +128,7 @@ describe('creates network resources with remote qubernetes container from answer
       deployment: 'docker-compose',
       containerPorts: {
         dockerSubnet: 'docker_subnet',
-        quorum: {
-          rpcPort: 8545,
-          p2pPort: 21000,
-          raftPort: 50400,
-          wsPort: 8645,
-        },
-        tm: {
-          p2pPort: 9000,
-          thirdPartyPort: 9080,
-        },
+        ...containerPortInfo,
       },
     })
     generateResourcesRemote(config)
@@ -141,16 +145,7 @@ describe('creates network resources with remote qubernetes container from answer
       deployment: 'docker-compose',
       containerPorts: {
         dockerSubnet: 'docker_subnet',
-        quorum: {
-          rpcPort: 8545,
-          p2pPort: 21000,
-          raftPort: 50400,
-          wsPort: 8645,
-        },
-        tm: {
-          p2pPort: 9000,
-          thirdPartyPort: 9080,
-        },
+        ...containerPortInfo,
       },
     })
     generateResourcesRemote(config)
@@ -164,16 +159,7 @@ describe('creates network resources with remote qubernetes container from answer
       deployment: 'kubernetes',
       containerPorts: {
         dockerSubnet: '',
-        quorum: {
-          rpcPort: 8545,
-          p2pPort: 21000,
-          raftPort: 50400,
-          wsPort: 8645,
-        },
-        tm: {
-          p2pPort: 9000,
-          thirdPartyPort: 9080,
-        },
+        ...containerPortInfo,
       },
     })
     generateResourcesRemote(config)
@@ -190,16 +176,7 @@ describe('creates network resources with remote qubernetes container from answer
       generateKeys: true,
       containerPorts: {
         dockerSubnet: '',
-        quorum: {
-          rpcPort: 8545,
-          p2pPort: 21000,
-          raftPort: 50400,
-          wsPort: 8645,
-        },
-        tm: {
-          p2pPort: 9000,
-          thirdPartyPort: 9080,
-        },
+        ...containerPortInfo,
       },
     })
     generateResourcesRemote(config)
@@ -214,16 +191,7 @@ describe('creates network resources with remote qubernetes container from answer
       deployment: 'docker-compose',
       containerPorts: {
         dockerSubnet: 'docker_subnet',
-        quorum: {
-          rpcPort: 8545,
-          p2pPort: 21000,
-          raftPort: 50400,
-          wsPort: 8645,
-        },
-        tm: {
-          p2pPort: 9000,
-          thirdPartyPort: 9080,
-        },
+        ...containerPortInfo,
       },
     })
 
@@ -380,16 +348,7 @@ describe('creates qdata directory for docker network', () => {
       deployment: 'docker-compose',
       containerPorts: {
         dockerSubnet: 'docker_subnet',
-        quorum: {
-          rpcPort: 8545,
-          p2pPort: 21000,
-          raftPort: 50400,
-          wsPort: 8645,
-        },
-        tm: {
-          p2pPort: 9000,
-          thirdPartyPort: 9080,
-        },
+        ...containerPortInfo,
       },
     })
     createQdataDirectory(config)
