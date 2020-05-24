@@ -48,10 +48,10 @@ To explore the features of Quorum and deploy a private contract, follow the inst
 
 ## Troubleshooting
 
-**EACCES error when doing global npm install**:
+ + **EACCES error when doing global npm install**:
 
-- Sometimes npm is installed in a location where the user doesn't have write permissions. On Mac, installing via [Homebrew](https://brew.sh) usually works better than the standalone installer.
-- [Here is the recommended solution from NPM](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally)
+    - Sometimes npm is installed in a location where the user doesn't have write permissions. On Mac, installing via [Homebrew](https://brew.sh) usually works better than the standalone installer.
+    - [Here is the recommended solution from NPM](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally)
 
 ## Developing
 Clone this repo to your local machine.
