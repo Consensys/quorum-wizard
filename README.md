@@ -34,17 +34,19 @@ The wizard will then walk you through setting up a network, either using our qui
 
 You can also provide these flags when running quorum-wizard:
 
-* `-q`, `--quickstart`  create 3 node raft network with tessera and cakeshop (no user-input required)
-* `-v`, `--verbose`     Turn on additional logs for debugging
-* `--version`           Show version number
-* `-h`, `--help`        Show help
+| Flags | Effect |
+| - | - |
+| `-q`, `--quickstart` | Create 3 node raft network with tessera and cakeshop (no user-input required) |
+| `-v`, `--verbose` | Turn on additional logs for debugging |
+| `--version` | Show version number |
+| `-h`, `--help` | Show help |
 
+*Note: `npx` is also a way to run npm modules without the need to actually install the module. Due to quorum-wizard needing to download and cache the quorum binaries during network setup, using `npx quorum-wizard` will not work at this time.*
 
-Note: `npx` is also a way to run npm modules without the need to actually install the module. Due to quorum-wizard needing to download and cache the quorum binaries during network setup, using `npx quorum-wizard` will not work at this time.
 
 ## Interacting with the Network
 
-To explore the features of Quorum and deploy a private contract, follow the instructions on [Interacting with the Network](http://docs.goquorum.com/en/latest/Wizard/Interacting/)
+To explore the features of Quorum and deploy a private contract, follow the instructions on [Interacting with the Network](http://docs.goquorum.com/en/latest/Wizard/Interacting/).
 
 ## Troubleshooting
 
