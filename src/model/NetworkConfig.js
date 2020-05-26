@@ -1,15 +1,23 @@
+import cmp from 'semver-compare'
 import { isJava11Plus } from '../utils/execUtils'
+import {
+  LATEST_CAKESHOP,
+  LATEST_CAKESHOP_J8,
+  LATEST_QUORUM,
+  LATEST_TESSERA,
+  LATEST_TESSERA_J8,
+} from '../generators/download'
 
 export function createConfigFromAnswers(answers) {
   const {
     name,
     numberNodes = 3,
     consensus = 'raft',
-    quorumVersion = '2.5.0',
+    quorumVersion = LATEST_QUORUM,
     quorumVersionMore = undefined,
-    transactionManager = isJava11Plus() ? '0.10.4' : '0.10.2',
+    transactionManager = isJava11Plus() ? LATEST_TESSERA : LATEST_TESSERA_J8,
     deployment = 'bash',
-    cakeshop = isJava11Plus() ? '0.11.0' : '0.11.0-J8',
+    cakeshop = isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8,
     generateKeys = false,
     networkId = '10',
     genesisLocation = 'none',
@@ -44,6 +52,7 @@ export function createConfigFromAnswers(answers) {
       deployment,
       cakeshop,
     ),
+    containerPorts: (!isBash(deployment)) ? getContainerPorts() : {},
   }
 }
 
@@ -55,8 +64,8 @@ export function defaultNetworkName(numberNodes, consensus, transactionManager, d
 }
 
 export function generateNodeConfigs(numberNodes, transactionManager, deployment) {
-  const devP2pPort = isKubernetes(deployment) ? 30303 : 21000
-  const rpcPort = isKubernetes(deployment) ? 8545 : 22000
+  const devP2pPort = 21000
+  const rpcPort = 22000
   const wsPort = 23000
   const raftPort = 50401
   const thirdPartyPort = 9081
@@ -64,26 +73,40 @@ export function generateNodeConfigs(numberNodes, transactionManager, deployment)
   const nodes = []
 
   for (let i = 0; i < parseInt(numberNodes, 10); i += 1) {
-    const increment = isKubernetes(deployment) ? 0 : i
     const node = {
       quorum: {
-        ip: isDocker(deployment) ? `172.16.239.1${increment + 1}` : '127.0.0.1',
-        devP2pPort: devP2pPort + increment,
-        rpcPort: rpcPort + increment,
-        wsPort: wsPort + increment,
-        raftPort: raftPort + increment,
+        ip: isDocker(deployment) ? `172.16.239.1${i + 1}` : '127.0.0.1',
+        devP2pPort: devP2pPort + i,
+        rpcPort: rpcPort + i,
+        wsPort: wsPort + i,
+        raftPort: raftPort + i,
       },
     }
     if (isTessera(transactionManager)) {
       node.tm = {
-        ip: isDocker(deployment) ? `172.16.239.10${increment + 1}` : '127.0.0.1',
-        thirdPartyPort: thirdPartyPort + increment,
-        p2pPort: p2pPort + increment,
+        ip: isDocker(deployment) ? `172.16.239.10${i + 1}` : '127.0.0.1',
+        thirdPartyPort: thirdPartyPort + i,
+        p2pPort: p2pPort + i,
       }
     }
     nodes.push(node)
   }
   return nodes
+}
+
+export function getContainerPorts() {
+  return {
+    quorum: {
+      rpcPort: 8545,
+      p2pPort: 21000,
+      raftPort: 50400,
+      wsPort: 8645,
+    },
+    tm: {
+      p2pPort: 9000,
+      thirdPartyPort: 9080,
+    },
+  }
 }
 
 export function isTessera(tessera) {
@@ -112,4 +135,8 @@ export function isRaft(consensus) {
 
 export function isCakeshop(cakeshop) {
   return cakeshop !== 'none'
+}
+
+export function isQuorum260Plus(quorumVersion) {
+  return cmp(quorumVersion, '2.6.0') >= 0
 }

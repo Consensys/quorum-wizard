@@ -15,7 +15,7 @@ x-quorum-def:
   restart: \\"on-failure\\"
   image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
-    test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
+    test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:\${QUORUM_RPC_PORT:-8545}\\"]
     interval: 3s
     timeout: 3s
     retries: 10
@@ -32,7 +32,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:9000/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -44,12 +44,12 @@ x-quorum-def:
       rm -rf $\${DDIR}
       mkdir -p $\${DDIR}
       cp -r /examples/dd$\${NODE_ID}/* $\${DDIR}
-      cat /examples/dd$\${NODE_ID}/permissioned-nodes.json | sed 's/^\\\\(.*\\\\)@.*\\\\?\\\\(.*\\\\)raftport=5040\\\\([0-9]\\\\)\\\\(.*\\\\)$$/\\\\1@172.16.239.1\\\\3:21000?discport=0\\\\&raftport=50400\\\\4/g' > $\${DDIR}/static-nodes.json
+      cp /examples/dd$\${NODE_ID}/permissioned-nodes.json $\${DDIR}/static-nodes.json
       cp $\${DDIR}/static-nodes.json $\${DDIR}/permissioned-nodes.json
       cat $\${DDIR}/static-nodes.json
       GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/genesis.json\\"
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
-      GETH_ARGS_raft=\\"--raft --raftport 50400\\"
+      GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
@@ -63,19 +63,19 @@ x-quorum-def:
         --rpccorsdomain \\"*\\" \\\\
         --rpcvhosts \\"*\\" \\\\
         --rpcaddr 0.0.0.0 \\\\
-        --rpcport 8545 \\\\
+        --rpcport \${QUORUM_RPC_PORT:-8545} \\\\
         --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,\${QUORUM_CONSENSUS:-istanbul} \\\\
         --ws \\\\
         --wsaddr 0.0.0.0 \\\\
         --wsorigins \\"*\\" \\\\
-        --wsport 8645 \\\\
-        --port 21000 \\\\
+        --wsport \${QUORUM_WS_PORT:-8645} \\\\
+        --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
         \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
   expose:
-    - \\"21000\\"
-    - \\"50400\\"
+    - \\"\${QUORUM_P2P_PORT:-21000}\\"
+    - \\"\${QUORUM_RAFT_PORT:-50400}\\"
 x-tx-manager-def:
   &tx-manager-def
   image: \\"\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
@@ -115,74 +115,13 @@ x-tx-manager-def:
 
           echo Config type $\${TESSERA_CONFIG_TYPE}
 
-          #generating the two config flavors
-          cat <<EOF > $\${DDIR}/tessera-config-09.json
-          {
-            \\"useWhiteList\\": false,
-            \\"jdbc\\": {
-              \\"username\\": \\"sa\\",
-              \\"password\\": \\"\\",
-              \\"url\\": \\"jdbc:h2:./$\${DDIR}/db;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=0\\",
-              \\"autoCreateTables\\": true
-            },
-            \\"serverConfigs\\":[
-            {
-              \\"app\\":\\"ThirdParty\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):9080\\",
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"Q2T\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"unix:$\${DDIR}/tm.ipc\\",
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"P2P\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):9000\\",
-              \\"sslConfig\\": {
-                \\"tls\\": \\"OFF\\"
-              },
-              \\"communicationType\\" : \\"REST\\"
-            }
-            ],
-            \\"peer\\": [
-               {
-                   \\"url\\": \\"http://txmanager1:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager2:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager3:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager4:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager5:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager6:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager7:9000\\"
-               }
-            ],
-            \\"keys\\": {
-              \\"passwords\\": [],
-              \\"keyData\\": [
-                {
-                  \\"config\\": $$(cat $\${DDIR}/tm.key),
-                  \\"publicKey\\": \\"$$(cat $\${DDIR}/tm.pub)\\"
-                }
-              ]
-            },
-            \\"alwaysSendTo\\": []
-          }
-      EOF
+          HOSTNAME=$$(hostname -i)
+          sed -i \\"s,%THIS_PRIV_KEY%,$\${DDIR}/tm.key,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s,%THIS_PUB_KEY%,$\${DDIR}/tm.pub,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's,etc/quorum/,,g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's/%QUORUM-NODE\\\\([0-9]\\\\)_SERVICE_HOST%/txmanager\\\\1/g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s/%THIS_SERVICE_HOST%/$\${HOSTNAME}/g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+
           cat $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           java -Xms128M -Xmx128M -jar /tessera/tessera-app.jar -configfile $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           ;;
@@ -192,8 +131,8 @@ x-tx-manager-def:
           ;;
       esac
   expose:
-    - \\"9000\\"
-    - \\"9080\\"
+    - \\"\${TESSERA_P2P_PORT:-9000}\\"
+    - \\"\${TESSERA_3PARTY_PORT:-9080}\\"
 x-cakeshop-def:
   &cakeshop-def
   image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
@@ -319,7 +258,7 @@ x-quorum-def:
   restart: \\"on-failure\\"
   image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
-    test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
+    test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:\${QUORUM_RPC_PORT:-8545}\\"]
     interval: 3s
     timeout: 3s
     retries: 10
@@ -336,7 +275,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:9000/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -348,12 +287,12 @@ x-quorum-def:
       rm -rf $\${DDIR}
       mkdir -p $\${DDIR}
       cp -r /examples/dd$\${NODE_ID}/* $\${DDIR}
-      cat /examples/dd$\${NODE_ID}/permissioned-nodes.json | sed 's/^\\\\(.*\\\\)@.*\\\\?\\\\(.*\\\\)raftport=5040\\\\([0-9]\\\\)\\\\(.*\\\\)$$/\\\\1@172.16.239.1\\\\3:21000?discport=0\\\\&raftport=50400\\\\4/g' > $\${DDIR}/static-nodes.json
+      cp /examples/dd$\${NODE_ID}/permissioned-nodes.json $\${DDIR}/static-nodes.json
       cp $\${DDIR}/static-nodes.json $\${DDIR}/permissioned-nodes.json
       cat $\${DDIR}/static-nodes.json
       GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/genesis.json\\"
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
-      GETH_ARGS_raft=\\"--raft --raftport 50400\\"
+      GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
@@ -367,19 +306,19 @@ x-quorum-def:
         --rpccorsdomain \\"*\\" \\\\
         --rpcvhosts \\"*\\" \\\\
         --rpcaddr 0.0.0.0 \\\\
-        --rpcport 8545 \\\\
+        --rpcport \${QUORUM_RPC_PORT:-8545} \\\\
         --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,\${QUORUM_CONSENSUS:-istanbul} \\\\
         --ws \\\\
         --wsaddr 0.0.0.0 \\\\
         --wsorigins \\"*\\" \\\\
-        --wsport 8645 \\\\
-        --port 21000 \\\\
+        --wsport \${QUORUM_WS_PORT:-8645} \\\\
+        --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
         \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
   expose:
-    - \\"21000\\"
-    - \\"50400\\"
+    - \\"\${QUORUM_P2P_PORT:-21000}\\"
+    - \\"\${QUORUM_RAFT_PORT:-50400}\\"
 x-tx-manager-def:
   &tx-manager-def
   image: \\"\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
@@ -419,74 +358,13 @@ x-tx-manager-def:
 
           echo Config type $\${TESSERA_CONFIG_TYPE}
 
-          #generating the two config flavors
-          cat <<EOF > $\${DDIR}/tessera-config-09.json
-          {
-            \\"useWhiteList\\": false,
-            \\"jdbc\\": {
-              \\"username\\": \\"sa\\",
-              \\"password\\": \\"\\",
-              \\"url\\": \\"jdbc:h2:./$\${DDIR}/db;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=0\\",
-              \\"autoCreateTables\\": true
-            },
-            \\"serverConfigs\\":[
-            {
-              \\"app\\":\\"ThirdParty\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):9080\\",
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"Q2T\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"unix:$\${DDIR}/tm.ipc\\",
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"P2P\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):9000\\",
-              \\"sslConfig\\": {
-                \\"tls\\": \\"OFF\\"
-              },
-              \\"communicationType\\" : \\"REST\\"
-            }
-            ],
-            \\"peer\\": [
-               {
-                   \\"url\\": \\"http://txmanager1:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager2:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager3:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager4:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager5:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager6:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager7:9000\\"
-               }
-            ],
-            \\"keys\\": {
-              \\"passwords\\": [],
-              \\"keyData\\": [
-                {
-                  \\"config\\": $$(cat $\${DDIR}/tm.key),
-                  \\"publicKey\\": \\"$$(cat $\${DDIR}/tm.pub)\\"
-                }
-              ]
-            },
-            \\"alwaysSendTo\\": []
-          }
-      EOF
+          HOSTNAME=$$(hostname -i)
+          sed -i \\"s,%THIS_PRIV_KEY%,$\${DDIR}/tm.key,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s,%THIS_PUB_KEY%,$\${DDIR}/tm.pub,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's,etc/quorum/,,g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's/%QUORUM-NODE\\\\([0-9]\\\\)_SERVICE_HOST%/txmanager\\\\1/g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s/%THIS_SERVICE_HOST%/$\${HOSTNAME}/g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+
           cat $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           java -Xms128M -Xmx128M -jar /tessera/tessera-app.jar -configfile $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           ;;
@@ -496,8 +374,8 @@ x-tx-manager-def:
           ;;
       esac
   expose:
-    - \\"9000\\"
-    - \\"9080\\"
+    - \\"\${TESSERA_P2P_PORT:-9000}\\"
+    - \\"\${TESSERA_3PARTY_PORT:-9080}\\"
 services:
   node1:
     << : *quorum-def
@@ -619,7 +497,7 @@ x-quorum-def:
   restart: \\"on-failure\\"
   image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
-    test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
+    test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:\${QUORUM_RPC_PORT:-8545}\\"]
     interval: 3s
     timeout: 3s
     retries: 10
@@ -636,7 +514,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:9000/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -648,12 +526,12 @@ x-quorum-def:
       rm -rf $\${DDIR}
       mkdir -p $\${DDIR}
       cp -r /examples/dd$\${NODE_ID}/* $\${DDIR}
-      cat /examples/dd$\${NODE_ID}/permissioned-nodes.json | sed 's/^\\\\(.*\\\\)@.*\\\\?\\\\(.*\\\\)raftport=5040\\\\([0-9]\\\\)\\\\(.*\\\\)$$/\\\\1@172.16.239.1\\\\3:21000?discport=0\\\\&raftport=50400\\\\4/g' > $\${DDIR}/static-nodes.json
+      cp /examples/dd$\${NODE_ID}/permissioned-nodes.json $\${DDIR}/static-nodes.json
       cp $\${DDIR}/static-nodes.json $\${DDIR}/permissioned-nodes.json
       cat $\${DDIR}/static-nodes.json
       GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/genesis.json\\"
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
-      GETH_ARGS_raft=\\"--raft --raftport 50400\\"
+      GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
@@ -667,19 +545,19 @@ x-quorum-def:
         --rpccorsdomain \\"*\\" \\\\
         --rpcvhosts \\"*\\" \\\\
         --rpcaddr 0.0.0.0 \\\\
-        --rpcport 8545 \\\\
+        --rpcport \${QUORUM_RPC_PORT:-8545} \\\\
         --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,\${QUORUM_CONSENSUS:-istanbul} \\\\
         --ws \\\\
         --wsaddr 0.0.0.0 \\\\
         --wsorigins \\"*\\" \\\\
-        --wsport 8645 \\\\
-        --port 21000 \\\\
+        --wsport \${QUORUM_WS_PORT:-8645} \\\\
+        --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
         \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
   expose:
-    - \\"21000\\"
-    - \\"50400\\"
+    - \\"\${QUORUM_P2P_PORT:-21000}\\"
+    - \\"\${QUORUM_RAFT_PORT:-50400}\\"
 x-tx-manager-def:
   &tx-manager-def
   image: \\"\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
@@ -719,74 +597,13 @@ x-tx-manager-def:
 
           echo Config type $\${TESSERA_CONFIG_TYPE}
 
-          #generating the two config flavors
-          cat <<EOF > $\${DDIR}/tessera-config-09.json
-          {
-            \\"useWhiteList\\": false,
-            \\"jdbc\\": {
-              \\"username\\": \\"sa\\",
-              \\"password\\": \\"\\",
-              \\"url\\": \\"jdbc:h2:./$\${DDIR}/db;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=0\\",
-              \\"autoCreateTables\\": true
-            },
-            \\"serverConfigs\\":[
-            {
-              \\"app\\":\\"ThirdParty\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):9080\\",
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"Q2T\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"unix:$\${DDIR}/tm.ipc\\",
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"P2P\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):9000\\",
-              \\"sslConfig\\": {
-                \\"tls\\": \\"OFF\\"
-              },
-              \\"communicationType\\" : \\"REST\\"
-            }
-            ],
-            \\"peer\\": [
-               {
-                   \\"url\\": \\"http://txmanager1:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager2:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager3:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager4:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager5:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager6:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager7:9000\\"
-               }
-            ],
-            \\"keys\\": {
-              \\"passwords\\": [],
-              \\"keyData\\": [
-                {
-                  \\"config\\": $$(cat $\${DDIR}/tm.key),
-                  \\"publicKey\\": \\"$$(cat $\${DDIR}/tm.pub)\\"
-                }
-              ]
-            },
-            \\"alwaysSendTo\\": []
-          }
-      EOF
+          HOSTNAME=$$(hostname -i)
+          sed -i \\"s,%THIS_PRIV_KEY%,$\${DDIR}/tm.key,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s,%THIS_PUB_KEY%,$\${DDIR}/tm.pub,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's,etc/quorum/,,g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's/%QUORUM-NODE\\\\([0-9]\\\\)_SERVICE_HOST%/txmanager\\\\1/g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s/%THIS_SERVICE_HOST%/$\${HOSTNAME}/g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+
           cat $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           java -Xms128M -Xmx128M -jar /tessera/tessera-app.jar -configfile $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           ;;
@@ -796,8 +613,8 @@ x-tx-manager-def:
           ;;
       esac
   expose:
-    - \\"9000\\"
-    - \\"9080\\"
+    - \\"\${TESSERA_P2P_PORT:-9000}\\"
+    - \\"\${TESSERA_3PARTY_PORT:-9080}\\"
 x-cakeshop-def:
   &cakeshop-def
   image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
@@ -954,7 +771,7 @@ x-quorum-def:
   restart: \\"on-failure\\"
   image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
-    test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
+    test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:\${QUORUM_RPC_PORT:-8545}\\"]
     interval: 3s
     timeout: 3s
     retries: 10
@@ -971,7 +788,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:9000/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -983,12 +800,12 @@ x-quorum-def:
       rm -rf $\${DDIR}
       mkdir -p $\${DDIR}
       cp -r /examples/dd$\${NODE_ID}/* $\${DDIR}
-      cat /examples/dd$\${NODE_ID}/permissioned-nodes.json | sed 's/^\\\\(.*\\\\)@.*\\\\?\\\\(.*\\\\)raftport=5040\\\\([0-9]\\\\)\\\\(.*\\\\)$$/\\\\1@172.16.239.1\\\\3:21000?discport=0\\\\&raftport=50400\\\\4/g' > $\${DDIR}/static-nodes.json
+      cp /examples/dd$\${NODE_ID}/permissioned-nodes.json $\${DDIR}/static-nodes.json
       cp $\${DDIR}/static-nodes.json $\${DDIR}/permissioned-nodes.json
       cat $\${DDIR}/static-nodes.json
       GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/genesis.json\\"
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
-      GETH_ARGS_raft=\\"--raft --raftport 50400\\"
+      GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
@@ -1002,19 +819,19 @@ x-quorum-def:
         --rpccorsdomain \\"*\\" \\\\
         --rpcvhosts \\"*\\" \\\\
         --rpcaddr 0.0.0.0 \\\\
-        --rpcport 8545 \\\\
+        --rpcport \${QUORUM_RPC_PORT:-8545} \\\\
         --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,\${QUORUM_CONSENSUS:-istanbul} \\\\
         --ws \\\\
         --wsaddr 0.0.0.0 \\\\
         --wsorigins \\"*\\" \\\\
-        --wsport 8645 \\\\
-        --port 21000 \\\\
+        --wsport \${QUORUM_WS_PORT:-8645} \\\\
+        --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
         \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
   expose:
-    - \\"21000\\"
-    - \\"50400\\"
+    - \\"\${QUORUM_P2P_PORT:-21000}\\"
+    - \\"\${QUORUM_RAFT_PORT:-50400}\\"
 x-tx-manager-def:
   &tx-manager-def
   image: \\"\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
@@ -1054,74 +871,13 @@ x-tx-manager-def:
 
           echo Config type $\${TESSERA_CONFIG_TYPE}
 
-          #generating the two config flavors
-          cat <<EOF > $\${DDIR}/tessera-config-09.json
-          {
-            \\"useWhiteList\\": false,
-            \\"jdbc\\": {
-              \\"username\\": \\"sa\\",
-              \\"password\\": \\"\\",
-              \\"url\\": \\"jdbc:h2:./$\${DDIR}/db;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=0\\",
-              \\"autoCreateTables\\": true
-            },
-            \\"serverConfigs\\":[
-            {
-              \\"app\\":\\"ThirdParty\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):9080\\",
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"Q2T\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"unix:$\${DDIR}/tm.ipc\\",
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"P2P\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):9000\\",
-              \\"sslConfig\\": {
-                \\"tls\\": \\"OFF\\"
-              },
-              \\"communicationType\\" : \\"REST\\"
-            }
-            ],
-            \\"peer\\": [
-               {
-                   \\"url\\": \\"http://txmanager1:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager2:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager3:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager4:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager5:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager6:9000\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager7:9000\\"
-               }
-            ],
-            \\"keys\\": {
-              \\"passwords\\": [],
-              \\"keyData\\": [
-                {
-                  \\"config\\": $$(cat $\${DDIR}/tm.key),
-                  \\"publicKey\\": \\"$$(cat $\${DDIR}/tm.pub)\\"
-                }
-              ]
-            },
-            \\"alwaysSendTo\\": []
-          }
-      EOF
+          HOSTNAME=$$(hostname -i)
+          sed -i \\"s,%THIS_PRIV_KEY%,$\${DDIR}/tm.key,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s,%THIS_PUB_KEY%,$\${DDIR}/tm.pub,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's,etc/quorum/,,g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's/%QUORUM-NODE\\\\([0-9]\\\\)_SERVICE_HOST%/txmanager\\\\1/g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s/%THIS_SERVICE_HOST%/$\${HOSTNAME}/g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+
           cat $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           java -Xms128M -Xmx128M -jar /tessera/tessera-app.jar -configfile $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           ;;
@@ -1131,8 +887,8 @@ x-tx-manager-def:
           ;;
       esac
   expose:
-    - \\"9000\\"
-    - \\"9080\\"
+    - \\"\${TESSERA_P2P_PORT:-9000}\\"
+    - \\"\${TESSERA_3PARTY_PORT:-9080}\\"
 services:
   node1:
     << : *quorum-def
@@ -1254,7 +1010,7 @@ x-quorum-def:
   restart: \\"on-failure\\"
   image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
-    test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
+    test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:\${QUORUM_RPC_PORT:-8545}\\"]
     interval: 3s
     timeout: 3s
     retries: 10
@@ -1271,7 +1027,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:9000/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1283,12 +1039,12 @@ x-quorum-def:
       rm -rf $\${DDIR}
       mkdir -p $\${DDIR}
       cp -r /examples/dd$\${NODE_ID}/* $\${DDIR}
-      cat /examples/dd$\${NODE_ID}/permissioned-nodes.json | sed 's/^\\\\(.*\\\\)@.*\\\\?\\\\(.*\\\\)raftport=5040\\\\([0-9]\\\\)\\\\(.*\\\\)$$/\\\\1@172.16.239.1\\\\3:21000?discport=0\\\\&raftport=50400\\\\4/g' > $\${DDIR}/static-nodes.json
+      cp /examples/dd$\${NODE_ID}/permissioned-nodes.json $\${DDIR}/static-nodes.json
       cp $\${DDIR}/static-nodes.json $\${DDIR}/permissioned-nodes.json
       cat $\${DDIR}/static-nodes.json
       GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/genesis.json\\"
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
-      GETH_ARGS_raft=\\"--raft --raftport 50400\\"
+      GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
@@ -1302,19 +1058,19 @@ x-quorum-def:
         --rpccorsdomain \\"*\\" \\\\
         --rpcvhosts \\"*\\" \\\\
         --rpcaddr 0.0.0.0 \\\\
-        --rpcport 8545 \\\\
+        --rpcport \${QUORUM_RPC_PORT:-8545} \\\\
         --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,\${QUORUM_CONSENSUS:-istanbul} \\\\
         --ws \\\\
         --wsaddr 0.0.0.0 \\\\
         --wsorigins \\"*\\" \\\\
-        --wsport 8645 \\\\
-        --port 21000 \\\\
+        --wsport \${QUORUM_WS_PORT:-8645} \\\\
+        --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
         \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
   expose:
-    - \\"21000\\"
-    - \\"50400\\"
+    - \\"\${QUORUM_P2P_PORT:-21000}\\"
+    - \\"\${QUORUM_RAFT_PORT:-50400}\\"
 x-cakeshop-def:
   &cakeshop-def
   image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
@@ -1458,7 +1214,7 @@ x-quorum-def:
   restart: \\"on-failure\\"
   image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
-    test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:8545\\"]
+    test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:\${QUORUM_RPC_PORT:-8545}\\"]
     interval: 3s
     timeout: 3s
     retries: 10
@@ -1475,7 +1231,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:9000/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1487,12 +1243,12 @@ x-quorum-def:
       rm -rf $\${DDIR}
       mkdir -p $\${DDIR}
       cp -r /examples/dd$\${NODE_ID}/* $\${DDIR}
-      cat /examples/dd$\${NODE_ID}/permissioned-nodes.json | sed 's/^\\\\(.*\\\\)@.*\\\\?\\\\(.*\\\\)raftport=5040\\\\([0-9]\\\\)\\\\(.*\\\\)$$/\\\\1@172.16.239.1\\\\3:21000?discport=0\\\\&raftport=50400\\\\4/g' > $\${DDIR}/static-nodes.json
+      cp /examples/dd$\${NODE_ID}/permissioned-nodes.json $\${DDIR}/static-nodes.json
       cp $\${DDIR}/static-nodes.json $\${DDIR}/permissioned-nodes.json
       cat $\${DDIR}/static-nodes.json
       GENESIS_FILE=\\"/examples/dd$\${NODE_ID}/genesis.json\\"
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
-      GETH_ARGS_raft=\\"--raft --raftport 50400\\"
+      GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
@@ -1506,19 +1262,19 @@ x-quorum-def:
         --rpccorsdomain \\"*\\" \\\\
         --rpcvhosts \\"*\\" \\\\
         --rpcaddr 0.0.0.0 \\\\
-        --rpcport 8545 \\\\
+        --rpcport \${QUORUM_RPC_PORT:-8545} \\\\
         --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,\${QUORUM_CONSENSUS:-istanbul} \\\\
         --ws \\\\
         --wsaddr 0.0.0.0 \\\\
         --wsorigins \\"*\\" \\\\
-        --wsport 8645 \\\\
-        --port 21000 \\\\
+        --wsport \${QUORUM_WS_PORT:-8645} \\\\
+        --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
         \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
   expose:
-    - \\"21000\\"
-    - \\"50400\\"
+    - \\"\${QUORUM_P2P_PORT:-21000}\\"
+    - \\"\${QUORUM_RAFT_PORT:-50400}\\"
 services:
   node1:
     << : *quorum-def

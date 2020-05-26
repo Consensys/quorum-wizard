@@ -27,12 +27,6 @@ export async function downloadIfMissing(name, version) {
     case 'quorum':
       binaryInfo = createQuorumBinaryInfo(version)
       break
-    case 'istanbul':
-      binaryInfo = createIstanbulBinaryInfo(version)
-      break
-    case 'bootnode':
-      binaryInfo = createBootnodeBinaryInfo(version)
-      break
     default:
       binaryInfo = BINARIES[name][version]
   }
@@ -98,6 +92,14 @@ export function getPlatformSpecificUrl({ url }) {
   return platformUrl
 }
 
+export const LATEST_QUORUM = '2.6.0'
+export const LATEST_TESSERA = '0.10.5'
+export const LATEST_TESSERA_J8 = '0.10.2'
+export const LATEST_CAKESHOP = '0.11.0'
+export const LATEST_CAKESHOP_J8 = '0.11.0-J8'
+export const LATEST_ISTANBUL_TOOLS = '1.0.3'
+export const LATEST_BOOTNODE = '1.9.7'
+
 export function createQuorumBinaryInfo(version) {
   return {
     name: 'geth',
@@ -113,36 +115,14 @@ export function createQuorumBinaryInfo(version) {
   }
 }
 
-export function createIstanbulBinaryInfo(version) {
-  return {
-    name: 'istanbul',
-    url: {
-      darwin: `https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_${version}_darwin_amd64.tar.gz`,
-      linux: `https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_${version}_linux_amd64.tar.gz`,
-    },
-    type: 'tar.gz',
-    files: [
-      'istanbul',
-    ],
-  }
-}
-
-export function createBootnodeBinaryInfo(version) {
-  return {
-    name: 'bootnode',
-    url: {
-      darwin: `https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_${version}_darwin_amd64.tar.gz`,
-      linux: `https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_${version}_linux_amd64.tar.gz`,
-    },
-    type: 'tar.gz',
-    files: [
-      'bootnode',
-    ],
-  }
-}
-
 export const BINARIES = {
   tessera: {
+    '0.10.5': {
+      name: 'tessera-app.jar',
+      description: 'Tessera 0.10.5',
+      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.5/tessera-app-0.10.5-app.jar',
+      type: 'jar',
+    },
     '0.10.4': {
       name: 'tessera-app.jar',
       description: 'Tessera 0.10.4',
@@ -169,6 +149,34 @@ export const BINARIES = {
       description: 'Cakeshop 0.11.0-J8',
       url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0/cakeshop-0.11.0-J8.war',
       type: 'jar8',
+    },
+  },
+
+  istanbul: {
+    '1.0.3': {
+      name: 'istanbul',
+      url: {
+        darwin: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.3_darwin_amd64.tar.gz',
+        linux: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.3_linux_amd64.tar.gz',
+      },
+      type: 'tar.gz',
+      files: [
+        'istanbul',
+      ],
+    },
+  },
+
+  bootnode: {
+    '1.9.7': {
+      name: 'bootnode',
+      url: {
+        darwin: 'https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v1.9.7_darwin_amd64.tar.gz',
+        linux: 'https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v1.9.7_linux_amd64.tar.gz',
+      },
+      type: 'tar.gz',
+      files: [
+        'bootnode',
+      ],
     },
   },
 }

@@ -6,6 +6,9 @@ import {
 import {
   getPlatformSpecificUrl,
   downloadIfMissing,
+  LATEST_QUORUM,
+  LATEST_TESSERA,
+  LATEST_ISTANBUL_TOOLS,
 } from './download'
 import {
   cwd,
@@ -66,14 +69,14 @@ const multiplePlatform = {
 describe('tests download if missing function', () => {
   it('istanbul that exists', () => {
     exists.mockReturnValue(true)
-    downloadIfMissing('istanbul', '1.0.1')
+    downloadIfMissing('istanbul', LATEST_ISTANBUL_TOOLS)
   })
   it('quorum that exists', () => {
     exists.mockReturnValue(true)
-    downloadIfMissing('quorum', '2.5.0')
+    downloadIfMissing('quorum', LATEST_QUORUM)
   })
   it('tessera that exists', () => {
     exists.mockReturnValue(true)
-    downloadIfMissing('tessera', '0.10.2')
+    downloadIfMissing('tessera', LATEST_TESSERA)
   })
 })

@@ -13,6 +13,14 @@ import {
   isRaft,
   isKubernetes,
 } from '../model/NetworkConfig'
+import { isJava11Plus } from '../utils/execUtils'
+import {
+  LATEST_CAKESHOP,
+  LATEST_CAKESHOP_J8,
+  LATEST_QUORUM,
+  LATEST_TESSERA,
+  LATEST_TESSERA_J8,
+} from '../generators/download'
 
 
 export const INITIAL_MODE = {
@@ -149,14 +157,21 @@ export const NETWORK_NAME = {
   type: 'input',
   name: 'name',
   message: 'What would you like to call this network?',
+  validate: (input) => input.trim() !== '' || 'Network name must not be blank.',
   default: (answers) => defaultNetworkName(answers.numberNodes,
     answers.consensus,
     answers.transactionManager,
     answers.deployment),
 }
 
-export const QUICKSTART_QUESTIONS = []
-export const SIMPLE_QUESTIONS = [
+export const NETWORK_CONFIRM = {
+  type: 'confirm',
+  name: 'overwrite',
+  message: (answers) => `A network with the name '${answers.name}' already exists. Do you want to overwrite it?`,
+  default: false,
+}
+
+export const QUESTIONS = [
   DEPLOYMENT_TYPE,
   CONSENSUS_MODE,
   NUMBER_NODES,
@@ -164,12 +179,43 @@ export const SIMPLE_QUESTIONS = [
   QUORUM_ALL_VERSIONS,
   TRANSACTION_MANAGER,
   CAKESHOP,
-  NETWORK_NAME,
-]
-export const CUSTOM_QUESTIONS = [
-  ...SIMPLE_QUESTIONS,
   KEY_GENERATION,
   NETWORK_ID,
   // GENESIS_LOCATION,
+  NETWORK_NAME,
   CUSTOMIZE_PORTS,
 ]
+
+export const QUICKSTART_ANSWERS = {
+  name: '3-nodes-raft-tessera-bash',
+  numberNodes: 3,
+  consensus: 'raft',
+  quorumVersion: LATEST_QUORUM,
+  transactionManager: isJava11Plus() ? LATEST_TESSERA : LATEST_TESSERA_J8,
+  deployment: 'bash',
+  cakeshop: isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8,
+  generateKeys: false,
+  networkId: '10',
+  customizePorts: false,
+}
+
+export const SIMPLE_ANSWERS = {
+  generateKeys: false,
+  networkId: '10',
+  customizePorts: false,
+}
+
+export const CUSTOM_ANSWERS = {}
+
+export function getPrefilledAnswersForMode(mode) {
+  switch (mode) {
+    case 'quickstart':
+      return QUICKSTART_ANSWERS
+    case 'simple':
+      return SIMPLE_ANSWERS
+    case 'custom':
+      return CUSTOM_ANSWERS
+    default:
+      throw new Error(`Unknown option: ${mode}`)
+  }
+}

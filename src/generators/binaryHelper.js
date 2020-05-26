@@ -5,16 +5,14 @@ import {
   isIstanbul,
   isTessera,
   isKubernetes,
-  isDocker,
 } from '../model/NetworkConfig'
 import {
   BINARIES,
   createQuorumBinaryInfo,
-  createIstanbulBinaryInfo,
-  createBootnodeBinaryInfo,
   downloadIfMissing,
-  // getVersions,
   getVersions,
+  LATEST_BOOTNODE,
+  LATEST_ISTANBUL_TOOLS,
 } from './download'
 import { disableIfWrongJavaVersion } from '../questions/validators'
 import { info } from '../utils/log'
@@ -22,42 +20,33 @@ import { joinPath } from '../utils/pathUtils'
 
 // This method could be improved, but right now it tries to:
 // a. Cache downloads
-// b. Only download if necessary for keygen or istanbul
-// c. Don't download if using docker (except stuff for keygen/istanbul)
+// b. Only download if necessary for bash deployments
 export async function downloadAndCopyBinaries(config) {
   info('Downloading dependencies...')
   const {
-    transactionManager, cakeshop, deployment, generateKeys, quorumVersion, consensus,
+    transactionManager, cakeshop, generateKeys, quorumVersion, consensus,
   } = config.network
-  const bash = isBash(deployment)
-  const docker = isDocker(deployment)
-  const tessera = isTessera(transactionManager)
-  const isDockerButNeedsBinaries = docker && generateKeys && !tessera
-  const kubernetes = isKubernetes(deployment)
+
   const downloads = []
 
-  // needed no matter what if using istanbul to generate genesis
-  if (isIstanbul(consensus) && !kubernetes) {
-    // const version = await getLatestIstanbul()
-    downloads.push(downloadIfMissing('istanbul', 'v1.0.1'))
+  if (isIstanbul(consensus)) {
+    downloads.push(downloadIfMissing('istanbul', LATEST_ISTANBUL_TOOLS))
   }
 
-  if (bash || isDockerButNeedsBinaries) {
-    if (generateKeys) {
-      downloads.push(downloadIfMissing('bootnode', 'v1.8.27'))
-    }
+  if (generateKeys) {
+    downloads.push(downloadIfMissing('bootnode', LATEST_BOOTNODE))
+  }
 
-    if (quorumVersion !== 'PATH') {
-      downloads.push(downloadIfMissing('quorum', quorumVersion))
-    }
-    const tesseraVersion = transactionManager
-    if (tesseraVersion !== 'PATH' && isTessera(tesseraVersion)) {
-      downloads.push(downloadIfMissing('tessera', tesseraVersion))
-    }
+  if (quorumVersion !== 'PATH') {
+    downloads.push(downloadIfMissing('quorum', quorumVersion))
+  }
+  const tesseraVersion = transactionManager
+  if (tesseraVersion !== 'PATH' && isTessera(tesseraVersion)) {
+    downloads.push(downloadIfMissing('tessera', tesseraVersion))
+  }
 
-    if (!docker && cakeshop !== 'none') {
-      downloads.push(downloadIfMissing('cakeshop', cakeshop))
-    }
+  if (cakeshop !== 'none') {
+    downloads.push(downloadIfMissing('cakeshop', cakeshop))
   }
 
   await Promise.all(downloads)
@@ -100,16 +89,6 @@ export async function getAllGethChoices(deployment) {
     choices = choices.concat(getGethOnPath())
   }
   return choices
-}
-
-export async function getLatestIstanbul() {
-  const choices = await getVersions('istanbul-tools/istanbul')
-  return choices[0]
-}
-
-export async function getLatestBootnode() {
-  const choices = await getVersions('geth-bootnode/bootnode')
-  return choices[0]
 }
 
 export function getDownloadableTesseraChoices(deployment) {
@@ -165,11 +144,11 @@ export function pathToCakeshop(version) {
 }
 
 export function pathToIstanbulTools() {
-  const binary = createIstanbulBinaryInfo('v1.0.1')
-  return joinPath(wizardHomeDir(), 'bin', 'istanbul', 'v1.0.1', binary.name)
+  const binary = BINARIES.istanbul[LATEST_ISTANBUL_TOOLS]
+  return joinPath(wizardHomeDir(), 'bin', 'istanbul', LATEST_ISTANBUL_TOOLS, binary.name)
 }
 
 export function pathToBootnode() {
-  const binary = createBootnodeBinaryInfo('v1.8.27')
-  return joinPath(wizardHomeDir(), 'bin', 'bootnode', 'v1.8.27', binary.name)
+  const binary = BINARIES.bootnode[LATEST_BOOTNODE]
+  return joinPath(wizardHomeDir(), 'bin', 'bootnode', LATEST_BOOTNODE, binary.name)
 }
