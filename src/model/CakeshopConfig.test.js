@@ -1,10 +1,6 @@
 import { createConfigFromAnswers } from './NetworkConfig'
 import { generateCakeshopConfig } from './CakeshopConfig'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
-import { cidrhost } from '../utils/subnetUtils'
-
-jest.mock('../utils/subnetUtils')
-cidrhost.mockReturnValue('172.16.239.11')
 
 const baseNetwork = {
   numberNodes: '3',
@@ -15,10 +11,27 @@ const baseNetwork = {
   cakeshop: LATEST_CAKESHOP,
 }
 
+const containerPortInfo = {
+  quorum: {
+    rpcPort: 8545,
+    p2pPort: 21000,
+    raftPort: 50400,
+    wsPort: 8645,
+  },
+  tm: {
+    p2pPort: 9000,
+    thirdPartyPort: 9080,
+  },
+}
+
 test('creates 3nodes raft dockerFile tessera cakeshop', () => {
   const config = createConfigFromAnswers({
     ...baseNetwork,
     deployment: 'docker-compose',
+    containerPorts: {
+      dockerSubnet: '172.16.239.0/24',
+      ...containerPortInfo,
+    },
   })
   const cakeshop = generateCakeshopConfig(config)
   expect(cakeshop).toMatchSnapshot()
@@ -38,6 +51,10 @@ test('creates 3nodes raft dockerFile no tessera cakeshop', () => {
     ...baseNetwork,
     transactionManager: 'none',
     deployment: 'docker-compose',
+    containerPorts: {
+      dockerSubnet: '172.16.239.0/24',
+      ...containerPortInfo,
+    },
   })
   const cakeshop = generateCakeshopConfig(config)
   expect(cakeshop).toMatchSnapshot()

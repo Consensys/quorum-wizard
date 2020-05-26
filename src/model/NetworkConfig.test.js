@@ -1,12 +1,9 @@
 import { createConfigFromAnswers, isQuorum260Plus } from './NetworkConfig'
 import { isJava11Plus } from '../utils/execUtils'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
-import { cidrhost } from '../utils/subnetUtils'
 
-jest.mock('../utils/subnetUtils')
 jest.mock('../utils/execUtils')
 isJava11Plus.mockReturnValue(true)
-cidrhost.mockReturnValue('docker_ip')
 
 // rather than having big test jsons that we match to, we can just use snapshot
 // tests, where it will compare against the last time you ran and if it's
@@ -70,7 +67,7 @@ test('creates 7nodes istanbul docker config', () => {
     consensus: 'istanbul',
     deployment: 'docker-compose',
     containerPorts: {
-      dockerSubnet: 'docker_subnet',
+      dockerSubnet: '172.16.239.0/24',
       ...containerPortInfo,
     },
   })
@@ -85,7 +82,7 @@ test('creates 5nodes raft no-TM cakeshop docker config', () => {
     deployment: 'docker-compose',
     cakeshop: LATEST_CAKESHOP,
     containerPorts: {
-      dockerSubnet: 'docker_subnet',
+      dockerSubnet: '172.16.239.0/24',
       ...containerPortInfo,
     },
   })
@@ -169,7 +166,7 @@ test('creates 6nodes raft custom docker config', () => {
     genesisLocation: '',
     customizePorts: false,
     containerPorts: {
-      dockerSubnet: 'docker_subnet',
+      dockerSubnet: '172.16.239.0/24',
       ...containerPortInfo,
     },
   })
@@ -188,7 +185,7 @@ test('creates 7nodes istanbul no-TM custom docker config', () => {
     genesisLocation: '',
     customizePorts: false,
     containerPorts: {
-      dockerSubnet: 'docker_subnet',
+      dockerSubnet: '172.16.239.0/24',
       ...containerPortInfo,
     },
   })

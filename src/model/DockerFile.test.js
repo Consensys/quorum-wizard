@@ -1,10 +1,6 @@
 import { buildDockerCompose } from '../generators/dockerHelper'
 import { createConfigFromAnswers } from './NetworkConfig'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
-import { cidrhost } from '../utils/subnetUtils'
-
-jest.mock('../utils/subnetUtils')
-cidrhost.mockReturnValue('docker_ip')
 
 const baseNetwork = {
   numberNodes: '3',
@@ -14,7 +10,7 @@ const baseNetwork = {
   deployment: 'bash',
   cakeshop: 'none',
   containerPorts: {
-    dockerSubnet: 'docker_subnet',
+    dockerSubnet: '172.16.239.0/24',
     quorum: {
       rpcPort: 8545,
       p2pPort: 21000,

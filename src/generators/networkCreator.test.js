@@ -33,7 +33,6 @@ import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { buildKubernetesResource } from '../model/ResourceConfig'
 import { executeSync } from '../utils/execUtils'
 import { LATEST_QUORUM, LATEST_TESSERA } from './download'
-import { cidrhost } from '../utils/subnetUtils'
 
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
@@ -41,11 +40,10 @@ jest.mock('../utils/log')
 jest.mock('../model/ConsensusConfig')
 jest.mock('../model/ResourceConfig')
 jest.mock('./keyGen')
-jest.mock('../utils/subnetUtils')
+
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 buildKubernetesResource.mockReturnValue('qubernetes')
-cidrhost.mockReturnValue('docker_ip')
 
 const baseNetwork = {
   numberNodes: '5',
@@ -127,7 +125,7 @@ describe('creates network resources with remote qubernetes container from answer
       ...baseNetwork,
       deployment: 'docker-compose',
       containerPorts: {
-        dockerSubnet: 'docker_subnet',
+        dockerSubnet: '172.16.239.0/24',
         ...containerPortInfo,
       },
     })
@@ -144,7 +142,7 @@ describe('creates network resources with remote qubernetes container from answer
       generateKeys: true,
       deployment: 'docker-compose',
       containerPorts: {
-        dockerSubnet: 'docker_subnet',
+        dockerSubnet: '172.16.239.0/24',
         ...containerPortInfo,
       },
     })
@@ -190,7 +188,7 @@ describe('creates network resources with remote qubernetes container from answer
       generateKeys: true,
       deployment: 'docker-compose',
       containerPorts: {
-        dockerSubnet: 'docker_subnet',
+        dockerSubnet: '172.16.239.0/24',
         ...containerPortInfo,
       },
     })
@@ -323,17 +321,8 @@ describe('creates qdata directory for docker network', () => {
       ...baseNetwork,
       deployment: 'docker-compose',
       containerPorts: {
-        dockerSubnet: 'docker_subnet',
-        quorum: {
-          rpcPort: 8545,
-          p2pPort: 21000,
-          raftPort: 50400,
-          wsPort: 8645,
-        },
-        tm: {
-          p2pPort: 9000,
-          thirdPartyPort: 9080,
-        },
+        dockerSubnet: '172.16.239.0/24',
+        ...containerPortInfo,
       },
     })
     names.forEach((name) => {
@@ -347,7 +336,7 @@ describe('creates qdata directory for docker network', () => {
       ...baseNetwork,
       deployment: 'docker-compose',
       containerPorts: {
-        dockerSubnet: 'docker_subnet',
+        dockerSubnet: '172.16.239.0/24',
         ...containerPortInfo,
       },
     })
