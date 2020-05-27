@@ -31,6 +31,11 @@ import {
   loadTesseraPublicKey,
 } from './generators/transactionManager'
 import { downloadAndCopyBinaries } from './generators/binaryHelper'
+import {
+  readJsonFile,
+  cwd,
+} from './utils/fileUtils'
+import { joinPath } from './utils/pathUtils'
 
 const yargs = require('yargs')
 
@@ -41,6 +46,8 @@ const { argv } = yargs
   .boolean('v')
   .alias('v', 'verbose')
   .describe('v', 'Turn on additional logs for debugging')
+  .option('config')
+  .coerce('config', (configPath) => readJsonFile(configPath))
   .help()
   .alias('h', 'help')
   .version()
@@ -55,23 +62,30 @@ if (process.platform === 'win32') {
 createLogger(argv.v)
 debug('Showing debug logs')
 
-
 if (argv.q) {
   buildNetwork('quickstart')
+} else if (argv.config) {
+  generateNetwork(argv.config)
 } else {
   inquirer.prompt([INITIAL_MODE])
     .then(async ({ mode }) => {
       if (mode === 'exit') {
         info('Exiting...')
         return
+      } if (mode === 'generate') {
+        regenerateNetwork('configFile')
+        return
       }
       buildNetwork(mode)
     })
 }
 
-async function buildNetwork(mode) {
-  const answers = await promptUser(mode)
-  const config = createConfigFromAnswers(answers)
+async function regenerateNetwork(configFile) {
+  const config = readJsonFile(configFile)
+  generateNetwork(config)
+}
+
+async function generateNetwork(config) {
   if (isBash(config.network.deployment)) {
     await downloadAndCopyBinaries(config)
   }
@@ -79,6 +93,12 @@ async function buildNetwork(mode) {
   await createScript(config)
   generateAndCopyExampleScripts(config)
   printInstructions(config)
+}
+
+async function buildNetwork(mode) {
+  const answers = await promptUser(mode)
+  const config = createConfigFromAnswers(answers)
+  generateNetwork(config)
 }
 
 async function createDirectory(config) {

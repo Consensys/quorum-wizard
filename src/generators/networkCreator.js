@@ -30,7 +30,9 @@ export function createNetwork(config) {
   const networkPath = getFullNetworkPath(config)
   removeFolder(networkPath)
   createFolder(networkPath, true)
-  writeJsonFile(networkPath, 'config.json', config)
+  const configPath = getConfigPath()
+  createFolder(configPath, true)
+  writeJsonFile(configPath, `${config.network.name}-config.json`, config)
 }
 
 export function generateResourcesRemote(config) {
@@ -182,4 +184,8 @@ export function getFullNetworkPath(config) {
   }
 
   return joinPath(cwd(), 'network', networkFolderName)
+}
+
+function getConfigPath() {
+  return joinPath(cwd(), 'configs')
 }
