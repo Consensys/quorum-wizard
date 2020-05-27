@@ -32,7 +32,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -165,7 +165,7 @@ services:
       - \\"56000:8545\\"
       - \\"57000:8645\\"
     volumes:
-      - vol1:/qdata
+      - 2-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager1
@@ -173,7 +173,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      2-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
   txmanager1:
     << : *tx-manager-def
@@ -181,10 +181,10 @@ services:
     ports:
       - \\"5081:9080\\"
     volumes:
-      - vol1:/qdata
+      - 2-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      2-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
@@ -195,7 +195,7 @@ services:
       - \\"56001:8545\\"
       - \\"57001:8645\\"
     volumes:
-      - vol2:/qdata
+      - 2-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager2
@@ -203,7 +203,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=2
     networks:
-      quorum-examples-net:
+      2-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
   txmanager2:
     << : *tx-manager-def
@@ -211,10 +211,10 @@ services:
     ports:
       - \\"5082:9080\\"
     volumes:
-      - vol2:/qdata
+      - 2-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      2-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
@@ -224,23 +224,23 @@ services:
     ports:
       - \\"7999:8999\\"
     volumes:
-      - cakeshopvol:/qdata
+      - 2-nodes-raft-tessera-docker-compose-cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
-        ipv4_address: 172.16.239.186
+      2-nodes-raft-tessera-docker-compose-net:
+        ipv4_address: 172.16.239.2
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  2-nodes-raft-tessera-docker-compose-net:
+    name: 2-nodes-raft-tessera-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  \\"vol1\\":
-  \\"vol2\\":
-  \\"cakeshopvol\\":"
+  \\"2-nodes-raft-tessera-docker-compose-vol1\\":
+  \\"2-nodes-raft-tessera-docker-compose-vol2\\":
+  \\"2-nodes-raft-tessera-docker-compose-cakeshopvol\\":"
 `;
 
 exports[`creates 3nodes raft docker tessera custom 1`] = `
@@ -275,7 +275,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -384,7 +384,7 @@ services:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
     volumes:
-      - vol1:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager1
@@ -392,7 +392,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
   txmanager1:
     << : *tx-manager-def
@@ -400,10 +400,10 @@ services:
     ports:
       - \\"9081:9080\\"
     volumes:
-      - vol1:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
@@ -414,7 +414,7 @@ services:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
     volumes:
-      - vol2:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager2
@@ -422,7 +422,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=2
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
   txmanager2:
     << : *tx-manager-def
@@ -430,10 +430,10 @@ services:
     ports:
       - \\"9082:9080\\"
     volumes:
-      - vol2:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
@@ -444,7 +444,7 @@ services:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
     volumes:
-      - vol3:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager3
@@ -452,7 +452,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=3
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.13
   txmanager3:
     << : *tx-manager-def
@@ -460,26 +460,26 @@ services:
     ports:
       - \\"9083:9080\\"
     volumes:
-      - vol3:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.103
     environment:
       - NODE_ID=3
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  3-nodes-raft-tessera-docker-compose-net:
+    name: 3-nodes-raft-tessera-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  \\"vol1\\":
-  \\"vol2\\":
-  \\"vol3\\":
-  \\"cakeshopvol\\":"
+  \\"3-nodes-raft-tessera-docker-compose-vol1\\":
+  \\"3-nodes-raft-tessera-docker-compose-vol2\\":
+  \\"3-nodes-raft-tessera-docker-compose-vol3\\":
+  \\"3-nodes-raft-tessera-docker-compose-cakeshopvol\\":"
 `;
 
 exports[`creates 3nodes raft dockerFile tessera cakeshop 1`] = `
@@ -514,7 +514,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -647,7 +647,7 @@ services:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
     volumes:
-      - vol1:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager1
@@ -655,7 +655,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
   txmanager1:
     << : *tx-manager-def
@@ -663,10 +663,10 @@ services:
     ports:
       - \\"9081:9080\\"
     volumes:
-      - vol1:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
@@ -677,7 +677,7 @@ services:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
     volumes:
-      - vol2:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager2
@@ -685,7 +685,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=2
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
   txmanager2:
     << : *tx-manager-def
@@ -693,10 +693,10 @@ services:
     ports:
       - \\"9082:9080\\"
     volumes:
-      - vol2:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
@@ -707,7 +707,7 @@ services:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
     volumes:
-      - vol3:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager3
@@ -715,7 +715,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=3
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.13
   txmanager3:
     << : *tx-manager-def
@@ -723,10 +723,10 @@ services:
     ports:
       - \\"9083:9080\\"
     volumes:
-      - vol3:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.103
     environment:
       - NODE_ID=3
@@ -736,24 +736,24 @@ services:
     ports:
       - \\"8999:8999\\"
     volumes:
-      - cakeshopvol:/qdata
+      - 3-nodes-raft-tessera-docker-compose-cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
-        ipv4_address: 172.16.239.186
+      3-nodes-raft-tessera-docker-compose-net:
+        ipv4_address: 172.16.239.2
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  3-nodes-raft-tessera-docker-compose-net:
+    name: 3-nodes-raft-tessera-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  \\"vol1\\":
-  \\"vol2\\":
-  \\"vol3\\":
-  \\"cakeshopvol\\":"
+  \\"3-nodes-raft-tessera-docker-compose-vol1\\":
+  \\"3-nodes-raft-tessera-docker-compose-vol2\\":
+  \\"3-nodes-raft-tessera-docker-compose-vol3\\":
+  \\"3-nodes-raft-tessera-docker-compose-cakeshopvol\\":"
 `;
 
 exports[`creates 3nodes raft dockerFile tessera no cakeshop 1`] = `
@@ -788,7 +788,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -897,7 +897,7 @@ services:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
     volumes:
-      - vol1:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager1
@@ -905,7 +905,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
   txmanager1:
     << : *tx-manager-def
@@ -913,10 +913,10 @@ services:
     ports:
       - \\"9081:9080\\"
     volumes:
-      - vol1:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
@@ -927,7 +927,7 @@ services:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
     volumes:
-      - vol2:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager2
@@ -935,7 +935,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=2
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
   txmanager2:
     << : *tx-manager-def
@@ -943,10 +943,10 @@ services:
     ports:
       - \\"9082:9080\\"
     volumes:
-      - vol2:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
@@ -957,7 +957,7 @@ services:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
     volumes:
-      - vol3:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager3
@@ -965,7 +965,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=3
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.13
   txmanager3:
     << : *tx-manager-def
@@ -973,26 +973,26 @@ services:
     ports:
       - \\"9083:9080\\"
     volumes:
-      - vol3:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.103
     environment:
       - NODE_ID=3
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  3-nodes-raft-tessera-docker-compose-net:
+    name: 3-nodes-raft-tessera-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  \\"vol1\\":
-  \\"vol2\\":
-  \\"vol3\\":
-  \\"cakeshopvol\\":"
+  \\"3-nodes-raft-tessera-docker-compose-vol1\\":
+  \\"3-nodes-raft-tessera-docker-compose-vol2\\":
+  \\"3-nodes-raft-tessera-docker-compose-vol3\\":
+  \\"3-nodes-raft-tessera-docker-compose-cakeshopvol\\":"
 `;
 
 exports[`creates 5nodes istanbul dockerFile no tessera cakeshop 1`] = `
@@ -1027,7 +1027,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1103,13 +1103,13 @@ services:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
     volumes:
-      - vol1:/qdata
+      - 5-nodes-istanbul-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.11
   node2:
     << : *quorum-def
@@ -1118,13 +1118,13 @@ services:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
     volumes:
-      - vol2:/qdata
+      - 5-nodes-istanbul-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=2
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.12
   node3:
     << : *quorum-def
@@ -1133,13 +1133,13 @@ services:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
     volumes:
-      - vol3:/qdata
+      - 5-nodes-istanbul-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=3
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.13
   node4:
     << : *quorum-def
@@ -1148,13 +1148,13 @@ services:
       - \\"22003:8545\\"
       - \\"23003:8645\\"
     volumes:
-      - vol4:/qdata
+      - 5-nodes-istanbul-docker-compose-vol4:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=4
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.14
   node5:
     << : *quorum-def
@@ -1163,13 +1163,13 @@ services:
       - \\"22004:8545\\"
       - \\"23004:8645\\"
     volumes:
-      - vol5:/qdata
+      - 5-nodes-istanbul-docker-compose-vol5:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=5
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.15
   cakeshop:
     << : *cakeshop-def
@@ -1177,26 +1177,26 @@ services:
     ports:
       - \\"8999:8999\\"
     volumes:
-      - cakeshopvol:/qdata
+      - 5-nodes-istanbul-docker-compose-cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
-        ipv4_address: 172.16.239.186
+      5-nodes-istanbul-docker-compose-net:
+        ipv4_address: 172.16.239.2
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  5-nodes-istanbul-docker-compose-net:
+    name: 5-nodes-istanbul-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  \\"vol1\\":
-  \\"vol2\\":
-  \\"vol3\\":
-  \\"vol4\\":
-  \\"vol5\\":
-  \\"cakeshopvol\\":"
+  \\"5-nodes-istanbul-docker-compose-vol1\\":
+  \\"5-nodes-istanbul-docker-compose-vol2\\":
+  \\"5-nodes-istanbul-docker-compose-vol3\\":
+  \\"5-nodes-istanbul-docker-compose-vol4\\":
+  \\"5-nodes-istanbul-docker-compose-vol5\\":
+  \\"5-nodes-istanbul-docker-compose-cakeshopvol\\":"
 `;
 
 exports[`creates 5nodes istanbul dockerFile no tessera no cakeshop 1`] = `
@@ -1231,7 +1231,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1283,13 +1283,13 @@ services:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
     volumes:
-      - vol1:/qdata
+      - 5-nodes-istanbul-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.11
   node2:
     << : *quorum-def
@@ -1298,13 +1298,13 @@ services:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
     volumes:
-      - vol2:/qdata
+      - 5-nodes-istanbul-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=2
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.12
   node3:
     << : *quorum-def
@@ -1313,13 +1313,13 @@ services:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
     volumes:
-      - vol3:/qdata
+      - 5-nodes-istanbul-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=3
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.13
   node4:
     << : *quorum-def
@@ -1328,13 +1328,13 @@ services:
       - \\"22003:8545\\"
       - \\"23003:8645\\"
     volumes:
-      - vol4:/qdata
+      - 5-nodes-istanbul-docker-compose-vol4:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=4
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.14
   node5:
     << : *quorum-def
@@ -1343,27 +1343,27 @@ services:
       - \\"22004:8545\\"
       - \\"23004:8645\\"
     volumes:
-      - vol5:/qdata
+      - 5-nodes-istanbul-docker-compose-vol5:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=5
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.15
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  5-nodes-istanbul-docker-compose-net:
+    name: 5-nodes-istanbul-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  \\"vol1\\":
-  \\"vol2\\":
-  \\"vol3\\":
-  \\"vol4\\":
-  \\"vol5\\":
-  \\"cakeshopvol\\":"
+  \\"5-nodes-istanbul-docker-compose-vol1\\":
+  \\"5-nodes-istanbul-docker-compose-vol2\\":
+  \\"5-nodes-istanbul-docker-compose-vol3\\":
+  \\"5-nodes-istanbul-docker-compose-vol4\\":
+  \\"5-nodes-istanbul-docker-compose-vol5\\":
+  \\"5-nodes-istanbul-docker-compose-cakeshopvol\\":"
 `;

@@ -3,6 +3,7 @@
 exports[`creates 5nodes raft no-TM cakeshop docker config 1`] = `
 Object {
   "containerPorts": Object {
+    "dockerSubnet": "172.16.239.0/24",
     "quorum": Object {
       "p2pPort": 21000,
       "raftPort": 50400,
@@ -83,7 +84,7 @@ Object {
 
 exports[`creates 5nodes raft no-TM config 1`] = `
 Object {
-  "containerPorts": Object {},
+  "containerPorts": undefined,
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
@@ -153,7 +154,7 @@ Object {
 
 exports[`creates 6nodes raft custom config 1`] = `
 Object {
-  "containerPorts": Object {},
+  "containerPorts": undefined,
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
@@ -263,6 +264,7 @@ Object {
 exports[`creates 6nodes raft custom docker config 1`] = `
 Object {
   "containerPorts": Object {
+    "dockerSubnet": "172.16.239.0/24",
     "quorum": Object {
       "p2pPort": 21000,
       "raftPort": 50400,
@@ -382,7 +384,7 @@ Object {
 
 exports[`creates 7nodes istanbul cakeshop config 1`] = `
 Object {
-  "containerPorts": Object {},
+  "containerPorts": undefined,
   "network": Object {
     "cakeshop": "0.11.0",
     "cakeshopPort": "8999",
@@ -505,7 +507,7 @@ Object {
 
 exports[`creates 7nodes istanbul config 1`] = `
 Object {
-  "containerPorts": Object {},
+  "containerPorts": undefined,
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
@@ -629,6 +631,7 @@ Object {
 exports[`creates 7nodes istanbul docker config 1`] = `
 Object {
   "containerPorts": Object {
+    "dockerSubnet": "172.16.239.0/24",
     "quorum": Object {
       "p2pPort": 21000,
       "raftPort": 50400,
@@ -763,6 +766,7 @@ Object {
 exports[`creates 7nodes istanbul kubernetes config 1`] = `
 Object {
   "containerPorts": Object {
+    "dockerSubnet": "",
     "quorum": Object {
       "p2pPort": 21000,
       "raftPort": 50400,
@@ -896,7 +900,7 @@ Object {
 
 exports[`creates 7nodes istanbul no-TM custom config 1`] = `
 Object {
-  "containerPorts": Object {},
+  "containerPorts": undefined,
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
@@ -985,6 +989,7 @@ Object {
 exports[`creates 7nodes istanbul no-TM custom docker config 1`] = `
 Object {
   "containerPorts": Object {
+    "dockerSubnet": "172.16.239.0/24",
     "quorum": Object {
       "p2pPort": 21000,
       "raftPort": 50400,
@@ -1084,6 +1089,7 @@ Object {
 exports[`creates 7nodes raft kubernetes custom config 1`] = `
 Object {
   "containerPorts": Object {
+    "dockerSubnet": "",
     "quorum": Object {
       "p2pPort": 21000,
       "raftPort": 50400,
@@ -1217,7 +1223,7 @@ Object {
 
 exports[`creates quickstart config 1`] = `
 Object {
-  "containerPorts": Object {},
+  "containerPorts": undefined,
   "network": Object {
     "cakeshop": "0.11.0",
     "cakeshopPort": "8999",
@@ -1284,7 +1290,7 @@ Object {
 
 exports[`creates quickstart setup with java 8 1`] = `
 Object {
-  "containerPorts": Object {},
+  "containerPorts": undefined,
   "network": Object {
     "cakeshop": "0.11.0-J8",
     "cakeshopPort": "8999",

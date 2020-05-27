@@ -24,6 +24,7 @@ import {
 import { joinPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
 import { info } from '../utils/log'
+import { buildDockerIp } from '../utils/subnetUtils'
 
 export function createNetwork(config) {
   info('Building network directory...')
@@ -66,7 +67,7 @@ export function generateResourcesRemote(config) {
 
   if (isDocker(config.network.deployment)) {
     dockerCommand += `
-    sed -i '' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/172.16.239.1\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
+    sed -i '' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/${buildDockerIp(config.containerPorts.dockerSubnet, '1')}\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
   }
 
   try {

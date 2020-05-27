@@ -17,6 +17,19 @@ const baseNetwork = {
   cakeshop: 'none',
 }
 
+const containerPortInfo = {
+  quorum: {
+    rpcPort: 8545,
+    p2pPort: 21000,
+    raftPort: 50400,
+    wsPort: 8645,
+  },
+  tm: {
+    p2pPort: 9000,
+    thirdPartyPort: 9080,
+  },
+}
+
 test('creates quickstart config', () => {
   const config = createConfigFromAnswers({})
   expect(config).toMatchSnapshot()
@@ -53,6 +66,10 @@ test('creates 7nodes istanbul docker config', () => {
     numberNodes: '7',
     consensus: 'istanbul',
     deployment: 'docker-compose',
+    containerPorts: {
+      dockerSubnet: '172.16.239.0/24',
+      ...containerPortInfo,
+    },
   })
   expect(config).toMatchSnapshot()
 })
@@ -64,6 +81,10 @@ test('creates 5nodes raft no-TM cakeshop docker config', () => {
     transactionManager: 'none',
     deployment: 'docker-compose',
     cakeshop: LATEST_CAKESHOP,
+    containerPorts: {
+      dockerSubnet: '172.16.239.0/24',
+      ...containerPortInfo,
+    },
   })
   expect(config).toMatchSnapshot()
 })
@@ -74,6 +95,10 @@ test('creates 7nodes istanbul kubernetes config', () => {
     numberNodes: '7',
     consensus: 'istanbul',
     deployment: 'kubernetes',
+    containerPorts: {
+      dockerSubnet: '',
+      ...containerPortInfo,
+    },
   })
   expect(config).toMatchSnapshot()
 })
@@ -87,6 +112,10 @@ test('creates 7nodes raft kubernetes custom config', () => {
     networkId: 14,
     genesisLocation: '',
     customizePorts: false,
+    containerPorts: {
+      dockerSubnet: '',
+      ...containerPortInfo,
+    },
   })
   expect(config).toMatchSnapshot()
 })
@@ -136,6 +165,10 @@ test('creates 6nodes raft custom docker config', () => {
     networkId: 10,
     genesisLocation: '',
     customizePorts: false,
+    containerPorts: {
+      dockerSubnet: '172.16.239.0/24',
+      ...containerPortInfo,
+    },
   })
   expect(config).toMatchSnapshot()
 })
@@ -151,6 +184,10 @@ test('creates 7nodes istanbul no-TM custom docker config', () => {
     networkId: 10,
     genesisLocation: '',
     customizePorts: false,
+    containerPorts: {
+      dockerSubnet: '172.16.239.0/24',
+      ...containerPortInfo,
+    },
   })
   expect(config).toMatchSnapshot()
 })

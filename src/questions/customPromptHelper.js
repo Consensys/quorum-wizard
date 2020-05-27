@@ -1,4 +1,5 @@
 import inquirer from 'inquirer'
+import { cidrhost } from '../utils/subnetUtils'
 
 function buildBashQuestions(numberNodes, hasTessera, i, prevAnswers, isRaft) {
   const questions = []
@@ -111,7 +112,7 @@ function buildDockerQuestions(numberNodes, hasTessera, i, prevAnswers) {
   return questions
 }
 
-export async function getCustomizedDockerPorts(numberNodes, hasTessera) {
+export async function getCustomizedDockerPorts(numberNodes, hasTessera, dockerSubnet) {
   let answers
   const nodes = []
   const devP2pPort = 21000
@@ -123,7 +124,7 @@ export async function getCustomizedDockerPorts(numberNodes, hasTessera) {
     answers = await inquirer.prompt(buildDockerQuestions(numberNodes, hasTessera, i, answers))
     const node = {
       quorum: {
-        ip: `172.16.239.1${i + 1}`,
+        ip: cidrhost(dockerSubnet, i + 1 + 10),
         devP2pPort: numToString(devP2pPort + i),
         rpcPort: answers.quorumRpc,
         wsPort: answers.quorumWs,
@@ -132,7 +133,7 @@ export async function getCustomizedDockerPorts(numberNodes, hasTessera) {
     }
     if (hasTessera) {
       node.tm = {
-        ip: `172.16.239.10${i + 1}`,
+        ip: cidrhost(dockerSubnet, i + 1 + 100),
         thirdPartyPort: answers.tessera3Party,
         p2pPort: numToString(p2pPort + i),
       }
