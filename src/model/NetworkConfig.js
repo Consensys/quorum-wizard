@@ -11,6 +11,7 @@ import {
   getDockerSubnet,
   cidrhost,
 } from '../utils/subnetUtils'
+import { getPathGethVersion } from '../generators/binaryHelper'
 
 export function createConfigFromAnswers(answers) {
   const {
@@ -152,5 +153,6 @@ export function isCakeshop(cakeshop) {
 }
 
 export function isQuorum260Plus(quorumVersion) {
-  return cmp(quorumVersion, '2.6.0') >= 0
+  const version = quorumVersion === 'PATH' ? getPathGethVersion() : quorumVersion
+  return cmp(version, '2.6.0') >= 0
 }

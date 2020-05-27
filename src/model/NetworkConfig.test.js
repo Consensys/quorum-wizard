@@ -1,7 +1,9 @@
 import { createConfigFromAnswers, isQuorum260Plus } from './NetworkConfig'
 import { isJava11Plus } from '../utils/execUtils'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import { getPathGethVersion } from '../generators/binaryHelper'
 
+jest.mock('../generators/binaryHelper')
 jest.mock('../utils/execUtils')
 isJava11Plus.mockReturnValue(true)
 
@@ -196,4 +198,11 @@ test('tests if quorum version is 2.6.0 or higher', () => {
   expect(isQuorum260Plus('2.6.1')).toBeTruthy()
   expect(isQuorum260Plus('2.6.0')).toBeTruthy()
   expect(isQuorum260Plus('2.5.0')).not.toBeTruthy()
+})
+
+test('tests if quorum version on path is 2.6.0 or higher', () => {
+  getPathGethVersion.mockReturnValueOnce('2.6.0')
+  expect(isQuorum260Plus('PATH')).toBeTruthy()
+  getPathGethVersion.mockReturnValueOnce('2.5.0')
+  expect(isQuorum260Plus('PATH')).not.toBeTruthy()
 })
