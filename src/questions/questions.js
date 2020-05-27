@@ -12,7 +12,7 @@ import {
   isRaft,
   isKubernetes,
 } from '../model/NetworkConfig'
-import { isJava11Plus } from '../utils/execUtils'
+import { executeSync, isJava11Plus } from '../utils/execUtils'
 import {
   LATEST_CAKESHOP,
   LATEST_CAKESHOP_J8,
@@ -62,12 +62,22 @@ export const DEPLOYMENT_TYPE = {
   type: 'list',
   name: 'deployment',
   message: 'Would you like to generate bash scripts or a docker-compose file to bring up your network?',
-  choices: [
-    'bash',
-    'docker-compose',
-    'kubernetes',
-    // 'vagrant',
-  ],
+  choices: () => {
+    let dockerDisabled = false
+    try {
+      executeSync('docker info 2>&1')
+    } catch (e) {
+      // any error means docker isn't running
+      dockerDisabled = 'Disabled, docker must be running on your machine'
+    }
+
+    return [
+      'bash',
+      { name: 'docker-compose', disabled: dockerDisabled },
+      { name: 'kubernetes', disabled: dockerDisabled },
+      // 'vagrant',
+    ]
+  },
 }
 
 export const NUMBER_NODES = {
