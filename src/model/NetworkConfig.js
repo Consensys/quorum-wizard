@@ -1,4 +1,3 @@
-import cmp from 'semver-compare'
 import { isJava11Plus } from '../utils/execUtils'
 import {
   LATEST_CAKESHOP,
@@ -11,7 +10,6 @@ import {
   getDockerSubnet,
   cidrhost,
 } from '../utils/subnetUtils'
-import { getPathGethVersion } from '../generators/binaryHelper'
 
 export function createConfigFromAnswers(answers) {
   const {
@@ -150,9 +148,4 @@ export function isRaft(consensus) {
 
 export function isCakeshop(cakeshop) {
   return cakeshop !== 'none'
-}
-
-export function isQuorum260Plus(quorumVersion) {
-  const version = quorumVersion === 'PATH' ? getPathGethVersion() : quorumVersion
-  return cmp(version, '2.6.0') >= 0
 }

@@ -6,6 +6,7 @@ import {
   getDownloadableTesseraChoices,
   getGethOnPath,
   getTesseraOnPath,
+  isQuorum260Plus,
   pathToBootnode,
   pathToCakeshop,
   pathToQuorumBinary,
@@ -216,6 +217,19 @@ describe('presents the correct binary options', () => {
   })
 })
 
+test('tests if quorum version is 2.6.0 or higher', () => {
+  expect(isQuorum260Plus('2.6.1')).toBeTruthy()
+  expect(isQuorum260Plus('2.6.0')).toBeTruthy()
+  expect(isQuorum260Plus('2.5.0')).not.toBeTruthy()
+})
+
+test('tests if quorum version on path is 2.6.0 or higher', () => {
+  executeSync.mockReturnValueOnce(Buffer.from(quorumVersion26))
+  expect(isQuorum260Plus('PATH')).toBeTruthy()
+  executeSync.mockReturnValueOnce(Buffer.from(quorumVersion))
+  expect(isQuorum260Plus('PATH')).not.toBeTruthy()
+})
+
 function overrideProcessValue(key, value) {
   // process.platform is read-only, use this workaround to set it
   Object.defineProperty(process, key, { value })
@@ -243,3 +257,16 @@ Go Version: go1.9.7
 Operating System: darwin
 GOPATH=/Users/bradmcdermott/go
 GOROOT=/usr/local/Cellar/go@1.9/1.9.7/libexec`
+
+const quorumVersion26 = `Geth
+Version: 1.9.7-stable
+Git Commit: 9339be03f9119ee488b05cf087d103da7e68f053
+Git Commit Date: 20200504
+Quorum Version: 2.6.0
+Architecture: amd64
+Protocol Versions: [64 63]
+Network Id: 1337
+Go Version: go1.13.10
+Operating System: darwin
+GOPATH=/Users/bradmcdermott/go
+GOROOT=/Users/travis/.gimme/versions/go1.13.10.darwin.amd64`
