@@ -46,8 +46,10 @@ const { argv } = yargs
   .boolean('v')
   .alias('v', 'verbose')
   .describe('v', 'Turn on additional logs for debugging')
-  .option('config')
-  .coerce('config', (configPath) => readJsonFile(configPath))
+  .command('generate', '--config path to config.json', () => yargs.option('config', {
+    desc: 'path to config.json',
+  })
+    .coerce('config', (configPath) => readJsonFile(configPath)))
   .help()
   .alias('h', 'help')
   .version()
@@ -66,6 +68,9 @@ if (argv.q) {
   buildNetwork('quickstart')
 } else if (argv.config) {
   generateNetwork(argv.config)
+} else if (argv._[0] === 'generate') {
+  console.log('prompt')
+  // prompt to get config.json path
 } else {
   inquirer.prompt([INITIAL_MODE])
     .then(async ({ mode }) => {
