@@ -8,6 +8,7 @@ import {
   copyFileSync,
   readFileSync,
   copySync,
+  readdirSync,
 } from 'fs-extra'
 import { resolve } from 'path'
 import { joinPath, verifyPathInsideDirectory } from './pathUtils'
@@ -37,9 +38,7 @@ export function writeJsonFile(folder, filename, object, space = 2) {
 }
 
 export function readJsonFile(file) {
-  console.log(file)
-  const f = readFileSync(file, 'utf8')
-  return JSON.parse(f)
+  return JSON.parse(readFileSync(file, 'utf8'))
 }
 
 export function writeFile(filePath, contents, executable = false) {
@@ -80,4 +79,8 @@ export function readFileToString(file) {
 
 export function formatNewLine(file) {
   return file !== '' ? `${file}\n` : file
+}
+
+export function readDir(dir) {
+  return readdirSync(dir)
 }

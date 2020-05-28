@@ -17,6 +17,7 @@ import {
   NETWORK_CONFIRM,
   NETWORK_NAME,
   QUESTIONS,
+  GENERATE_QUESTIONS,
 } from './questions'
 import { getFullNetworkPath } from '../generators/networkCreator'
 import { exists } from '../utils/fileUtils'
@@ -51,6 +52,13 @@ async function promptForCustomPorts(answers) {
   if (isCakeshop(answers.cakeshop)) {
     answers.cakeshopPort = await getCustomizedCakeshopPort()
   }
+}
+
+export async function promptGenerate() {
+  const answers = await inquirer.prompt(GENERATE_QUESTIONS)
+
+  await confirmNetworkName(answers)
+  return answers
 }
 
 async function confirmNetworkName(answers) {

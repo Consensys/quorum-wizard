@@ -20,6 +20,12 @@ import {
   LATEST_TESSERA,
   LATEST_TESSERA_J8,
 } from '../generators/download'
+import {
+  cwd,
+  readDir,
+  readJsonFile,
+} from '../utils/fileUtils'
+import { joinPath } from '../utils/pathUtils'
 
 
 export const INITIAL_MODE = {
@@ -54,6 +60,7 @@ All you need to do is go to the specified location and run ./start.sh
     },
     { name: 'Simple Network', value: 'simple' },
     { name: 'Custom Network', value: 'custom' },
+    { name: 'Generate', value: 'generate' },
     { name: 'Exit', value: 'exit' },
   ],
 }
@@ -162,6 +169,36 @@ export const NETWORK_CONFIRM = {
   default: false,
 }
 
+export const GENERATE_NAME = {
+  type: 'input',
+  name: 'name',
+  message: 'What would you like to call this network?',
+  validate: (input) => input.trim() !== '' || 'Network name must not be blank.',
+  // default is name in config.network.name
+  // first turn config.json into json object
+  // then set config.network.name as default
+  // if they choose a different name, have to update it in json object
+  default: (answers) => {
+    const config = joinPath(cwd(), 'configs', answers.generate)
+    console.log(config)
+    const json = readJsonFile(config)
+    console.log(json)
+    return json.network.name
+  },
+}
+
+export const GENERATE = {
+  type: 'list',
+  name: 'generate',
+  message: 'Choose from the list of available config.json to generate',
+  choices: getAvailableConfigs(),
+}
+
+function getAvailableConfigs() {
+  const configDir = joinPath(cwd(), 'configs')
+  return readDir(configDir)
+}
+
 export const QUESTIONS = [
   DEPLOYMENT_TYPE,
   CONSENSUS_MODE,
@@ -209,3 +246,8 @@ export function getPrefilledAnswersForMode(mode) {
       throw new Error(`Unknown option: ${mode}`)
   }
 }
+
+export const GENERATE_QUESTIONS = [
+  GENERATE,
+  GENERATE_NAME,
+]

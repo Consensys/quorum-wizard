@@ -7,7 +7,10 @@ import {
   debug,
   info,
 } from './utils/log'
-import { promptUser } from './questions'
+import {
+  promptUser,
+  promptGenerate,
+} from './questions'
 import { INITIAL_MODE } from './questions/questions'
 import {
   createConfigFromAnswers,
@@ -69,8 +72,7 @@ if (argv.q) {
 } else if (argv.config) {
   generateNetwork(argv.config)
 } else if (argv._[0] === 'generate') {
-  console.log('prompt')
-  // prompt to get config.json path
+  regenerateNetwork()
 } else {
   inquirer.prompt([INITIAL_MODE])
     .then(async ({ mode }) => {
@@ -78,15 +80,17 @@ if (argv.q) {
         info('Exiting...')
         return
       } if (mode === 'generate') {
-        regenerateNetwork('configFile')
+        regenerateNetwork()
         return
       }
       buildNetwork(mode)
     })
 }
 
-async function regenerateNetwork(configFile) {
-  const config = readJsonFile(configFile)
+async function regenerateNetwork() {
+  const ans = await promptGenerate()
+  const config = readJsonFile(joinPath(cwd(), 'configs', ans.generate))
+  config.network.name = ans.name
   generateNetwork(config)
 }
 
