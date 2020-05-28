@@ -1,3 +1,4 @@
+import cmp from 'semver-compare'
 import { wizardHomeDir } from '../utils/fileUtils'
 import { executeSync } from '../utils/execUtils'
 import {
@@ -76,6 +77,11 @@ export function getPathGethVersion() {
     return versionMatch[1]
   }
   return null
+}
+
+export function isQuorum260Plus(quorumVersion) {
+  const version = quorumVersion === 'PATH' ? getPathGethVersion() : quorumVersion
+  return cmp(version, '2.6.0') >= 0
 }
 
 export function getDownloadableGethChoices(deployment) {

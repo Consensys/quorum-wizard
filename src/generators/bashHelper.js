@@ -12,6 +12,7 @@ import {
   generateCakeshopScript,
 } from './cakeshopHelper'
 import {
+  isQuorum260Plus,
   pathToCakeshop,
   pathToQuorumBinary,
   pathToTesseraJar,
@@ -20,7 +21,6 @@ import {
   isRaft,
   isTessera,
   isCakeshop,
-  isQuorum260Plus,
 } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { formatTesseraKeysOutput } from './transactionManager'

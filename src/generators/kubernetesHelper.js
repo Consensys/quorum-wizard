@@ -14,13 +14,13 @@ export async function createKubernetes(config) {
   info('Writing start script...')
 
   writeFile(joinPath(networkPath, 'start.sh'), createStartScript(), true)
-  writeFile(joinPath(networkPath, 'stop.sh'), 'kubectl delete -f out -f out/deployments', true)
+  writeFile(joinPath(networkPath, 'stop.sh'), createStopScript(), true)
   writeFile(joinPath(networkPath, 'getEndpoints.sh'), createEndpointScript(config), true)
   info('Done')
 }
 
 function createStartScript() {
-  return `
+  return `#!/bin/bash
 # check minikube is running
 minikube ip > /dev/null 2>&1
 EXIT_CODE=$?
@@ -46,6 +46,11 @@ fi
 kubectl apply -f out -f out/deployments
 echo "\nRun 'kubectl get pods' to check status of pods\n"
 `
+}
+
+function createStopScript() {
+  return `#!/bin/bash
+kubectl delete -f out -f out/deployments`
 }
 
 function createEndpointScript(config) {

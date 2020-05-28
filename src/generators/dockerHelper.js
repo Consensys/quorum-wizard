@@ -9,7 +9,6 @@ import { buildCakeshopDir } from './cakeshopHelper'
 import {
   isTessera,
   isCakeshop,
-  isQuorum260Plus,
 } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
@@ -17,6 +16,7 @@ import {
   cidrhost,
   buildDockerIp,
 } from '../utils/subnetUtils'
+import { isQuorum260Plus } from './binaryHelper'
 
 export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
@@ -70,12 +70,15 @@ export async function createDockerCompose(config) {
   }
 
   info('Writing start script...')
-  const startCommands = 'docker-compose up -d'
+  const startCommands = `#!/bin/bash
+docker-compose up -d`
+  const stopCommand = `#!/bin/bash
+docker-compose down`
 
   writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)
   writeFile(joinPath(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
   writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
-  writeFile(joinPath(networkPath, 'stop.sh'), 'docker-compose down', true)
+  writeFile(joinPath(networkPath, 'stop.sh'), stopCommand, true)
   info('Done')
 }
 
