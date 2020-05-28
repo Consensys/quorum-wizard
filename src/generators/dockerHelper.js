@@ -69,12 +69,8 @@ export async function createDockerCompose(config) {
     buildCakeshopDir(config, qdata)
   }
 
-  const dockerIp = buildDockerIp(config.containerPorts.dockerSubnet, '10')
-
   info('Writing start script...')
-  const startCommands = `
-  sed -i '' 's,%DOCKER_IP%,${dockerIp},g' docker-compose.yml
-  docker-compose up -d`
+  const startCommands = 'docker-compose up -d'
 
   writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)
   writeFile(joinPath(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
@@ -89,7 +85,8 @@ QUORUM_DOCKER_IMAGE=quorumengineering/quorum:${config.network.quorumVersion}
 QUORUM_P2P_PORT=${config.containerPorts.quorum.p2pPort}
 QUORUM_RAFT_PORT=${config.containerPorts.quorum.raftPort}
 QUORUM_RPC_PORT=${config.containerPorts.quorum.rpcPort}
-QUORUM_WS_PORT=${config.containerPorts.quorum.wsPort}`
+QUORUM_WS_PORT=${config.containerPorts.quorum.wsPort}
+DOCKER_IP=${buildDockerIp(config.containerPorts.dockerSubnet, '10')}`
   if (hasTessera) {
     env = env.concat(`
 QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/tessera:${config.network.transactionManager}

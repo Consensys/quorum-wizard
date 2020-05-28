@@ -32,7 +32,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -275,7 +275,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -514,7 +514,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -788,7 +788,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1027,7 +1027,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1231,7 +1231,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
