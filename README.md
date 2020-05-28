@@ -4,31 +4,42 @@ Quorum Wizard is a command line tool that allow users to set up a development Qu
 
 ![](docs/quorum-wizard.gif)
 
-## Installation
+## Using Quorum Wizard
 
-Quorum Wizard is written in Javascript and designed to be installed as a global NPM module and run from the command line. Make sure you have [Node.js/NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
+Quorum Wizard is written in Javascript and designed to be run as a global NPM module from the command line. Make sure you have [Node.js/NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
 
-Using npm:
+Using npx to run the wizard without the need to install:
+
+```
+npx quorum-wizard
+```
+
+You can also install the wizard globally with npm:
 
 ```Bash
 npm install -g quorum-wizard
-```
 
-Using [Yarn](https://yarnpkg.com/):
-
-```Bash
-yarn global add quorum-wizard
-```
-
-### Using Quorum Wizard
-
-Once the global module is installed, just run:
-
-```Bash
+# Once the global module is installed, run:
 quorum-wizard
 ```
 
-The wizard will then walk you through setting up a network, either using our quickstart settings (a simple 3-node Quorum network using Raft consensus), or customizing the options to fit your needs.
+Note: Many installations of npm don't have permission to install global modules and will throw an EACCES error. [Here is the recommended solution from NPM](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally)
+
+## Dependencies
+
+Here are the dependencies (in addition to NodeJS) that are required depending on the mode that you run the wizard in:
+
+Bash:
+- Java (when running Tessera and/or Cakeshop)
+
+Docker Compose:
+- Docker
+- docker-compose
+
+Kubernetes:
+- Docker (for generating resources during network creation)
+- kubectl
+- minikube
 
 ## Options
 
@@ -41,19 +52,9 @@ You can also provide these flags when running quorum-wizard:
 | `--version` | Show version number |
 | `-h`, `--help` | Show help |
 
-*Note: `npx` is also a way to run npm modules without the need to actually install the module. Due to quorum-wizard needing to download and cache the quorum binaries during network setup, using `npx quorum-wizard` will not work at this time.*
-
-
 ## Interacting with the Network
 
 To explore the features of Quorum and deploy a private contract, follow the instructions on [Interacting with the Network](http://docs.goquorum.com/en/latest/Wizard/Interacting/).
-
-## Troubleshooting
-
- + **EACCES error when doing global npm install**:
-
-    - Sometimes npm is installed in a location where the user doesn't have write permissions. On Mac, installing via [Homebrew](https://brew.sh) usually works better than the standalone installer.
-    - [Here is the recommended solution from NPM](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally)
 
 ## Developing
 Clone this repo to your local machine.
