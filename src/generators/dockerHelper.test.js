@@ -19,7 +19,12 @@ import {
 } from '../utils/testHelper'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
-import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from './download'
+import {
+  LATEST_CAKESHOP,
+  LATEST_QUORUM,
+  LATEST_TESSERA,
+  QUORUM_PRE_260,
+} from './download'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')
@@ -80,6 +85,7 @@ describe('generates docker-compose directory', () => {
       ...baseNetwork,
       cakeshop: 'none',
       transactionManager: 'none',
+      quorumVersion: QUORUM_PRE_260,
     })
 
     readFileToString.mockReturnValueOnce('test')

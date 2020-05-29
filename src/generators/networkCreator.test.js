@@ -6,6 +6,7 @@ import {
   createNetwork,
   generateResourcesLocally,
   generateResourcesRemote,
+  getAvailableConfigs,
 } from './networkCreator'
 import {
   createConfigFromAnswers,
@@ -21,6 +22,7 @@ import {
   removeFolder,
   copyDirectory,
   writeFile,
+  readDir,
 } from '../utils/fileUtils'
 import {
   createNetPath,
@@ -379,5 +381,12 @@ describe('creates static nodes json', () => {
       .mockReturnValueOnce('def')
       .mockReturnValueOnce('ghi')
     expect(createStaticNodes(nodes, 'istanbul', testDir)).toEqual(expected)
+  })
+})
+
+describe('tests available config files', () => {
+  it('given directory return files in it as array', () => {
+    readDir.mockReturnValueOnce(['1-config.json', '2-config.json'])
+    expect(getAvailableConfigs()).toEqual(['1-config.json', '2-config.json'])
   })
 })

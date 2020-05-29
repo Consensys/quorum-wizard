@@ -173,15 +173,8 @@ export const GENERATE_NAME = {
   name: 'name',
   message: 'What would you like to call this network?',
   validate: (input) => input.trim() !== '' || 'Network name must not be blank.',
-  // default is name in config.network.name
-  // first turn config.json into json object
-  // then set config.network.name as default
-  // if they choose a different name, have to update it in json object
   default: (answers) => {
-    const config = getConfigPath(answers.generate)
-    console.log(config)
-    const json = readJsonFile(config)
-    console.log(json)
+    const json = readJsonFile(getConfigPath(answers.generate))
     return json.network.name
   },
 }

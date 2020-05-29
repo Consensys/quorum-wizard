@@ -1,10 +1,14 @@
 import { prompt } from 'inquirer'
-import { promptUser } from './index'
+import {
+  promptUser,
+  promptGenerate,
+} from './index'
 import {
   CUSTOM_ANSWERS, NETWORK_CONFIRM, NETWORK_NAME,
   QUESTIONS,
   QUICKSTART_ANSWERS,
   SIMPLE_ANSWERS,
+  GENERATE_QUESTIONS,
 } from './questions'
 import {
   getCustomizedBashNodes,
@@ -44,6 +48,11 @@ const CUSTOM_CONFIG = {
   genesisLocation: 'testDir',
   customizePorts: true,
   nodes: ['nodes'],
+}
+
+const GENERATE_ANSWERS = {
+  generate: '1-config.json',
+  name: '1',
 }
 
 describe('prompts the user with different sets of questions based on first choice', () => {
@@ -135,5 +144,10 @@ describe('prompts the user with different sets of questions based on first choic
     expect(prompt).toHaveBeenCalledWith(QUESTIONS, CUSTOM_ANSWERS)
     expect(getCustomizedBashNodes).toHaveBeenCalledTimes(0)
     expect(getCustomizedDockerPorts).toHaveBeenCalledTimes(0)
+  })
+  it('regenerate', async () => {
+    prompt.mockResolvedValue(GENERATE_ANSWERS)
+    await promptGenerate()
+    expect(prompt).toHaveBeenCalledWith(GENERATE_QUESTIONS)
   })
 })
