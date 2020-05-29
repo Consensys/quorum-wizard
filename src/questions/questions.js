@@ -12,6 +12,10 @@ import {
   isRaft,
   isKubernetes,
 } from '../model/NetworkConfig'
+import {
+  getAvailableConfigs,
+  getConfigPath,
+} from '../generators/networkCreator'
 import { isJava11Plus } from '../utils/execUtils'
 import {
   LATEST_CAKESHOP,
@@ -20,12 +24,7 @@ import {
   LATEST_TESSERA,
   LATEST_TESSERA_J8,
 } from '../generators/download'
-import {
-  cwd,
-  readDir,
-  readJsonFile,
-} from '../utils/fileUtils'
-import { joinPath } from '../utils/pathUtils'
+import { readJsonFile } from '../utils/fileUtils'
 
 
 export const INITIAL_MODE = {
@@ -179,7 +178,7 @@ export const GENERATE_NAME = {
   // then set config.network.name as default
   // if they choose a different name, have to update it in json object
   default: (answers) => {
-    const config = joinPath(cwd(), 'configs', answers.generate)
+    const config = getConfigPath(answers.generate)
     console.log(config)
     const json = readJsonFile(config)
     console.log(json)
@@ -192,11 +191,6 @@ export const GENERATE = {
   name: 'generate',
   message: 'Choose from the list of available config.json to generate',
   choices: getAvailableConfigs(),
-}
-
-function getAvailableConfigs() {
-  const configDir = joinPath(cwd(), 'configs')
-  return readDir(configDir)
 }
 
 export const QUESTIONS = [

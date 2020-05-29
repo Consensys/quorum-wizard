@@ -25,6 +25,7 @@ import {
 import {
   createNetPath,
   createLibPath,
+  createConfigPath,
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
@@ -69,7 +70,8 @@ describe('creates network and config from answers', () => {
 
     expect(removeFolder).toBeCalledWith(createNetPath(config))
     expect(createFolder).toBeCalledWith(createNetPath(config), true)
-    expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', anything())
+    expect(createFolder).toBeCalledWith(createConfigPath(), true)
+    expect(writeJsonFile).toBeCalledWith(createConfigPath(), `${config.network.name}-config.json`, anything())
   })
 })
 
