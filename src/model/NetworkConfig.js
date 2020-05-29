@@ -17,12 +17,15 @@ export function createConfigFromAnswers(answers) {
     transactionManager = isJava11Plus() ? LATEST_TESSERA : LATEST_TESSERA_J8,
     deployment = 'bash',
     cakeshop = isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8,
+    splunk = false,
+    txGenerate = false,
     generateKeys = false,
     networkId = '10',
     genesisLocation = 'none',
     customizePorts = false,
     nodes = [],
     cakeshopPort = '8999',
+    splunkPort = '8000',
     remoteDebug = false,
   } = answers
   const networkFolder = name
@@ -40,9 +43,12 @@ export function createConfigFromAnswers(answers) {
       configDir: `network/${networkFolder}/resources`,
       deployment,
       cakeshop,
+      splunk,
+      txGenerate,
       networkId,
       customizePorts,
       cakeshopPort,
+      splunkPort,
       remoteDebug,
     },
     nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(
@@ -134,6 +140,10 @@ export function isRaft(consensus) {
 
 export function isCakeshop(cakeshop) {
   return cakeshop !== 'none'
+}
+
+export function isSplunk(splunk) {
+  return splunk === true || splunk === 'Yes'
 }
 
 export function isQuorum260Plus(quorumVersion) {

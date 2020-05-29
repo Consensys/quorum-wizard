@@ -1,0 +1,65 @@
+splunk:
+  conf:
+    indexes:
+      directory: /opt/splunk/etc/apps/search/local
+      content:
+        metrics:
+          coldPath: $SPLUNK_DB/metrics/colddb
+          datatype: metric
+          homePath: $SPLUNK_DB/metrics/db
+          maxTotalDataSizeMB: 512000
+          thawedPath: $SPLUNK_DB/metrics/thaweddb
+        quorum_metrics:
+          coldPath: $SPLUNK_DB/quorum_metrics/colddb
+          datatype: metric
+          homePath: $SPLUNK_DB/quorum_metrics/db
+          maxTotalDataSizeMB: 512000
+          thawedPath: $SPLUNK_DB/quorum_metrics/thaweddb
+        logs:
+          coldPath: $SPLUNK_DB/logs/colddb
+          datatype: event
+          homePath: $SPLUNK_DB/logs/db
+          maxTotalDadtaSizeMB: 512000
+          thawedPath: $SPLUNK_DB/logs/thaweddb
+    inputs:
+      directory: /opt/splunk/etc/apps/search/local
+      content:
+        "udp://8125":
+          connection_host: ip
+          index: quorum_metrics
+          sourcetype: statsd
+        "logs://cadivsor":
+          index: logs
+          disabled: 0
+        "logs://node1":
+          index: logs
+          disabled: 0
+        "logs://txmanager1":
+          index: logs
+          disabled: 0
+        "logs://node2":
+          index: logs
+          disabled: 0
+        "logs://txmanager2":
+          index: logs
+          disabled: 0
+        "logs://node1":
+          index: logs
+          disabled: 0
+        "logs://txmanager2":
+          index: logs
+          disabled: 0
+        "logs://node3":
+          index: logs
+          disabled: 0
+        "logs://txmanager3":
+          index: logs
+          disabled: 0
+        "logs://cakeshop":
+          index: logs
+          disabled: 0
+    props:
+      directory: /opt/splunk/etc/apps/search/local
+      content:
+        ethlogger:
+          EXTRACT-log_ethlogger: ethlogger-[a-f0-9]{12}.*ethlogger:(?P<log_ethlogger>.*)

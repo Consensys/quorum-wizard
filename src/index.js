@@ -127,11 +127,11 @@ function printInstructions(config) {
   info('./start.sh')
   info('')
   info('A sample simpleStorage contract is provided to deploy to your network')
-  info('To use run ./runscript.sh public-contract.js from the network folder')
+  info('To use run ./runscript.sh public_contract.js from the network folder')
   info('')
   if (isTessera(config.network.transactionManager)) {
     info(`A private simpleStorage contract was created with privateFor set to use Node 2's public key: ${loadTesseraPublicKey(config, 2)}`)
-    info('To use run ./runscript private-contract.js from the network folder')
+    info('To use run ./runscript private_contract.js from the network folder')
     info('')
   }
   if (isKubernetes(config.network.deployment)) {

@@ -1,5 +1,7 @@
 import {
   transformCakeshopAnswer,
+  transformSplunkAnswer,
+  transformTxGenerateAnswer,
   validateNetworkId,
   validateNumberStringInRange,
 } from './validators'
@@ -114,6 +116,26 @@ export const CAKESHOP = {
   filter: transformCakeshopAnswer,
 }
 
+export const SPLUNK = {
+  type: 'list',
+  name: 'splunk',
+  message: 'Do you want to run Splunk?',
+  choices: ['No', 'Yes'],
+  default: 'No',
+  when: (answers) => !isKubernetes(answers.deployment),
+  filter: transformSplunkAnswer,
+}
+
+export const TX_GENERATE = {
+  type: 'list',
+  name: 'txGenerate',
+  message: 'Do you want to auto-generate transactions?',
+  choices: ['No', 'Yes'],
+  default: ['No'],
+  when: (answers) => !isKubernetes(answers.deployment),
+  filter: transformTxGenerateAnswer,
+}
+
 export const KEY_GENERATION = {
   type: 'confirm',
   name: 'generateKeys',
@@ -169,6 +191,8 @@ export const QUESTIONS = [
   QUORUM_VERSION,
   TRANSACTION_MANAGER,
   CAKESHOP,
+  SPLUNK,
+  TX_GENERATE,
   KEY_GENERATION,
   NETWORK_ID,
   // GENESIS_LOCATION,
@@ -184,6 +208,8 @@ export const QUICKSTART_ANSWERS = {
   transactionManager: isJava11Plus() ? LATEST_TESSERA : LATEST_TESSERA_J8,
   deployment: 'bash',
   cakeshop: isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8,
+  splunk: false,
+  txGenerate: false,
   generateKeys: false,
   networkId: '10',
   customizePorts: false,

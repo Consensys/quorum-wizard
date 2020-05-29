@@ -20,6 +20,7 @@ import {
   isDocker,
   isKubernetes,
   isBash,
+  isSplunk,
 } from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
@@ -58,7 +59,7 @@ export function generateResourcesRemote(config) {
     exit $EXIT_CODE
   fi
   docker pull quorumengineering/qubernetes:latest
-  
+
   docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./${initScript} --action=update qubernetes.yaml 2>&1
   find . -type f -name 'UTC*' -execdir mv {} key ';'
   `
@@ -66,6 +67,9 @@ export function generateResourcesRemote(config) {
   if (isDocker(config.network.deployment)) {
     dockerCommand += `
     sed -i '' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/172.16.239.1\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
+  }
+  if (isSplunk(config.network.splunk)) {
+    copyDirectory(joinPath(libRootDir(), 'splunk'), joinPath(remoteOutputDir, 'splunk'))
   }
 
   try {
@@ -87,6 +91,10 @@ export async function generateResourcesLocally(config) {
     await generateKeys(config, configDir)
   } else {
     copyDirectory(joinPath(libRootDir(), '7nodes'), configDir)
+  }
+
+  if (isSplunk(config.network.splunk)) {
+    copyDirectory(joinPath(libRootDir(), 'splunk'), joinPath(configDir, 'splunk'))
   }
 
   generateConsensusConfig(
