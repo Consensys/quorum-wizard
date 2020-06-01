@@ -14,7 +14,7 @@ import {
 } from '../model/NetworkConfig'
 import {
   getAvailableConfigs,
-  getConfigPath,
+  readConfigJson,
 } from '../generators/networkCreator'
 import { isJava11Plus } from '../utils/execUtils'
 import {
@@ -24,7 +24,6 @@ import {
   LATEST_TESSERA,
   LATEST_TESSERA_J8,
 } from '../generators/download'
-import { readJsonFile } from '../utils/fileUtils'
 
 
 export const INITIAL_MODE = {
@@ -173,8 +172,9 @@ export const GENERATE_NAME = {
   name: 'name',
   message: 'What would you like to call this network?',
   validate: (input) => input.trim() !== '' || 'Network name must not be blank.',
+  when: (answers) => answers.generate !== 'no configs available',
   default: (answers) => {
-    const json = readJsonFile(getConfigPath(answers.generate))
+    const json = readConfigJson(answers.generate)
     return json.network.name
   },
 }

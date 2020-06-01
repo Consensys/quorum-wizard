@@ -82,5 +82,5 @@ export function formatNewLine(file) {
 }
 
 export function readDir(dir) {
-  return readdirSync(dir)
+  return exists(dir) ? readdirSync(dir) : undefined
 }

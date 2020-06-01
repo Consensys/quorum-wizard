@@ -24,6 +24,7 @@ import {
   createNetwork,
   generateResourcesLocally,
   generateResourcesRemote,
+  readConfigJson,
 } from './generators/networkCreator'
 import { buildBash } from './generators/bashHelper'
 import { createDockerCompose } from './generators/dockerHelper'
@@ -34,11 +35,7 @@ import {
   loadTesseraPublicKey,
 } from './generators/transactionManager'
 import { downloadAndCopyBinaries } from './generators/binaryHelper'
-import {
-  readJsonFile,
-  cwd,
-} from './utils/fileUtils'
-import { joinPath } from './utils/pathUtils'
+import { readJsonFile } from './utils/fileUtils'
 
 const yargs = require('yargs')
 
@@ -89,9 +86,14 @@ if (argv.q) {
 
 async function regenerateNetwork() {
   const ans = await promptGenerate()
-  const config = readJsonFile(joinPath(cwd(), 'configs', ans.generate))
-  config.network.name = ans.name
-  generateNetwork(config)
+  try {
+    const config = readConfigJson(ans.generate)
+    config.network.name = ans.name
+    generateNetwork(config)
+  } catch (e) {
+    info('Exiting, please provide valid config.json in configs directory')
+    process.exit(1)
+  }
 }
 
 async function generateNetwork(config) {

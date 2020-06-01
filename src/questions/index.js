@@ -57,7 +57,9 @@ async function promptForCustomPorts(answers) {
 export async function promptGenerate() {
   const answers = await inquirer.prompt(GENERATE_QUESTIONS)
 
-  await confirmNetworkName(answers)
+  if (answers.name) {
+    await confirmNetworkName(answers)
+  }
   return answers
 }
 

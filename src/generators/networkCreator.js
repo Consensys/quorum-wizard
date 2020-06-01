@@ -10,6 +10,7 @@ import {
   copyDirectory,
   writeFile,
   readDir,
+  readJsonFile,
 } from '../utils/fileUtils'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
@@ -187,11 +188,15 @@ export function getFullNetworkPath(config) {
   return joinPath(cwd(), 'network', networkFolderName)
 }
 
-export function getConfigPath(...relativePaths) {
+function getConfigPath(...relativePaths) {
   return joinPath(cwd(), 'configs', ...relativePaths)
 }
 
+export function readConfigJson(...relativePaths) {
+  return readJsonFile(getConfigPath(relativePaths))
+}
 export function getAvailableConfigs() {
   const configDir = getConfigPath()
-  return readDir(configDir)
+  const arr = readDir(configDir)
+  return (arr && arr.length) ? arr : ['no configs available']
 }
