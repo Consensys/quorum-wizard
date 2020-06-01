@@ -78,6 +78,7 @@ export function generateNodeConfigs(
   const devP2pPort = 21000
   const rpcPort = 22000
   const wsPort = 23000
+  const graphQlPort = 24000
   const raftPort = 50401
   const thirdPartyPort = 9081
   const p2pPort = 9001
@@ -91,6 +92,7 @@ export function generateNodeConfigs(
         rpcPort: rpcPort + i,
         wsPort: wsPort + i,
         raftPort: raftPort + i,
+        graphQlPort: graphQlPort + i,
       },
     }
     if (isTessera(transactionManager)) {
@@ -114,6 +116,7 @@ export function getContainerPorts(deployment) {
       p2pPort: 21000,
       raftPort: 50400,
       wsPort: 8645,
+      graphQlPort: 8547,
     },
     tm: {
       p2pPort: 9000,

@@ -44,6 +44,7 @@ const baseNetwork = {
       p2pPort: 21000,
       raftPort: 50400,
       wsPort: 8645,
+      graphQlPort: 8547,
     },
     tm: {
       p2pPort: 9000,
@@ -140,6 +141,7 @@ services:
     ports:
       - "22000:8545"
       - "23000:8645"
+      - "24000:8547"
     volumes:
       - 1-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
@@ -201,6 +203,7 @@ services:
     ports:
       - "22000:8545"
       - "23000:8645"
+      - "24000:8547"
     volumes:
       - 1-nodes-istanbul-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
@@ -243,6 +246,7 @@ services:
     ports:
       - "22000:8545"
       - "23000:8645"
+      - "24000:8547"
     volumes:
       - 1-nodes-raft-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
@@ -297,6 +301,7 @@ services:
     ports:
       - "22000:8545"
       - "23000:8645"
+      - "24000:8547"
     volumes:
       - 1-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro

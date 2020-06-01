@@ -16,6 +16,7 @@ const baseNetwork = {
       p2pPort: 21000,
       raftPort: 50400,
       wsPort: 8645,
+      graphQlPort: 8547,
     },
     tm: {
       p2pPort: 9000,
@@ -91,6 +92,7 @@ test('creates 2nodes raft docker tessera cakeshop custom ports', () => {
         rpcPort: '56000',
         wsPort: '57000',
         raftPort: '80501',
+        graphQlPort: '58000',
       },
       tm: {
         ip: '172.16.239.101',
@@ -105,6 +107,7 @@ test('creates 2nodes raft docker tessera cakeshop custom ports', () => {
         rpcPort: '56001',
         wsPort: '57001',
         raftPort: '80502',
+        graphQlPort: '58001',
       },
       tm: {
         ip: '172.16.239.102',

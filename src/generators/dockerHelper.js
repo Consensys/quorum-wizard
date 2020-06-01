@@ -98,7 +98,7 @@ TESSERA_3PARTY_PORT=${config.containerPorts.tm.thirdPartyPort}`)
   }
   if (isQuorum260Plus(config.network.quorumVersion)) {
     env = env.concat(`
-QUORUM_GETH_ARGS="--allow-insecure-unlock"`)
+QUORUM_GETH_ARGS="--allow-insecure-unlock --graphql --graphql.port ${config.containerPorts.quorum.graphQlPort} --graphql.corsdomain=* --graphql.addr=0.0.0.0"`)
   }
   return env
 }
@@ -120,6 +120,7 @@ function buildNodeService(config, node, i, hasTessera) {
     ports:
       - "${node.quorum.rpcPort}:${config.containerPorts.quorum.rpcPort}"
       - "${node.quorum.wsPort}:${config.containerPorts.quorum.wsPort}"
+      - "${node.quorum.graphQlPort}:${config.containerPorts.quorum.graphQlPort}"
     volumes:
       - ${networkName}-vol${i + 1}:/qdata
       - ./qdata:/examples:ro
