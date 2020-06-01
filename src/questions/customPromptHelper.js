@@ -27,6 +27,12 @@ function buildBashQuestions(numberNodes, hasTessera, i, prevAnswers, isRaft) {
     message: `input quorum node ${i + 1} ws port`,
     default: prevAnswers !== undefined ? incrementPort(prevAnswers.quorumWs, 1) : '23000',
   })
+  questions.push({
+    type: 'input',
+    name: 'quorumGraphQl',
+    message: `input quorum node ${i + 1} graphql port`,
+    default: prevAnswers !== undefined ? incrementPort(prevAnswers.quorumGraphQl, 1) : '24000',
+  })
   if (isRaft) {
     questions.push({
       type: 'input',
@@ -72,6 +78,7 @@ export async function getCustomizedBashNodes(numberNodes, hasTessera, isRaft) {
         devP2pPort: answers.quorumP2P,
         rpcPort: answers.quorumRpc,
         wsPort: answers.quorumWs,
+        graphQlPort: answers.quorumGraphQl,
         raftPort: answers.quorumRaft === undefined ? incrementPort(50401, i) : answers.quorumRaft,
       },
     }
@@ -101,6 +108,12 @@ function buildDockerQuestions(numberNodes, hasTessera, i, prevAnswers) {
     message: `input quorum node ${i + 1} ws port`,
     default: prevAnswers !== undefined ? incrementPort(prevAnswers.quorumWs, 1) : '23000',
   })
+  questions.push({
+    type: 'input',
+    name: 'quorumGraphQl',
+    message: `input quorum node ${i + 1} graphql port`,
+    default: prevAnswers !== undefined ? incrementPort(prevAnswers.quorumGraphQl, 1) : '24000',
+  })
   if (hasTessera) {
     questions.push({
       type: 'input',
@@ -128,6 +141,7 @@ export async function getCustomizedDockerPorts(numberNodes, hasTessera, dockerSu
         devP2pPort: numToString(devP2pPort + i),
         rpcPort: answers.quorumRpc,
         wsPort: answers.quorumWs,
+        graphQlPort: answers.quorumGraphQl,
         raftPort: numToString(raftPort + i),
       },
     }

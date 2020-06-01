@@ -1,10 +1,6 @@
 import { prompt } from 'inquirer'
 import { promptUser } from './index'
-import {
-  getCustomizedBashNodes,
-  getCustomizedDockerPorts,
-  getCustomizedCakeshopPort,
-} from './customPromptHelper'
+import { getCustomizedBashNodes, getCustomizedCakeshopPort, getCustomizedDockerPorts } from './customPromptHelper'
 import { CUSTOM_ANSWERS, QUESTIONS } from './questions'
 import { exists } from '../utils/fileUtils'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
@@ -37,6 +33,7 @@ const CUSTOM_CONFIG = {
 const QUORUM_DOCKER_NODE1 = {
   quorumRpc: '32000',
   quorumWs: '33000',
+  quorumGraphQl: '34000',
 }
 
 const TESSERA_DOCKER_NODE1 = {
@@ -46,6 +43,7 @@ const TESSERA_DOCKER_NODE1 = {
 const QUORUM_DOCKER_NODE2 = {
   quorumRpc: '32001',
   quorumWs: '33001',
+  quorumGraphQl: '34001',
 }
 
 const TESSERA_DOCKER_NODE2 = {
@@ -58,6 +56,7 @@ const QUORUM_BASH_NODE1 = {
   quorumRpc: '32000',
   quorumWs: '33000',
   quorumRaft: '40401',
+  quorumGraphQl: '34000',
 }
 
 const TESSERA_BASH_NODE1 = {
@@ -72,6 +71,7 @@ const QUORUM_BASH_NODE2 = {
   quorumRpc: '32001',
   quorumWs: '33001',
   quorumRaft: '40402',
+  quorumGraphQl: '34001',
 }
 
 const TESSERA_BASH_NODE2 = {
@@ -101,14 +101,24 @@ describe('build customized node info from custom prompts', () => {
 
     const expected = [{
       quorum: {
-        devP2pPort: '31000', ip: '127.0.0.1', raftPort: '40401', rpcPort: '32000', wsPort: '33000',
+        devP2pPort: '31000',
+        ip: '127.0.0.1',
+        raftPort: '40401',
+        rpcPort: '32000',
+        wsPort: '33000',
+        graphQlPort: '34000',
       },
       tm: {
         ip: '127.0.0.1', p2pPort: '8001', thirdPartyPort: '8081',
       },
     }, {
       quorum: {
-        devP2pPort: '31001', ip: '127.0.0.1', raftPort: '40402', rpcPort: '32001', wsPort: '33001',
+        devP2pPort: '31001',
+        ip: '127.0.0.1',
+        raftPort: '40402',
+        rpcPort: '32001',
+        wsPort: '33001',
+        graphQlPort: '34001',
       },
       tm: {
         ip: '127.0.0.1', p2pPort: '8002', thirdPartyPort: '8082',
@@ -132,11 +142,21 @@ describe('build customized node info from custom prompts', () => {
 
     const expected = [{
       quorum: {
-        devP2pPort: '31000', ip: '127.0.0.1', raftPort: '50401', rpcPort: '32000', wsPort: '33000',
+        devP2pPort: '31000',
+        ip: '127.0.0.1',
+        raftPort: '50401',
+        rpcPort: '32000',
+        wsPort: '33000',
+        graphQlPort: '34000',
       },
     }, {
       quorum: {
-        devP2pPort: '31001', ip: '127.0.0.1', raftPort: '50402', rpcPort: '32001', wsPort: '33001',
+        devP2pPort: '31001',
+        ip: '127.0.0.1',
+        raftPort: '50402',
+        rpcPort: '32001',
+        wsPort: '33001',
+        graphQlPort: '34001',
       },
     }]
 
@@ -162,14 +182,24 @@ describe('build customized node info from custom prompts', () => {
 
     const expected = [{
       quorum: {
-        devP2pPort: '21000', ip: '172.16.239.11', raftPort: '50401', rpcPort: '32000', wsPort: '33000',
+        devP2pPort: '21000',
+        ip: '172.16.239.11',
+        raftPort: '50401',
+        rpcPort: '32000',
+        wsPort: '33000',
+        graphQlPort: '34000',
       },
       tm: {
         ip: '172.16.239.101', p2pPort: '9001', thirdPartyPort: '8081',
       },
     }, {
       quorum: {
-        devP2pPort: '21001', ip: '172.16.239.12', raftPort: '50402', rpcPort: '32001', wsPort: '33001',
+        devP2pPort: '21001',
+        ip: '172.16.239.12',
+        raftPort: '50402',
+        rpcPort: '32001',
+        wsPort: '33001',
+        graphQlPort: '34001',
       },
       tm: {
         ip: '172.16.239.102', p2pPort: '9002', thirdPartyPort: '8082',
@@ -194,11 +224,21 @@ describe('build customized node info from custom prompts', () => {
 
     const expected = [{
       quorum: {
-        devP2pPort: '21000', ip: '172.16.239.11', raftPort: '50401', rpcPort: '32000', wsPort: '33000',
+        devP2pPort: '21000',
+        ip: '172.16.239.11',
+        raftPort: '50401',
+        rpcPort: '32000',
+        wsPort: '33000',
+        graphQlPort: '34000',
       },
     }, {
       quorum: {
-        devP2pPort: '21001', ip: '172.16.239.12', raftPort: '50402', rpcPort: '32001', wsPort: '33001',
+        devP2pPort: '21001',
+        ip: '172.16.239.12',
+        raftPort: '50402',
+        rpcPort: '32001',
+        wsPort: '33001',
+        graphQlPort: '34001',
       },
     }]
 
