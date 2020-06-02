@@ -67,7 +67,7 @@ export function generateResourcesRemote(config) {
 
   if (isDocker(config.network.deployment)) {
     dockerCommand += `
-    sed -i 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/${buildDockerIp(config.containerPorts.dockerSubnet, '1')}\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
+    sed -i'.bak' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/${buildDockerIp(config.containerPorts.dockerSubnet, '1')}\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
   }
 
   try {
