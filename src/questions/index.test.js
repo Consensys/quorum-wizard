@@ -55,6 +55,10 @@ const GENERATE_ANSWERS = {
   name: '1',
 }
 
+const GENERATE_MISSING_CONFIG_ANSWERS = {
+  generate: 'no configs available',
+}
+
 describe('prompts the user with different sets of questions based on first choice', () => {
   beforeEach(() => {
     prompt.mockClear()
@@ -147,6 +151,11 @@ describe('prompts the user with different sets of questions based on first choic
   })
   it('regenerate', async () => {
     prompt.mockResolvedValue(GENERATE_ANSWERS)
+    await promptGenerate()
+    expect(prompt).toHaveBeenCalledWith(GENERATE_QUESTIONS)
+  })
+  it('regenerate - no valid config file', async () => {
+    prompt.mockResolvedValue(GENERATE_MISSING_CONFIG_ANSWERS)
     await promptGenerate()
     expect(prompt).toHaveBeenCalledWith(GENERATE_QUESTIONS)
   })
