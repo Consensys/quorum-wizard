@@ -29,6 +29,7 @@ import {
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')
 jest.mock('../utils/log')
+
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 getFullNetworkPath.mockReturnValue(`${TEST_CWD}/test-network`)
@@ -41,6 +42,20 @@ const baseNetwork = {
   transactionManager: LATEST_TESSERA,
   cakeshop: LATEST_CAKESHOP,
   deployment: 'docker-compose',
+  containerPorts: {
+    dockerSubnet: '172.16.239.0/24',
+    quorum: {
+      rpcPort: 8545,
+      p2pPort: 21000,
+      raftPort: 50400,
+      wsPort: 8645,
+      graphQlPort: 8547,
+    },
+    tm: {
+      p2pPort: 9000,
+      thirdPartyPort: 9080,
+    },
+  },
 }
 
 describe('generates docker-compose directory', () => {
@@ -132,8 +147,9 @@ services:
     ports:
       - "22000:8545"
       - "23000:8645"
+      - "24000:8547"
     volumes:
-      - vol1:/qdata
+      - 1-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager1
@@ -141,7 +157,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
   txmanager1:
     << : *tx-manager-def
@@ -149,24 +165,24 @@ services:
     ports:
       - "9081:9080"
     volumes:
-      - vol1:/qdata
+      - 1-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  1-nodes-raft-tessera-docker-compose-net:
+    name: 1-nodes-raft-tessera-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  "vol1":
-  "cakeshopvol":`
+  "1-nodes-raft-tessera-docker-compose-vol1":
+  "1-nodes-raft-tessera-docker-compose-cakeshopvol":`
     const expected = `quorumDefinitions\ntesseraDefinitions${services}`
 
     readFileToString.mockReturnValueOnce('definitions')
@@ -193,26 +209,27 @@ services:
     ports:
       - "22000:8545"
       - "23000:8645"
+      - "24000:8547"
     volumes:
-      - vol1:/qdata
+      - 1-nodes-istanbul-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      1-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.11
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  1-nodes-istanbul-docker-compose-net:
+    name: 1-nodes-istanbul-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  "vol1":
-  "cakeshopvol":`
+  "1-nodes-istanbul-docker-compose-vol1":
+  "1-nodes-istanbul-docker-compose-cakeshopvol":`
     const expected = `quorumDefinitions${services}`
 
     readFileToString.mockReturnValueOnce('definitions')
@@ -235,14 +252,15 @@ services:
     ports:
       - "22000:8545"
       - "23000:8645"
+      - "24000:8547"
     volumes:
-      - vol1:/qdata
+      - 1-nodes-raft-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      1-nodes-raft-docker-compose-net:
         ipv4_address: 172.16.239.11
   cakeshop:
     << : *cakeshop-def
@@ -250,22 +268,22 @@ services:
     ports:
       - "8999:8999"
     volumes:
-      - cakeshopvol:/qdata
+      - 1-nodes-raft-docker-compose-cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
-        ipv4_address: 172.16.239.186
+      1-nodes-raft-docker-compose-net:
+        ipv4_address: 172.16.239.2
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  1-nodes-raft-docker-compose-net:
+    name: 1-nodes-raft-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  "vol1":
-  "cakeshopvol":`
+  "1-nodes-raft-docker-compose-vol1":
+  "1-nodes-raft-docker-compose-cakeshopvol":`
     const expected = `quorumDefinitions\ncakeshopDefinitions${services}`
 
     readFileToString.mockReturnValueOnce('quorumDefinitions')
@@ -289,8 +307,9 @@ services:
     ports:
       - "22000:8545"
       - "23000:8645"
+      - "24000:8547"
     volumes:
-      - vol1:/qdata
+      - 1-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager1
@@ -298,7 +317,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
   txmanager1:
     << : *tx-manager-def
@@ -306,10 +325,10 @@ services:
     ports:
       - "9081:9080"
     volumes:
-      - vol1:/qdata
+      - 1-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
@@ -319,22 +338,22 @@ services:
     ports:
       - "8999:8999"
     volumes:
-      - cakeshopvol:/qdata
+      - 1-nodes-raft-tessera-docker-compose-cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
-        ipv4_address: 172.16.239.186
+      1-nodes-raft-tessera-docker-compose-net:
+        ipv4_address: 172.16.239.2
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  1-nodes-raft-tessera-docker-compose-net:
+    name: 1-nodes-raft-tessera-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  "vol1":
-  "cakeshopvol":`
+  "1-nodes-raft-tessera-docker-compose-vol1":
+  "1-nodes-raft-tessera-docker-compose-cakeshopvol":`
     const expected = `quorumDefinitions\ntesseraDefinitions\ncakeshopDefinitions${services}`
 
     readFileToString.mockReturnValueOnce('definitions')

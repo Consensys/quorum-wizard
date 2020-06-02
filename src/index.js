@@ -2,6 +2,7 @@
 
 import 'source-map-support/register'
 import inquirer from 'inquirer'
+import isWsl from 'is-wsl'
 import {
   createLogger,
   debug,
@@ -55,14 +56,17 @@ const { argv } = yargs
   .version()
   .strict()
 
+createLogger(argv.v)
+debug('Showing debug logs')
+
 if (process.platform === 'win32') {
   info('Unfortunately, Windows OS is not yet supported by Quorum tooling.')
 
   process.exit(1)
+} else if (isWsl) {
+  info('Unfortunately, Windows Subsystem for Linux (WSL) is not yet supported by Quorum tooling.')
+  process.exit(1)
 }
-
-createLogger(argv.v)
-debug('Showing debug logs')
 
 if (argv.q) {
   buildNetwork('quickstart')
