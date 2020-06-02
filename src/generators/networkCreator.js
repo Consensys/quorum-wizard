@@ -54,7 +54,7 @@ export function generateResourcesRemote(config) {
   docker ps > /dev/null
   EXIT_CODE=$?
 
-  if [[ EXIT_CODE -ne 0 ]];
+  if [ $EXIT_CODE -ne 0 ];
   then
     exit $EXIT_CODE
   fi
@@ -67,7 +67,7 @@ export function generateResourcesRemote(config) {
 
   if (isDocker(config.network.deployment)) {
     dockerCommand += `
-    sed -i '' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/${buildDockerIp(config.containerPorts.dockerSubnet, '1')}\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
+    sed -i'.bak' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/${buildDockerIp(config.containerPorts.dockerSubnet, '1')}\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
   }
 
   try {

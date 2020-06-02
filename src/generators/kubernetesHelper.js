@@ -25,7 +25,7 @@ function createStartScript() {
 minikube ip > /dev/null 2>&1
 EXIT_CODE=$?
 
-if [[ EXIT_CODE -ne 0 ]];
+if [ $EXIT_CODE -ne 0 ];
 then
   printf "Error: minikube is not running, please install and start before running this script.\n"
   printf "For more information, see our qubernetes project: https://github.com/jpmorganchase/qubernetes\n"
@@ -36,7 +36,7 @@ fi
 kubectl version > /dev/null 2>&1
 EXIT_CODE=$?
 
-if [[ EXIT_CODE -ne 0 ]];
+if [ $EXIT_CODE -ne 0 ];
 then
   printf "Error: kubectl is not running, please install kubectl before running this script.\n"
   printf "For more information, see our qubernetes project: https://github.com/jpmorganchase/qubernetes\n"
