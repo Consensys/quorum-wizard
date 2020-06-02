@@ -194,7 +194,7 @@ function getConfigPath(...relativePaths) {
 }
 
 export function readConfigJson(...relativePaths) {
-  return readJsonFile(getConfigPath(relativePaths))
+  return readJsonFile(getConfigPath(...relativePaths))
 }
 export function getAvailableConfigs() {
   const configDir = getConfigPath()
