@@ -61,7 +61,7 @@ All you need to do is go to the specified location and run ./start.sh
 export const DEPLOYMENT_TYPE = {
   type: 'list',
   name: 'deployment',
-  message: 'Would you like to generate bash scripts or a docker-compose file to bring up your network?',
+  message: 'Would you like to generate bash scripts, a docker-compose file, or a kubernetes config to bring up your network?',
   choices: () => {
     let dockerDisabled = false
     try {
