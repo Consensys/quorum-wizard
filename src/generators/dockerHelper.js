@@ -1,4 +1,5 @@
 import {
+  copyFile,
   formatNewLine,
   libRootDir,
   readFileToString,
@@ -19,6 +20,7 @@ export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
   const hasCakeshop = isCakeshop(config.network.cakeshop)
   const hasSplunk = isSplunk(config.network.splunk)
+  const txGenerate = config.network.txGenerate
 
   const quorumDefinitions = readFileToString(joinPath(
     libRootDir(),
@@ -41,7 +43,7 @@ export function buildDockerCompose(config) {
   )) : ''
 
   let services = config.nodes.map((node, i) => {
-    let allServices = buildNodeService(config, node, i, hasTessera, hasSplunk)
+    let allServices = buildNodeService(config, node, i, hasTessera, hasSplunk, txGenerate)
     if (hasTessera) {
       allServices = [allServices, buildTesseraService(config, node, i, hasSplunk)].join('')
     }
@@ -85,9 +87,11 @@ export async function createDockerCompose(config) {
 
   info('Writing start script...')
   if (config.network.txGenerate) {
-    const startCommands = 'docker-compose up -d'
-    writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
-    writeFile(joinPath(networkPath, 'stop.sh'), 'docker-compose down', true)
+    // const startCommands = 'docker-compose up -d'
+    // writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
+    // writeFile(joinPath(networkPath, 'stop.sh'), 'docker-compose down', true)
+    copyFile(joinPath(libRootDir(), 'lib', 'start-with-txns.sh'), joinPath(networkPath, 'start.sh'))
+    copyFile(joinPath(libRootDir(), 'lib', 'stop-txns.sh'), joinPath(networkPath, 'stop.sh'))
   } else {
     const startCommands = 'docker-compose up -d'
     writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
@@ -116,7 +120,7 @@ QUORUM_GETH_ARGS="--allow-insecure-unlock"`)
   return env
 }
 
-function buildNodeService(config, node, i, hasTessera, hasSplunk) {
+function buildNodeService(config, node, i, hasTessera, hasSplunk, txGenerate) {
   const txManager = hasTessera
     ? `depends_on:
       - txmanager${i + 1}
@@ -126,6 +130,8 @@ function buildNodeService(config, node, i, hasTessera, hasSplunk) {
       - PRIVATE_CONFIG=ignore`
   const splunkLogging = hasSplunk
     ? `logging: *default-logging` : ``
+  const scriptsDir = (txGenerate && i === 0) ? `
+      - ./out/config/scripts:/scripts` : ``
 
   return `
   node${i + 1}:
@@ -137,7 +143,7 @@ function buildNodeService(config, node, i, hasTessera, hasSplunk) {
       - "${node.quorum.wsPort}:${config.containerPorts.quorum.wsPort}"
     volumes:
       - vol${i + 1}:/qdata
-      - ./qdata:/examples:ro
+      - ./qdata:/examples:ro ${scriptsDir}
     ${txManager}
       - NODE_ID=${i + 1}
     networks:

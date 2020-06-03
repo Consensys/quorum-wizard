@@ -72,6 +72,11 @@ export function generateResourcesRemote(config) {
     copyDirectory(joinPath(libRootDir(), 'splunk'), joinPath(remoteOutputDir, 'splunk'))
   }
 
+  if (config.network.txGenerate) {
+    copyDirectory(joinPath(libRootDir(), 'lib', 'scripts'), joinPath(remoteOutputDir, 'scripts'))
+    // copyFile(joinPath(networkPath, 'private_contract.js'), joinPath(remoteOutputDir, 'scripts', 'private_contract.js'))
+  }
+
   try {
     executeSync(dockerCommand)
   } catch (e) {
@@ -95,6 +100,11 @@ export async function generateResourcesLocally(config) {
 
   if (isSplunk(config.network.splunk)) {
     copyDirectory(joinPath(libRootDir(), 'splunk'), joinPath(configDir, 'splunk'))
+  }
+
+  if (config.network.txGenerate) {
+    copyDirectory(joinPath(libRootDir(), 'lib', 'scripts'), joinPath(configDir, 'scripts'))
+    copyFile(joinPath(networkPath, 'private_contract.js'), joinPath(configDir, 'scripts', 'private_contract.js'))
   }
 
   generateConsensusConfig(

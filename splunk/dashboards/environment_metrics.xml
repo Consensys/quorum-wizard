@@ -7,11 +7,11 @@
         <search>
           <query>| mstats avg(_value) as avgTotal WHERE metric_name="cadvisor./docker.cpu_cumulative_usage" AND index="quorum_metrics" span=10s by metric_name
 | appendcols
-    [ mstats avg(_value) as avgCPU1 WHERE (metric_name="cadvisor.*_node1_1.cpu_cumulative_usage") AND index="quorum_metrics" span=10s by metric_name]
+    [ mstats avg(_value) as avgCPU1 WHERE (metric_name="cadvisor.node1.cpu_cumulative_usage") AND index="quorum_metrics" span=10s by metric_name]
 | appendcols
-    [ mstats avg(_value) as avgCPU2 WHERE metric_name="cadvisor.*_node2_1.cpu_cumulative_usage" AND index="quorum_metrics" span=10s by metric_name]
+    [ mstats avg(_value) as avgCPU2 WHERE metric_name="cadvisor.node2.cpu_cumulative_usage" AND index="quorum_metrics" span=10s by metric_name]
 | appendcols
-    [ mstats avg(_value) as avgCPU3 WHERE metric_name="cadvisor.*_node3_1.cpu_cumulative_usage" AND index="quorum_metrics" span=10s by metric_name]
+    [ mstats avg(_value) as avgCPU3 WHERE metric_name="cadvisor.node3.cpu_cumulative_usage" AND index="quorum_metrics" span=10s by metric_name]
 | sort - metric_name _time
 | streamstats stdev(avgCPU1) as difCPU1 stdev(avgCPU2) as difCPU2 stdev(avgCPU3) as difCPU3 stdev(avgTotal) as difTotal window=2 by metric_name
 | eval percentCPU1=difCPU1/difTotal*100
@@ -65,7 +65,7 @@
         <search>
           <query>| mstats avg(_value) as avgTotal WHERE metric_name="cadvisor./docker.cpu_cumulative_usage" AND index="quorum_metrics" span=10s by metric_name
 | appendcols
-    [ mstats avg(_value) as avgCPU1 WHERE (metric_name="cadvisor.*_splunk_1.cpu_cumulative_usage") AND index="quorum_metrics" span=10s by metric_name]
+    [ mstats avg(_value) as avgCPU1 WHERE (metric_name="cadvisor.splunk.cpu_cumulative_usage") AND index="quorum_metrics" span=10s by metric_name]
 | appendcols
     [ mstats avg(_value) as avgCPU2 WHERE metric_name="cadvisor.*_cakeshop_1.cpu_cumulative_usage" AND index="quorum_metrics" span=10s by metric_name]
 | appendcols
