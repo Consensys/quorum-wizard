@@ -1,0 +1,18 @@
+{
+  "simplestorage": {
+    "method": "set",
+    "value": [10],
+    "sendFromOwner": false,
+    "init": {
+      "values": [42]
+    }
+  },
+  "ERC20Fixed": {
+    "method": "transfer",
+    "value": ["to", 1],
+    "sendFromOwner": true,
+    "init": {
+      "values": []
+    }
+  }
+}
