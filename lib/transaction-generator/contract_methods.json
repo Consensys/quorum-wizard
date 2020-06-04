@@ -1,7 +1,7 @@
 {
   "simplestorage": {
     "method": "set",
-    "value": [10],
+    "staticValues": [10],
     "sendFromOwner": false,
     "init": {
       "values": [42]
@@ -9,7 +9,21 @@
   },
   "ERC20Fixed": {
     "method": "transfer",
-    "value": ["to", 1],
+    "staticValues": ["{to3rdParty}", 1],
+    "sendFromOwner": true,
+    "init": {
+      "values": []
+    }
+  },
+  "ERC721Airports": {
+    "method": "addAirport",
+    "randomValues": [
+      "{to3rdParty}",
+      ["ATL","LAX","ORD","DFW","DEN","JFK","SFO","SEA",
+        "LAS","MCO","EWR","CLT","PHX","IAH","MIA","BOS",
+        "MSP","FLL","DTW","PHL","LGA","BWI","SLC","SAN",
+        "IAD","DCA","MDW","TPA","PDX","HNL"]
+    ],
     "sendFromOwner": true,
     "init": {
       "values": []
