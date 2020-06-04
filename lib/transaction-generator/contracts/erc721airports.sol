@@ -10,12 +10,12 @@ contract ERC721Airports is ERC721 {
     constructor() ERC721("Airport", "APT") public {
     }
 
-    function addAirport(address entity, string memory airportCode) public returns (uint256) {
+    function addAirport(address entity, string memory airportCode) public returns (string memory) {
         _hops.increment();
 
         uint256 newItemId = _hops.current();
         _mint(entity, newItemId);
 
-        return newItemId;
+        return airportCode;
     }
 }
