@@ -16,7 +16,7 @@ x-splunk-def:
     retries: 20
 x-ethlogger-def:
   &ethlogger-def
-  image: docker.pkg.github.com/splunk/splunk-connect-for-ethereum/ethlogger:latest
+  image: splunkdlt/ethlogger:latest
   environment:
     - ETH_RPC_URL=http://172.16.239.11:8545
     - NETWORK_NAME=quorum
@@ -45,6 +45,13 @@ x-cadvisor-def:
   depends_on:
     - splunk
   user: root
+x-tx-gen-def:
+  &tx-gen-def
+  image: splunkdlt/ethereum-transaction-generator
+  entrypoint:
+    - tail
+    - -f
+    - /dev/null
 x-logging:
   &default-logging
   driver: splunk

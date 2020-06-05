@@ -7,6 +7,7 @@ import {
 } from '../utils/fileUtils'
 import { getFullNetworkPath } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
+import { loadTesseraPublicKey } from './transactionManager'
 import {
   isTessera,
   isCakeshop,
@@ -59,6 +60,15 @@ export function buildDockerCompose(config) {
       buildCadvisorService()]
     info('Splunk>')
   }
+  if (txGenerate) {
+    let pubkeys = []
+    config.nodes.forEach((_, i) => {
+      pubkeys.push(loadTesseraPublicKey(config, i + 1))
+    });
+
+    services = [services.join(''),
+      buildTxGenService(hasSplunk, config, pubkeys)]
+  }
 
   return [
     formatNewLine(quorumDefinitions),
@@ -87,16 +97,11 @@ export async function createDockerCompose(config) {
 
   info('Writing start script...')
   if (config.network.txGenerate) {
-    // const startCommands = 'docker-compose up -d'
-    // writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
-    // writeFile(joinPath(networkPath, 'stop.sh'), 'docker-compose down', true)
     copyFile(joinPath(libRootDir(), 'lib', 'start-with-txns.sh'), joinPath(networkPath, 'start.sh'))
-    copyFile(joinPath(libRootDir(), 'lib', 'stop-txns.sh'), joinPath(networkPath, 'stop.sh'))
   } else {
-    const startCommands = 'docker-compose up -d'
-    writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
-    writeFile(joinPath(networkPath, 'stop.sh'), 'docker-compose down', true)
+    writeFile(joinPath(networkPath, 'start.sh'), 'docker-compose up -d', true)
   }
+  writeFile(joinPath(networkPath, 'stop.sh'), 'docker-compose down', true)
   info('Done')
 }
 
@@ -130,8 +135,6 @@ function buildNodeService(config, node, i, hasTessera, hasSplunk, txGenerate) {
       - PRIVATE_CONFIG=ignore`
   const splunkLogging = hasSplunk
     ? `logging: *default-logging` : ``
-  const scriptsDir = (txGenerate && i === 0) ? `
-      - ./out/config/scripts:/scripts` : ``
 
   return `
   node${i + 1}:
@@ -143,7 +146,7 @@ function buildNodeService(config, node, i, hasTessera, hasSplunk, txGenerate) {
       - "${node.quorum.wsPort}:${config.containerPorts.quorum.wsPort}"
     volumes:
       - vol${i + 1}:/qdata
-      - ./qdata:/examples:ro ${scriptsDir}
+      - ./qdata:/examples:ro
     ${txManager}
       - NODE_ID=${i + 1}
     networks:
@@ -236,6 +239,31 @@ function buildEthloggerService() {
       quorum-examples-net:
         ipv4_address: 172.16.239.202
     logging: *default-logging`
+}
+
+function buildTxGenService(hasSplunk, config, pubkeys) {
+  const splunkLogging = hasSplunk
+    ? `logging: *default-logging` : ``
+  let nodeVars = ''
+  config.nodes.forEach((node, i) => {
+    nodeVars += `
+      - NODE${i + 1}=172.16.239.1${i + 1}:${config.containerPorts.quorum.wsPort}`
+  });
+  let pubkeyVars = ''
+  pubkeys.forEach((pubkey, i) => {
+    pubkeyVars += `
+      - PUBKEY${i + 1}=${pubkey}`
+  });
+
+  return `
+  tx-gen:
+    << : *tx-gen-def
+    container_name: txgen
+    environment:
+      - QUORUM=true${nodeVars}${pubkeyVars}
+    networks:
+      - quorum-examples-net
+    ${splunkLogging}`
 }
 
 function buildEndService(config) {
