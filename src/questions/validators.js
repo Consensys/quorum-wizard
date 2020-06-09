@@ -1,5 +1,6 @@
 import { isJava11Plus } from '../utils/execUtils'
-import { LATEST_CAKESHOP, LATEST_CAKESHOP_J8 } from '../generators/download'
+import { LATEST_CAKESHOP_J8 } from '../generators/download'
+import { getLatestCakeshop } from '../generators/versionHelper'
 
 export function validateNumberStringInRange(input, low, high) {
   const number = parseInt(input, 10)
@@ -25,7 +26,7 @@ export function validateNetworkId(input) {
 
 export function transformCakeshopAnswer(answer) {
   if (answer === 'Yes') {
-    return isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8
+    return isJava11Plus() ? getLatestCakeshop() : LATEST_CAKESHOP_J8
   }
   return 'none'
 }

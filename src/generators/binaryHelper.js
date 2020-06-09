@@ -1,5 +1,4 @@
 import { wizardHomeDir } from '../utils/fileUtils'
-import { executeSync } from '../utils/execUtils'
 import {
   isBash,
   isIstanbul,
@@ -9,14 +8,14 @@ import {
 import {
   BINARIES,
   createQuorumBinaryInfo,
+  createCakeshopBinaryInfo,
   downloadIfMissing,
-  getVersions,
   LATEST_BOOTNODE,
   LATEST_ISTANBUL_TOOLS,
 } from './download'
-import { disableIfWrongJavaVersion } from '../questions/validators'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
+import { disableIfWrongJavaVersion } from '../questions/validators'
 
 // This method could be improved, but right now it tries to:
 // a. Cache downloads
@@ -50,45 +49,6 @@ export async function downloadAndCopyBinaries(config) {
   }
 
   await Promise.all(downloads)
-}
-
-export function getGethOnPath() {
-  const pathChoices = []
-  try {
-    const gethOnPath = executeSync('which geth').toString().trim()
-    if (gethOnPath) {
-      const gethVersionOutput = executeSync('geth version').toString()
-      const versionMatch = gethVersionOutput.match(/Quorum Version: (\S+)/)
-      if (versionMatch !== null) {
-        const version = versionMatch[1]
-        pathChoices.push({
-          name: `Quorum ${version} on path (${gethOnPath})`,
-          value: 'PATH',
-        })
-      }
-    }
-  } catch (e) {
-    // either no geth or the version call errored, don't include it in choices
-  }
-  return pathChoices
-}
-
-export async function getDownloadableGethChoices(deployment) {
-  const choices = await getVersions('quorum/geth')
-  let latestChoice = [choices[0]]
-  if (isBash(deployment)) {
-    latestChoice = latestChoice.concat(getGethOnPath())
-  }
-  latestChoice = latestChoice.concat('select older versions')
-  return latestChoice
-}
-
-export async function getAllGethChoices(deployment) {
-  let choices = await getVersions('quorum/geth')
-  if (isBash(deployment)) {
-    choices = choices.concat(getGethOnPath())
-  }
-  return choices
 }
 
 export function getDownloadableTesseraChoices(deployment) {
@@ -139,7 +99,7 @@ export function pathToTesseraJar(transactionManager) {
 }
 
 export function pathToCakeshop(version) {
-  const binary = BINARIES.cakeshop[version]
+  const binary = createCakeshopBinaryInfo(version)
   return joinPath(wizardHomeDir(), 'bin', 'cakeshop', version, binary.name)
 }
 

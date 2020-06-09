@@ -1,13 +1,17 @@
 import {
-  disableIfWrongJavaVersion,
   transformCakeshopAnswer,
   validateNetworkId,
   validateNumberStringInRange,
+  disableIfWrongJavaVersion,
 } from './validators'
 import { isJava11Plus } from '../utils/execUtils'
 import { LATEST_CAKESHOP, LATEST_CAKESHOP_J8 } from '../generators/download'
+import { getLatestCakeshop } from '../generators/versionHelper'
 
 jest.mock('../utils/execUtils')
+jest.mock('../generators/versionHelper')
+
+getLatestCakeshop.mockReturnValue(LATEST_CAKESHOP)
 
 test('accepts answer bottom of range', () => {
   expect(validateNumberStringInRange('2', 2, 3)).toBe(true)

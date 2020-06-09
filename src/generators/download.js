@@ -10,8 +10,9 @@ import {
 } from '../utils/fileUtils'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
+import { executeSync } from '../utils/execUtils'
 
-export async function getVersions(name) {
+export async function getVersionsBintray(name) {
   const url = `https://api.bintray.com/packages/quorumengineering/${name}`
   const response = await axios({
     url,
@@ -20,12 +21,21 @@ export async function getVersions(name) {
   return response.data.versions
 }
 
+export async function getLatestVersionGithub(name) {
+  const latest = executeSync(`curl -s https://api.github.com/repos/jpmorganchase/${name}/releases/latest`).toString().trim()
+  const version = JSON.parse(latest)
+  return version.tag_name
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export async function downloadIfMissing(name, version) {
   let binaryInfo
   switch (name) {
     case 'quorum':
       binaryInfo = createQuorumBinaryInfo(version)
+      break
+    case 'cakeshop':
+      binaryInfo = createCakeshopBinaryInfo(version)
       break
     default:
       binaryInfo = BINARIES[name][version]
@@ -115,6 +125,18 @@ export function createQuorumBinaryInfo(version) {
   }
 }
 
+export function createCakeshopBinaryInfo(version) {
+  const java8 = version.includes('J8')
+  const baseVersion = java8 ? version.substring(0, version.length - 3) : version
+  const type = java8 ? 'jar8' : 'jar'
+  return {
+    name: 'cakeshop.war',
+    description: `Cakeshop ${version}`,
+    url: `https://github.com/jpmorganchase/cakeshop/releases/download/v${baseVersion}/cakeshop-${version}.war`,
+    type,
+  }
+}
+
 export const BINARIES = {
   tessera: {
     '0.10.5': {
@@ -133,21 +155,6 @@ export const BINARIES = {
       name: 'tessera-app.jar',
       description: 'Tessera 0.10.2',
       url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.2/tessera-app-0.10.2-app.jar',
-      type: 'jar8',
-    },
-  },
-
-  cakeshop: {
-    '0.11.0': {
-      name: 'cakeshop.war',
-      description: 'Cakeshop 0.11.0',
-      url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0/cakeshop-0.11.0.war',
-      type: 'jar',
-    },
-    '0.11.0-J8': {
-      name: 'cakeshop.war',
-      description: 'Cakeshop 0.11.0-J8',
-      url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0/cakeshop-0.11.0-J8.war',
       type: 'jar8',
     },
   },

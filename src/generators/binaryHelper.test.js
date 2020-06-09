@@ -2,19 +2,14 @@
 import { any } from 'expect'
 import {
   downloadAndCopyBinaries,
-  getDownloadableGethChoices,
   getDownloadableTesseraChoices,
-  getGethOnPath,
   getTesseraOnPath,
   pathToBootnode,
   pathToCakeshop,
   pathToQuorumBinary,
   pathToTesseraJar,
 } from './binaryHelper'
-import {
-  executeSync,
-  isJava11Plus,
-} from '../utils/execUtils'
+import { isJava11Plus } from '../utils/execUtils'
 import {
   cwd,
   libRootDir,
@@ -27,6 +22,8 @@ import {
 } from '../utils/testHelper'
 import {
   downloadIfMissing,
+  createQuorumBinaryInfo,
+  createCakeshopBinaryInfo,
   LATEST_BOOTNODE,
   LATEST_CAKESHOP,
   LATEST_QUORUM,
@@ -35,17 +32,31 @@ import {
 } from './download'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
+import { getLatestCakeshop } from './versionHelper'
+// import { disableIfWrongJavaVersion } from '../questions/validators'
 
 jest.mock('../generators/download')
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
 jest.mock('../utils/log')
+jest.mock('./versionHelper')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 wizardHomeDir.mockReturnValue(TEST_WIZARD_HOME_DIR)
 downloadIfMissing.mockReturnValue(Promise.resolve())
 isJava11Plus.mockReturnValue(false)
 info.mockReturnValue('log')
+getLatestCakeshop.mockReturnValue(LATEST_CAKESHOP)
+
+const QUORUM_BINARY_INFO = {
+  name: 'geth',
+}
+
+const CAKESHOP_BINARY_INFO = {
+  name: 'cakeshop.war',
+}
+createQuorumBinaryInfo.mockReturnValue(QUORUM_BINARY_INFO)
+createCakeshopBinaryInfo.mockReturnValue(CAKESHOP_BINARY_INFO)
 
 describe('Chooses the right paths to the binaries', () => {
   it('Calls geth binary directly if on path', () => {
@@ -72,35 +83,6 @@ describe('Chooses the right paths to the binaries', () => {
 })
 
 describe('Finds binaries on path', () => {
-  it('Returns no choices when local quorum is not found', () => {
-    executeSync.mockImplementationOnce(() => {
-      throw new Error('Not found')
-    })
-    expect(getGethOnPath()).toEqual([])
-    expect(executeSync).toHaveBeenCalledWith('which geth')
-    executeSync.mockReturnValueOnce(Buffer.from(''))
-    expect(getGethOnPath()).toEqual([])
-    expect(executeSync).toHaveBeenLastCalledWith('which geth')
-  })
-  it('Returns no choices when local geth (not quorum) is found', () => {
-    executeSync.mockReturnValueOnce(Buffer.from('/usr/bin/geth'))
-    executeSync.mockReturnValueOnce(Buffer.from(vanillaGethVersion))
-    expect(getGethOnPath()).toEqual([])
-    expect(executeSync).toHaveBeenCalledWith('which geth')
-    expect(executeSync).toHaveBeenLastCalledWith('geth version')
-  })
-  it('Returns choice when local quorum is found, parses version', () => {
-    executeSync.mockReturnValueOnce(Buffer.from('/usr/bin/geth'))
-    executeSync.mockReturnValueOnce(Buffer.from(quorumVersion))
-    expect(getGethOnPath()).toEqual([
-      {
-        name: 'Quorum 2.2.4 on path (/usr/bin/geth)',
-        value: 'PATH',
-      },
-    ])
-    expect(executeSync).toHaveBeenCalledWith('which geth')
-    expect(executeSync).toHaveBeenLastCalledWith('geth version')
-  })
   it('Returns no choices when $TESSERA_JAR not set', () => {
     const originalEnv = process.env
     overrideProcessValue('env', { TESSERA_JAR: '' })
@@ -176,17 +158,6 @@ describe('Downloads binaries', () => {
   })
 })
 
-describe('presents correct binary options', () => {
-  it('presents available geth options for bash', () => {
-    const choices = getDownloadableGethChoices('bash')
-    expect(choices.some((choice) => choice.name === `Quorum ${LATEST_QUORUM}` && choice.disabled === false)).toBeTruthy()
-  })
-  it('presents available geth options for docker', () => {
-    const choices = getDownloadableGethChoices('docker')
-    expect(choices.some((choice) => choice.name === `Quorum ${LATEST_QUORUM}` && choice.disabled === false)).toBeTruthy()
-  })
-})
-
 describe('presents the correct binary options', () => {
   it('disables java 11 jars if in bash mode and on jdk 8', () => {
     isJava11Plus.mockReturnValue(false)
@@ -220,26 +191,3 @@ function overrideProcessValue(key, value) {
   // process.platform is read-only, use this workaround to set it
   Object.defineProperty(process, key, { value })
 }
-
-const vanillaGethVersion = `Geth
-Version: 1.9.0-unstable
-Git Commit: f03402232cd7bcc558b70a20df5b326b1d71e1ad
-Architecture: amd64
-Protocol Versions: [63 62]
-Network Id: 1
-Go Version: go1.12
-Operating System: darwin
-GOPATH=/Users/bradmcdermott/go
-GOROOT=/usr/local/Cellar/go/1.12/libexec`
-
-const quorumVersion = `Geth
-Version: 1.8.18-stable
-Git Commit: d0262e2139ce74d16b127dd3b4ded57fd29e3a73
-Quorum Version: 2.2.4
-Architecture: amd64
-Protocol Versions: [63 62]
-Network Id: 1337
-Go Version: go1.9.7
-Operating System: darwin
-GOPATH=/Users/bradmcdermott/go
-GOROOT=/usr/local/Cellar/go@1.9/1.9.7/libexec`
