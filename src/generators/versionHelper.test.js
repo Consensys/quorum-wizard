@@ -1,17 +1,22 @@
 import {
   getGethOnPath,
   getDownloadableGethChoices,
+  getAllGethChoices,
+  getLatestCakeshop,
 } from './versionHelper'
 import { executeSync } from '../utils/execUtils'
 import {
   getVersionsBintray,
+  getLatestVersionGithub,
   LATEST_QUORUM,
+  LATEST_CAKESHOP,
 } from './download'
 
 jest.mock('../utils/execUtils')
 jest.mock('./download')
 
-getVersionsBintray.mockReturnValue([LATEST_QUORUM])
+getVersionsBintray.mockReturnValue([LATEST_QUORUM, '2.5.0'])
+getLatestVersionGithub.mockReturnValue(`v${LATEST_CAKESHOP}`)
 
 describe('presents correct binary options', () => {
   it('presents available geth options for bash', async () => {
@@ -21,6 +26,20 @@ describe('presents correct binary options', () => {
   it('presents available geth options for docker', async () => {
     const choices = await getDownloadableGethChoices('docker')
     expect(choices.some((choice) => choice.name === `Quorum ${LATEST_QUORUM}` && choice.disabled === false)).toBeTruthy()
+  })
+  it('presents available geth options for bash', async () => {
+    const choices = await getAllGethChoices('bash')
+    expect(choices.some((choice) => choice.name === `Quorum ${LATEST_QUORUM}` && choice.disabled === false)).toBeTruthy()
+    expect(choices.some((choice) => choice.name === `Quorum ${'2.5.0'}` && choice.disabled === false)).toBeTruthy()
+  })
+  it('presents available geth options for docker', async () => {
+    const choices = await getAllGethChoices('docker')
+    expect(choices.some((choice) => choice.name === `Quorum ${LATEST_QUORUM}` && choice.disabled === false)).toBeTruthy()
+    expect(choices.some((choice) => choice.name === `Quorum ${LATEST_QUORUM}` && choice.disabled === false)).toBeTruthy()
+  })
+  it('presents latest cakeshop option', async () => {
+    const latest = await getLatestCakeshop()
+    expect(latest.name === `Cakeshop ${LATEST_CAKESHOP}` && latest.disabled === false).toBeTruthy()
   })
 })
 
