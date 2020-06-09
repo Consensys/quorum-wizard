@@ -55,7 +55,7 @@ export function buildDockerCompose(config) {
   }
   if (hasSplunk) {
     services = [services.join(''),
-      buildSplunkService(config.network.splunkPort),
+      buildSplunkService(config.network.splunkPort, txGenerate),
       buildEthloggerService(),
       buildCadvisorService()]
     info('Splunk>')
@@ -193,7 +193,10 @@ function buildCakeshopService(port, hasSplunk) {
     ${splunkLogging}`
 }
 
-function buildSplunkService(port) {
+function buildSplunkService(port, txGenerate) {
+  const dependsOn = txGenerate
+    ? `depends_on:
+      - tx-gen` : ``
   return `
   splunk:
     << : *splunk-def
@@ -206,10 +209,11 @@ function buildSplunkService(port) {
       - splunk-var:/opt/splunk/var
       - splunk-etc:/opt/splunk/etc
       - ./out/config/splunk/splunk-config.yml:/tmp/defaults/default.yml
-      - ./out/config/splunk/dashboards:/opt/splunk/etc/apps/search/local/data/ui/views/
+      - ./out/config/splunk/dashboards:/dashboards
     networks:
       quorum-examples-net:
-        ipv4_address: 172.16.239.200`
+        ipv4_address: 172.16.239.200
+    ${dependsOn}`
 }
 
 function buildCadvisorService() {
@@ -261,6 +265,9 @@ function buildTxGenService(hasSplunk, config, pubkeys) {
     container_name: txgen
     environment:
       - QUORUM=true${nodeVars}${pubkeyVars}
+    volumes:
+      - ./out/config/contracts:/txgen/contracts
+      - ./out/config/splunk/abis:/txgen/abis
     networks:
       - quorum-examples-net
     ${splunkLogging}`

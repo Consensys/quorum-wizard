@@ -1,6 +1,6 @@
 x-splunk-def:
   &splunk-def
-  image: splunk/splunk:latest
+  image: splunk/splunk:8.0.4-debian
   environment:
     - SPLUNK_START_ARGS=--accept-license
     - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113

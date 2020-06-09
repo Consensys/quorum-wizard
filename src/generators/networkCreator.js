@@ -74,6 +74,7 @@ export function generateResourcesRemote(config) {
 
   if (config.network.txGenerate) {
     copyDirectory(joinPath(libRootDir(), 'lib', 'scripts'), joinPath(remoteOutputDir, 'scripts'))
+    copyDirectory(joinPath(libRootDir(), 'lib', 'contracts'), joinPath(remoteOutputDir, 'contracts'))
     // copyFile(joinPath(networkPath, 'private_contract.js'), joinPath(remoteOutputDir, 'scripts', 'private_contract.js'))
   }
 
