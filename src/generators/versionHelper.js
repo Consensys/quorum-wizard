@@ -1,3 +1,4 @@
+import cmp from 'semver-compare'
 import {
   getVersionsBintray,
   getLatestVersionGithub,
@@ -12,8 +13,6 @@ import {
   executeSync,
   isJava11Plus,
 } from '../utils/execUtils'
-
-const compareVersions = require('compare-versions')
 
 export async function getLatestCakeshop() {
   let latest = await getLatestVersionGithub('cakeshop')
@@ -55,10 +54,8 @@ export function getGethOnPath() {
   try {
     const gethOnPath = executeSync('which geth').toString().trim()
     if (gethOnPath) {
-      const gethVersionOutput = executeSync('geth version').toString()
-      const versionMatch = gethVersionOutput.match(/Quorum Version: (\S+)/)
-      if (versionMatch !== null) {
-        const version = versionMatch[1]
+      const version = getPathGethVersion()
+      if (version !== null) {
         pathChoices.push({
           name: `Quorum ${version} on path (${gethOnPath})`,
           value: 'PATH',
@@ -69,6 +66,20 @@ export function getGethOnPath() {
     // either no geth or the version call errored, don't include it in choices
   }
   return pathChoices
+}
+
+export function getPathGethVersion() {
+  const gethVersionOutput = executeSync('geth version').toString()
+  const versionMatch = gethVersionOutput.match(/Quorum Version: (\S+)/)
+  if (versionMatch !== null) {
+    return versionMatch[1]
+  }
+  return null
+}
+
+export function isQuorum260Plus(quorumVersion) {
+  const version = quorumVersion === 'PATH' ? getPathGethVersion() : quorumVersion
+  return cmp(version, '2.6.0') >= 0
 }
 
 export async function getDownloadableTesseraChoices(deployment) {
@@ -117,7 +128,7 @@ export function getTesseraOnPath() {
 
 export function disableTesseraIfWrongJavaVersion(version) {
   // if version is less than 10.3.0, use java8
-  const needJava8 = compareVersions.compare(LATEST_TESSERA_J8, version, '>=')
+  const needJava8 = cmp(LATEST_TESSERA_J8, version) >= 0
   if (needJava8 && isJava11Plus()) {
     return 'Disabled, requires Java 8'
   }

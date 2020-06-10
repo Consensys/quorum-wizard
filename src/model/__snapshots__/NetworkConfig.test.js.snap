@@ -3,6 +3,7 @@
 exports[`creates 5nodes raft no-TM cakeshop docker config 1`] = `
 Object {
   "containerPorts": Object {
+    "dockerSubnet": "172.16.239.0/24",
     "quorum": Object {
       "p2pPort": 21000,
       "raftPort": 50400,
@@ -35,6 +36,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21000,
+        "graphQlPort": 24000,
         "ip": "172.16.239.11",
         "raftPort": 50401,
         "rpcPort": 22000,
@@ -44,6 +46,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21001,
+        "graphQlPort": 24001,
         "ip": "172.16.239.12",
         "raftPort": 50402,
         "rpcPort": 22001,
@@ -53,6 +56,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21002,
+        "graphQlPort": 24002,
         "ip": "172.16.239.13",
         "raftPort": 50403,
         "rpcPort": 22002,
@@ -62,6 +66,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21003,
+        "graphQlPort": 24003,
         "ip": "172.16.239.14",
         "raftPort": 50404,
         "rpcPort": 22003,
@@ -71,6 +76,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21004,
+        "graphQlPort": 24004,
         "ip": "172.16.239.15",
         "raftPort": 50405,
         "rpcPort": 22004,
@@ -83,7 +89,7 @@ Object {
 
 exports[`creates 5nodes raft no-TM config 1`] = `
 Object {
-  "containerPorts": Object {},
+  "containerPorts": undefined,
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
@@ -105,6 +111,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21000,
+        "graphQlPort": 24000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
         "rpcPort": 22000,
@@ -114,6 +121,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21001,
+        "graphQlPort": 24001,
         "ip": "127.0.0.1",
         "raftPort": 50402,
         "rpcPort": 22001,
@@ -123,6 +131,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21002,
+        "graphQlPort": 24002,
         "ip": "127.0.0.1",
         "raftPort": 50403,
         "rpcPort": 22002,
@@ -132,6 +141,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21003,
+        "graphQlPort": 24003,
         "ip": "127.0.0.1",
         "raftPort": 50404,
         "rpcPort": 22003,
@@ -141,6 +151,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21004,
+        "graphQlPort": 24004,
         "ip": "127.0.0.1",
         "raftPort": 50405,
         "rpcPort": 22004,
@@ -153,7 +164,7 @@ Object {
 
 exports[`creates 6nodes raft custom config 1`] = `
 Object {
-  "containerPorts": Object {},
+  "containerPorts": undefined,
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
@@ -175,6 +186,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21000,
+        "graphQlPort": 24000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
         "rpcPort": 22000,
@@ -189,6 +201,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21001,
+        "graphQlPort": 24001,
         "ip": "127.0.0.1",
         "raftPort": 50402,
         "rpcPort": 22001,
@@ -203,6 +216,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21002,
+        "graphQlPort": 24002,
         "ip": "127.0.0.1",
         "raftPort": 50403,
         "rpcPort": 22002,
@@ -217,6 +231,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21003,
+        "graphQlPort": 24003,
         "ip": "127.0.0.1",
         "raftPort": 50404,
         "rpcPort": 22003,
@@ -231,6 +246,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21004,
+        "graphQlPort": 24004,
         "ip": "127.0.0.1",
         "raftPort": 50405,
         "rpcPort": 22004,
@@ -245,6 +261,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21005,
+        "graphQlPort": 24005,
         "ip": "127.0.0.1",
         "raftPort": 50406,
         "rpcPort": 22005,
@@ -263,6 +280,7 @@ Object {
 exports[`creates 6nodes raft custom docker config 1`] = `
 Object {
   "containerPorts": Object {
+    "dockerSubnet": "172.16.239.0/24",
     "quorum": Object {
       "p2pPort": 21000,
       "raftPort": 50400,
@@ -295,6 +313,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21000,
+        "graphQlPort": 24000,
         "ip": "172.16.239.11",
         "raftPort": 50401,
         "rpcPort": 22000,
@@ -309,6 +328,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21001,
+        "graphQlPort": 24001,
         "ip": "172.16.239.12",
         "raftPort": 50402,
         "rpcPort": 22001,
@@ -323,6 +343,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21002,
+        "graphQlPort": 24002,
         "ip": "172.16.239.13",
         "raftPort": 50403,
         "rpcPort": 22002,
@@ -337,6 +358,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21003,
+        "graphQlPort": 24003,
         "ip": "172.16.239.14",
         "raftPort": 50404,
         "rpcPort": 22003,
@@ -351,6 +373,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21004,
+        "graphQlPort": 24004,
         "ip": "172.16.239.15",
         "raftPort": 50405,
         "rpcPort": 22004,
@@ -365,6 +388,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21005,
+        "graphQlPort": 24005,
         "ip": "172.16.239.16",
         "raftPort": 50406,
         "rpcPort": 22005,
@@ -382,7 +406,7 @@ Object {
 
 exports[`creates 7nodes istanbul cakeshop config 1`] = `
 Object {
-  "containerPorts": Object {},
+  "containerPorts": undefined,
   "network": Object {
     "cakeshop": "0.11.0",
     "cakeshopPort": "8999",
@@ -404,6 +428,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21000,
+        "graphQlPort": 24000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
         "rpcPort": 22000,
@@ -418,6 +443,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21001,
+        "graphQlPort": 24001,
         "ip": "127.0.0.1",
         "raftPort": 50402,
         "rpcPort": 22001,
@@ -432,6 +458,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21002,
+        "graphQlPort": 24002,
         "ip": "127.0.0.1",
         "raftPort": 50403,
         "rpcPort": 22002,
@@ -446,6 +473,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21003,
+        "graphQlPort": 24003,
         "ip": "127.0.0.1",
         "raftPort": 50404,
         "rpcPort": 22003,
@@ -460,6 +488,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21004,
+        "graphQlPort": 24004,
         "ip": "127.0.0.1",
         "raftPort": 50405,
         "rpcPort": 22004,
@@ -474,6 +503,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21005,
+        "graphQlPort": 24005,
         "ip": "127.0.0.1",
         "raftPort": 50406,
         "rpcPort": 22005,
@@ -488,6 +518,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21006,
+        "graphQlPort": 24006,
         "ip": "127.0.0.1",
         "raftPort": 50407,
         "rpcPort": 22006,
@@ -505,7 +536,7 @@ Object {
 
 exports[`creates 7nodes istanbul config 1`] = `
 Object {
-  "containerPorts": Object {},
+  "containerPorts": undefined,
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
@@ -527,6 +558,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21000,
+        "graphQlPort": 24000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
         "rpcPort": 22000,
@@ -541,6 +573,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21001,
+        "graphQlPort": 24001,
         "ip": "127.0.0.1",
         "raftPort": 50402,
         "rpcPort": 22001,
@@ -555,6 +588,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21002,
+        "graphQlPort": 24002,
         "ip": "127.0.0.1",
         "raftPort": 50403,
         "rpcPort": 22002,
@@ -569,6 +603,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21003,
+        "graphQlPort": 24003,
         "ip": "127.0.0.1",
         "raftPort": 50404,
         "rpcPort": 22003,
@@ -583,6 +618,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21004,
+        "graphQlPort": 24004,
         "ip": "127.0.0.1",
         "raftPort": 50405,
         "rpcPort": 22004,
@@ -597,6 +633,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21005,
+        "graphQlPort": 24005,
         "ip": "127.0.0.1",
         "raftPort": 50406,
         "rpcPort": 22005,
@@ -611,6 +648,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21006,
+        "graphQlPort": 24006,
         "ip": "127.0.0.1",
         "raftPort": 50407,
         "rpcPort": 22006,
@@ -629,6 +667,7 @@ Object {
 exports[`creates 7nodes istanbul docker config 1`] = `
 Object {
   "containerPorts": Object {
+    "dockerSubnet": "172.16.239.0/24",
     "quorum": Object {
       "p2pPort": 21000,
       "raftPort": 50400,
@@ -661,6 +700,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21000,
+        "graphQlPort": 24000,
         "ip": "172.16.239.11",
         "raftPort": 50401,
         "rpcPort": 22000,
@@ -675,6 +715,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21001,
+        "graphQlPort": 24001,
         "ip": "172.16.239.12",
         "raftPort": 50402,
         "rpcPort": 22001,
@@ -689,6 +730,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21002,
+        "graphQlPort": 24002,
         "ip": "172.16.239.13",
         "raftPort": 50403,
         "rpcPort": 22002,
@@ -703,6 +745,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21003,
+        "graphQlPort": 24003,
         "ip": "172.16.239.14",
         "raftPort": 50404,
         "rpcPort": 22003,
@@ -717,6 +760,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21004,
+        "graphQlPort": 24004,
         "ip": "172.16.239.15",
         "raftPort": 50405,
         "rpcPort": 22004,
@@ -731,6 +775,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21005,
+        "graphQlPort": 24005,
         "ip": "172.16.239.16",
         "raftPort": 50406,
         "rpcPort": 22005,
@@ -745,6 +790,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21006,
+        "graphQlPort": 24006,
         "ip": "172.16.239.17",
         "raftPort": 50407,
         "rpcPort": 22006,
@@ -763,6 +809,7 @@ Object {
 exports[`creates 7nodes istanbul kubernetes config 1`] = `
 Object {
   "containerPorts": Object {
+    "dockerSubnet": "",
     "quorum": Object {
       "p2pPort": 21000,
       "raftPort": 50400,
@@ -795,6 +842,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21000,
+        "graphQlPort": 24000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
         "rpcPort": 22000,
@@ -809,6 +857,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21001,
+        "graphQlPort": 24001,
         "ip": "127.0.0.1",
         "raftPort": 50402,
         "rpcPort": 22001,
@@ -823,6 +872,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21002,
+        "graphQlPort": 24002,
         "ip": "127.0.0.1",
         "raftPort": 50403,
         "rpcPort": 22002,
@@ -837,6 +887,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21003,
+        "graphQlPort": 24003,
         "ip": "127.0.0.1",
         "raftPort": 50404,
         "rpcPort": 22003,
@@ -851,6 +902,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21004,
+        "graphQlPort": 24004,
         "ip": "127.0.0.1",
         "raftPort": 50405,
         "rpcPort": 22004,
@@ -865,6 +917,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21005,
+        "graphQlPort": 24005,
         "ip": "127.0.0.1",
         "raftPort": 50406,
         "rpcPort": 22005,
@@ -879,6 +932,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21006,
+        "graphQlPort": 24006,
         "ip": "127.0.0.1",
         "raftPort": 50407,
         "rpcPort": 22006,
@@ -896,7 +950,7 @@ Object {
 
 exports[`creates 7nodes istanbul no-TM custom config 1`] = `
 Object {
-  "containerPorts": Object {},
+  "containerPorts": undefined,
   "network": Object {
     "cakeshop": "none",
     "cakeshopPort": "8999",
@@ -918,6 +972,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21000,
+        "graphQlPort": 24000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
         "rpcPort": 22000,
@@ -927,6 +982,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21001,
+        "graphQlPort": 24001,
         "ip": "127.0.0.1",
         "raftPort": 50402,
         "rpcPort": 22001,
@@ -936,6 +992,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21002,
+        "graphQlPort": 24002,
         "ip": "127.0.0.1",
         "raftPort": 50403,
         "rpcPort": 22002,
@@ -945,6 +1002,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21003,
+        "graphQlPort": 24003,
         "ip": "127.0.0.1",
         "raftPort": 50404,
         "rpcPort": 22003,
@@ -954,6 +1012,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21004,
+        "graphQlPort": 24004,
         "ip": "127.0.0.1",
         "raftPort": 50405,
         "rpcPort": 22004,
@@ -963,6 +1022,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21005,
+        "graphQlPort": 24005,
         "ip": "127.0.0.1",
         "raftPort": 50406,
         "rpcPort": 22005,
@@ -972,6 +1032,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21006,
+        "graphQlPort": 24006,
         "ip": "127.0.0.1",
         "raftPort": 50407,
         "rpcPort": 22006,
@@ -985,6 +1046,7 @@ Object {
 exports[`creates 7nodes istanbul no-TM custom docker config 1`] = `
 Object {
   "containerPorts": Object {
+    "dockerSubnet": "172.16.239.0/24",
     "quorum": Object {
       "p2pPort": 21000,
       "raftPort": 50400,
@@ -1017,6 +1079,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21000,
+        "graphQlPort": 24000,
         "ip": "172.16.239.11",
         "raftPort": 50401,
         "rpcPort": 22000,
@@ -1026,6 +1089,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21001,
+        "graphQlPort": 24001,
         "ip": "172.16.239.12",
         "raftPort": 50402,
         "rpcPort": 22001,
@@ -1035,6 +1099,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21002,
+        "graphQlPort": 24002,
         "ip": "172.16.239.13",
         "raftPort": 50403,
         "rpcPort": 22002,
@@ -1044,6 +1109,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21003,
+        "graphQlPort": 24003,
         "ip": "172.16.239.14",
         "raftPort": 50404,
         "rpcPort": 22003,
@@ -1053,6 +1119,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21004,
+        "graphQlPort": 24004,
         "ip": "172.16.239.15",
         "raftPort": 50405,
         "rpcPort": 22004,
@@ -1062,6 +1129,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21005,
+        "graphQlPort": 24005,
         "ip": "172.16.239.16",
         "raftPort": 50406,
         "rpcPort": 22005,
@@ -1071,6 +1139,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21006,
+        "graphQlPort": 24006,
         "ip": "172.16.239.17",
         "raftPort": 50407,
         "rpcPort": 22006,
@@ -1084,6 +1153,7 @@ Object {
 exports[`creates 7nodes raft kubernetes custom config 1`] = `
 Object {
   "containerPorts": Object {
+    "dockerSubnet": "",
     "quorum": Object {
       "p2pPort": 21000,
       "raftPort": 50400,
@@ -1116,6 +1186,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21000,
+        "graphQlPort": 24000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
         "rpcPort": 22000,
@@ -1130,6 +1201,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21001,
+        "graphQlPort": 24001,
         "ip": "127.0.0.1",
         "raftPort": 50402,
         "rpcPort": 22001,
@@ -1144,6 +1216,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21002,
+        "graphQlPort": 24002,
         "ip": "127.0.0.1",
         "raftPort": 50403,
         "rpcPort": 22002,
@@ -1158,6 +1231,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21003,
+        "graphQlPort": 24003,
         "ip": "127.0.0.1",
         "raftPort": 50404,
         "rpcPort": 22003,
@@ -1172,6 +1246,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21004,
+        "graphQlPort": 24004,
         "ip": "127.0.0.1",
         "raftPort": 50405,
         "rpcPort": 22004,
@@ -1186,6 +1261,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21005,
+        "graphQlPort": 24005,
         "ip": "127.0.0.1",
         "raftPort": 50406,
         "rpcPort": 22005,
@@ -1200,6 +1276,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21006,
+        "graphQlPort": 24006,
         "ip": "127.0.0.1",
         "raftPort": 50407,
         "rpcPort": 22006,
@@ -1217,7 +1294,7 @@ Object {
 
 exports[`creates quickstart config 1`] = `
 Object {
-  "containerPorts": Object {},
+  "containerPorts": undefined,
   "network": Object {
     "cakeshop": "0.11.0",
     "cakeshopPort": "8999",
@@ -1239,6 +1316,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21000,
+        "graphQlPort": 24000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
         "rpcPort": 22000,
@@ -1253,6 +1331,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21001,
+        "graphQlPort": 24001,
         "ip": "127.0.0.1",
         "raftPort": 50402,
         "rpcPort": 22001,
@@ -1267,6 +1346,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21002,
+        "graphQlPort": 24002,
         "ip": "127.0.0.1",
         "raftPort": 50403,
         "rpcPort": 22002,
@@ -1284,7 +1364,7 @@ Object {
 
 exports[`creates quickstart setup with java 8 1`] = `
 Object {
-  "containerPorts": Object {},
+  "containerPorts": undefined,
   "network": Object {
     "cakeshop": "0.11.0-J8",
     "cakeshopPort": "8999",
@@ -1306,6 +1386,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21000,
+        "graphQlPort": 24000,
         "ip": "127.0.0.1",
         "raftPort": 50401,
         "rpcPort": 22000,
@@ -1320,6 +1401,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21001,
+        "graphQlPort": 24001,
         "ip": "127.0.0.1",
         "raftPort": 50402,
         "rpcPort": 22001,
@@ -1334,6 +1416,7 @@ Object {
     Object {
       "quorum": Object {
         "devP2pPort": 21002,
+        "graphQlPort": 24002,
         "ip": "127.0.0.1",
         "raftPort": 50403,
         "rpcPort": 22002,

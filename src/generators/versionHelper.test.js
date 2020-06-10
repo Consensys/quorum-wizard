@@ -7,6 +7,7 @@ import {
   getTesseraOnPath,
   getDownloadableTesseraChoices,
   getAllTesseraChoices,
+  isQuorum260Plus,
 } from './versionHelper'
 import {
   executeSync,
@@ -85,29 +86,6 @@ describe('Finds binaries on path', () => {
     expect(executeSync).toHaveBeenLastCalledWith('geth version')
   })
 })
-
-const vanillaGethVersion = `Geth
-Version: 1.9.0-unstable
-Git Commit: f03402232cd7bcc558b70a20df5b326b1d71e1ad
-Architecture: amd64
-Protocol Versions: [63 62]
-Network Id: 1
-Go Version: go1.12
-Operating System: darwin
-GOPATH=/Users/bradmcdermott/go
-GOROOT=/usr/local/Cellar/go/1.12/libexec`
-
-const quorumVersion = `Geth
-Version: 1.8.18-stable
-Git Commit: d0262e2139ce74d16b127dd3b4ded57fd29e3a73
-Quorum Version: 2.2.4
-Architecture: amd64
-Protocol Versions: [63 62]
-Network Id: 1337
-Go Version: go1.9.7
-Operating System: darwin
-GOPATH=/Users/bradmcdermott/go
-GOROOT=/usr/local/Cellar/go@1.9/1.9.7/libexec`
 
 test('Disables java choices based on java version', () => {
   isJava11Plus.mockReturnValue(true)
@@ -194,7 +172,56 @@ describe('presents the correct binary options', () => {
   })
 })
 
+test('tests if quorum version is 2.6.0 or higher', () => {
+  expect(isQuorum260Plus('2.6.1')).toBeTruthy()
+  expect(isQuorum260Plus('2.6.0')).toBeTruthy()
+  expect(isQuorum260Plus('2.5.0')).not.toBeTruthy()
+})
+
+test('tests if quorum version on path is 2.6.0 or higher', () => {
+  executeSync.mockReturnValueOnce(Buffer.from(quorumVersion26))
+  expect(isQuorum260Plus('PATH')).toBeTruthy()
+  executeSync.mockReturnValueOnce(Buffer.from(quorumVersion))
+  expect(isQuorum260Plus('PATH')).not.toBeTruthy()
+})
+
 function overrideProcessValue(key, value) {
   // process.platform is read-only, use this workaround to set it
   Object.defineProperty(process, key, { value })
 }
+
+const vanillaGethVersion = `Geth
+Version: 1.9.0-unstable
+Git Commit: f03402232cd7bcc558b70a20df5b326b1d71e1ad
+Architecture: amd64
+Protocol Versions: [63 62]
+Network Id: 1
+Go Version: go1.12
+Operating System: darwin
+GOPATH=/Users/bradmcdermott/go
+GOROOT=/usr/local/Cellar/go/1.12/libexec`
+
+const quorumVersion = `Geth
+Version: 1.8.18-stable
+Git Commit: d0262e2139ce74d16b127dd3b4ded57fd29e3a73
+Quorum Version: 2.2.4
+Architecture: amd64
+Protocol Versions: [63 62]
+Network Id: 1337
+Go Version: go1.9.7
+Operating System: darwin
+GOPATH=/Users/bradmcdermott/go
+GOROOT=/usr/local/Cellar/go@1.9/1.9.7/libexec`
+
+const quorumVersion26 = `Geth
+Version: 1.9.7-stable
+Git Commit: 9339be03f9119ee488b05cf087d103da7e68f053
+Git Commit Date: 20200504
+Quorum Version: 2.6.0
+Architecture: amd64
+Protocol Versions: [64 63]
+Network Id: 1337
+Go Version: go1.13.10
+Operating System: darwin
+GOPATH=/Users/bradmcdermott/go
+GOROOT=/Users/travis/.gimme/versions/go1.13.10.darwin.amd64`

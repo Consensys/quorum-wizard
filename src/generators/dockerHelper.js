@@ -9,10 +9,14 @@ import { buildCakeshopDir } from './cakeshopHelper'
 import {
   isTessera,
   isCakeshop,
-  isQuorum260Plus,
 } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
+import {
+  cidrhost,
+  buildDockerIp,
+} from '../utils/subnetUtils'
+import { isQuorum260Plus } from './versionHelper'
 
 export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
@@ -41,7 +45,7 @@ export function buildDockerCompose(config) {
     return allServices
   })
   if (hasCakeshop) {
-    services = [services.join(''), buildCakeshopService(config.network.cakeshopPort)]
+    services = [services.join(''), buildCakeshopService(config)]
   }
 
   return [
@@ -66,12 +70,15 @@ export async function createDockerCompose(config) {
   }
 
   info('Writing start script...')
-  const startCommands = 'docker-compose up -d'
+  const startCommands = `#!/bin/bash
+docker-compose up -d`
+  const stopCommand = `#!/bin/bash
+docker-compose down`
 
   writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)
   writeFile(joinPath(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
   writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
-  writeFile(joinPath(networkPath, 'stop.sh'), 'docker-compose down', true)
+  writeFile(joinPath(networkPath, 'stop.sh'), stopCommand, true)
   info('Done')
 }
 
@@ -81,7 +88,8 @@ QUORUM_DOCKER_IMAGE=quorumengineering/quorum:${config.network.quorumVersion}
 QUORUM_P2P_PORT=${config.containerPorts.quorum.p2pPort}
 QUORUM_RAFT_PORT=${config.containerPorts.quorum.raftPort}
 QUORUM_RPC_PORT=${config.containerPorts.quorum.rpcPort}
-QUORUM_WS_PORT=${config.containerPorts.quorum.wsPort}`
+QUORUM_WS_PORT=${config.containerPorts.quorum.wsPort}
+DOCKER_IP=${buildDockerIp(config.containerPorts.dockerSubnet, '10')}`
   if (hasTessera) {
     env = env.concat(`
 QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/tessera:${config.network.transactionManager}
@@ -90,12 +98,13 @@ TESSERA_3PARTY_PORT=${config.containerPorts.tm.thirdPartyPort}`)
   }
   if (isQuorum260Plus(config.network.quorumVersion)) {
     env = env.concat(`
-QUORUM_GETH_ARGS="--allow-insecure-unlock"`)
+QUORUM_GETH_ARGS="--allow-insecure-unlock --graphql --graphql.port ${config.containerPorts.quorum.graphQlPort} --graphql.corsdomain=* --graphql.addr=0.0.0.0"`)
   }
   return env
 }
 
 function buildNodeService(config, node, i, hasTessera) {
+  const networkName = config.network.name
   const txManager = hasTessera
     ? `depends_on:
       - txmanager${i + 1}
@@ -111,17 +120,19 @@ function buildNodeService(config, node, i, hasTessera) {
     ports:
       - "${node.quorum.rpcPort}:${config.containerPorts.quorum.rpcPort}"
       - "${node.quorum.wsPort}:${config.containerPorts.quorum.wsPort}"
+      - "${node.quorum.graphQlPort}:${config.containerPorts.quorum.graphQlPort}"
     volumes:
-      - vol${i + 1}:/qdata
+      - ${networkName}-vol${i + 1}:/qdata
       - ./qdata:/examples:ro
     ${txManager}
       - NODE_ID=${i + 1}
     networks:
-      quorum-examples-net:
-        ipv4_address: 172.16.239.1${i + 1}`
+      ${networkName}-net:
+        ipv4_address: ${node.quorum.ip}`
 }
 
 function buildTesseraService(config, node, i) {
+  const networkName = config.network.name
   return `
   txmanager${i + 1}:
     << : *tx-manager-def
@@ -129,41 +140,43 @@ function buildTesseraService(config, node, i) {
     ports:
       - "${node.tm.thirdPartyPort}:${config.containerPorts.tm.thirdPartyPort}"
     volumes:
-      - vol${i + 1}:/qdata
+      - ${networkName}-vol${i + 1}:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
-        ipv4_address: 172.16.239.10${i + 1}
+      ${networkName}-net:
+        ipv4_address: ${node.tm.ip}
     environment:
       - NODE_ID=${i + 1}`
 }
 
-function buildCakeshopService(port) {
+function buildCakeshopService(config) {
+  const networkName = config.network.name
   return `
   cakeshop:
     << : *cakeshop-def
     hostname: cakeshop
     ports:
-      - "${port}:8999"
+      - "${config.network.cakeshopPort}:8999"
     volumes:
-      - cakeshopvol:/qdata
+      - ${networkName}-cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
-        ipv4_address: 172.16.239.186`
+      ${networkName}-net:
+        ipv4_address: ${cidrhost(config.containerPorts.dockerSubnet, 2)}`
 }
 
 function buildEndService(config) {
+  const networkName = config.network.name
   return `
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  ${networkName}-net:
+    name: ${networkName}-net
     driver: bridge
     ipam:
       driver: default
       config:
-        - subnet: 172.16.239.0/24
+        - subnet: ${config.containerPorts.dockerSubnet}
 volumes:
-${config.nodes.map((_, i) => `  "vol${i + 1}":`).join('\n')}
-  "cakeshopvol":`
+${config.nodes.map((_, i) => `  "${networkName}-vol${i + 1}":`).join('\n')}
+  "${networkName}-cakeshopvol":`
 }

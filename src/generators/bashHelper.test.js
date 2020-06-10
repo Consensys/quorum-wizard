@@ -114,6 +114,7 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
         rpcPort: '56000',
         wsPort: '57000',
         raftPort: '80501',
+        graphQlPort: '58000',
       },
       tm: {
         ip: '127.0.0.1',
@@ -128,6 +129,7 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
         rpcPort: '56001',
         wsPort: '57001',
         raftPort: '80502',
+        graphQlPort: '58001',
       },
       tm: {
         ip: '127.0.0.1',
