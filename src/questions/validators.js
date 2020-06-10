@@ -30,13 +30,3 @@ export function transformCakeshopAnswer(answer) {
   }
   return 'none'
 }
-
-export function disableIfWrongJavaVersion({ type }) {
-  if (type === 'jar8' && isJava11Plus()) {
-    return 'Disabled, requires Java 8'
-  }
-  if (type === 'jar' && !isJava11Plus()) {
-    return 'Disabled, requires Java 11+'
-  }
-  return false
-}

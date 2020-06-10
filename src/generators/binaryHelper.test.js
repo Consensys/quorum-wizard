@@ -2,8 +2,6 @@
 import { any } from 'expect'
 import {
   downloadAndCopyBinaries,
-  getDownloadableTesseraChoices,
-  getTesseraOnPath,
   pathToBootnode,
   pathToCakeshop,
   pathToQuorumBinary,
@@ -28,12 +26,10 @@ import {
   LATEST_CAKESHOP,
   LATEST_QUORUM,
   LATEST_TESSERA,
-  LATEST_TESSERA_J8,
 } from './download'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
 import { getLatestCakeshop } from './versionHelper'
-// import { disableIfWrongJavaVersion } from '../questions/validators'
 
 jest.mock('../generators/download')
 jest.mock('../utils/execUtils')
@@ -79,26 +75,6 @@ describe('Chooses the right paths to the binaries', () => {
   })
   it('Calls bootnode using bin folder', () => {
     expect(pathToBootnode()).toEqual(joinPath(wizardHomeDir(), 'bin/bootnode', LATEST_BOOTNODE, 'bootnode'))
-  })
-})
-
-describe('Finds binaries on path', () => {
-  it('Returns no choices when $TESSERA_JAR not set', () => {
-    const originalEnv = process.env
-    overrideProcessValue('env', { TESSERA_JAR: '' })
-    expect(getTesseraOnPath()).toEqual([])
-    overrideProcessValue('env', originalEnv)
-  })
-  it('Returns choice when $TESSERA_JAR is set', () => {
-    const originalEnv = process.env
-    overrideProcessValue('env', { TESSERA_JAR: '/path/to/jar' })
-    expect(getTesseraOnPath()).toEqual([
-      {
-        name: 'Tessera at $TESSERA_JAR (/path/to/jar)',
-        value: 'PATH',
-      },
-    ])
-    overrideProcessValue('env', originalEnv)
   })
 })
 
@@ -157,37 +133,3 @@ describe('Downloads binaries', () => {
     expect(downloadIfMissing).not.toBeCalledWith('tessera', LATEST_TESSERA)
   })
 })
-
-describe('presents the correct binary options', () => {
-  it('disables java 11 jars if in bash mode and on jdk 8', () => {
-    isJava11Plus.mockReturnValue(false)
-    const choices = getDownloadableTesseraChoices('bash')
-    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && typeof choice.disabled === 'string')).toBeTruthy()
-    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && choice.disabled === false)).toBeTruthy()
-    expect(choices.includes('none')).toBeTruthy()
-  })
-  it('disables 0.10.2 if in bash mode and on jdk 11+', () => {
-    isJava11Plus.mockReturnValue(true)
-    const choices = getDownloadableTesseraChoices('bash')
-    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && choice.disabled === false)).toBeTruthy()
-    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && typeof choice.disabled === 'string')).toBeTruthy()
-    expect(choices.includes('none')).toBeTruthy()
-  })
-  it('does not disable tessera options in docker mode', () => {
-    const choices = getDownloadableTesseraChoices('docker-compose')
-    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && choice.disabled === false)).toBeTruthy()
-    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && choice.disabled === false)).toBeTruthy()
-    expect(choices.includes('none')).toBeTruthy()
-  })
-  it('forces and doesnt disable tessera options in kubernetes mode', () => {
-    const choices = getDownloadableTesseraChoices('kubernetes')
-    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && choice.disabled === false)).toBeTruthy()
-    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && choice.disabled === false)).toBeTruthy()
-    expect(choices.includes('none')).not.toBeTruthy()
-  })
-})
-
-function overrideProcessValue(key, value) {
-  // process.platform is read-only, use this workaround to set it
-  Object.defineProperty(process, key, { value })
-}

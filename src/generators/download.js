@@ -12,6 +12,8 @@ import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
 
+const compareVersions = require('compare-versions')
+
 export async function getVersionsBintray(name) {
   const url = `https://api.bintray.com/packages/quorumengineering/${name}`
   const response = await axios({
@@ -27,6 +29,10 @@ export async function getLatestVersionGithub(name) {
   return version.tag_name
 }
 
+export async function getVersionsMaven(name) {
+  const versions = executeSync(`curl -s https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/${name}/maven-metadata.xml | grep "<version>[0-9].[0-9][0-9].[0-9]</version>" | sort --version-sort -r | uniq | sed -e "s#\\(.*\\)\\(<version>\\)\\(.*\\)\\(</version>\\)\\(.*\\)#\\3#g"`).toString().trim().split('\n')
+  return versions
+}
 // eslint-disable-next-line import/prefer-default-export
 export async function downloadIfMissing(name, version) {
   let binaryInfo
@@ -36,6 +42,9 @@ export async function downloadIfMissing(name, version) {
       break
     case 'cakeshop':
       binaryInfo = createCakeshopBinaryInfo(version)
+      break
+    case 'tessera':
+      binaryInfo = createTesseraBinaryInfo(version)
       break
     default:
       binaryInfo = BINARIES[name][version]
@@ -137,28 +146,17 @@ export function createCakeshopBinaryInfo(version) {
   }
 }
 
-export const BINARIES = {
-  tessera: {
-    '0.10.5': {
-      name: 'tessera-app.jar',
-      description: 'Tessera 0.10.5',
-      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.5/tessera-app-0.10.5-app.jar',
-      type: 'jar',
-    },
-    '0.10.4': {
-      name: 'tessera-app.jar',
-      description: 'Tessera 0.10.4',
-      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.4/tessera-app-0.10.4-app.jar',
-      type: 'jar',
-    },
-    '0.10.2': {
-      name: 'tessera-app.jar',
-      description: 'Tessera 0.10.2',
-      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.2/tessera-app-0.10.2-app.jar',
-      type: 'jar8',
-    },
-  },
+export function createTesseraBinaryInfo(version) {
+  const type = compareVersions.compare('10.3.0', version, '<') ? 'jar8' : 'jar'
+  return {
+    name: 'tessera-app.jar',
+    description: `Tessera ${version}`,
+    url: `https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/${version}/tessera-app-${version}-app.jar`,
+    type,
+  }
+}
 
+export const BINARIES = {
   istanbul: {
     '1.0.3': {
       name: 'istanbul',

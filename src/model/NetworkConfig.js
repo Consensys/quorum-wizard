@@ -16,6 +16,7 @@ export function createConfigFromAnswers(answers) {
     quorumVersion = LATEST_QUORUM,
     quorumVersionMore = undefined,
     transactionManager = isJava11Plus() ? LATEST_TESSERA : LATEST_TESSERA_J8,
+    transactionManagerMore = undefined,
     deployment = 'bash',
     cakeshop = isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8,
     generateKeys = false,
@@ -34,7 +35,9 @@ export function createConfigFromAnswers(answers) {
       verbosity: 5,
       consensus,
       quorumVersion: quorumVersionMore === undefined ? quorumVersion : quorumVersionMore,
-      transactionManager,
+      transactionManager: transactionManagerMore === undefined
+        ? transactionManager
+        : transactionManagerMore,
       permissioned: true,
       genesisFile: genesisLocation,
       generateKeys,

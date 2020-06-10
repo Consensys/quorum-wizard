@@ -1,21 +1,19 @@
 import { wizardHomeDir } from '../utils/fileUtils'
 import {
-  isBash,
   isIstanbul,
   isTessera,
-  isKubernetes,
 } from '../model/NetworkConfig'
 import {
   BINARIES,
   createQuorumBinaryInfo,
   createCakeshopBinaryInfo,
+  createTesseraBinaryInfo,
   downloadIfMissing,
   LATEST_BOOTNODE,
   LATEST_ISTANBUL_TOOLS,
 } from './download'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
-import { disableIfWrongJavaVersion } from '../questions/validators'
 
 // This method could be improved, but right now it tries to:
 // a. Cache downloads
@@ -51,37 +49,6 @@ export async function downloadAndCopyBinaries(config) {
   await Promise.all(downloads)
 }
 
-export function getDownloadableTesseraChoices(deployment) {
-  let choices = getDownloadableChoices(BINARIES.tessera)
-  if (isBash(deployment)) {
-    choices = choices.concat(getTesseraOnPath())
-  } else {
-    // allow all options in docker compose mode since local jdk version doesn't matter
-    choices = choices.map((choice) => ({ ...choice, disabled: false }))
-  }
-  return isKubernetes(deployment) ? choices : choices.concat('none')
-}
-
-function getDownloadableChoices(versions) {
-  return Object.entries(versions).map(([key, binaryInfo]) => ({
-    name: binaryInfo.description,
-    value: key,
-    disabled: disableIfWrongJavaVersion(binaryInfo),
-  }))
-}
-
-export function getTesseraOnPath() {
-  const pathChoices = []
-  const tesseraJarEnv = process.env.TESSERA_JAR
-  if (tesseraJarEnv) {
-    pathChoices.push({
-      name: `Tessera at $TESSERA_JAR (${tesseraJarEnv})`,
-      value: 'PATH',
-    })
-  }
-  return pathChoices
-}
-
 export function pathToQuorumBinary(quorumVersion) {
   if (quorumVersion === 'PATH') {
     return 'geth'
@@ -94,7 +61,7 @@ export function pathToTesseraJar(transactionManager) {
   if (transactionManager === 'PATH') {
     return '$TESSERA_JAR'
   }
-  const binary = BINARIES.tessera[transactionManager]
+  const binary = createTesseraBinaryInfo(transactionManager)
   return joinPath(wizardHomeDir(), 'bin', 'tessera', transactionManager, binary.name)
 }
 

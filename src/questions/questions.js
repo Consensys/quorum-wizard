@@ -7,7 +7,8 @@ import {
   getDownloadableGethChoices,
   getDownloadableTesseraChoices,
   getAllGethChoices,
-} from '../generators/binaryHelper'
+  getAllTesseraChoices,
+} from '../generators/versionHelper'
 import {
   defaultNetworkName,
   isRaft,
@@ -101,8 +102,8 @@ export const QUORUM_VERSION = {
 export const QUORUM_ALL_VERSIONS = {
   type: 'list',
   name: 'quorumVersionMore',
-  message: 'Choose a later version of quorum',
-  choices: ({ deployment }) => getAllGethChoices(deployment),
+  message: 'Choose an earlier version of quorum',
+  choices: () => getAllGethChoices(),
   when: ({ quorumVersion }) => quorumVersion === 'select older versions',
 }
 
@@ -111,6 +112,14 @@ export const TRANSACTION_MANAGER = {
   name: 'transactionManager',
   message: 'Choose a version of tessera if you would like to use private transactions in your network, otherwise choose "none"',
   choices: ({ deployment }) => getDownloadableTesseraChoices(deployment),
+}
+
+export const TRANSACTION_MANAGER_ALL_VERSIONS = {
+  type: 'list',
+  name: 'transactionManagerMore',
+  message: 'Choose an earlier version of tessera',
+  choices: () => getAllTesseraChoices(),
+  when: ({ transactionManager }) => transactionManager === 'select older versions',
 }
 
 export const CAKESHOP = {
@@ -178,6 +187,7 @@ export const QUESTIONS = [
   QUORUM_VERSION,
   QUORUM_ALL_VERSIONS,
   TRANSACTION_MANAGER,
+  TRANSACTION_MANAGER_ALL_VERSIONS,
   CAKESHOP,
   KEY_GENERATION,
   NETWORK_ID,
