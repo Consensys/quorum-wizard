@@ -3,6 +3,7 @@ import axios from 'axios'
 import { createGunzip } from 'zlib'
 import { extract } from 'tar-fs'
 import { createWriteStream } from 'fs'
+import cmp from 'semver-compare'
 import {
   createFolder,
   exists,
@@ -11,8 +12,6 @@ import {
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
-
-const compareVersions = require('compare-versions')
 
 export async function getVersionsBintray(name) {
   const url = `https://api.bintray.com/packages/quorumengineering/${name}`
@@ -147,7 +146,7 @@ export function createCakeshopBinaryInfo(version) {
 }
 
 export function createTesseraBinaryInfo(version) {
-  const type = compareVersions.compare('10.3.0', version, '<') ? 'jar8' : 'jar'
+  const type = cmp(LATEST_TESSERA_J8, version) >= 0 ? 'jar8' : 'jar'
   return {
     name: 'tessera-app.jar',
     description: `Tessera ${version}`,
