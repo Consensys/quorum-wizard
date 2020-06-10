@@ -22,6 +22,7 @@ import {
   downloadIfMissing,
   createQuorumBinaryInfo,
   createCakeshopBinaryInfo,
+  createTesseraBinaryInfo,
   LATEST_BOOTNODE,
   LATEST_CAKESHOP,
   LATEST_QUORUM,
@@ -51,8 +52,12 @@ const QUORUM_BINARY_INFO = {
 const CAKESHOP_BINARY_INFO = {
   name: 'cakeshop.war',
 }
+const TESSERA_BINARY_INFO = {
+  name: 'tessera-app.jar',
+}
 createQuorumBinaryInfo.mockReturnValue(QUORUM_BINARY_INFO)
 createCakeshopBinaryInfo.mockReturnValue(CAKESHOP_BINARY_INFO)
+createTesseraBinaryInfo.mockReturnValue(TESSERA_BINARY_INFO)
 
 describe('Chooses the right paths to the binaries', () => {
   it('Calls geth binary directly if on path', () => {

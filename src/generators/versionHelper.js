@@ -2,6 +2,7 @@ import {
   getVersionsBintray,
   getLatestVersionGithub,
   getVersionsMaven,
+  LATEST_TESSERA_J8,
 } from './download'
 import {
   isBash,
@@ -77,7 +78,7 @@ export async function getDownloadableTesseraChoices(deployment) {
   latestChoice = latestChoice.map((choice) => ({
     name: `Tessera ${choice}`,
     value: choice,
-    disabled: disableTesseraIfWrongJavaVersion(choice),
+    disabled: isBash(deployment) ? disableTesseraIfWrongJavaVersion(choice) : false,
   }))
 
   if (isBash(deployment)) {
@@ -93,7 +94,7 @@ export async function getAllTesseraChoices(deployment) {
   choices = choices.map((choice) => ({
     name: `Tessera ${choice}`,
     value: choice,
-    disabled: disableTesseraIfWrongJavaVersion(choice),
+    disabled: isBash(deployment) ? disableTesseraIfWrongJavaVersion(choice) : false,
   }))
   if (isBash(deployment)) {
     choices = choices.concat(getTesseraOnPath())
@@ -116,7 +117,7 @@ export function getTesseraOnPath() {
 
 export function disableTesseraIfWrongJavaVersion(version) {
   // if version is less than 10.3.0, use java8
-  const needJava8 = compareVersions.compare('0.10.3', version, '>')
+  const needJava8 = compareVersions.compare(LATEST_TESSERA_J8, version, '>=')
   if (needJava8 && isJava11Plus()) {
     return 'Disabled, requires Java 8'
   }
