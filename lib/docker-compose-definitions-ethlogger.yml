@@ -1,0 +1,78 @@
+x-ethlogger1-def:
+  &ethlogger1-def
+  image: splunkdlt/ethlogger:latest
+  environment:
+    - ETH_RPC_URL=http://172.16.239.11:8545
+    - NETWORK_NAME=quorum
+    - START_AT_BLOCK=genesis
+    - SPLUNK_HEC_URL=https://172.16.239.200:8088
+    - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113
+    - SPLUNK_EVENTS_INDEX=ethereum
+    - SPLUNK_METRICS_INDEX=metrics
+    - SPLUNK_INTERNAL_INDEX=metrics
+    - SPLUNK_HEC_REJECT_INVALID_CERTS=false
+    - ABI_DIR=/app/abis
+    - COLLECT_PENDING_TX=true
+    - COLLECT_PEER_INFO=true
+    - DEBUG=ethlogger:abi:*
+  depends_on:
+    - splunk
+    - node1
+  restart: unless-stopped
+x-ethlogger2-def:
+  &ethlogger2-def
+  image: splunkdlt/ethlogger:latest
+  environment:
+    - ETH_RPC_URL=http://172.16.239.12:8545
+    - NETWORK_NAME=quorum
+    - START_AT_BLOCK=genesis
+    - SPLUNK_HEC_URL=https://172.16.239.200:8088
+    - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113
+    - SPLUNK_EVENTS_INDEX=ethereum
+    - SPLUNK_METRICS_INDEX=metrics
+    - SPLUNK_INTERNAL_INDEX=metrics
+    - SPLUNK_HEC_REJECT_INVALID_CERTS=false
+    - COLLECT_BLOCKS=false
+    - COLLECT_PEER_INFO=true
+  depends_on:
+    - splunk
+    - node2
+  restart: unless-stopped
+x-ethlogger3-def:
+  &ethlogger3-def
+  image: splunkdlt/ethlogger:latest
+  environment:
+    - ETH_RPC_URL=http://172.16.239.13:8545
+    - NETWORK_NAME=quorum
+    - START_AT_BLOCK=genesis
+    - SPLUNK_HEC_URL=https://172.16.239.200:8088
+    - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113
+    - SPLUNK_EVENTS_INDEX=ethereum
+    - SPLUNK_METRICS_INDEX=metrics
+    - SPLUNK_INTERNAL_INDEX=metrics
+    - SPLUNK_HEC_REJECT_INVALID_CERTS=false
+    - COLLECT_BLOCKS=false
+    - COLLECT_PEER_INFO=true
+  depends_on:
+    - splunk
+    - node3
+  restart: unless-stopped
+x-ethlogger4-def:
+  &ethlogger4-def
+  image: splunkdlt/ethlogger:latest
+  environment:
+    - ETH_RPC_URL=http://172.16.239.14:8545
+    - NETWORK_NAME=quorum
+    - START_AT_BLOCK=genesis
+    - SPLUNK_HEC_URL=https://172.16.239.200:8088
+    - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113
+    - SPLUNK_EVENTS_INDEX=ethereum
+    - SPLUNK_METRICS_INDEX=metrics
+    - SPLUNK_INTERNAL_INDEX=metrics
+    - SPLUNK_HEC_REJECT_INVALID_CERTS=false
+    - COLLECT_BLOCKS=false
+    - COLLECT_PEER_INFO=true
+  depends_on:
+    - splunk
+    - node4
+  restart: unless-stopped

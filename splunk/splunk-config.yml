@@ -9,12 +9,12 @@ splunk:
           homePath: $SPLUNK_DB/metrics/db
           maxTotalDataSizeMB: 512000
           thawedPath: $SPLUNK_DB/metrics/thaweddb
-        quorum_metrics:
-          coldPath: $SPLUNK_DB/quorum_metrics/colddb
+        ethereum:
+          coldPath: $SPLUNK_DB/ethereum/colddb
           datatype: metric
-          homePath: $SPLUNK_DB/quorum_metrics/db
+          homePath: $SPLUNK_DB/ethereum/db
           maxTotalDataSizeMB: 512000
-          thawedPath: $SPLUNK_DB/quorum_metrics/thaweddb
+          thawedPath: $SPLUNK_DB/ethereum/thaweddb
         logs:
           coldPath: $SPLUNK_DB/logs/colddb
           datatype: event

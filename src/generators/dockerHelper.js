@@ -43,6 +43,11 @@ export function buildDockerCompose(config) {
     'lib/docker-compose-definitions-splunk.yml'
   )) : ''
 
+  const ethloggerDefinitions = hasSplunk ? readFileToString(joinPath(
+    libRootDir(),
+    'lib/docker-compose-definitions-ethlogger.yml'
+  )) : ''
+
   let services = config.nodes.map((node, i) => {
     let allServices = buildNodeService(config, node, i, hasTessera, hasSplunk, txGenerate)
     if (hasTessera) {
@@ -56,7 +61,7 @@ export function buildDockerCompose(config) {
   if (hasSplunk) {
     services = [services.join(''),
       buildSplunkService(config.network.splunkPort, txGenerate),
-      buildEthloggerService(),
+      buildEthloggerService(config.nodes),
       buildCadvisorService()]
     info('Splunk>')
   }
@@ -75,6 +80,7 @@ export function buildDockerCompose(config) {
     formatNewLine(tesseraDefinitions),
     formatNewLine(cakeshopDefinitions),
     formatNewLine(splunkDefinitions),
+    formatNewLine(ethloggerDefinitions),
     'services:',
     services.join(''),
     buildEndService(config),
@@ -161,6 +167,7 @@ function buildTesseraService(config, node, i, hasSplunk) {
   return `
   txmanager${i + 1}:
     << : *tx-manager-def
+    container_name: txmanager${i + 1}
     hostname: txmanager${i + 1}
     ports:
       - "${node.tm.thirdPartyPort}:${config.containerPorts.tm.thirdPartyPort}"
@@ -181,6 +188,7 @@ function buildCakeshopService(port, hasSplunk) {
   return `
   cakeshop:
     << : *cakeshop-def
+    container_name: cakeshop
     hostname: cakeshop
     ports:
       - "${port}:8999"
@@ -220,6 +228,7 @@ function buildCadvisorService() {
   return `
   cadvisor:
     << : *cadvisor-def
+    container_name: cadvisor
     hostname: cadvisor
     volumes:
       - /:/rootfs:ro
@@ -231,18 +240,24 @@ function buildCadvisorService() {
     logging: *default-logging`
 }
 
-function buildEthloggerService() {
-  return `
+function buildEthloggerService(nodes) {
+  let ethloggers = ''
+
+  // nodes.forEach((node, i) => {
+    ethloggers += `
   ethlogger:
-    << : *ethlogger-def
-    hostname: ethlogger
+    << : *ethlogger1-def
+    container_name: ethlogger1
+    hostname: ethlogger1
     volumes:
-      - ./out/config/splunk/abis:/app/abis
-      - ./out/config/splunk:/app
+      - ./out/config/splunk/abis:/app/abis:ro
+      - ./out/config/splunk:/app:ro
     networks:
       quorum-examples-net:
         ipv4_address: 172.16.239.202
     logging: *default-logging`
+  // })
+  return ethloggers
 }
 
 function buildTxGenService(hasSplunk, config, pubkeys) {
