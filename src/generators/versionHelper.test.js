@@ -1,11 +1,11 @@
 import {
   getGethOnPath,
-  getDownloadableGethChoices,
+  getGethChoices,
   getAllGethChoices,
   getLatestCakeshop,
   disableTesseraIfWrongJavaVersion,
   getTesseraOnPath,
-  getDownloadableTesseraChoices,
+  getTesseraChoices,
   getAllTesseraChoices,
   isQuorum260Plus,
 } from './versionHelper'
@@ -17,8 +17,10 @@ import {
   getVersionsBintray,
   getLatestVersionGithub,
   getVersionsMaven,
+  getVersionsDockerHub,
   LATEST_QUORUM,
   LATEST_CAKESHOP,
+  LATEST_CAKESHOP_J8,
   LATEST_TESSERA,
   LATEST_TESSERA_J8,
 } from './download'
@@ -32,11 +34,12 @@ getVersionsMaven.mockReturnValue([LATEST_TESSERA, LATEST_TESSERA_J8])
 
 describe('presents correct binary options', () => {
   it('presents available geth options for bash', async () => {
-    const choices = await getDownloadableGethChoices('bash')
+    const choices = await getGethChoices('bash')
     expect(choices.some((choice) => choice.name === `Quorum ${LATEST_QUORUM}` && choice.disabled === false)).toBeTruthy()
   })
   it('presents available geth options for docker', async () => {
-    const choices = await getDownloadableGethChoices('docker')
+    getVersionsDockerHub.mockReturnValueOnce([LATEST_QUORUM, '2.5.0'])
+    const choices = await getGethChoices('docker-compose')
     expect(choices.some((choice) => choice.name === `Quorum ${LATEST_QUORUM}` && choice.disabled === false)).toBeTruthy()
   })
   it('presents available geth options for bash', async () => {
@@ -45,13 +48,25 @@ describe('presents correct binary options', () => {
     expect(choices.some((choice) => choice.name === `Quorum ${'2.5.0'}` && choice.disabled === false)).toBeTruthy()
   })
   it('presents available geth options for docker', async () => {
-    const choices = await getAllGethChoices('docker')
+    getVersionsDockerHub.mockReturnValueOnce([LATEST_QUORUM, '2.5.0'])
+    const choices = await getAllGethChoices('docker-compose')
     expect(choices.some((choice) => choice.name === `Quorum ${LATEST_QUORUM}` && choice.disabled === false)).toBeTruthy()
     expect(choices.some((choice) => choice.name === `Quorum ${LATEST_QUORUM}` && choice.disabled === false)).toBeTruthy()
   })
-  it('presents latest cakeshop option', async () => {
-    const latest = await getLatestCakeshop()
+  it('presents latest cakeshop option for bash, j8', async () => {
+    isJava11Plus.mockReturnValue(false)
+    const latest = await getLatestCakeshop('bash')
+    expect(latest.name === `Cakeshop ${LATEST_CAKESHOP_J8}` && latest.disabled === false).toBeTruthy()
+  })
+  it('presents latest cakeshop option for bash, j11plus', async () => {
+    isJava11Plus.mockReturnValue(true)
+    const latest = await getLatestCakeshop('bash')
     expect(latest.name === `Cakeshop ${LATEST_CAKESHOP}` && latest.disabled === false).toBeTruthy()
+  })
+  it('presents latest cakeshop option for docker', async () => {
+    getLatestVersionGithub.mockReturnValueOnce(`v${LATEST_CAKESHOP}`)
+    const latest = await getLatestCakeshop('docker-compose')
+    expect(latest.name === 'Cakeshop latest' && latest.disabled === false).toBeTruthy()
   })
 })
 
@@ -120,26 +135,28 @@ describe('Finds binaries on path', () => {
 describe('presents the correct binary options', () => {
   it('disables java 11 jar if in bash mode and on jdk 8', async () => {
     isJava11Plus.mockReturnValue(false)
-    const choices = await getDownloadableTesseraChoices('bash')
+    const choices = await getTesseraChoices('bash')
     expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && typeof choice.disabled === 'string')).toBeTruthy()
     expect(choices.includes('select older versions')).toBeTruthy()
     expect(choices.includes('none')).toBeTruthy()
   })
   it('does not disable java 11 if in bash mode and on jdk 11+', async () => {
-    isJava11Plus.mockReturnValue(true)
-    const choices = await getDownloadableTesseraChoices('bash')
+    isJava11Plus.mockReturnValueOnce(true)
+    const choices = await getTesseraChoices('bash')
     expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && choice.disabled === false)).toBeTruthy()
     expect(choices.includes('select older versions')).toBeTruthy()
     expect(choices.includes('none')).toBeTruthy()
   })
   it('does not disable tessera options in docker mode', async () => {
-    const choices = await getDownloadableTesseraChoices('docker-compose')
+    getVersionsDockerHub.mockReturnValueOnce([LATEST_TESSERA, LATEST_TESSERA_J8])
+    const choices = await getTesseraChoices('docker-compose')
     expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && choice.disabled === false)).toBeTruthy()
     expect(choices.includes('select older versions')).toBeTruthy()
     expect(choices.includes('none')).toBeTruthy()
   })
   it('forces and doesnt disable tessera options in kubernetes mode', async () => {
-    const choices = await getDownloadableTesseraChoices('kubernetes')
+    getVersionsDockerHub.mockReturnValueOnce([LATEST_TESSERA, LATEST_TESSERA_J8])
+    const choices = await getTesseraChoices('kubernetes')
     expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && choice.disabled === false)).toBeTruthy()
     expect(choices.includes('select older versions')).toBeTruthy()
     expect(choices.includes('none')).not.toBeTruthy()
@@ -159,12 +176,14 @@ describe('presents the correct binary options', () => {
     expect(choices.includes('none')).toBeTruthy()
   })
   it('does not disable tessera options in docker mode', async () => {
+    getVersionsDockerHub.mockReturnValueOnce([LATEST_TESSERA, LATEST_TESSERA_J8])
     const choices = await getAllTesseraChoices('docker-compose')
     expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && choice.disabled === false)).toBeTruthy()
     expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && choice.disabled === false)).toBeTruthy()
     expect(choices.includes('none')).toBeTruthy()
   })
   it('forces and doesnt disable tessera options in kubernetes mode', async () => {
+    getVersionsDockerHub.mockReturnValueOnce([LATEST_TESSERA, LATEST_TESSERA_J8])
     const choices = await getAllTesseraChoices('kubernetes')
     expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && choice.disabled === false)).toBeTruthy()
     expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && choice.disabled === false)).toBeTruthy()

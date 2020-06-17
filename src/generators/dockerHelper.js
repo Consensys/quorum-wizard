@@ -100,6 +100,10 @@ TESSERA_3PARTY_PORT=${config.containerPorts.tm.thirdPartyPort}`)
     env = env.concat(`
 QUORUM_GETH_ARGS="--allow-insecure-unlock --graphql --graphql.port ${config.containerPorts.quorum.graphQlPort} --graphql.corsdomain=* --graphql.addr=0.0.0.0"`)
   }
+  if (isCakeshop(config.network.cakeshop)) {
+    env = env.concat(`
+CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:${config.network.cakeshop}`)
+  }
   return env
 }
 

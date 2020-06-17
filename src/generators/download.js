@@ -19,7 +19,8 @@ export async function getVersionsBintray(name) {
     url,
     method: 'GET',
   })
-  return response.data.versions
+  const v = response.data.versions
+  return v.map((ver) => ver.substring(1))
 }
 
 export async function getLatestVersionGithub(name) {
@@ -32,6 +33,12 @@ export async function getVersionsMaven(name) {
   const versions = executeSync(`curl -s https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/${name}/maven-metadata.xml | grep "<version>[0-9].[0-9][0-9].[0-9]</version>" | sort --version-sort -r | uniq | sed -e "s#\\(.*\\)\\(<version>\\)\\(.*\\)\\(</version>\\)\\(.*\\)#\\3#g"`).toString().trim().split('\n')
   return versions
 }
+
+export async function getVersionsDockerHub(name) {
+  const versions = executeSync(`curl -s https://hub.docker.com/v2/repositories/quorumengineering/${name}/tags/?page_size=100 | jq -r '.results|.[]|.name' | grep "[0-9].[0-9]\\{1,\\}.[0-9]\\{1,\\}" | sort --version-sort -r `).toString().trim().split('\n')
+  return versions
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export async function downloadIfMissing(name, version) {
   let binaryInfo
@@ -45,8 +52,14 @@ export async function downloadIfMissing(name, version) {
     case 'tessera':
       binaryInfo = createTesseraBinaryInfo(version)
       break
+    case 'istanbul':
+      binaryInfo = createIstanbulBinaryInfo()
+      break
+    case 'bootnode':
+      binaryInfo = createBootnodeBinaryInfo()
+      break
     default:
-      binaryInfo = BINARIES[name][version]
+      binaryInfo = undefined
   }
   const binDir = joinPath(wizardHomeDir(), 'bin', name, version)
   const binaryFileLocation = joinPath(binDir, binaryInfo.name)
@@ -123,8 +136,8 @@ export function createQuorumBinaryInfo(version) {
     name: 'geth',
     description: `Quorum ${version}`,
     url: {
-      darwin: `https://bintray.com/quorumengineering/quorum/download_file?file_path=${version}/geth_${version}_darwin_amd64.tar.gz`,
-      linux: `https://bintray.com/quorumengineering/quorum/download_file?file_path=${version}/geth_${version}_linux_amd64.tar.gz`,
+      darwin: `https://bintray.com/quorumengineering/quorum/download_file?file_path=v${version}/geth_v${version}_darwin_amd64.tar.gz`,
+      linux: `https://bintray.com/quorumengineering/quorum/download_file?file_path=v${version}/geth_v${version}_linux_amd64.tar.gz`,
     },
     type: 'tar.gz',
     files: [
@@ -155,32 +168,30 @@ export function createTesseraBinaryInfo(version) {
   }
 }
 
-export const BINARIES = {
-  istanbul: {
-    '1.0.3': {
-      name: 'istanbul',
-      url: {
-        darwin: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.3_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.3_linux_amd64.tar.gz',
-      },
-      type: 'tar.gz',
-      files: [
-        'istanbul',
-      ],
+export function createIstanbulBinaryInfo() {
+  return {
+    name: 'istanbul',
+    url: {
+      darwin: `https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v${LATEST_ISTANBUL_TOOLS}_darwin_amd64.tar.gz`,
+      linux: `https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v${LATEST_ISTANBUL_TOOLS}_linux_amd64.tar.gz`,
     },
-  },
+    type: 'tar.gz',
+    files: [
+      'istanbul',
+    ],
+  }
+}
 
-  bootnode: {
-    '1.9.7': {
-      name: 'bootnode',
-      url: {
-        darwin: 'https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v1.9.7_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v1.9.7_linux_amd64.tar.gz',
-      },
-      type: 'tar.gz',
-      files: [
-        'bootnode',
-      ],
+export function createBootnodeBinaryInfo() {
+  return {
+    name: 'bootnode',
+    url: {
+      darwin: `https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v${LATEST_BOOTNODE}_darwin_amd64.tar.gz`,
+      linux: `https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v${LATEST_BOOTNODE}_linux_amd64.tar.gz`,
     },
-  },
+    type: 'tar.gz',
+    files: [
+      'bootnode',
+    ],
+  }
 }

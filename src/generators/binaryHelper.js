@@ -4,10 +4,11 @@ import {
   isTessera,
 } from '../model/NetworkConfig'
 import {
-  BINARIES,
   createQuorumBinaryInfo,
   createCakeshopBinaryInfo,
   createTesseraBinaryInfo,
+  createIstanbulBinaryInfo,
+  createBootnodeBinaryInfo,
   downloadIfMissing,
   LATEST_BOOTNODE,
   LATEST_ISTANBUL_TOOLS,
@@ -71,11 +72,11 @@ export function pathToCakeshop(version) {
 }
 
 export function pathToIstanbulTools() {
-  const binary = BINARIES.istanbul[LATEST_ISTANBUL_TOOLS]
+  const binary = createIstanbulBinaryInfo()
   return joinPath(wizardHomeDir(), 'bin', 'istanbul', LATEST_ISTANBUL_TOOLS, binary.name)
 }
 
 export function pathToBootnode() {
-  const binary = BINARIES.bootnode[LATEST_BOOTNODE]
+  const binary = createBootnodeBinaryInfo()
   return joinPath(wizardHomeDir(), 'bin', 'bootnode', LATEST_BOOTNODE, binary.name)
 }

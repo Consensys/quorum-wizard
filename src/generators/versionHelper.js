@@ -3,20 +3,29 @@ import {
   getVersionsBintray,
   getLatestVersionGithub,
   getVersionsMaven,
+  getVersionsDockerHub,
   LATEST_TESSERA_J8,
+  LATEST_CAKESHOP_J8,
 } from './download'
 import {
   isBash,
   isKubernetes,
+  isDocker,
 } from '../model/NetworkConfig'
 import {
   executeSync,
   isJava11Plus,
 } from '../utils/execUtils'
 
-export async function getLatestCakeshop() {
-  let latest = await getLatestVersionGithub('cakeshop')
-  latest = latest.substring(1)
+export async function getLatestCakeshop(deployment) {
+  let latest
+  if (isBash(deployment)) {
+    latest = await getLatestVersionGithub('cakeshop')
+    latest = latest.substring(1)
+    latest = isJava11Plus() ? latest : LATEST_CAKESHOP_J8
+  } else {
+    latest = 'latest'
+  }
   return {
     name: `Cakeshop ${latest}`,
     value: latest,
@@ -24,8 +33,10 @@ export async function getLatestCakeshop() {
   }
 }
 
-export async function getDownloadableGethChoices(deployment) {
-  const choices = await getVersionsBintray('quorum/geth')
+export async function getGethChoices(deployment) {
+  const choices = isDocker(deployment)
+    ? await getVersionsDockerHub('quorum')
+    : await getVersionsBintray('quorum/geth')
   let latestChoice = [choices[0]]
   latestChoice = latestChoice.map((choice) => ({
     name: `Quorum ${choice}`,
@@ -39,8 +50,10 @@ export async function getDownloadableGethChoices(deployment) {
   return latestChoice
 }
 
-export async function getAllGethChoices() {
-  let choices = await getVersionsBintray('quorum/geth')
+export async function getAllGethChoices(deployment) {
+  let choices = isDocker(deployment)
+    ? await getVersionsDockerHub('quorum')
+    : await getVersionsBintray('quorum/geth')
   choices = choices.map((choice) => ({
     name: `Quorum ${choice}`,
     value: choice,
@@ -82,9 +95,14 @@ export function isQuorum260Plus(quorumVersion) {
   return cmp(version, '2.6.0') >= 0
 }
 
-export async function getDownloadableTesseraChoices(deployment) {
-  const choices = await getVersionsMaven('tessera-app')
-  let latestChoice = [choices[0]]
+export async function getTesseraChoices(deployment) {
+  const choices = isBash(deployment)
+    ? await getVersionsMaven('tessera-app')
+    : await getVersionsDockerHub('tessera')
+  const availableChoices = isBash(deployment)
+    ? choices.filter((choice) => !disableTesseraIfWrongJavaVersion(choice))
+    : choices
+  let latestChoice = [availableChoices[0]]
 
   latestChoice = latestChoice.map((choice) => ({
     name: `Tessera ${choice}`,
@@ -101,15 +119,14 @@ export async function getDownloadableTesseraChoices(deployment) {
 }
 
 export async function getAllTesseraChoices(deployment) {
-  let choices = await getVersionsMaven('tessera-app')
+  let choices = isBash(deployment)
+    ? await getVersionsMaven('tessera-app')
+    : await getVersionsDockerHub('tessera')
   choices = choices.map((choice) => ({
     name: `Tessera ${choice}`,
     value: choice,
     disabled: isBash(deployment) ? disableTesseraIfWrongJavaVersion(choice) : false,
   }))
-  if (isBash(deployment)) {
-    choices = choices.concat(getTesseraOnPath())
-  }
   choices = isKubernetes(deployment) ? choices : choices.concat('none')
   return choices
 }

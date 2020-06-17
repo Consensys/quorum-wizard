@@ -1,16 +1,10 @@
 import {
-  transformCakeshopAnswer,
   validateNetworkId,
   validateNumberStringInRange,
 } from './validators'
-import { isJava11Plus } from '../utils/execUtils'
-import { LATEST_CAKESHOP, LATEST_CAKESHOP_J8 } from '../generators/download'
-import { getLatestCakeshop } from '../generators/versionHelper'
 
 jest.mock('../utils/execUtils')
 jest.mock('../generators/versionHelper')
-
-getLatestCakeshop.mockReturnValue(LATEST_CAKESHOP)
 
 test('accepts answer bottom of range', () => {
   expect(validateNumberStringInRange('2', 2, 3)).toBe(true)
@@ -48,12 +42,4 @@ test('rejects network id of less than 0', () => {
 
 test('rejects network id that is not a number', () => {
   expect(validateNetworkId('n')).toEqual('Network ID must be a number')
-})
-
-test('Turns cakeshop answer from boolean to version/none', () => {
-  expect(transformCakeshopAnswer('No')).toEqual('none')
-  isJava11Plus.mockReturnValueOnce(false)
-  expect(transformCakeshopAnswer('Yes')).toEqual(LATEST_CAKESHOP_J8)
-  isJava11Plus.mockReturnValueOnce(true)
-  expect(transformCakeshopAnswer('Yes')).toEqual(LATEST_CAKESHOP)
 })

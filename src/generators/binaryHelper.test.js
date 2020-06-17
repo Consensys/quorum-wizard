@@ -23,6 +23,8 @@ import {
   createQuorumBinaryInfo,
   createCakeshopBinaryInfo,
   createTesseraBinaryInfo,
+  createBootnodeBinaryInfo,
+  createIstanbulBinaryInfo,
   LATEST_BOOTNODE,
   LATEST_CAKESHOP,
   LATEST_QUORUM,
@@ -48,16 +50,23 @@ getLatestCakeshop.mockReturnValue(LATEST_CAKESHOP)
 const QUORUM_BINARY_INFO = {
   name: 'geth',
 }
-
 const CAKESHOP_BINARY_INFO = {
   name: 'cakeshop.war',
 }
 const TESSERA_BINARY_INFO = {
   name: 'tessera-app.jar',
 }
+const BOOTNODE_BINARY_INFO = {
+  name: 'bootnode',
+}
+const ISTANBUL_BINARY_INFO = {
+  name: 'istanbul',
+}
 createQuorumBinaryInfo.mockReturnValue(QUORUM_BINARY_INFO)
 createCakeshopBinaryInfo.mockReturnValue(CAKESHOP_BINARY_INFO)
 createTesseraBinaryInfo.mockReturnValue(TESSERA_BINARY_INFO)
+createBootnodeBinaryInfo.mockReturnValue(BOOTNODE_BINARY_INFO)
+createIstanbulBinaryInfo.mockReturnValue(ISTANBUL_BINARY_INFO)
 
 describe('Chooses the right paths to the binaries', () => {
   it('Calls geth binary directly if on path', () => {

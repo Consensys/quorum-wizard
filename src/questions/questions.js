@@ -1,13 +1,13 @@
 import {
-  transformCakeshopAnswer,
   validateNetworkId,
   validateNumberStringInRange,
 } from './validators'
 import {
-  getDownloadableGethChoices,
-  getDownloadableTesseraChoices,
+  getGethChoices,
+  getTesseraChoices,
   getAllGethChoices,
   getAllTesseraChoices,
+  getLatestCakeshop,
 } from '../generators/versionHelper'
 import {
   defaultNetworkName,
@@ -106,14 +106,14 @@ export const QUORUM_VERSION = {
   type: 'list',
   name: 'quorumVersion',
   message: 'Which version of Quorum would you like to use?',
-  choices: ({ deployment }) => getDownloadableGethChoices(deployment),
+  choices: ({ deployment }) => getGethChoices(deployment),
 }
 
 export const QUORUM_ALL_VERSIONS = {
   type: 'list',
   name: 'quorumVersionMore',
   message: 'Choose an earlier version of quorum',
-  choices: () => getAllGethChoices(),
+  choices: ({ deployment }) => getAllGethChoices(deployment),
   when: ({ quorumVersion }) => quorumVersion === 'select older versions',
 }
 
@@ -121,14 +121,14 @@ export const TRANSACTION_MANAGER = {
   type: 'list',
   name: 'transactionManager',
   message: 'Choose a version of tessera if you would like to use private transactions in your network, otherwise choose "none"',
-  choices: ({ deployment }) => getDownloadableTesseraChoices(deployment),
+  choices: ({ deployment }) => getTesseraChoices(deployment),
 }
 
 export const TRANSACTION_MANAGER_ALL_VERSIONS = {
   type: 'list',
   name: 'transactionManagerMore',
   message: 'Choose an earlier version of tessera',
-  choices: () => getAllTesseraChoices(),
+  choices: ({ deployment }) => getAllTesseraChoices(deployment),
   when: ({ transactionManager }) => transactionManager === 'select older versions',
 }
 
@@ -136,10 +136,9 @@ export const CAKESHOP = {
   type: 'list', // can't transform answer from boolean on confirm questions, so it had to be a list
   name: 'cakeshop',
   message: 'Do you want to run Cakeshop (our chain explorer) with your network?',
-  choices: ['No', 'Yes'],
-  default: 'No',
+  choices: async (answers) => ['none', await getLatestCakeshop(answers.deployment)],
+  default: 'none',
   when: (answers) => !isKubernetes(answers.deployment),
-  filter: transformCakeshopAnswer,
 }
 
 export const KEY_GENERATION = {
