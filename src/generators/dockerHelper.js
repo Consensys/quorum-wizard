@@ -243,20 +243,20 @@ function buildCadvisorService() {
 function buildEthloggerService(nodes) {
   let ethloggers = ''
 
-  // nodes.forEach((node, i) => {
+  nodes.forEach((node, i) => {
     ethloggers += `
-  ethlogger:
-    << : *ethlogger1-def
-    container_name: ethlogger1
-    hostname: ethlogger1
+  ethlogger${i+1}:
+    << : *ethlogger${i+1}-def
+    container_name: ethlogger${i+1}
+    hostname: ethlogger${i+1}
     volumes:
       - ./out/config/splunk/abis:/app/abis:ro
-      - ./out/config/splunk:/app:ro
+      - ethlogger-state${i+1}:/app
     networks:
       quorum-examples-net:
-        ipv4_address: 172.16.239.202
+        ipv4_address: 172.16.239.20${i+2}
     logging: *default-logging`
-  // })
+  })
   return ethloggers
 }
 
@@ -300,6 +300,7 @@ networks:
         - subnet: 172.16.239.0/24
 volumes:
 ${config.nodes.map((_, i) => `  "vol${i + 1}":`).join('\n')}
+${config.nodes.map((_, i) => `  "ethlogger-state${i + 1}":`).join('\n')}
   "cakeshopvol":
   "splunk-var":
   "splunk-etc":`

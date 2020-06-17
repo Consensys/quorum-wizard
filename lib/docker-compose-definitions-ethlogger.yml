@@ -2,7 +2,7 @@ x-ethlogger1-def:
   &ethlogger1-def
   image: splunkdlt/ethlogger:latest
   environment:
-    - ETH_RPC_URL=http://172.16.239.11:8545
+    - ETH_RPC_URL=http://node1:8545
     - NETWORK_NAME=quorum
     - START_AT_BLOCK=genesis
     - SPLUNK_HEC_URL=https://172.16.239.200:8088
@@ -23,7 +23,7 @@ x-ethlogger2-def:
   &ethlogger2-def
   image: splunkdlt/ethlogger:latest
   environment:
-    - ETH_RPC_URL=http://172.16.239.12:8545
+    - ETH_RPC_URL=http://node2:8545
     - NETWORK_NAME=quorum
     - START_AT_BLOCK=genesis
     - SPLUNK_HEC_URL=https://172.16.239.200:8088
@@ -42,7 +42,7 @@ x-ethlogger3-def:
   &ethlogger3-def
   image: splunkdlt/ethlogger:latest
   environment:
-    - ETH_RPC_URL=http://172.16.239.13:8545
+    - ETH_RPC_URL=http://node3:8545
     - NETWORK_NAME=quorum
     - START_AT_BLOCK=genesis
     - SPLUNK_HEC_URL=https://172.16.239.200:8088
@@ -61,7 +61,7 @@ x-ethlogger4-def:
   &ethlogger4-def
   image: splunkdlt/ethlogger:latest
   environment:
-    - ETH_RPC_URL=http://172.16.239.14:8545
+    - ETH_RPC_URL=http://node4:8545
     - NETWORK_NAME=quorum
     - START_AT_BLOCK=genesis
     - SPLUNK_HEC_URL=https://172.16.239.200:8088
