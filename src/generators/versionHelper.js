@@ -107,7 +107,7 @@ export async function getTesseraChoices(deployment) {
   latestChoice = latestChoice.map((choice) => ({
     name: `Tessera ${choice}`,
     value: choice,
-    disabled: isBash(deployment) ? disableTesseraIfWrongJavaVersion(choice) : false,
+    disabled: false,
   }))
 
   if (isBash(deployment)) {

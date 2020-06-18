@@ -133,10 +133,10 @@ describe('Finds binaries on path', () => {
 })
 
 describe('presents the correct binary options', () => {
-  it('disables java 11 jar if in bash mode and on jdk 8', async () => {
-    isJava11Plus.mockReturnValue(false)
+  it('only includes latest jdk 8 choice if in bash mode and on jdk 8', async () => {
+    isJava11Plus.mockReturnValueOnce(false)
     const choices = await getTesseraChoices('bash')
-    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && typeof choice.disabled === 'string')).toBeTruthy()
+    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && choice.disabled === false)).toBeTruthy()
     expect(choices.includes('select older versions')).toBeTruthy()
     expect(choices.includes('none')).toBeTruthy()
   })
