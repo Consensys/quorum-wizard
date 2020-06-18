@@ -283,6 +283,7 @@ function buildTxGenService(hasSplunk, config, pubkeys) {
     volumes:
       - ./out/config/contracts:/txgen/contracts
       - ./out/config/splunk/abis:/txgen/build/contracts
+      - ./out/config/splunk/contract_config.json:/txgen/contract_config.json
     networks:
       - quorum-examples-net
     ${splunkLogging}`
