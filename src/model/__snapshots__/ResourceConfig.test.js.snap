@@ -11,7 +11,7 @@ service:
 quorum:
   consensus: raft
   Node_DataDir: /etc/quorum/qdata
-  Key_Dir_Base: out/config
+  Key_Dir_Base: 7nodes
   Permissioned_Nodes_File: out/config/permissioned-nodes.json
   Genesis_File: out/config/genesis.json
   quorum:
