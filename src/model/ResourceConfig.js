@@ -24,7 +24,7 @@ function buildQuorumDetails(config) {
 quorum:
   consensus: ${config.network.consensus}
   Node_DataDir: /etc/quorum/qdata
-  Key_Dir_Base: out/config
+  Key_Dir_Base: ${config.network.generateKeys ? 'out/config' : '7nodes'}
   Permissioned_Nodes_File: out/config/permissioned-nodes.json
   Genesis_File: out/config/genesis.json
   quorum:

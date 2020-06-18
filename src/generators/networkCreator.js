@@ -43,12 +43,8 @@ export function generateResourcesRemote(config) {
   const file = buildKubernetesResource(config)
   writeFile(joinPath(networkPath, 'qubernetes.yaml'), file, false)
 
-  if (!config.network.generateKeys) {
-    createFolder(remoteOutputDir, true)
-    copyDirectory(joinPath(libRootDir(), '7nodes'), remoteOutputDir)
-  }
-
   const initScript = isKubernetes(config.network.deployment) ? 'qube-init' : 'quorum-init'
+  const copy7nodes = !config.network.generateKeys ? 'cp -r /qubernetes/7nodes /qubernetes/out/config; ' : ''
   let dockerCommand = `cd ${networkPath}
   ## make sure docker is installed
   docker ps > /dev/null
@@ -61,8 +57,8 @@ export function generateResourcesRemote(config) {
 
   docker pull quorumengineering/qubernetes:latest
 
-  docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./${initScript} --action=update qubernetes.yaml 2>&1
-  find . -type f -name 'UTC*' -execdir mv {} key ';'
+
+  docker run --rm -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out quorumengineering/qubernetes /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"
   `
 
   if (isDocker(config.network.deployment)) {
@@ -129,7 +125,7 @@ export function createQdataDirectory(config) {
 
     copyFile(joinPath(configPath, 'permissioned-nodes.json'), joinPath(quorumDir, 'permissioned-nodes.json'))
     copyFile(joinPath(configPath, 'permissioned-nodes.json'), joinPath(quorumDir, 'static-nodes.json'))
-    copyFile(joinPath(keySource, 'key'), joinPath(keyDir, 'key'))
+    copyFile(joinPath(keySource, 'acctkeyfile.json'), joinPath(keyDir, 'key'))
     copyFile(joinPath(keySource, 'nodekey'), joinPath(gethDir, 'nodekey'))
     copyFile(joinPath(keySource, 'password.txt'), passwordDestination)
     copyFile(joinPath(configPath, 'genesis.json'), genesisDestination)
