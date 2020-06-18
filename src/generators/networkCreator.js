@@ -13,7 +13,10 @@ import {
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
-import { buildKubernetesResource } from '../model/ResourceConfig'
+import {
+  buildKubernetesResource,
+  LATEST_QUBERNETES,
+} from '../model/ResourceConfig'
 import {
   isRaft,
   isTessera,
@@ -35,7 +38,7 @@ export function createNetwork(config) {
 }
 
 export function generateResourcesRemote(config) {
-  info('Pulling latest docker container and generating network resources...')
+  info('Pulling docker container and generating network resources...')
   const configDir = joinPath(cwd(), config.network.configDir)
   const networkPath = getFullNetworkPath(config)
   const remoteOutputDir = joinPath(networkPath, 'out', 'config')
@@ -55,7 +58,7 @@ export function generateResourcesRemote(config) {
     exit $EXIT_CODE
   fi
 
-  docker pull quorumengineering/qubernetes:latest
+  docker pull quorumengineering/qubernetes:${LATEST_QUBERNETES}
 
 
   docker run --rm -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out quorumengineering/qubernetes /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"

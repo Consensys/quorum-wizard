@@ -1,3 +1,5 @@
+export const LATEST_QUBERNETES = 'v0.1.2'
+
 // eslint-disable-next-line import/prefer-default-export
 export function buildKubernetesResource(config) {
   return [
