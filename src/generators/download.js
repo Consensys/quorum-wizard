@@ -19,8 +19,7 @@ export async function getVersionsBintray(name) {
     url,
     method: 'GET',
   })
-  const v = response.data.versions
-  return v.map((ver) => ver.substring(1))
+  return response.data.versions
 }
 
 export async function getLatestVersionGithub(name) {

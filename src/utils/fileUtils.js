@@ -36,6 +36,10 @@ export function writeJsonFile(folder, filename, object, space = 2) {
   writeFileSync(joinPath(folder, filename), JSON.stringify(object, null, space))
 }
 
+export function readJsonFile(file) {
+  return JSON.parse(readFileToString(file))
+}
+
 export function writeFile(filePath, contents, executable = false) {
   writeFileSync(filePath, contents)
   if (executable) {

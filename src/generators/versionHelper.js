@@ -16,10 +16,16 @@ import {
   executeSync,
   isJava11Plus,
 } from '../utils/execUtils'
+import {
+  isInternal,
+  approvedVersions,
+} from './internalHelper'
 
 export async function getLatestCakeshop(deployment) {
   let latest
-  if (isBash(deployment)) {
+  if (isInternal()) {
+    latest = isJava11Plus() ? approvedVersions('cakeshop') : LATEST_CAKESHOP_J8
+  } else if (isBash(deployment)) {
     latest = await getLatestVersionGithub('cakeshop')
     latest = latest.substring(1)
     latest = isJava11Plus() ? latest : LATEST_CAKESHOP_J8
@@ -34,9 +40,15 @@ export async function getLatestCakeshop(deployment) {
 }
 
 export async function getGethChoices(deployment) {
-  const choices = isDocker(deployment)
-    ? await getVersionsDockerHub('quorum')
-    : await getVersionsBintray('quorum/geth')
+  let choices
+  if (isInternal()) {
+    choices = approvedVersions('quorum')
+  } else if (isDocker(deployment)) {
+    choices = await getVersionsDockerHub('quorum')
+  } else {
+    choices = await getVersionsBintray('quorum/geth')
+    choices = choices.map((choice) => choice.substring(1))
+  }
   let latestChoice = [choices[0]]
   latestChoice = latestChoice.map((choice) => ({
     name: `Quorum ${choice}`,
@@ -51,9 +63,14 @@ export async function getGethChoices(deployment) {
 }
 
 export async function getAllGethChoices(deployment) {
-  let choices = isDocker(deployment)
-    ? await getVersionsDockerHub('quorum')
-    : await getVersionsBintray('quorum/geth')
+  let choices
+  if (isInternal()) {
+    choices = approvedVersions('quorum')
+  } else if (isDocker(deployment)) {
+    choices = await getVersionsDockerHub('quorum')
+  } else {
+    choices = await getVersionsBintray('quorum/geth')
+  }
   choices = choices.map((choice) => ({
     name: `Quorum ${choice}`,
     value: choice,
@@ -96,9 +113,14 @@ export function isQuorum260Plus(quorumVersion) {
 }
 
 export async function getTesseraChoices(deployment) {
-  const choices = isBash(deployment)
-    ? await getVersionsMaven('tessera-app')
-    : await getVersionsDockerHub('tessera')
+  let choices
+  if (isInternal()) {
+    choices = approvedVersions('tessera')
+  } else if (isBash(deployment)) {
+    choices = await getVersionsMaven('tessera-app')
+  } else {
+    choices = await getVersionsDockerHub('tessera')
+  }
   const availableChoices = isBash(deployment)
     ? choices.filter((choice) => !disableTesseraIfWrongJavaVersion(choice))
     : choices
@@ -119,9 +141,14 @@ export async function getTesseraChoices(deployment) {
 }
 
 export async function getAllTesseraChoices(deployment) {
-  let choices = isBash(deployment)
-    ? await getVersionsMaven('tessera-app')
-    : await getVersionsDockerHub('tessera')
+  let choices
+  if (isInternal()) {
+    choices = approvedVersions('tessera')
+  } else if (isBash(deployment)) {
+    choices = await getVersionsMaven('tessera-app')
+  } else {
+    choices = await getVersionsDockerHub('tessera')
+  }
   choices = choices.map((choice) => ({
     name: `Tessera ${choice}`,
     value: choice,
