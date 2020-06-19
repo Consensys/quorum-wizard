@@ -14,7 +14,7 @@ export function generateAccounts(nodes, configDir) {
     const numNode = i + 1
 
     const keyDir = joinPath(configDir, `key${numNode}`)
-    const keyString = readFileToString(joinPath(keyDir, 'key'))
+    const keyString = readFileToString(joinPath(keyDir, 'acctkeyfile.json'))
     const key = `0x${JSON.parse(keyString).address}`
     accounts[key] = { balance: '1000000000000000000000000000' }
   }
