@@ -34,9 +34,13 @@ export async function getLatestCakeshop(deployment) {
 }
 
 export async function getGethChoices(deployment) {
-  const choices = isDocker(deployment)
-    ? await getVersionsDockerHub('quorum')
-    : await getVersionsBintray('quorum/geth')
+  let choices
+  if (isDocker(deployment)) {
+    choices = await getVersionsDockerHub('quorum')
+  } else {
+    choices = await getVersionsBintray('quorum/geth')
+    choices = choices.map((choice) => choice.substring(1))
+  }
   let latestChoice = [choices[0]]
   latestChoice = latestChoice.map((choice) => ({
     name: `Quorum ${choice}`,
@@ -51,9 +55,13 @@ export async function getGethChoices(deployment) {
 }
 
 export async function getAllGethChoices(deployment) {
-  let choices = isDocker(deployment)
-    ? await getVersionsDockerHub('quorum')
-    : await getVersionsBintray('quorum/geth')
+  let choices
+  if (isDocker(deployment)) {
+    choices = await getVersionsDockerHub('quorum')
+  } else {
+    choices = await getVersionsBintray('quorum/geth')
+    choices = choices.map((choice) => choice.substring(1))
+  }
   choices = choices.map((choice) => ({
     name: `Quorum ${choice}`,
     value: choice,

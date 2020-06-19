@@ -28,7 +28,7 @@ import {
 jest.mock('../utils/execUtils')
 jest.mock('./download')
 
-getVersionsBintray.mockReturnValue([LATEST_QUORUM, '2.5.0'])
+getVersionsBintray.mockReturnValue([`v${LATEST_QUORUM}`, 'v2.5.0'])
 getLatestVersionGithub.mockReturnValue(`v${LATEST_CAKESHOP}`)
 getVersionsMaven.mockReturnValue([LATEST_TESSERA, LATEST_TESSERA_J8])
 
