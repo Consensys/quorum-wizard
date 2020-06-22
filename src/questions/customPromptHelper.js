@@ -1,4 +1,5 @@
 import inquirer from 'inquirer'
+import { cidrhost } from '../utils/subnetUtils'
 
 function buildBashQuestions(numberNodes, hasTessera, i, prevAnswers, isRaft) {
   const questions = []
@@ -25,6 +26,12 @@ function buildBashQuestions(numberNodes, hasTessera, i, prevAnswers, isRaft) {
     name: 'quorumWs',
     message: `input quorum node ${i + 1} ws port`,
     default: prevAnswers !== undefined ? incrementPort(prevAnswers.quorumWs, 1) : '23000',
+  })
+  questions.push({
+    type: 'input',
+    name: 'quorumGraphQl',
+    message: `input quorum node ${i + 1} graphql port`,
+    default: prevAnswers !== undefined ? incrementPort(prevAnswers.quorumGraphQl, 1) : '24000',
   })
   if (isRaft) {
     questions.push({
@@ -71,6 +78,7 @@ export async function getCustomizedBashNodes(numberNodes, hasTessera, isRaft) {
         devP2pPort: answers.quorumP2P,
         rpcPort: answers.quorumRpc,
         wsPort: answers.quorumWs,
+        graphQlPort: answers.quorumGraphQl,
         raftPort: answers.quorumRaft === undefined ? incrementPort(50401, i) : answers.quorumRaft,
       },
     }
@@ -100,6 +108,12 @@ function buildDockerQuestions(numberNodes, hasTessera, i, prevAnswers) {
     message: `input quorum node ${i + 1} ws port`,
     default: prevAnswers !== undefined ? incrementPort(prevAnswers.quorumWs, 1) : '23000',
   })
+  questions.push({
+    type: 'input',
+    name: 'quorumGraphQl',
+    message: `input quorum node ${i + 1} graphql port`,
+    default: prevAnswers !== undefined ? incrementPort(prevAnswers.quorumGraphQl, 1) : '24000',
+  })
   if (hasTessera) {
     questions.push({
       type: 'input',
@@ -111,7 +125,7 @@ function buildDockerQuestions(numberNodes, hasTessera, i, prevAnswers) {
   return questions
 }
 
-export async function getCustomizedDockerPorts(numberNodes, hasTessera) {
+export async function getCustomizedDockerPorts(numberNodes, hasTessera, dockerSubnet) {
   let answers
   const nodes = []
   const devP2pPort = 21000
@@ -123,16 +137,17 @@ export async function getCustomizedDockerPorts(numberNodes, hasTessera) {
     answers = await inquirer.prompt(buildDockerQuestions(numberNodes, hasTessera, i, answers))
     const node = {
       quorum: {
-        ip: `172.16.239.1${i + 1}`,
+        ip: cidrhost(dockerSubnet, i + 1 + 10),
         devP2pPort: numToString(devP2pPort + i),
         rpcPort: answers.quorumRpc,
         wsPort: answers.quorumWs,
+        graphQlPort: answers.quorumGraphQl,
         raftPort: numToString(raftPort + i),
       },
     }
     if (hasTessera) {
       node.tm = {
-        ip: `172.16.239.10${i + 1}`,
+        ip: cidrhost(dockerSubnet, i + 1 + 100),
         thirdPartyPort: answers.tessera3Party,
         p2pPort: numToString(p2pPort + i),
       }

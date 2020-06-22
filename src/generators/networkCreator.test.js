@@ -40,6 +40,7 @@ jest.mock('../utils/log')
 jest.mock('../model/ConsensusConfig')
 jest.mock('../model/ResourceConfig')
 jest.mock('./keyGen')
+
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 buildKubernetesResource.mockReturnValue('qubernetes')
@@ -51,6 +52,19 @@ const baseNetwork = {
   transactionManager: LATEST_TESSERA,
   cakeshop: 'none',
   deployment: 'bash',
+}
+
+const containerPortInfo = {
+  quorum: {
+    rpcPort: 8545,
+    p2pPort: 21000,
+    raftPort: 50400,
+    wsPort: 8645,
+  },
+  tm: {
+    p2pPort: 9000,
+    thirdPartyPort: 9080,
+  },
 }
 
 describe('creates network and config from answers', () => {
@@ -95,18 +109,6 @@ describe('creates network resources locally from answers', () => {
     expect(generateConsensusConfig).toHaveBeenCalled()
     expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
   })
-  it('Creates genesis and static nodes for docker with pregen keys', async () => {
-    const config = createConfigFromAnswers({
-      ...baseNetwork,
-      deployment: 'docker-compose',
-    })
-    await generateResourcesLocally(config)
-
-    expect(createFolder).toBeCalledWith(createNetPath(config, 'resources'), true)
-    expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'resources'))
-    expect(generateConsensusConfig).toHaveBeenCalled()
-    expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
-  })
 })
 
 describe('creates network resources with remote qubernetes container from answers', () => {
@@ -118,36 +120,60 @@ describe('creates network resources with remote qubernetes container from answer
       expect(() => generateResourcesRemote(config)).toThrow(Error)
     })
   })
-  it('Creates new resources and keys for docker', () => {
+  it('Creates new resources and keys for docker using pregen keys', () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
-      generateKeys: true,
       deployment: 'docker-compose',
+      containerPorts: {
+        dockerSubnet: '172.16.239.0/24',
+        ...containerPortInfo,
+      },
     })
     generateResourcesRemote(config)
 
     expect(buildKubernetesResource).toHaveBeenCalled()
     expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
     expect(copyDirectory).toBeCalledWith(createNetPath(config, 'out', 'config'), createNetPath(config, 'resources'))
-    expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'resources'), 'permissioned-nodes.json', anything())
   })
-  it('Creates new resources for kubernetes using pregen keys', () => {
+  it('Creates new resources and keys for docker with new keys', () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
-      deployment: 'kubernetes',
+      generateKeys: true,
+      deployment: 'docker-compose',
+      containerPorts: {
+        dockerSubnet: '172.16.239.0/24',
+        ...containerPortInfo,
+      },
     })
     generateResourcesRemote(config)
 
     expect(buildKubernetesResource).toHaveBeenCalled()
     expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
-    expect(createFolder).toBeCalledWith(createNetPath(config, 'out', 'config'), true)
-    expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'out', 'config'))
+    expect(copyDirectory).toBeCalledWith(createNetPath(config, 'out', 'config'), createNetPath(config, 'resources'))
+  })
+  it('Creates new resources for kubernetes using pregen keys', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      deployment: 'kubernetes',
+      containerPorts: {
+        dockerSubnet: '',
+        ...containerPortInfo,
+      },
+    })
+    generateResourcesRemote(config)
+
+    expect(buildKubernetesResource).toHaveBeenCalled()
+    expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
   })
   it('Creates new resources for kubernetes with new keys', () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
       deployment: 'kubernetes',
       generateKeys: true,
+      containerPorts: {
+        dockerSubnet: '',
+        ...containerPortInfo,
+      },
     })
     generateResourcesRemote(config)
 
@@ -159,6 +185,10 @@ describe('creates network resources with remote qubernetes container from answer
       ...baseNetwork,
       generateKeys: true,
       deployment: 'docker-compose',
+      containerPorts: {
+        dockerSubnet: '172.16.239.0/24',
+        ...containerPortInfo,
+      },
     })
 
     executeSync.mockImplementationOnce(() => {
@@ -196,7 +226,7 @@ describe('creates qdata directory for bash network', () => {
         joinPath(createNetPath(config, `qdata/dd${i}`), 'static-nodes.json'),
       )
       expect(copyFile).toBeCalledWith(
-        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'key'),
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'acctkeyfile.json'),
         createNetPath(config, `qdata/dd${i}/keystore`, 'key'),
       )
       expect(copyFile).toBeCalledWith(
@@ -262,7 +292,7 @@ describe('creates qdata directory for bash network no tessera', () => {
         joinPath(createNetPath(config, `qdata/dd${i}`), 'static-nodes.json'),
       )
       expect(copyFile).toBeCalledWith(
-        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'key'),
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'acctkeyfile.json'),
         createNetPath(config, `qdata/dd${i}/keystore`, 'key'),
       )
       expect(copyFile).toBeCalledWith(
@@ -288,6 +318,10 @@ describe('creates qdata directory for docker network', () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
       deployment: 'docker-compose',
+      containerPorts: {
+        dockerSubnet: '172.16.239.0/24',
+        ...containerPortInfo,
+      },
     })
     names.forEach((name) => {
       config.network.name = name
@@ -299,6 +333,10 @@ describe('creates qdata directory for docker network', () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
       deployment: 'docker-compose',
+      containerPorts: {
+        dockerSubnet: '172.16.239.0/24',
+        ...containerPortInfo,
+      },
     })
     createQdataDirectory(config)
     expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata/logs'), true)
@@ -316,7 +354,7 @@ describe('creates qdata directory for docker network', () => {
         joinPath(createNetPath(config, `qdata/dd${i}`), 'static-nodes.json'),
       )
       expect(copyFile).toBeCalledWith(
-        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'key'),
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'acctkeyfile.json'),
         createNetPath(config, `qdata/dd${i}/keystore`, 'key'),
       )
       expect(copyFile).toBeCalledWith(
@@ -339,6 +377,10 @@ describe('creates qdata directory for docker network', () => {
       expect(copyFile).toBeCalledWith(
         joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'tm.pub'),
         createNetPath(config, `qdata/c${i}/tm.pub`),
+      )
+      expect(copyFile).toBeCalledWith(
+        joinPath(getFullNetworkPath(config), 'resources', 'tessera-config-9.0.json'),
+        joinPath(createNetPath(config, `qdata/c${i}`), 'tessera-config-09.json'),
       )
     }
   })

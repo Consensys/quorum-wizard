@@ -1,3 +1,4 @@
+import cmp from 'semver-compare'
 import { wizardHomeDir } from '../utils/fileUtils'
 import { executeSync } from '../utils/execUtils'
 import {
@@ -9,6 +10,8 @@ import {
 import {
   BINARIES,
   downloadIfMissing,
+  LATEST_BOOTNODE,
+  LATEST_ISTANBUL_TOOLS,
 } from './download'
 import { disableIfWrongJavaVersion } from '../questions/validators'
 import { info } from '../utils/log'
@@ -26,11 +29,11 @@ export async function downloadAndCopyBinaries(config) {
   const downloads = []
 
   if (isIstanbul(consensus)) {
-    downloads.push(downloadIfMissing('istanbul', '1.0.1'))
+    downloads.push(downloadIfMissing('istanbul', LATEST_ISTANBUL_TOOLS))
   }
 
   if (generateKeys) {
-    downloads.push(downloadIfMissing('bootnode', '1.8.27'))
+    downloads.push(downloadIfMissing('bootnode', LATEST_BOOTNODE))
   }
 
   if (quorumVersion !== 'PATH') {
@@ -53,10 +56,8 @@ export function getGethOnPath() {
   try {
     const gethOnPath = executeSync('which geth').toString().trim()
     if (gethOnPath) {
-      const gethVersionOutput = executeSync('geth version').toString()
-      const versionMatch = gethVersionOutput.match(/Quorum Version: (\S+)/)
-      if (versionMatch !== null) {
-        const version = versionMatch[1]
+      const version = getPathGethVersion()
+      if (version !== null) {
         pathChoices.push({
           name: `Quorum ${version} on path (${gethOnPath})`,
           value: 'PATH',
@@ -67,6 +68,20 @@ export function getGethOnPath() {
     // either no geth or the version call errored, don't include it in choices
   }
   return pathChoices
+}
+
+export function getPathGethVersion() {
+  const gethVersionOutput = executeSync('geth version').toString()
+  const versionMatch = gethVersionOutput.match(/Quorum Version: (\S+)/)
+  if (versionMatch !== null) {
+    return versionMatch[1]
+  }
+  return null
+}
+
+export function isQuorum260Plus(quorumVersion) {
+  const version = quorumVersion === 'PATH' ? getPathGethVersion() : quorumVersion
+  return cmp(version, '2.6.0') >= 0
 }
 
 export function getDownloadableGethChoices(deployment) {
@@ -130,11 +145,11 @@ export function pathToCakeshop(version) {
 }
 
 export function pathToIstanbulTools() {
-  const binary = BINARIES.istanbul['1.0.1']
-  return joinPath(wizardHomeDir(), 'bin', 'istanbul', '1.0.1', binary.name)
+  const binary = BINARIES.istanbul[LATEST_ISTANBUL_TOOLS]
+  return joinPath(wizardHomeDir(), 'bin', 'istanbul', LATEST_ISTANBUL_TOOLS, binary.name)
 }
 
 export function pathToBootnode() {
-  const binary = BINARIES.bootnode['1.8.27']
-  return joinPath(wizardHomeDir(), 'bin', 'bootnode', '1.8.27', binary.name)
+  const binary = BINARIES.bootnode[LATEST_BOOTNODE]
+  return joinPath(wizardHomeDir(), 'bin', 'bootnode', LATEST_BOOTNODE, binary.name)
 }

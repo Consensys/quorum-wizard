@@ -1,4 +1,3 @@
-import cmp from 'semver-compare'
 import { isJava11Plus } from '../utils/execUtils'
 import {
   LATEST_CAKESHOP,
@@ -7,6 +6,10 @@ import {
   LATEST_TESSERA,
   LATEST_TESSERA_J8,
 } from '../generators/download'
+import {
+  getDockerSubnet,
+  cidrhost,
+} from '../utils/subnetUtils'
 
 export function createConfigFromAnswers(answers) {
   const {
@@ -27,9 +30,11 @@ export function createConfigFromAnswers(answers) {
     cakeshopPort = '8999',
     splunkPort = '8000',
     remoteDebug = false,
+    containerPorts = undefined,
   } = answers
   const networkFolder = name
     || defaultNetworkName(numberNodes, consensus, transactionManager, deployment)
+  const dockerSubnet = (isDocker(deployment) && containerPorts !== undefined) ? containerPorts.dockerSubnet : ''
   return {
     network: {
       name: networkFolder,
@@ -56,8 +61,9 @@ export function createConfigFromAnswers(answers) {
       transactionManager,
       deployment,
       cakeshop,
+      dockerSubnet,
     ),
-    containerPorts: (!isBash(deployment)) ? getContainerPorts() : {},
+    containerPorts,
   }
 }
 
@@ -68,10 +74,17 @@ export function defaultNetworkName(numberNodes, consensus, transactionManager, d
   return `${numberNodes}-nodes-${consensus}-${transactionManagerName}${deployment}`
 }
 
-export function generateNodeConfigs(numberNodes, transactionManager, deployment) {
+export function generateNodeConfigs(
+  numberNodes,
+  transactionManager,
+  deployment,
+  cakeshop,
+  dockerSubnet,
+) {
   const devP2pPort = 21000
   const rpcPort = 22000
   const wsPort = 23000
+  const graphQlPort = 24000
   const raftPort = 50401
   const thirdPartyPort = 9081
   const p2pPort = 9001
@@ -80,16 +93,17 @@ export function generateNodeConfigs(numberNodes, transactionManager, deployment)
   for (let i = 0; i < parseInt(numberNodes, 10); i += 1) {
     const node = {
       quorum: {
-        ip: isDocker(deployment) ? `172.16.239.1${i + 1}` : '127.0.0.1',
+        ip: isDocker(deployment) ? cidrhost(dockerSubnet, i + 1 + 10) : '127.0.0.1',
         devP2pPort: devP2pPort + i,
         rpcPort: rpcPort + i,
         wsPort: wsPort + i,
         raftPort: raftPort + i,
+        graphQlPort: graphQlPort + i,
       },
     }
     if (isTessera(transactionManager)) {
       node.tm = {
-        ip: isDocker(deployment) ? `172.16.239.10${i + 1}` : '127.0.0.1',
+        ip: isDocker(deployment) ? cidrhost(dockerSubnet, i + 1 + 100) : '127.0.0.1',
         thirdPartyPort: thirdPartyPort + i,
         p2pPort: p2pPort + i,
       }
@@ -99,13 +113,16 @@ export function generateNodeConfigs(numberNodes, transactionManager, deployment)
   return nodes
 }
 
-export function getContainerPorts() {
+export function getContainerPorts(deployment) {
+  const dockerSubnet = isDocker(deployment) ? getDockerSubnet() : ''
   return {
+    dockerSubnet,
     quorum: {
       rpcPort: 8545,
       p2pPort: 21000,
       raftPort: 50400,
       wsPort: 8645,
+      graphQlPort: 8547,
     },
     tm: {
       p2pPort: 9000,

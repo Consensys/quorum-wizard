@@ -7,6 +7,7 @@ import {
   isCakeshop,
   isDocker,
   isSplunk,
+  getContainerPorts,
 } from '../model/NetworkConfig'
 import {
   getCustomizedBashNodes,
@@ -26,6 +27,8 @@ import { exists } from '../utils/fileUtils'
 // eslint-disable-next-line import/prefer-default-export
 export async function promptUser(mode) {
   const answers = await inquirer.prompt(QUESTIONS, getPrefilledAnswersForMode(mode))
+
+  answers.containerPorts = !isBash(answers.deployment) ? getContainerPorts(answers.deployment) : {}
 
   if (answers.customizePorts) {
     await promptForCustomPorts(answers)
@@ -47,6 +50,7 @@ async function promptForCustomPorts(answers) {
     answers.nodes = await getCustomizedDockerPorts(
       answers.numberNodes,
       isTessera(answers.transactionManager),
+      answers.containerPorts.dockerSubnet,
     )
   }
 

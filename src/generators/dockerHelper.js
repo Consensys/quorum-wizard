@@ -16,6 +16,11 @@ import {
 } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
+import {
+  cidrhost,
+  buildDockerIp,
+} from '../utils/subnetUtils'
+import { isQuorum260Plus } from './binaryHelper'
 
 export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
@@ -98,16 +103,20 @@ export async function createDockerCompose(config) {
     buildCakeshopDir(config, qdata)
   }
 
+  info('Writing start script...')
+  const startCommands = `#!/bin/bash
+docker-compose up -d`
+  const stopCommand = `#!/bin/bash
+docker-compose down`
+
   writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)
   writeFile(joinPath(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
-
-  info('Writing start script...')
   if (config.network.txGenerate) {
     copyFile(joinPath(libRootDir(), 'lib', 'start-with-txns.sh'), joinPath(networkPath, 'start.sh'))
   } else {
-    writeFile(joinPath(networkPath, 'start.sh'), 'docker-compose up -d', true)
+    writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
   }
-  writeFile(joinPath(networkPath, 'stop.sh'), 'docker-compose down', true)
+  writeFile(joinPath(networkPath, 'stop.sh'), stopCommand, true)
   info('Done')
 }
 
@@ -117,7 +126,8 @@ QUORUM_DOCKER_IMAGE=quorumengineering/quorum:${config.network.quorumVersion}
 QUORUM_P2P_PORT=${config.containerPorts.quorum.p2pPort}
 QUORUM_RAFT_PORT=${config.containerPorts.quorum.raftPort}
 QUORUM_RPC_PORT=${config.containerPorts.quorum.rpcPort}
-QUORUM_WS_PORT=${config.containerPorts.quorum.wsPort}`
+QUORUM_WS_PORT=${config.containerPorts.quorum.wsPort}
+DOCKER_IP=${buildDockerIp(config.containerPorts.dockerSubnet, '10')}`
   if (hasTessera) {
     env = env.concat(`
 QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/tessera:${config.network.transactionManager}
@@ -126,12 +136,13 @@ TESSERA_3PARTY_PORT=${config.containerPorts.tm.thirdPartyPort}`)
   }
   if (isQuorum260Plus(config.network.quorumVersion)) {
     env = env.concat(`
-QUORUM_GETH_ARGS="--allow-insecure-unlock"`)
+QUORUM_GETH_ARGS="--allow-insecure-unlock --graphql --graphql.port ${config.containerPorts.quorum.graphQlPort} --graphql.corsdomain=* --graphql.addr=0.0.0.0"`)
   }
   return env
 }
 
 function buildNodeService(config, node, i, hasTessera, hasSplunk, txGenerate) {
+  const networkName = config.network.name
   const txManager = hasTessera
     ? `depends_on:
       - txmanager${i + 1}
@@ -150,18 +161,20 @@ function buildNodeService(config, node, i, hasTessera, hasSplunk, txGenerate) {
     ports:
       - "${node.quorum.rpcPort}:${config.containerPorts.quorum.rpcPort}"
       - "${node.quorum.wsPort}:${config.containerPorts.quorum.wsPort}"
+      - "${node.quorum.graphQlPort}:${config.containerPorts.quorum.graphQlPort}"
     volumes:
-      - vol${i + 1}:/qdata
+      - ${networkName}-vol${i + 1}:/qdata
       - ./qdata:/examples:ro
     ${txManager}
       - NODE_ID=${i + 1}
     networks:
-      quorum-examples-net:
-        ipv4_address: 172.16.239.1${i + 1}
+      ${networkName}-net:
+        ipv4_address: ${node.quorum.ip}
     ${splunkLogging}`
 }
 
 function buildTesseraService(config, node, i, hasSplunk) {
+  const networkName = config.network.name
   const splunkLogging = hasSplunk
     ? `logging: *default-logging` : ``
   return `
@@ -172,11 +185,11 @@ function buildTesseraService(config, node, i, hasSplunk) {
     ports:
       - "${node.tm.thirdPartyPort}:${config.containerPorts.tm.thirdPartyPort}"
     volumes:
-      - vol${i + 1}:/qdata
+      - ${networkName}-vol${i + 1}:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
-        ipv4_address: 172.16.239.10${i + 1}
+      ${networkName}-net:
+        ipv4_address: ${node.tm.ip}
     environment:
       - NODE_ID=${i + 1}
     ${splunkLogging}`
@@ -185,23 +198,25 @@ function buildTesseraService(config, node, i, hasSplunk) {
 function buildCakeshopService(port, hasSplunk) {
   const splunkLogging = hasSplunk
     ? `logging: *default-logging` : ``
+  const networkName = config.network.name
   return `
   cakeshop:
     << : *cakeshop-def
     container_name: cakeshop
     hostname: cakeshop
     ports:
-      - "${port}:8999"
+      - "${config.network.cakeshopPort}:8999"
     volumes:
-      - cakeshopvol:/qdata
+      - ${networkName}-cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
-        ipv4_address: 172.16.239.186
+      ${networkName}-net:
+        ipv4_address: ${cidrhost(config.containerPorts.dockerSubnet, 2)}
     ${splunkLogging}`
 }
 
 function buildSplunkService(port, txGenerate) {
+  const networkName = config.network.name
   const dependsOn = txGenerate
     ? `depends_on:
       - tx-gen` : ``
@@ -219,12 +234,13 @@ function buildSplunkService(port, txGenerate) {
       - ./out/config/splunk/splunk-config.yml:/tmp/defaults/default.yml
       - ./out/config/splunk/dashboards:/dashboards
     networks:
-      quorum-examples-net:
+      ${networkName}-net:
         ipv4_address: 172.16.239.200
     ${dependsOn}`
 }
 
 function buildCadvisorService() {
+  const networkName = config.network.name
   return `
   cadvisor:
     << : *cadvisor-def
@@ -236,11 +252,12 @@ function buildCadvisorService() {
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
     networks:
-      - quorum-examples-net
+      - ${networkName}-net
     logging: *default-logging`
 }
 
 function buildEthloggerService(nodes) {
+  const networkName = config.network.name
   let ethloggers = ''
 
   nodes.forEach((node, i) => {
@@ -253,7 +270,7 @@ function buildEthloggerService(nodes) {
       - ./out/config/splunk/abis:/app/abis:ro
       - ethlogger-state${i+1}:/app
     networks:
-      quorum-examples-net:
+      ${networkName}-net:
         ipv4_address: 172.16.239.20${i+2}
     logging: *default-logging`
   })
@@ -261,12 +278,13 @@ function buildEthloggerService(nodes) {
 }
 
 function buildTxGenService(hasSplunk, config, pubkeys) {
+  const networkName = config.network.name
   const splunkLogging = hasSplunk
     ? `logging: *default-logging` : ``
   let nodeVars = ''
   config.nodes.forEach((node, i) => {
     nodeVars += `
-      - NODE${i + 1}=172.16.239.1${i + 1}:${config.containerPorts.quorum.wsPort}`
+      - NODE${i + 1}=${node.quorum.ip}:${config.containerPorts.quorum.wsPort}`
   });
   let pubkeyVars = ''
   pubkeys.forEach((pubkey, i) => {
@@ -285,24 +303,25 @@ function buildTxGenService(hasSplunk, config, pubkeys) {
       - ./out/config/splunk/abis:/txgen/build/contracts
       - ./out/config/splunk/contract_config.json:/txgen/contract_config.json
     networks:
-      - quorum-examples-net
+      - ${networkName}-net
     ${splunkLogging}`
 }
 
 function buildEndService(config) {
+  const networkName = config.network.name
   return `
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  ${networkName}-net:
+    name: ${networkName}-net
     driver: bridge
     ipam:
       driver: default
       config:
-        - subnet: 172.16.239.0/24
+        - subnet: ${config.containerPorts.dockerSubnet}
 volumes:
-${config.nodes.map((_, i) => `  "vol${i + 1}":`).join('\n')}
 ${config.nodes.map((_, i) => `  "ethlogger-state${i + 1}":`).join('\n')}
-  "cakeshopvol":
+${config.nodes.map((_, i) => `  "${networkName}-vol${i + 1}":`).join('\n')}
+  "${networkName}-cakeshopvol":
   "splunk-var":
   "splunk-etc":`
 }

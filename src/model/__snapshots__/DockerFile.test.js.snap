@@ -32,7 +32,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -51,6 +51,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
+      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -72,7 +73,8 @@ x-quorum-def:
         --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
-        \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+        $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}} \\\\
+        $$EXTRA_ARGS
   expose:
     - \\"\${QUORUM_P2P_PORT:-21000}\\"
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
@@ -115,83 +117,13 @@ x-tx-manager-def:
 
           echo Config type $\${TESSERA_CONFIG_TYPE}
 
-          #generating the two config flavors
-          cat <<EOF > $\${DDIR}/tessera-config-09.json
-          {
-            \\"useWhiteList\\": false,
-            \\"jdbc\\": {
-              \\"username\\": \\"sa\\",
-              \\"password\\": \\"\\",
-              \\"url\\": \\"jdbc:h2:./$\${DDIR}/db;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=0\\",
-              \\"autoCreateTables\\": true
-            },
-            \\"serverConfigs\\":[
-            {
-              \\"app\\":\\"ThirdParty\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):\${TESSERA_3PARTY_PORT:-9080}\\",
-              \\"cors\\": {
-                \\"allowedMethods\\": [
-                  \\"GET\\",
-                  \\"OPTIONS\\"
-                ],
-                \\"allowedOrigins\\": [
-                  \\"*\\"
-                ]
-              },
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"Q2T\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"unix:$\${DDIR}/tm.ipc\\",
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"P2P\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):\${TESSERA_P2P_PORT:-9000}\\",
-              \\"sslConfig\\": {
-                \\"tls\\": \\"OFF\\"
-              },
-              \\"communicationType\\" : \\"REST\\"
-            }
-            ],
-            \\"peer\\": [
-               {
-                   \\"url\\": \\"http://txmanager1:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager2:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager3:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager4:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager5:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager6:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager7:\${TESSERA_P2P_PORT:-9000}\\"
-               }
-            ],
-            \\"keys\\": {
-              \\"passwords\\": [],
-              \\"keyData\\": [
-                {
-                  \\"config\\": $$(cat $\${DDIR}/tm.key),
-                  \\"publicKey\\": \\"$$(cat $\${DDIR}/tm.pub)\\"
-                }
-              ]
-            },
-            \\"alwaysSendTo\\": []
-          }
-      EOF
+          HOSTNAME=$$(hostname -i)
+          sed -i \\"s,%THIS_PRIV_KEY%,$\${DDIR}/tm.key,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s,%THIS_PUB_KEY%,$\${DDIR}/tm.pub,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's,etc/quorum/,,g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's/%QUORUM-NODE\\\\([0-9]\\\\)_SERVICE_HOST%/txmanager\\\\1/g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s/%THIS_SERVICE_HOST%/$\${HOSTNAME}/g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+
           cat $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           java -Xms128M -Xmx128M -jar /tessera/tessera-app.jar -configfile $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           ;;
@@ -234,8 +166,9 @@ services:
     ports:
       - \\"56000:8545\\"
       - \\"57000:8645\\"
+      - \\"58000:8547\\"
     volumes:
-      - vol1:/qdata
+      - 2-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager1
@@ -243,7 +176,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      2-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
   txmanager1:
     << : *tx-manager-def
@@ -251,10 +184,10 @@ services:
     ports:
       - \\"5081:9080\\"
     volumes:
-      - vol1:/qdata
+      - 2-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      2-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
@@ -264,8 +197,9 @@ services:
     ports:
       - \\"56001:8545\\"
       - \\"57001:8645\\"
+      - \\"58001:8547\\"
     volumes:
-      - vol2:/qdata
+      - 2-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager2
@@ -273,7 +207,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=2
     networks:
-      quorum-examples-net:
+      2-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
   txmanager2:
     << : *tx-manager-def
@@ -281,10 +215,10 @@ services:
     ports:
       - \\"5082:9080\\"
     volumes:
-      - vol2:/qdata
+      - 2-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      2-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
@@ -294,23 +228,23 @@ services:
     ports:
       - \\"7999:8999\\"
     volumes:
-      - cakeshopvol:/qdata
+      - 2-nodes-raft-tessera-docker-compose-cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
-        ipv4_address: 172.16.239.186
+      2-nodes-raft-tessera-docker-compose-net:
+        ipv4_address: 172.16.239.2
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  2-nodes-raft-tessera-docker-compose-net:
+    name: 2-nodes-raft-tessera-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  \\"vol1\\":
-  \\"vol2\\":
-  \\"cakeshopvol\\":"
+  \\"2-nodes-raft-tessera-docker-compose-vol1\\":
+  \\"2-nodes-raft-tessera-docker-compose-vol2\\":
+  \\"2-nodes-raft-tessera-docker-compose-cakeshopvol\\":"
 `;
 
 exports[`creates 3nodes raft docker tessera custom 1`] = `
@@ -345,7 +279,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -364,6 +298,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
+      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -385,7 +320,8 @@ x-quorum-def:
         --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
-        \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+        $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}} \\\\
+        $$EXTRA_ARGS
   expose:
     - \\"\${QUORUM_P2P_PORT:-21000}\\"
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
@@ -428,83 +364,13 @@ x-tx-manager-def:
 
           echo Config type $\${TESSERA_CONFIG_TYPE}
 
-          #generating the two config flavors
-          cat <<EOF > $\${DDIR}/tessera-config-09.json
-          {
-            \\"useWhiteList\\": false,
-            \\"jdbc\\": {
-              \\"username\\": \\"sa\\",
-              \\"password\\": \\"\\",
-              \\"url\\": \\"jdbc:h2:./$\${DDIR}/db;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=0\\",
-              \\"autoCreateTables\\": true
-            },
-            \\"serverConfigs\\":[
-            {
-              \\"app\\":\\"ThirdParty\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):\${TESSERA_3PARTY_PORT:-9080}\\",
-              \\"cors\\": {
-                \\"allowedMethods\\": [
-                  \\"GET\\",
-                  \\"OPTIONS\\"
-                ],
-                \\"allowedOrigins\\": [
-                  \\"*\\"
-                ]
-              },
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"Q2T\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"unix:$\${DDIR}/tm.ipc\\",
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"P2P\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):\${TESSERA_P2P_PORT:-9000}\\",
-              \\"sslConfig\\": {
-                \\"tls\\": \\"OFF\\"
-              },
-              \\"communicationType\\" : \\"REST\\"
-            }
-            ],
-            \\"peer\\": [
-               {
-                   \\"url\\": \\"http://txmanager1:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager2:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager3:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager4:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager5:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager6:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager7:\${TESSERA_P2P_PORT:-9000}\\"
-               }
-            ],
-            \\"keys\\": {
-              \\"passwords\\": [],
-              \\"keyData\\": [
-                {
-                  \\"config\\": $$(cat $\${DDIR}/tm.key),
-                  \\"publicKey\\": \\"$$(cat $\${DDIR}/tm.pub)\\"
-                }
-              ]
-            },
-            \\"alwaysSendTo\\": []
-          }
-      EOF
+          HOSTNAME=$$(hostname -i)
+          sed -i \\"s,%THIS_PRIV_KEY%,$\${DDIR}/tm.key,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s,%THIS_PUB_KEY%,$\${DDIR}/tm.pub,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's,etc/quorum/,,g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's/%QUORUM-NODE\\\\([0-9]\\\\)_SERVICE_HOST%/txmanager\\\\1/g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s/%THIS_SERVICE_HOST%/$\${HOSTNAME}/g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+
           cat $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           java -Xms128M -Xmx128M -jar /tessera/tessera-app.jar -configfile $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           ;;
@@ -523,8 +389,9 @@ services:
     ports:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
+      - \\"24000:8547\\"
     volumes:
-      - vol1:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager1
@@ -532,7 +399,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
   txmanager1:
     << : *tx-manager-def
@@ -540,10 +407,10 @@ services:
     ports:
       - \\"9081:9080\\"
     volumes:
-      - vol1:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
@@ -553,8 +420,9 @@ services:
     ports:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
+      - \\"24001:8547\\"
     volumes:
-      - vol2:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager2
@@ -562,7 +430,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=2
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
   txmanager2:
     << : *tx-manager-def
@@ -570,10 +438,10 @@ services:
     ports:
       - \\"9082:9080\\"
     volumes:
-      - vol2:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
@@ -583,8 +451,9 @@ services:
     ports:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
+      - \\"24002:8547\\"
     volumes:
-      - vol3:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager3
@@ -592,7 +461,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=3
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.13
   txmanager3:
     << : *tx-manager-def
@@ -600,26 +469,26 @@ services:
     ports:
       - \\"9083:9080\\"
     volumes:
-      - vol3:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.103
     environment:
       - NODE_ID=3
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  3-nodes-raft-tessera-docker-compose-net:
+    name: 3-nodes-raft-tessera-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  \\"vol1\\":
-  \\"vol2\\":
-  \\"vol3\\":
-  \\"cakeshopvol\\":"
+  \\"3-nodes-raft-tessera-docker-compose-vol1\\":
+  \\"3-nodes-raft-tessera-docker-compose-vol2\\":
+  \\"3-nodes-raft-tessera-docker-compose-vol3\\":
+  \\"3-nodes-raft-tessera-docker-compose-cakeshopvol\\":"
 `;
 
 exports[`creates 3nodes raft dockerFile tessera cakeshop 1`] = `
@@ -654,7 +523,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -673,6 +542,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
+      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -694,7 +564,8 @@ x-quorum-def:
         --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
-        \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+        $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}} \\\\
+        $$EXTRA_ARGS
   expose:
     - \\"\${QUORUM_P2P_PORT:-21000}\\"
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
@@ -737,83 +608,13 @@ x-tx-manager-def:
 
           echo Config type $\${TESSERA_CONFIG_TYPE}
 
-          #generating the two config flavors
-          cat <<EOF > $\${DDIR}/tessera-config-09.json
-          {
-            \\"useWhiteList\\": false,
-            \\"jdbc\\": {
-              \\"username\\": \\"sa\\",
-              \\"password\\": \\"\\",
-              \\"url\\": \\"jdbc:h2:./$\${DDIR}/db;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=0\\",
-              \\"autoCreateTables\\": true
-            },
-            \\"serverConfigs\\":[
-            {
-              \\"app\\":\\"ThirdParty\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):\${TESSERA_3PARTY_PORT:-9080}\\",
-              \\"cors\\": {
-                \\"allowedMethods\\": [
-                  \\"GET\\",
-                  \\"OPTIONS\\"
-                ],
-                \\"allowedOrigins\\": [
-                  \\"*\\"
-                ]
-              },
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"Q2T\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"unix:$\${DDIR}/tm.ipc\\",
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"P2P\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):\${TESSERA_P2P_PORT:-9000}\\",
-              \\"sslConfig\\": {
-                \\"tls\\": \\"OFF\\"
-              },
-              \\"communicationType\\" : \\"REST\\"
-            }
-            ],
-            \\"peer\\": [
-               {
-                   \\"url\\": \\"http://txmanager1:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager2:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager3:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager4:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager5:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager6:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager7:\${TESSERA_P2P_PORT:-9000}\\"
-               }
-            ],
-            \\"keys\\": {
-              \\"passwords\\": [],
-              \\"keyData\\": [
-                {
-                  \\"config\\": $$(cat $\${DDIR}/tm.key),
-                  \\"publicKey\\": \\"$$(cat $\${DDIR}/tm.pub)\\"
-                }
-              ]
-            },
-            \\"alwaysSendTo\\": []
-          }
-      EOF
+          HOSTNAME=$$(hostname -i)
+          sed -i \\"s,%THIS_PRIV_KEY%,$\${DDIR}/tm.key,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s,%THIS_PUB_KEY%,$\${DDIR}/tm.pub,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's,etc/quorum/,,g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's/%QUORUM-NODE\\\\([0-9]\\\\)_SERVICE_HOST%/txmanager\\\\1/g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s/%THIS_SERVICE_HOST%/$\${HOSTNAME}/g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+
           cat $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           java -Xms128M -Xmx128M -jar /tessera/tessera-app.jar -configfile $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           ;;
@@ -856,8 +657,9 @@ services:
     ports:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
+      - \\"24000:8547\\"
     volumes:
-      - vol1:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager1
@@ -865,7 +667,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
   txmanager1:
     << : *tx-manager-def
@@ -873,10 +675,10 @@ services:
     ports:
       - \\"9081:9080\\"
     volumes:
-      - vol1:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
@@ -886,8 +688,9 @@ services:
     ports:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
+      - \\"24001:8547\\"
     volumes:
-      - vol2:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager2
@@ -895,7 +698,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=2
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
   txmanager2:
     << : *tx-manager-def
@@ -903,10 +706,10 @@ services:
     ports:
       - \\"9082:9080\\"
     volumes:
-      - vol2:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
@@ -916,8 +719,9 @@ services:
     ports:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
+      - \\"24002:8547\\"
     volumes:
-      - vol3:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager3
@@ -925,7 +729,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=3
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.13
   txmanager3:
     << : *tx-manager-def
@@ -933,10 +737,10 @@ services:
     ports:
       - \\"9083:9080\\"
     volumes:
-      - vol3:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.103
     environment:
       - NODE_ID=3
@@ -946,24 +750,24 @@ services:
     ports:
       - \\"8999:8999\\"
     volumes:
-      - cakeshopvol:/qdata
+      - 3-nodes-raft-tessera-docker-compose-cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
-        ipv4_address: 172.16.239.186
+      3-nodes-raft-tessera-docker-compose-net:
+        ipv4_address: 172.16.239.2
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  3-nodes-raft-tessera-docker-compose-net:
+    name: 3-nodes-raft-tessera-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  \\"vol1\\":
-  \\"vol2\\":
-  \\"vol3\\":
-  \\"cakeshopvol\\":"
+  \\"3-nodes-raft-tessera-docker-compose-vol1\\":
+  \\"3-nodes-raft-tessera-docker-compose-vol2\\":
+  \\"3-nodes-raft-tessera-docker-compose-vol3\\":
+  \\"3-nodes-raft-tessera-docker-compose-cakeshopvol\\":"
 `;
 
 exports[`creates 3nodes raft dockerFile tessera no cakeshop 1`] = `
@@ -998,7 +802,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1017,6 +821,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
+      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -1038,7 +843,8 @@ x-quorum-def:
         --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
-        \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+        $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}} \\\\
+        $$EXTRA_ARGS
   expose:
     - \\"\${QUORUM_P2P_PORT:-21000}\\"
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
@@ -1081,83 +887,13 @@ x-tx-manager-def:
 
           echo Config type $\${TESSERA_CONFIG_TYPE}
 
-          #generating the two config flavors
-          cat <<EOF > $\${DDIR}/tessera-config-09.json
-          {
-            \\"useWhiteList\\": false,
-            \\"jdbc\\": {
-              \\"username\\": \\"sa\\",
-              \\"password\\": \\"\\",
-              \\"url\\": \\"jdbc:h2:./$\${DDIR}/db;MODE=Oracle;TRACE_LEVEL_SYSTEM_OUT=0\\",
-              \\"autoCreateTables\\": true
-            },
-            \\"serverConfigs\\":[
-            {
-              \\"app\\":\\"ThirdParty\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):\${TESSERA_3PARTY_PORT:-9080}\\",
-              \\"cors\\": {
-                \\"allowedMethods\\": [
-                  \\"GET\\",
-                  \\"OPTIONS\\"
-                ],
-                \\"allowedOrigins\\": [
-                  \\"*\\"
-                ]
-              },
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"Q2T\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"unix:$\${DDIR}/tm.ipc\\",
-              \\"communicationType\\" : \\"REST\\"
-            },
-            {
-              \\"app\\":\\"P2P\\",
-              \\"enabled\\": true,
-              \\"serverAddress\\": \\"http://$$(hostname -i):\${TESSERA_P2P_PORT:-9000}\\",
-              \\"sslConfig\\": {
-                \\"tls\\": \\"OFF\\"
-              },
-              \\"communicationType\\" : \\"REST\\"
-            }
-            ],
-            \\"peer\\": [
-               {
-                   \\"url\\": \\"http://txmanager1:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager2:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager3:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager4:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager5:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager6:\${TESSERA_P2P_PORT:-9000}\\"
-               },
-               {
-                   \\"url\\": \\"http://txmanager7:\${TESSERA_P2P_PORT:-9000}\\"
-               }
-            ],
-            \\"keys\\": {
-              \\"passwords\\": [],
-              \\"keyData\\": [
-                {
-                  \\"config\\": $$(cat $\${DDIR}/tm.key),
-                  \\"publicKey\\": \\"$$(cat $\${DDIR}/tm.pub)\\"
-                }
-              ]
-            },
-            \\"alwaysSendTo\\": []
-          }
-      EOF
+          HOSTNAME=$$(hostname -i)
+          sed -i \\"s,%THIS_PRIV_KEY%,$\${DDIR}/tm.key,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s,%THIS_PUB_KEY%,$\${DDIR}/tm.pub,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's,etc/quorum/,,g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i 's/%QUORUM-NODE\\\\([0-9]\\\\)_SERVICE_HOST%/txmanager\\\\1/g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+          sed -i \\"s/%THIS_SERVICE_HOST%/$\${HOSTNAME}/g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
+
           cat $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           java -Xms128M -Xmx128M -jar /tessera/tessera-app.jar -configfile $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           ;;
@@ -1176,8 +912,9 @@ services:
     ports:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
+      - \\"24000:8547\\"
     volumes:
-      - vol1:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager1
@@ -1185,7 +922,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
   txmanager1:
     << : *tx-manager-def
@@ -1193,10 +930,10 @@ services:
     ports:
       - \\"9081:9080\\"
     volumes:
-      - vol1:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
@@ -1206,8 +943,9 @@ services:
     ports:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
+      - \\"24001:8547\\"
     volumes:
-      - vol2:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager2
@@ -1215,7 +953,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=2
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
   txmanager2:
     << : *tx-manager-def
@@ -1223,10 +961,10 @@ services:
     ports:
       - \\"9082:9080\\"
     volumes:
-      - vol2:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
@@ -1236,8 +974,9 @@ services:
     ports:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
+      - \\"24002:8547\\"
     volumes:
-      - vol3:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager3
@@ -1245,7 +984,7 @@ services:
       - PRIVATE_CONFIG=/qdata/tm/tm.ipc
       - NODE_ID=3
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.13
   txmanager3:
     << : *tx-manager-def
@@ -1253,26 +992,26 @@ services:
     ports:
       - \\"9083:9080\\"
     volumes:
-      - vol3:/qdata
+      - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
+      3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.103
     environment:
       - NODE_ID=3
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  3-nodes-raft-tessera-docker-compose-net:
+    name: 3-nodes-raft-tessera-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  \\"vol1\\":
-  \\"vol2\\":
-  \\"vol3\\":
-  \\"cakeshopvol\\":"
+  \\"3-nodes-raft-tessera-docker-compose-vol1\\":
+  \\"3-nodes-raft-tessera-docker-compose-vol2\\":
+  \\"3-nodes-raft-tessera-docker-compose-vol3\\":
+  \\"3-nodes-raft-tessera-docker-compose-cakeshopvol\\":"
 `;
 
 exports[`creates 5nodes istanbul dockerFile no tessera cakeshop 1`] = `
@@ -1307,7 +1046,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1326,6 +1065,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
+      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -1347,7 +1087,8 @@ x-quorum-def:
         --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
-        \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+        $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}} \\\\
+        $$EXTRA_ARGS
   expose:
     - \\"\${QUORUM_P2P_PORT:-21000}\\"
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
@@ -1382,14 +1123,15 @@ services:
     ports:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
+      - \\"24000:8547\\"
     volumes:
-      - vol1:/qdata
+      - 5-nodes-istanbul-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.11
   node2:
     << : *quorum-def
@@ -1397,14 +1139,15 @@ services:
     ports:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
+      - \\"24001:8547\\"
     volumes:
-      - vol2:/qdata
+      - 5-nodes-istanbul-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=2
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.12
   node3:
     << : *quorum-def
@@ -1412,14 +1155,15 @@ services:
     ports:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
+      - \\"24002:8547\\"
     volumes:
-      - vol3:/qdata
+      - 5-nodes-istanbul-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=3
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.13
   node4:
     << : *quorum-def
@@ -1427,14 +1171,15 @@ services:
     ports:
       - \\"22003:8545\\"
       - \\"23003:8645\\"
+      - \\"24003:8547\\"
     volumes:
-      - vol4:/qdata
+      - 5-nodes-istanbul-docker-compose-vol4:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=4
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.14
   node5:
     << : *quorum-def
@@ -1442,14 +1187,15 @@ services:
     ports:
       - \\"22004:8545\\"
       - \\"23004:8645\\"
+      - \\"24004:8547\\"
     volumes:
-      - vol5:/qdata
+      - 5-nodes-istanbul-docker-compose-vol5:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=5
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.15
   cakeshop:
     << : *cakeshop-def
@@ -1457,26 +1203,26 @@ services:
     ports:
       - \\"8999:8999\\"
     volumes:
-      - cakeshopvol:/qdata
+      - 5-nodes-istanbul-docker-compose-cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
-      quorum-examples-net:
-        ipv4_address: 172.16.239.186
+      5-nodes-istanbul-docker-compose-net:
+        ipv4_address: 172.16.239.2
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  5-nodes-istanbul-docker-compose-net:
+    name: 5-nodes-istanbul-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  \\"vol1\\":
-  \\"vol2\\":
-  \\"vol3\\":
-  \\"vol4\\":
-  \\"vol5\\":
-  \\"cakeshopvol\\":"
+  \\"5-nodes-istanbul-docker-compose-vol1\\":
+  \\"5-nodes-istanbul-docker-compose-vol2\\":
+  \\"5-nodes-istanbul-docker-compose-vol3\\":
+  \\"5-nodes-istanbul-docker-compose-vol4\\":
+  \\"5-nodes-istanbul-docker-compose-vol5\\":
+  \\"5-nodes-istanbul-docker-compose-cakeshopvol\\":"
 `;
 
 exports[`creates 5nodes istanbul dockerFile no tessera no cakeshop 1`] = `
@@ -1511,7 +1257,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off 172.16.239.10$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1530,6 +1276,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
+      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -1551,7 +1298,8 @@ x-quorum-def:
         --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
-        \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+        $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}} \\\\
+        $$EXTRA_ARGS
   expose:
     - \\"\${QUORUM_P2P_PORT:-21000}\\"
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
@@ -1562,14 +1310,15 @@ services:
     ports:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
+      - \\"24000:8547\\"
     volumes:
-      - vol1:/qdata
+      - 5-nodes-istanbul-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=1
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.11
   node2:
     << : *quorum-def
@@ -1577,14 +1326,15 @@ services:
     ports:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
+      - \\"24001:8547\\"
     volumes:
-      - vol2:/qdata
+      - 5-nodes-istanbul-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=2
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.12
   node3:
     << : *quorum-def
@@ -1592,14 +1342,15 @@ services:
     ports:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
+      - \\"24002:8547\\"
     volumes:
-      - vol3:/qdata
+      - 5-nodes-istanbul-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=3
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.13
   node4:
     << : *quorum-def
@@ -1607,14 +1358,15 @@ services:
     ports:
       - \\"22003:8545\\"
       - \\"23003:8645\\"
+      - \\"24003:8547\\"
     volumes:
-      - vol4:/qdata
+      - 5-nodes-istanbul-docker-compose-vol4:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=4
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.14
   node5:
     << : *quorum-def
@@ -1622,28 +1374,29 @@ services:
     ports:
       - \\"22004:8545\\"
       - \\"23004:8645\\"
+      - \\"24004:8547\\"
     volumes:
-      - vol5:/qdata
+      - 5-nodes-istanbul-docker-compose-vol5:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
       - NODE_ID=5
     networks:
-      quorum-examples-net:
+      5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.15
 networks:
-  quorum-examples-net:
-    name: quorum-examples-net
+  5-nodes-istanbul-docker-compose-net:
+    name: 5-nodes-istanbul-docker-compose-net
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  \\"vol1\\":
-  \\"vol2\\":
-  \\"vol3\\":
-  \\"vol4\\":
-  \\"vol5\\":
-  \\"cakeshopvol\\":"
+  \\"5-nodes-istanbul-docker-compose-vol1\\":
+  \\"5-nodes-istanbul-docker-compose-vol2\\":
+  \\"5-nodes-istanbul-docker-compose-vol3\\":
+  \\"5-nodes-istanbul-docker-compose-vol4\\":
+  \\"5-nodes-istanbul-docker-compose-vol5\\":
+  \\"5-nodes-istanbul-docker-compose-cakeshopvol\\":"
 `;

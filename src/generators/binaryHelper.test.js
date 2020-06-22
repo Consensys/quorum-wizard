@@ -6,6 +6,7 @@ import {
   getDownloadableTesseraChoices,
   getGethOnPath,
   getTesseraOnPath,
+  isQuorum260Plus,
   pathToBootnode,
   pathToCakeshop,
   pathToQuorumBinary,
@@ -26,7 +27,12 @@ import {
   TEST_WIZARD_HOME_DIR,
 } from '../utils/testHelper'
 import {
-  downloadIfMissing, LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA, LATEST_TESSERA_J8,
+  downloadIfMissing,
+  LATEST_BOOTNODE,
+  LATEST_CAKESHOP,
+  LATEST_QUORUM,
+  LATEST_TESSERA,
+  LATEST_TESSERA_J8,
 } from './download'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
@@ -47,7 +53,7 @@ describe('Chooses the right paths to the binaries', () => {
     expect(pathToQuorumBinary('PATH')).toEqual('geth')
   })
   it('Calls geth binary in bin folder', () => {
-    expect(pathToQuorumBinary(LATEST_QUORUM)).toEqual(joinPath(wizardHomeDir(), 'bin/quorum/', LATEST_QUORUM, '/geth'))
+    expect(pathToQuorumBinary(LATEST_QUORUM)).toEqual(joinPath(wizardHomeDir(), 'bin/quorum', LATEST_QUORUM, 'geth'))
   })
   it('Calls tessera using $TESSERA_JAR', () => {
     expect(pathToTesseraJar('PATH')).toEqual('$TESSERA_JAR')
@@ -55,14 +61,14 @@ describe('Chooses the right paths to the binaries', () => {
   it('Calls tessera using bin folder jar', () => {
     expect(pathToTesseraJar(LATEST_TESSERA)).toEqual(joinPath(
       wizardHomeDir(),
-      'bin/tessera/', LATEST_TESSERA, '/tessera-app.jar',
+      'bin/tessera', LATEST_TESSERA, 'tessera-app.jar',
     ))
   })
   it('Calls cakeshop using bin folder war', () => {
-    expect(pathToCakeshop(LATEST_CAKESHOP)).toEqual(joinPath(wizardHomeDir(), 'bin/cakeshop/', LATEST_CAKESHOP, '/cakeshop.war'))
+    expect(pathToCakeshop(LATEST_CAKESHOP)).toEqual(joinPath(wizardHomeDir(), 'bin/cakeshop', LATEST_CAKESHOP, 'cakeshop.war'))
   })
   it('Calls bootnode using bin folder', () => {
-    expect(pathToBootnode()).toEqual(joinPath(wizardHomeDir(), 'bin/bootnode/1.8.27/bootnode'))
+    expect(pathToBootnode()).toEqual(joinPath(wizardHomeDir(), 'bin/bootnode', LATEST_BOOTNODE, 'bootnode'))
   })
 })
 
@@ -211,6 +217,19 @@ describe('presents the correct binary options', () => {
   })
 })
 
+test('tests if quorum version is 2.6.0 or higher', () => {
+  expect(isQuorum260Plus('2.6.1')).toBeTruthy()
+  expect(isQuorum260Plus('2.6.0')).toBeTruthy()
+  expect(isQuorum260Plus('2.5.0')).not.toBeTruthy()
+})
+
+test('tests if quorum version on path is 2.6.0 or higher', () => {
+  executeSync.mockReturnValueOnce(Buffer.from(quorumVersion26))
+  expect(isQuorum260Plus('PATH')).toBeTruthy()
+  executeSync.mockReturnValueOnce(Buffer.from(quorumVersion))
+  expect(isQuorum260Plus('PATH')).not.toBeTruthy()
+})
+
 function overrideProcessValue(key, value) {
   // process.platform is read-only, use this workaround to set it
   Object.defineProperty(process, key, { value })
@@ -238,3 +257,16 @@ Go Version: go1.9.7
 Operating System: darwin
 GOPATH=/Users/bradmcdermott/go
 GOROOT=/usr/local/Cellar/go@1.9/1.9.7/libexec`
+
+const quorumVersion26 = `Geth
+Version: 1.9.7-stable
+Git Commit: 9339be03f9119ee488b05cf087d103da7e68f053
+Git Commit Date: 20200504
+Quorum Version: 2.6.0
+Architecture: amd64
+Protocol Versions: [64 63]
+Network Id: 1337
+Go Version: go1.13.10
+Operating System: darwin
+GOPATH=/Users/bradmcdermott/go
+GOROOT=/Users/travis/.gimme/versions/go1.13.10.darwin.amd64`
