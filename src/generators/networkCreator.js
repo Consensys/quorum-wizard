@@ -61,7 +61,7 @@ export function generateResourcesRemote(config) {
   docker pull quorumengineering/qubernetes:${LATEST_QUBERNETES}
 
 
-  docker run --rm -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out quorumengineering/qubernetes /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"
+  docker run --rm -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out quorumengineering/qubernetes:${LATEST_QUBERNETES} /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"
   `
 
   if (isDocker(config.network.deployment)) {
