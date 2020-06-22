@@ -134,7 +134,7 @@ export function createQdataDirectory(config) {
 
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
-    const keySource = joinPath(configPath, `key${nodeNumber}`)
+    const keySource = joinPath(configPath, '7nodes', `key${nodeNumber}`)
     const quorumDir = joinPath(qdata, `dd${nodeNumber}`)
     const gethDir = joinPath(quorumDir, 'geth')
     const keyDir = joinPath(quorumDir, 'keystore')

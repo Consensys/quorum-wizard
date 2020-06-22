@@ -64,9 +64,9 @@ export function buildDockerCompose(config) {
   }
   if (hasSplunk) {
     services = [services.join(''),
-      buildSplunkService(config.network.splunkPort, txGenerate),
-      buildEthloggerService(config.nodes),
-      buildCadvisorService()]
+      buildSplunkService(config, txGenerate),
+      buildEthloggerService(config),
+      buildCadvisorService(config)]
     info('Splunk>')
   }
   if (txGenerate) {
@@ -194,7 +194,7 @@ function buildTesseraService(config, node, i, hasSplunk) {
     ${splunkLogging}`
 }
 
-function buildCakeshopService(port, hasSplunk) {
+function buildCakeshopService(config, hasSplunk) {
   const splunkLogging = hasSplunk
     ? `logging: *default-logging` : ``
   const networkName = config.network.name
@@ -214,7 +214,7 @@ function buildCakeshopService(port, hasSplunk) {
     ${splunkLogging}`
 }
 
-function buildSplunkService(port, txGenerate) {
+function buildSplunkService(config, txGenerate) {
   const networkName = config.network.name
   const dependsOn = txGenerate
     ? `depends_on:
@@ -225,7 +225,7 @@ function buildSplunkService(port, txGenerate) {
     container_name: splunk
     hostname: splunk
     ports:
-      - "${port}:8000"
+      - "${config.network.splunkPort}:8000"
       - "8088:8088"
     volumes:
       - splunk-var:/opt/splunk/var
@@ -238,7 +238,7 @@ function buildSplunkService(port, txGenerate) {
     ${dependsOn}`
 }
 
-function buildCadvisorService() {
+function buildCadvisorService(config) {
   const networkName = config.network.name
   return `
   cadvisor:
@@ -255,11 +255,11 @@ function buildCadvisorService() {
     logging: *default-logging`
 }
 
-function buildEthloggerService(nodes) {
+function buildEthloggerService(config) {
   const networkName = config.network.name
   let ethloggers = ''
 
-  nodes.forEach((node, i) => {
+  config.nodes.forEach((node, i) => {
     ethloggers += `
   ethlogger${i+1}:
     << : *ethlogger${i+1}-def
