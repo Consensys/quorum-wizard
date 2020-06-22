@@ -12,7 +12,6 @@ import {
   isTessera,
   isCakeshop,
   isSplunk,
-  isQuorum260Plus,
 } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'

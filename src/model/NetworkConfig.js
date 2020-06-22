@@ -162,7 +162,3 @@ export function isCakeshop(cakeshop) {
 export function isSplunk(splunk) {
   return splunk === true || splunk === 'Yes'
 }
-
-export function isQuorum260Plus(quorumVersion) {
-  return cmp(quorumVersion, '2.6.0') >= 0
-}
