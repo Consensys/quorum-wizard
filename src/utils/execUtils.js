@@ -19,18 +19,22 @@ export async function execute(command, options) {
 let JAVA_VERSION
 
 export function runJavaVersionLookup() {
-  const versionOutput = executeSync('java -version 2>&1 | grep -Eow \'[0-9]+\\.?[0-9]+?\' | head -1')
+  const regexMatcher = /[0-9]+\.?[0-9]+?/
+  const versionMatch = executeSync('java -version 2>&1')
     .toString()
     .trim()
+    .match(regexMatcher)
 
-  if (versionOutput === '') {
+  if (versionMatch === null) {
     throw new Error('Could not read Java version number. Please make sure Java is installed on your machine.')
   }
 
-  if (versionOutput === '1.8') {
+  const version = versionMatch[0]
+
+  if (version === '1.8') {
     return 8
   }
-  return parseInt(versionOutput, 10)
+  return parseInt(version, 10)
 }
 
 export function isJava11Plus() {
