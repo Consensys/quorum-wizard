@@ -17,6 +17,10 @@ import {
   buildDockerIp,
 } from '../utils/subnetUtils'
 import { isQuorum260Plus } from './versionHelper'
+import {
+  isInternal,
+  dockerRegistry,
+} from './internalHelper'
 
 export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
@@ -83,8 +87,9 @@ docker-compose down`
 }
 
 function createEnvFile(config, hasTessera) {
+  const dockerPath = isInternal() ? dockerRegistry() : ''
   let env = `QUORUM_CONSENSUS=${config.network.consensus}
-QUORUM_DOCKER_IMAGE=quorumengineering/quorum:${config.network.quorumVersion}
+QUORUM_DOCKER_IMAGE=${dockerPath}quorumengineering/quorum:${config.network.quorumVersion}
 QUORUM_P2P_PORT=${config.containerPorts.quorum.p2pPort}
 QUORUM_RAFT_PORT=${config.containerPorts.quorum.raftPort}
 QUORUM_RPC_PORT=${config.containerPorts.quorum.rpcPort}
@@ -92,7 +97,7 @@ QUORUM_WS_PORT=${config.containerPorts.quorum.wsPort}
 DOCKER_IP=${buildDockerIp(config.containerPorts.dockerSubnet, '10')}`
   if (hasTessera) {
     env = env.concat(`
-QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/tessera:${config.network.transactionManager}
+QUORUM_TX_MANAGER_DOCKER_IMAGE=${dockerPath}quorumengineering/tessera:${config.network.transactionManager}
 TESSERA_P2P_PORT=${config.containerPorts.tm.p2pPort}
 TESSERA_3PARTY_PORT=${config.containerPorts.tm.thirdPartyPort}`)
   }
@@ -102,7 +107,7 @@ QUORUM_GETH_ARGS="--allow-insecure-unlock --graphql --graphql.port ${config.cont
   }
   if (isCakeshop(config.network.cakeshop)) {
     env = env.concat(`
-CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:${config.network.cakeshop}`)
+CAKESHOP_DOCKER_IMAGE=${dockerPath}quorumengineering/cakeshop:${config.network.cakeshop}`)
   }
   return env
 }

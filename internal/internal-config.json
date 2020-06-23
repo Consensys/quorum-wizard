@@ -2,5 +2,5 @@
   "approvedQuorum": ["2.6.0"],
   "approvedTessera": ["0.10.5", "0.10.2"],
   "approvedCakeshop": "0.11.0",
-  "dockerRegistry": ""
+  "dockerRegistry": "url/to/internal/container/registry/"
 }
