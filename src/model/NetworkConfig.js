@@ -53,8 +53,9 @@ export function createConfigFromAnswers(answers) {
       networkId,
       customizePorts,
       cakeshopPort,
-      splunkPort,
       remoteDebug,
+      splunkIp: (splunk) ? cidrhost(dockerSubnet, 66) : '127.0.0.1',
+      splunkPort,
     },
     nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(
       numberNodes,

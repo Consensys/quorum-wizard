@@ -14,16 +14,6 @@ x-splunk-def:
     interval: 5s
     timeout: 5s
     retries: 20
-x-cadvisor-def:
-  &cadvisor-def
-  image: google/cadvisor:latest
-  command:
-    - --storage_driver=statsd
-    - --storage_driver_host=172.16.239.200:8125
-    - --docker_only=true
-  depends_on:
-    - splunk
-  user: root
 x-tx-gen-def:
   &tx-gen-def
   image: splunkdlt/ethereum-transaction-generator:latest

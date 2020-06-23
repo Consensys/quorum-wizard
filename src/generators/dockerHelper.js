@@ -47,10 +47,9 @@ export function buildDockerCompose(config) {
     'lib/docker-compose-definitions-splunk.yml'
   )) : ''
 
-  const ethloggerDefinitions = hasSplunk ? readFileToString(joinPath(
-    libRootDir(),
-    'lib/docker-compose-definitions-ethlogger.yml'
-  )) : ''
+  const cadvisdorDefinitions = hasSplunk ? buildCadvisorDefinition(config) : ''
+
+  const ethloggerDefinitions = hasSplunk ? buildEthloggerDefinitions(config) : ''
 
   let services = config.nodes.map((node, i) => {
     let allServices = buildNodeService(config, node, i, hasTessera, hasSplunk, txGenerate)
@@ -84,6 +83,7 @@ export function buildDockerCompose(config) {
     formatNewLine(tesseraDefinitions),
     formatNewLine(cakeshopDefinitions),
     formatNewLine(splunkDefinitions),
+    formatNewLine(cadvisdorDefinitions),
     formatNewLine(ethloggerDefinitions),
     'services:',
     services.join(''),
@@ -234,8 +234,22 @@ function buildSplunkService(config, txGenerate) {
       - ./out/config/splunk/dashboards:/dashboards
     networks:
       ${networkName}-net:
-        ipv4_address: 172.16.239.200
+        ipv4_address: ${config.network.splunkIp}
     ${dependsOn}`
+}
+
+function buildCadvisorDefinition(config) {
+  return `
+x-cadvisor-def:
+  &cadvisor-def
+  image: google/cadvisor:latest
+  command:
+    - --storage_driver=statsd
+    - --storage_driver_host=${config.network.splunkIp}:8125
+    - --docker_only=true
+  depends_on:
+    - splunk
+  user: root`
 }
 
 function buildCadvisorService(config) {
@@ -255,6 +269,35 @@ function buildCadvisorService(config) {
     logging: *default-logging`
 }
 
+function buildEthloggerDefinitions(config) {
+  let ethloggerDefs = ''
+  config.nodes.forEach((node, i) => {
+    ethloggerDefs += `
+x-ethlogger${i+1}-def:
+  &ethlogger${i+1}-def
+  image: splunkdlt/ethlogger:latest
+  environment:
+    - ETH_RPC_URL=http://node${i+1}:${config.containerPorts.quorum.rpcPort}
+    - NETWORK_NAME=quorum
+    - START_AT_BLOCK=genesis
+    - SPLUNK_HEC_URL=https://${config.network.splunkIp}:8088
+    - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113
+    - SPLUNK_EVENTS_INDEX=ethereum
+    - SPLUNK_METRICS_INDEX=metrics
+    - SPLUNK_INTERNAL_INDEX=metrics
+    - SPLUNK_HEC_REJECT_INVALID_CERTS=false
+    - ABI_DIR=/app/abis
+    - COLLECT_PENDING_TX=true
+    - COLLECT_PEER_INFO=true
+    - DEBUG=ethlogger:abi:*
+  depends_on:
+    - splunk
+    - node${i+1}
+  restart: unless-stopped`
+  })
+  return ethloggerDefs
+}
+
 function buildEthloggerService(config) {
   const networkName = config.network.name
   let ethloggers = ''
@@ -269,8 +312,7 @@ function buildEthloggerService(config) {
       - ./out/config/splunk/abis:/app/abis:ro
       - ethlogger-state${i+1}:/app
     networks:
-      ${networkName}-net:
-        ipv4_address: 172.16.239.20${i+2}
+      - ${networkName}-net
     logging: *default-logging`
   })
   return ethloggers
