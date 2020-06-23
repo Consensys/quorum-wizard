@@ -1,3 +1,5 @@
+version: "3.6"
+
 x-splunk-def:
   &splunk-def
   image: splunk/splunk:8.0.4-debian
@@ -14,22 +16,3 @@ x-splunk-def:
     interval: 5s
     timeout: 5s
     retries: 20
-x-tx-gen-def:
-  &tx-gen-def
-  image: splunkdlt/ethereum-transaction-generator:latest
-  entrypoint:
-    - tail
-    - -f
-    - /dev/null
-x-logging:
-  &default-logging
-  driver: splunk
-  options:
-    splunk-token: 11111111-1111-1111-1111-1111111111113
-    splunk-url: https://localhost:8088
-    splunk-index: logs
-    splunk-sourcetype: docker
-    splunk-insecureskipverify: "true"
-    splunk-verify-connection: "false"
-    splunk-format: "raw"
-    tag: "{{.Name}}-{{.ID}}"

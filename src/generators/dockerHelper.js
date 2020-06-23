@@ -44,7 +44,7 @@ export function buildDockerCompose(config) {
 
   const splunkDefinitions = hasSplunk ? readFileToString(joinPath(
     libRootDir(),
-    'lib/docker-compose-definitions-splunk.yml'
+    'lib/docker-compose-definitions-splunk-helpers.yml'
   )) : ''
 
   const cadvisdorDefinitions = hasSplunk ? buildCadvisorDefinition(config) : ''
@@ -63,10 +63,8 @@ export function buildDockerCompose(config) {
   }
   if (hasSplunk) {
     services = [services.join(''),
-      buildSplunkService(config, txGenerate),
       buildEthloggerService(config),
       buildCadvisorService(config)]
-    info('Splunk>')
   }
   if (txGenerate) {
     let pubkeys = []
@@ -91,10 +89,29 @@ export function buildDockerCompose(config) {
   ].join('')
 }
 
+export function buildSplunkDockerCompose(config) {
+  const splunkDefinitions = readFileToString(joinPath(
+    libRootDir(),
+    'lib/docker-compose-definitions-splunk.yml'
+  ))
+
+  let services = [buildSplunkService(config)]
+  info('Splunk>')
+
+  return [
+    formatNewLine(splunkDefinitions),
+    'services:',
+    services.join(''),
+    buildSplunkEndService(config),
+  ].join('')
+}
+
 export async function createDockerCompose(config) {
   info('Building docker-compose file...')
+  const splunkFile = buildSplunkDockerCompose(config)
   const file = buildDockerCompose(config)
 
+  const hasSplunk = isSplunk(config.network.splunk)
   const networkPath = getFullNetworkPath(config)
   const qdata = joinPath(networkPath, 'qdata')
 
@@ -108,14 +125,18 @@ docker-compose up -d`
   const stopCommand = `#!/bin/bash
 docker-compose down`
 
+  if (hasSplunk) {
+    writeFile(joinPath(networkPath, 'docker-compose-splunk.yml'), splunkFile, false)
+  }
   writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)
   writeFile(joinPath(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
   if (config.network.txGenerate) {
-    copyFile(joinPath(libRootDir(), 'lib', 'start-with-txns.sh'), joinPath(networkPath, 'start.sh'))
+    copyFile(joinPath(libRootDir(), 'lib', 'start-with-splunk-txns.sh'), joinPath(networkPath, 'start.sh'))
+    copyFile(joinPath(libRootDir(), 'lib', 'stop-with-splunk.sh'), joinPath(networkPath, 'stop.sh'))
   } else {
     writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
+    writeFile(joinPath(networkPath, 'stop.sh'), stopCommand, true)
   }
-  writeFile(joinPath(networkPath, 'stop.sh'), stopCommand, true)
   info('Done')
 }
 
@@ -214,11 +235,8 @@ function buildCakeshopService(config, hasSplunk) {
     ${splunkLogging}`
 }
 
-function buildSplunkService(config, txGenerate) {
+function buildSplunkService(config) {
   const networkName = config.network.name
-  const dependsOn = txGenerate
-    ? `depends_on:
-      - tx-gen` : ``
   return `
   splunk:
     << : *splunk-def
@@ -227,6 +245,7 @@ function buildSplunkService(config, txGenerate) {
     ports:
       - "${config.network.splunkPort}:8000"
       - "8088:8088"
+      - "8125:8125"
     volumes:
       - splunk-var:/opt/splunk/var
       - splunk-etc:/opt/splunk/etc
@@ -234,8 +253,7 @@ function buildSplunkService(config, txGenerate) {
       - ./out/config/splunk/dashboards:/dashboards
     networks:
       ${networkName}-net:
-        ipv4_address: ${config.network.splunkIp}
-    ${dependsOn}`
+        ipv4_address: ${config.network.splunkIp}`
 }
 
 function buildCadvisorDefinition(config) {
@@ -247,8 +265,6 @@ x-cadvisor-def:
     - --storage_driver=statsd
     - --storage_driver_host=${config.network.splunkIp}:8125
     - --docker_only=true
-  depends_on:
-    - splunk
   user: root`
 }
 
@@ -291,7 +307,6 @@ x-ethlogger${i+1}-def:
     - COLLECT_PEER_INFO=true
     - DEBUG=ethlogger:abi:*
   depends_on:
-    - splunk
     - node${i+1}
   restart: unless-stopped`
   })
@@ -362,7 +377,21 @@ networks:
 volumes:
 ${config.nodes.map((_, i) => `  "ethlogger-state${i + 1}":`).join('\n')}
 ${config.nodes.map((_, i) => `  "${networkName}-vol${i + 1}":`).join('\n')}
-  "${networkName}-cakeshopvol":
+  "${networkName}-cakeshopvol":`
+}
+
+function buildSplunkEndService(config) {
+  const networkName = config.network.name
+  return `
+networks:
+  ${networkName}-net:
+    name: ${networkName}-net
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${config.containerPorts.dockerSubnet}
+volumes:
   "splunk-var":
   "splunk-etc":`
 }
