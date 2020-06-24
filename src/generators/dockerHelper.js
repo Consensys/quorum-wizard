@@ -59,7 +59,7 @@ export function buildDockerCompose(config) {
     return allServices
   })
   if (hasCakeshop) {
-    services = [services.join(''), buildCakeshopService(config.network.cakeshopPort, hasSplunk)]
+    services = [services.join(''), buildCakeshopService(config, hasSplunk)]
   }
   if (hasSplunk) {
     services = [services.join(''),
@@ -231,7 +231,7 @@ function buildCakeshopService(config, hasSplunk) {
       - ./qdata:/examples:ro
     networks:
       ${networkName}-net:
-        ipv4_address: ${cidrhost(config.containerPorts.dockerSubnet, 2)}
+        ipv4_address: ${cidrhost(config.containerPorts.dockerSubnet, 75)}
     ${splunkLogging}`
 }
 
@@ -303,7 +303,6 @@ x-ethlogger${i+1}-def:
     - SPLUNK_INTERNAL_INDEX=metrics
     - SPLUNK_HEC_REJECT_INVALID_CERTS=false
     - ABI_DIR=/app/abis
-    - COLLECT_PENDING_TX=true
     - COLLECT_PEER_INFO=true
     - DEBUG=ethlogger:abi:*
   depends_on:
