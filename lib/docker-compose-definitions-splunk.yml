@@ -7,7 +7,7 @@ x-splunk-def:
     - SPLUNK_START_ARGS=--accept-license
     - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113
     - SPLUNK_PASSWORD=changeme
-    - SPLUNK_APPS_URL=https://github.com/splunk/ethereum-basics/releases/download/latest/ethereum-basics.tgz,https://splunk-quorum.s3.us-east-2.amazonaws.com/oss-quorum-app-for-splunk_105.tgz
+    - SPLUNK_APPS_URL=https://github.com/splunk/ethereum-basics/releases/download/latest/ethereum-basics.tgz,https://splunk-quorum.s3.us-east-2.amazonaws.com/oss-quorum-app-for-splunk_105.tgz,https://splunk-quorum.s3.us-east-2.amazonaws.com/maps-for-splunk_315.tgz
   expose:
     - "8000"
     - "8088"

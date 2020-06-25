@@ -31,7 +31,8 @@
       ["ATL","LAX","ORD","DFW","DEN","JFK","SFO","SEA",
         "LAS","MCO","EWR","CLT","PHX","IAH","MIA","BOS",
         "MSP","FLL","DTW","PHL","LGA","BWI","SLC","SAN",
-        "IAD","DCA","MDW","TPA","PDX","HNL"]
+        "IAD","DCA","MDW","TPA","PDX","HNL"],
+      "{uuid}"
     ],
     "sendFromOwner": true,
     "init": {

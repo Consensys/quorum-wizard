@@ -251,6 +251,7 @@ function buildSplunkService(config) {
       - splunk-etc:/opt/splunk/etc
       - ./out/config/splunk/splunk-config.yml:/tmp/defaults/default.yml
       - ./out/config/splunk/dashboards:/dashboards
+      - ./out/config/splunk/airport_geo.csv:/opt/splunk/etc/apps/splunk-app-quorum/lookups/airport_geo.csv
     networks:
       ${networkName}-net:
         ipv4_address: ${config.network.splunkIp}`
@@ -339,7 +340,7 @@ function buildTxGenService(hasSplunk, config, pubkeys) {
   let nodeVars = ''
   config.nodes.forEach((node, i) => {
     nodeVars += `
-      - NODE${i + 1}=${node.quorum.ip}:${config.containerPorts.quorum.wsPort}`
+      - NODE${i + 1}=${node.quorum.ip}:${config.containerPorts.quorum.rpcPort}`
   });
   let pubkeyVars = ''
   pubkeys.forEach((pubkey, i) => {
