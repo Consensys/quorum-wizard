@@ -7,6 +7,7 @@ import {
   isCakeshop,
   isDocker,
   getContainerPorts,
+  CUSTOM_CONFIG_LOCATION,
 } from '../model/NetworkConfig'
 import {
   getCustomizedBashNodes,
@@ -20,7 +21,10 @@ import {
   QUESTIONS,
   GENERATE_QUESTIONS,
 } from './questions'
-import { getFullNetworkPath } from '../generators/networkCreator'
+import {
+  getFullNetworkPath,
+  getConfigPath,
+} from '../generators/networkCreator'
 import { exists } from '../utils/fileUtils'
 
 // eslint-disable-next-line import/prefer-default-export
@@ -64,6 +68,10 @@ export async function promptGenerate() {
   if (answers.name) {
     await confirmNetworkName(answers)
   }
+  if (answers.generate !== CUSTOM_CONFIG_LOCATION) {
+    answers.configLocation = getConfigPath(answers.generate)
+  }
+
   return answers
 }
 

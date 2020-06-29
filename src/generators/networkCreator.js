@@ -10,7 +10,6 @@ import {
   copyDirectory,
   writeFile,
   readDir,
-  readJsonFile,
 } from '../utils/fileUtils'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
@@ -25,6 +24,7 @@ import {
   isDocker,
   isKubernetes,
   isBash,
+  CUSTOM_CONFIG_LOCATION,
 } from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
@@ -188,15 +188,14 @@ export function getFullNetworkPath(config) {
   return joinPath(cwd(), 'network', networkFolderName)
 }
 
-function getConfigPath(...relativePaths) {
+export function getConfigPath(...relativePaths) {
   return joinPath(cwd(), 'configs', ...relativePaths)
 }
 
-export function readConfigJson(...relativePaths) {
-  return readJsonFile(getConfigPath(...relativePaths))
-}
 export function getAvailableConfigs() {
+  let arr = [CUSTOM_CONFIG_LOCATION]
   const configDir = getConfigPath()
-  const arr = readDir(configDir)
-  return (arr && arr.length) ? arr : ['no configs available']
+  const availableConfigs = readDir(configDir)
+  arr = arr.concat(availableConfigs)
+  return arr
 }

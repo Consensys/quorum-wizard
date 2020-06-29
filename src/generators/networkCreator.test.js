@@ -11,6 +11,7 @@ import {
 import {
   createConfigFromAnswers,
   generateNodeConfigs,
+  CUSTOM_CONFIG_LOCATION,
 } from '../model/NetworkConfig'
 import {
   copyFile,
@@ -425,6 +426,6 @@ describe('creates static nodes json', () => {
 describe('tests available config files', () => {
   it('given directory return files in it as array', () => {
     readDir.mockReturnValueOnce(['1-config.json', '2-config.json'])
-    expect(getAvailableConfigs()).toEqual(['1-config.json', '2-config.json'])
+    expect(getAvailableConfigs()).toEqual([CUSTOM_CONFIG_LOCATION, '1-config.json', '2-config.json'])
   })
 })

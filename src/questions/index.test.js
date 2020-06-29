@@ -16,6 +16,7 @@ import {
 } from './customPromptHelper'
 import { exists } from '../utils/fileUtils'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import { CUSTOM_CONFIG_LOCATION } from '../model/NetworkConfig'
 
 jest.mock('inquirer')
 jest.mock('./customPromptHelper')
@@ -52,11 +53,18 @@ const CUSTOM_CONFIG = {
 
 const GENERATE_ANSWERS = {
   generate: '1-config.json',
+  configLocation: undefined,
   name: '1',
 }
 
-const GENERATE_MISSING_CONFIG_ANSWERS = {
-  generate: 'no configs available',
+const GENERATE_CUSTOM_CONFIG_LOCATION_ANSWERS = {
+  generate: CUSTOM_CONFIG_LOCATION,
+  configLocation: 'custom/config/location.json',
+  name: '2',
+}
+
+const GENERATE_NO_NAME_ANSWERS = {
+  generate: '1-config.json',
 }
 
 describe('prompts the user with different sets of questions based on first choice', () => {
@@ -154,8 +162,13 @@ describe('prompts the user with different sets of questions based on first choic
     await promptGenerate()
     expect(prompt).toHaveBeenCalledWith(GENERATE_QUESTIONS)
   })
-  it('regenerate - no valid config file', async () => {
-    prompt.mockResolvedValue(GENERATE_MISSING_CONFIG_ANSWERS)
+  it('regenerate - user input config file', async () => {
+    prompt.mockResolvedValue(GENERATE_CUSTOM_CONFIG_LOCATION_ANSWERS)
+    await promptGenerate()
+    expect(prompt).toHaveBeenCalledWith(GENERATE_QUESTIONS)
+  })
+  it('regenerate - no name config file', async () => {
+    prompt.mockResolvedValue(GENERATE_NO_NAME_ANSWERS)
     await promptGenerate()
     expect(prompt).toHaveBeenCalledWith(GENERATE_QUESTIONS)
   })

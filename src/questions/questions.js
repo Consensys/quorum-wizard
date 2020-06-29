@@ -11,12 +11,17 @@ import {
   defaultNetworkName,
   isRaft,
   isKubernetes,
+  CUSTOM_CONFIG_LOCATION,
 } from '../model/NetworkConfig'
 import {
   getAvailableConfigs,
-  readConfigJson,
+  getConfigPath,
 } from '../generators/networkCreator'
 import { isJava11Plus, executeSync } from '../utils/execUtils'
+import {
+  exists,
+  readJsonFile,
+} from '../utils/fileUtils'
 
 import {
   LATEST_CAKESHOP,
@@ -183,9 +188,11 @@ export const GENERATE_NAME = {
   name: 'name',
   message: 'What would you like to call this network?',
   validate: (input) => input.trim() !== '' || 'Network name must not be blank.',
-  when: (answers) => answers.generate !== 'no configs available',
   default: (answers) => {
-    const json = readConfigJson(answers.generate)
+    const configPath = answers.generate === CUSTOM_CONFIG_LOCATION
+      ? answers.configLocation
+      : getConfigPath(answers.generate)
+    const json = readJsonFile(configPath)
     return json.network.name
   },
 }
@@ -195,6 +202,15 @@ export const GENERATE = {
   name: 'generate',
   message: 'Choose from the list of available config.json to generate',
   choices: getAvailableConfigs(),
+}
+
+export const GENERATE_LOCATION = {
+  type: 'input',
+  name: 'configLocation',
+  message: 'Enter the path of the config.json you would like to use',
+  validate: (input) => exists(input.trim()) || 'Must be a valid path',
+  when: (answers) => answers.generate === CUSTOM_CONFIG_LOCATION,
+  default: undefined,
 }
 
 export const QUESTIONS = [
@@ -247,5 +263,6 @@ export function getPrefilledAnswersForMode(mode) {
 
 export const GENERATE_QUESTIONS = [
   GENERATE,
+  GENERATE_LOCATION,
   GENERATE_NAME,
 ]

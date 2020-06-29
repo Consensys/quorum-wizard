@@ -152,3 +152,5 @@ export function isRaft(consensus) {
 export function isCakeshop(cakeshop) {
   return cakeshop !== 'none'
 }
+
+export const CUSTOM_CONFIG_LOCATION = 'enter path to config.json'

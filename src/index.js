@@ -25,7 +25,6 @@ import {
   createNetwork,
   generateResourcesLocally,
   generateResourcesRemote,
-  readConfigJson,
 } from './generators/networkCreator'
 import { buildBash } from './generators/bashHelper'
 import { createDockerCompose } from './generators/dockerHelper'
@@ -91,7 +90,7 @@ if (argv.q) {
 async function regenerateNetwork() {
   const ans = await promptGenerate()
   try {
-    const config = readConfigJson(ans.generate)
+    const config = readJsonFile(ans.configLocation)
     config.network.name = ans.name
     generateNetwork(config)
   } catch (e) {
