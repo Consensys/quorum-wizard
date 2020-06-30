@@ -16,6 +16,8 @@ import {
   isDocker,
   isTessera,
   isKubernetes,
+  isCakeshop,
+  isSplunk,
 } from './model/NetworkConfig'
 import {
   createQdataDirectory,
@@ -142,5 +144,12 @@ function printInstructions(config) {
     info('A script to retrieve the quorum rpc and tessera 3rd party endpoints to use with remix or cakeshop is provided')
     info('To use run ./getEndpoints.sh from the network folder')
     info('')
+  }
+  if(isCakeshop(config.network.spcakeshoplunk)) {
+    info('After starting, Cakeshop will be accessible here: http://localhost:8999')
+  }
+  if(isSplunk(config.network.splunk)) {
+    info('After starting, Splunk will be accessible here: http://localhost:8000')
+    info('The default credentials are admin:changeme')
   }
 }
