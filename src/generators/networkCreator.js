@@ -2,7 +2,6 @@ import sanitize from 'sanitize-filename'
 import {
   copyFile,
   createFolder,
-  cwd,
   libRootDir,
   readFileToString,
   removeFolder,
@@ -39,7 +38,7 @@ export function createNetwork(config) {
 
 export function generateResourcesRemote(config) {
   info('Pulling docker container and generating network resources...')
-  const configDir = joinPath(cwd(), config.network.configDir)
+  const configDir = getFullConfigPath(config)
   const networkPath = getFullNetworkPath(config)
   const remoteOutputDir = joinPath(networkPath, 'out', 'config')
 
@@ -81,7 +80,7 @@ export function generateResourcesRemote(config) {
 
 export async function generateResourcesLocally(config) {
   info('Generating network resources locally...')
-  const configDir = joinPath(cwd(), config.network.configDir)
+  const configDir = getFullConfigPath(config)
   createFolder(configDir, true)
 
   if (config.network.generateKeys) {
@@ -109,7 +108,7 @@ export function createQdataDirectory(config) {
   const logs = joinPath(qdata, 'logs')
   createFolder(logs, true)
 
-  const configPath = joinPath(cwd(), config.network.configDir)
+  const configPath = getFullConfigPath(config)
 
   const peerList = createPeerList(config.nodes, config.network.transactionManager)
 
@@ -181,5 +180,9 @@ export function getFullNetworkPath(config) {
     throw new Error('Network name was empty or contained invalid characters')
   }
 
-  return joinPath(cwd(), 'network', networkFolderName)
+  return joinPath(config.network.networkPath, 'network', networkFolderName)
+}
+
+export function getFullConfigPath(config) {
+  return joinPath(config.network.networkPath, config.network.configDir)
 }

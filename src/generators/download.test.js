@@ -11,7 +11,7 @@ import {
   LATEST_ISTANBUL_TOOLS,
 } from './download'
 import {
-  cwd,
+  getOutputPath,
   exists,
   wizardHomeDir,
 } from '../utils/fileUtils'
@@ -20,7 +20,7 @@ import { info } from '../utils/log'
 jest.mock('../utils/fileUtils')
 jest.mock('../utils/log')
 
-cwd.mockReturnValue(TEST_CWD)
+getOutputPath.mockReturnValue(TEST_CWD)
 wizardHomeDir.mockReturnValue(TEST_WIZARD_HOME_DIR)
 info.mockReturnValue('info')
 

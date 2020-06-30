@@ -3,7 +3,7 @@ import {
   createConfigFromAnswers,
 } from '../model/NetworkConfig'
 import {
-  cwd,
+  getOutputPath,
   libRootDir,
   readFileToString,
   writeFile,
@@ -20,7 +20,7 @@ import { LATEST_QUORUM, LATEST_TESSERA } from './download'
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')
 jest.mock('../utils/log')
-cwd.mockReturnValue(TEST_CWD)
+getOutputPath.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 getFullNetworkPath.mockReturnValue(`${TEST_CWD}/test-network`)
 info.mockReturnValue('log')

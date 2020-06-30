@@ -6,7 +6,7 @@ import {
 } from '../utils/testHelper'
 import {
   copyFile,
-  cwd,
+  getOutputPath,
   libRootDir,
   writeFile,
 } from '../utils/fileUtils'
@@ -17,7 +17,7 @@ import { setEnvironmentCommand } from './bashHelper'
 jest.mock('./bashHelper')
 jest.mock('../utils/fileUtils')
 jest.mock('./transactionManager')
-cwd.mockReturnValue(TEST_CWD)
+getOutputPath.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 loadTesseraPublicKey.mockReturnValue('publickey')
 setEnvironmentCommand.mockReturnValue('BIN_GETH=path/to/binary')
@@ -25,6 +25,7 @@ setEnvironmentCommand.mockReturnValue('BIN_GETH=path/to/binary')
 const CONFIG = {
   network: {
     name: 'test',
+    networkPath: TEST_CWD,
   },
   nodes: [{
     quorum: {

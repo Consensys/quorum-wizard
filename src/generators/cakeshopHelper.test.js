@@ -2,7 +2,7 @@ import { anything } from 'expect'
 import { createConfigFromAnswers } from '../model/NetworkConfig'
 import {
   createFolder,
-  cwd,
+  getOutputPath,
   libRootDir,
   writeJsonFile,
   readFileToString,
@@ -18,7 +18,7 @@ import {
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from './download'
 
 jest.mock('../utils/fileUtils')
-cwd.mockReturnValue(TEST_CWD)
+getOutputPath.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 
 describe('creates a cakeshop directory structure for bash', () => {

@@ -22,8 +22,12 @@ export function setOutputPath(path) {
   outputPath = path
 }
 
+export function getOutputPath() {
+  return (outputPath !== undefined) ? outputPath : cwd()
+}
+
 export function cwd() {
-  return (outputPath !== undefined) ? outputPath : process.cwd()
+  return process.cwd()
 }
 
 export function libRootDir() {

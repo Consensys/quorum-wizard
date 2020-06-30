@@ -10,10 +10,12 @@ import {
   getDockerSubnet,
   cidrhost,
 } from '../utils/subnetUtils'
+import { getOutputPath } from '../utils/fileUtils'
 
 export function createConfigFromAnswers(answers) {
   const {
     name,
+    networkPath = getOutputPath(),
     numberNodes = 3,
     consensus = 'raft',
     quorumVersion = LATEST_QUORUM,
@@ -35,6 +37,7 @@ export function createConfigFromAnswers(answers) {
   return {
     network: {
       name: networkFolder,
+      networkPath,
       verbosity: 5,
       consensus,
       quorumVersion,
