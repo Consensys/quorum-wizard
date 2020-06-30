@@ -62,7 +62,7 @@ async function promptForCustomPorts(answers) {
 
 async function confirmNetworkName(answers) {
   let overwrite = false
-  while (networkExists(answers.networkPath, answers.name) && !overwrite) {
+  while (networkExists(answers.name) && !overwrite) {
     overwrite = (await inquirer.prompt([NETWORK_CONFIRM], answers)).overwrite
     if (overwrite === false) {
       delete answers.name
@@ -71,7 +71,7 @@ async function confirmNetworkName(answers) {
   }
 }
 
-function networkExists(networkPath, networkName) {
+function networkExists(networkName) {
   return exists(getFullNetworkPath({
     network: {
       name: networkName,
