@@ -3,6 +3,7 @@
 import 'source-map-support/register'
 import inquirer from 'inquirer'
 import isWsl from 'is-wsl'
+import sanitize from 'sanitize-filename'
 import {
   createLogger,
   debug,
@@ -32,6 +33,7 @@ import {
   loadTesseraPublicKey,
 } from './generators/transactionManager'
 import { downloadAndCopyBinaries } from './generators/binaryHelper'
+import { setOutputPath } from './utils/fileUtils'
 
 const yargs = require('yargs')
 
@@ -42,6 +44,9 @@ const { argv } = yargs
   .boolean('v')
   .alias('v', 'verbose')
   .describe('v', 'Turn on additional logs for debugging')
+  .alias('o', 'outputPath')
+  .describe('o', 'Set path to network output folder')
+  .string('o')
   .help()
   .alias('h', 'help')
   .version()
@@ -59,6 +64,8 @@ if (process.platform === 'win32') {
 
   process.exit(1)
 }
+
+setOutputPath(sanitize(argv.o))
 
 if (argv.q) {
   buildNetwork('quickstart')

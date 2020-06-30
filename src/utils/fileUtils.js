@@ -16,8 +16,14 @@ import { joinPath, verifyPathInsideDirectory } from './pathUtils'
 // Go up two folders and cache that path for later use
 const libRoot = resolve(__dirname, '../..')
 
+let outputPath
+
+export function setOutputPath(path) {
+  outputPath = path
+}
+
 export function cwd() {
-  return process.cwd()
+  return (outputPath !== undefined) ? outputPath : process.cwd()
 }
 
 export function libRootDir() {

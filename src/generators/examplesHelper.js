@@ -1,6 +1,5 @@
 import {
   copyFile,
-  cwd,
   libRootDir,
   writeFile,
 } from '../utils/fileUtils'
@@ -8,6 +7,7 @@ import { loadTesseraPublicKey } from './transactionManager'
 import { isTessera } from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
 import { setEnvironmentCommand } from './bashHelper'
+import { getFullNetworkPath } from './networkCreator'
 
 function generatePrivateContractExample(privateFor) {
   return `
@@ -106,7 +106,7 @@ ${command}
 
 // eslint-disable-next-line import/prefer-default-export
 export function generateAndCopyExampleScripts(config) {
-  const networkPath = joinPath(cwd(), 'network', config.network.name)
+  const networkPath = getFullNetworkPath(config)
   writeFile(joinPath(networkPath, 'runscript.sh'), generateRunScript(config), true)
   writeFile(joinPath(networkPath, 'attach.sh'), generateAttachScript(config), true)
   copyFile(
