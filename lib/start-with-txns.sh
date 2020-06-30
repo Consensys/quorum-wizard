@@ -10,7 +10,7 @@ echo "Starting quorum stack..."
 docker-compose up -d
 
 echo "Waiting for nodes to come up before starting txn gen..."
-sleep 45
+sleep 60
 
 echo "Starting transaction generator..."
 docker exec txgen /bin/sh -c "cd /txgen && ./start.sh"
