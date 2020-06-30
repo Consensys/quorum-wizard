@@ -54,7 +54,7 @@ export function writeFile(filePath, contents, executable = false) {
 }
 
 export function removeFolder(networkPath = '') {
-  verifyPathInsideDirectory(cwd(), networkPath)
+  verifyPathInsideDirectory(getOutputPath(), networkPath)
 
   if (exists(networkPath)) {
     removeSync(networkPath)

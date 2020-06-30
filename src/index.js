@@ -3,7 +3,6 @@
 import 'source-map-support/register'
 import inquirer from 'inquirer'
 import isWsl from 'is-wsl'
-import sanitize from 'sanitize-filename'
 import {
   createLogger,
   debug,
@@ -23,6 +22,7 @@ import {
   createNetwork,
   generateResourcesLocally,
   generateResourcesRemote,
+  getFullNetworkPath,
 } from './generators/networkCreator'
 import { buildBash } from './generators/bashHelper'
 import { createDockerCompose } from './generators/dockerHelper'
@@ -65,7 +65,7 @@ if (process.platform === 'win32') {
   process.exit(1)
 }
 
-setOutputPath(sanitize(argv.o))
+setOutputPath(argv.o)
 
 if (argv.q) {
   buildNetwork('quickstart')
@@ -134,7 +134,7 @@ function printInstructions(config) {
   }
   info('Run the following commands to start your network:')
   info('')
-  info(`cd network/${config.network.name}`)
+  info(`cd ${getFullNetworkPath(config)}`)
   info('./start.sh')
   info('')
   info('A sample simpleStorage contract is provided to deploy to your network')

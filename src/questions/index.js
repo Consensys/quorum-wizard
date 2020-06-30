@@ -20,7 +20,10 @@ import {
   QUESTIONS,
 } from './questions'
 import { getFullNetworkPath } from '../generators/networkCreator'
-import { exists } from '../utils/fileUtils'
+import {
+  exists,
+  getOutputPath,
+} from '../utils/fileUtils'
 
 // eslint-disable-next-line import/prefer-default-export
 export async function promptUser(mode) {
@@ -59,7 +62,7 @@ async function promptForCustomPorts(answers) {
 
 async function confirmNetworkName(answers) {
   let overwrite = false
-  while (networkExists(answers.name) && !overwrite) {
+  while (networkExists(answers.networkPath, answers.name) && !overwrite) {
     overwrite = (await inquirer.prompt([NETWORK_CONFIRM], answers)).overwrite
     if (overwrite === false) {
       delete answers.name
@@ -68,6 +71,11 @@ async function confirmNetworkName(answers) {
   }
 }
 
-function networkExists(networkName) {
-  return exists(getFullNetworkPath({ network: { name: networkName } }))
+function networkExists(networkPath, networkName) {
+  return exists(getFullNetworkPath({
+    network: {
+      name: networkName,
+      networkPath: getOutputPath(),
+    },
+  }))
 }
