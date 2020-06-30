@@ -147,9 +147,11 @@ function printInstructions(config) {
   }
   if(isCakeshop(config.network.spcakeshoplunk)) {
     info('After starting, Cakeshop will be accessible here: http://localhost:8999')
+    info('')
   }
   if(isSplunk(config.network.splunk)) {
     info('After starting, Splunk will be accessible here: http://localhost:8000')
     info('The default credentials are admin:changeme')
+    info('')
   }
 }
