@@ -1,5 +1,5 @@
 import { homedir } from 'os'
-import { join } from 'path'
+import { join, normalize } from 'path'
 import { existsSync, removeSync } from 'fs-extra'
 import { removeFolder, wizardHomeDir } from './fileUtils'
 import { joinPath, verifyPathInsideDirectory } from './pathUtils'
@@ -32,5 +32,5 @@ describe('safely removes network folder', () => {
 
 test('returns the quorum wizard dot folder inside the user\'s home folder', () => {
   joinPath.mockImplementation((...segments) => join(...segments))
-  expect(wizardHomeDir()).toEqual('/path/to/user/home/.quorum-wizard')
+  expect(wizardHomeDir()).toEqual(normalize('/path/to/user/home/.quorum-wizard'))
 })

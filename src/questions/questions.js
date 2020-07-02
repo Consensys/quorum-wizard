@@ -12,7 +12,7 @@ import {
   isRaft,
   isKubernetes,
 } from '../model/NetworkConfig'
-import { executeSync, isJava11Plus } from '../utils/execUtils'
+import { executeSync, isJava11Plus, isWindows } from '../utils/execUtils'
 import {
   LATEST_CAKESHOP,
   LATEST_CAKESHOP_J8,
@@ -20,6 +20,7 @@ import {
   LATEST_TESSERA,
   LATEST_TESSERA_J8,
 } from '../generators/download'
+import { error, info } from '../utils/log'
 
 
 export const INITIAL_MODE = {
@@ -71,11 +72,17 @@ export const DEPLOYMENT_TYPE = {
       dockerDisabled = 'Disabled, docker must be running on your machine'
     }
 
+    const bashDisabled = isWindows() ? 'Disabled, Bash not supported on Windows systems' : false
+
+    if (dockerDisabled && bashDisabled) {
+      error('Docker must be running on your machine to use the wizard on Windows.')
+      process.exit(1)
+    }
+
     return [
-      'bash',
+      { name: 'bash', disabled: bashDisabled },
       { name: 'docker-compose', disabled: dockerDisabled },
       { name: 'kubernetes', disabled: dockerDisabled },
-      // 'vagrant',
     ]
   },
 }
@@ -187,12 +194,11 @@ export const QUESTIONS = [
 ]
 
 export const QUICKSTART_ANSWERS = {
-  name: '3-nodes-raft-tessera-bash',
+  name: '3-nodes-quickstart',
   numberNodes: 3,
   consensus: 'raft',
   quorumVersion: LATEST_QUORUM,
   transactionManager: isJava11Plus() ? LATEST_TESSERA : LATEST_TESSERA_J8,
-  deployment: 'bash',
   cakeshop: isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8,
   generateKeys: false,
   networkId: '10',

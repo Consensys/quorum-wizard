@@ -1,22 +1,12 @@
-import {
-  formatNewLine,
-  libRootDir,
-  readFileToString,
-  writeFile,
-} from '../utils/fileUtils'
+import { formatNewLine, libRootDir, readFileToString, writeFile, } from '../utils/fileUtils'
 import { getFullNetworkPath } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
-import {
-  isTessera,
-  isCakeshop,
-} from '../model/NetworkConfig'
+import { isCakeshop, isTessera, } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
-import {
-  cidrhost,
-  buildDockerIp,
-} from '../utils/subnetUtils'
+import { buildDockerIp, cidrhost, } from '../utils/subnetUtils'
 import { isQuorum260Plus } from './binaryHelper'
+import { isWin32 } from '../utils/execUtils'
 
 export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
@@ -70,15 +60,10 @@ export async function createDockerCompose(config) {
   }
 
   info('Writing start script...')
-  const startCommands = `#!/bin/bash
-docker-compose up -d`
-  const stopCommand = `#!/bin/bash
-docker-compose down`
-
   writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)
   writeFile(joinPath(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
-  writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
-  writeFile(joinPath(networkPath, 'stop.sh'), stopCommand, true)
+  writeFile(joinPath(networkPath, isWin32() ? 'start.cmd' : 'start.sh'), getStartCommands(), true)
+  writeFile(joinPath(networkPath, isWin32() ? 'stop.cmd' : 'stop.sh'), getStopCommands(), true)
   info('Done')
 }
 
@@ -101,6 +86,22 @@ TESSERA_3PARTY_PORT=${config.containerPorts.tm.thirdPartyPort}`)
 QUORUM_GETH_ARGS="--allow-insecure-unlock --graphql --graphql.port ${config.containerPorts.quorum.graphQlPort} --graphql.corsdomain=* --graphql.addr=0.0.0.0"`)
   }
   return env
+}
+
+function getStartCommands() {
+  if (isWin32()) {
+    return 'docker-compose up -d'
+  }
+  return `#!/bin/bash
+docker-compose up -d`
+}
+
+function getStopCommands() {
+  if (isWin32()) {
+    return 'docker-compose down'
+  }
+  return `#!/bin/bash
+docker-compose down`
 }
 
 function buildNodeService(config, node, i, hasTessera) {

@@ -1,4 +1,5 @@
 import { exec, execSync } from 'child_process'
+import isWsl from 'is-wsl'
 
 export function executeSync(command, options) {
   return execSync(command, options)
@@ -42,4 +43,16 @@ export function isJava11Plus() {
     JAVA_VERSION = runJavaVersionLookup()
   }
   return JAVA_VERSION >= 11
+}
+
+export function isWindows() {
+  return isWin32() || isWindowsSubsystemLinux()
+}
+
+export function isWin32() {
+  return process.platform === 'win32'
+}
+
+export function isWindowsSubsystemLinux() {
+  return isWsl
 }
