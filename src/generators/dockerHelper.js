@@ -1,12 +1,18 @@
-import { formatNewLine, libRootDir, readFileToString, writeFile, } from '../utils/fileUtils'
+import {
+  formatNewLine,
+  libRootDir,
+  readFileToString,
+  writeFile,
+} from '../utils/fileUtils'
 import { getFullNetworkPath } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
-import { isCakeshop, isTessera, } from '../model/NetworkConfig'
+import { isCakeshop, isTessera } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
-import { buildDockerIp, cidrhost, } from '../utils/subnetUtils'
+import { buildDockerIp, cidrhost } from '../utils/subnetUtils'
 import { isQuorum260Plus } from './binaryHelper'
 import { isWin32 } from '../utils/execUtils'
+import { scriptHeader } from './bashHelper'
 
 export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
@@ -89,18 +95,12 @@ QUORUM_GETH_ARGS="--allow-insecure-unlock --graphql --graphql.port ${config.cont
 }
 
 function getStartCommands() {
-  if (isWin32()) {
-    return 'docker-compose up -d'
-  }
-  return `#!/bin/bash
+  return `${scriptHeader()}
 docker-compose up -d`
 }
 
 function getStopCommands() {
-  if (isWin32()) {
-    return 'docker-compose down'
-  }
-  return `#!/bin/bash
+  return `${scriptHeader()}
 docker-compose down`
 }
 
@@ -180,4 +180,23 @@ networks:
 volumes:
 ${config.nodes.map((_, i) => `  "${networkName}-vol${i + 1}":`).join('\n')}
   "${networkName}-cakeshopvol":`
+}
+
+export function dockerAttachCommand() {
+  if (isWin32()) {
+    return 'docker-compose exec node%1 /bin/sh -c "geth attach qdata/dd/geth.ipc"'
+  }
+  return 'docker-compose exec node$1 /bin/sh -c "geth attach qdata/dd/geth.ipc"'
+}
+
+export function dockerRunscriptCommand() {
+  if (isWin32()) {
+    return `FOR /F "tokens=* USEBACKQ" %%g IN (\`docker-compose ps -q node1\`) DO set DOCKER_CONTAINER=%%g
+docker cp %1 %DOCKER_CONTAINER%:/%1
+docker-compose exec node1 /bin/sh -c "geth --exec 'loadScript(\\"%1\\")' attach qdata/dd/geth.ipc"
+`
+  }
+  return `docker cp $1 "$(docker-compose ps -q node1)":/$1
+docker-compose exec node1 /bin/sh -c "geth --exec 'loadScript(\\"$1\\")' attach qdata/dd/geth.ipc"
+`
 }

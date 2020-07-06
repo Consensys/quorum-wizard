@@ -20,8 +20,7 @@ import {
   LATEST_TESSERA,
   LATEST_TESSERA_J8,
 } from '../generators/download'
-import { error, info } from '../utils/log'
-
+import { error } from '../utils/log'
 
 export const INITIAL_MODE = {
   type: 'list',
@@ -194,6 +193,7 @@ export const QUESTIONS = [
 ]
 
 export const QUICKSTART_ANSWERS = {
+  deployment: isWindows() ? undefined : 'bash',
   name: '3-nodes-quickstart',
   numberNodes: 3,
   consensus: 'raft',

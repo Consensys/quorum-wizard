@@ -1,9 +1,41 @@
-import { copyFile, cwd, libRootDir, writeFile } from '../utils/fileUtils'
+import {
+  copyFile,
+  cwd,
+  libRootDir,
+  writeFile,
+} from '../utils/fileUtils'
 import { loadTesseraPublicKey } from './transactionManager'
 import { isTessera } from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
-import { setEnvironmentCommand } from './bashHelper'
+import {
+  bashAttachCommand,
+  bashRunscriptCommand,
+  scriptHeader,
+  validateNodeNumberInput,
+} from './bashHelper'
 import { isWin32 } from '../utils/execUtils'
+import {
+  kubernetesAttachCommand,
+  kubernetesRunscriptCommand,
+} from './kubernetesHelper'
+import {
+  dockerAttachCommand,
+  dockerRunscriptCommand,
+} from './dockerHelper'
+
+export function generateAndCopyExampleScripts(config) {
+  const networkPath = joinPath(cwd(), 'network', config.network.name)
+  writeFile(joinPath(networkPath, isWin32() ? 'runscript.cmd' : 'runscript.sh'), generateRunScript(config), true)
+  writeFile(joinPath(networkPath, isWin32() ? 'attach.cmd' : 'attach.sh'), generateAttachScript(config), true)
+  copyFile(
+    joinPath(libRootDir(), 'lib', 'public_contract.js'),
+    joinPath(networkPath, 'public_contract.js'),
+  )
+  if (isTessera(config.network.transactionManager)) {
+    const nodeTwoPublicKey = loadTesseraPublicKey(config, 2)
+    writeFile(joinPath(networkPath, 'private_contract.js'), generatePrivateContractExample(nodeTwoPublicKey))
+  }
+}
 
 function generatePrivateContractExample(privateFor) {
   return `
@@ -31,29 +63,6 @@ var simple = simpleContract.new(42, {from:web3.eth.accounts[0], data: bytecode, 
 });`
 }
 
-function bashAttachCommand(config) {
-  return `${setEnvironmentCommand(config)}
-$BIN_GETH attach qdata/dd$1/geth.ipc`
-}
-
-function dockerAttachCommand() {
-  if (isWin32()) {
-    return 'docker-compose exec node%1 /bin/sh -c "geth attach qdata/dd/geth.ipc"'
-  }
-  return 'docker-compose exec node$1 /bin/sh -c "geth attach qdata/dd/geth.ipc"'
-}
-
-function kubernetesAttachCommand() {
-  if (isWin32()) {
-    return `
-FOR /f "delims=" %%g IN ('kubectl get pod --field-selector=status.phase^=Running -o name ^| findstr quorum-node%NODE_NUMBER%') DO set POD=%%g
-ECHO ON
-kubectl exec -it %POD% -c quorum -- /geth-helpers/geth-attach.sh`
-  }
-  return `POD=$('kubectl get pod --field-selector=status.phase^=Running -o name | grep quorum-node$NODE_NUMBER')
-kubectl $NAMESPACE exec -it $POD -c quorum -- /geth-helpers/geth-attach.sh`
-}
-
 function getAttachCommand(config) {
   switch (config.network.deployment) {
     case 'bash':
@@ -67,42 +76,6 @@ function getAttachCommand(config) {
   }
 }
 
-function validateNodeNumberInput(config) {
-  if (isWin32()) {
-    return `SET NUMBER_OF_NODES=${config.nodes.length}
-SET /A NODE_NUMBER=%1
-
-if "%1"=="" (
-    echo Please provide the number of the node to attach to (i.e. ./attach.sh 2) && EXIT /B 1
-)
-
-if %NODE_NUMBER% EQU 0 (
-    echo Please provide the number of the node to attach to (i.e. ./attach.sh 2) && EXIT /B 1
-)
-
-if %NODE_NUMBER% GEQ %NUMBER_OF_NODES%+1 (
-    echo %1 is not a valid node number. Must be between 1 and %NUMBER_OF_NODES%. && EXIT /B 1
-)`
-  }
-  return `NUMBER_OF_NODES=${config.nodes.length}
-NODE_NUMBER=$1
-case "$NODE_NUMBER" in ("" | *[!0-9]*)
-  echo 'Please provide the number of the node to attach to (i.e. ./attach.sh 2)' >&2
-  exit 1
-esac
-
-if [ "$NODE_NUMBER" -lt 1 ] || [ "$NODE_NUMBER" -gt $NUMBER_OF_NODES ]; then
-  echo "$NODE_NUMBER is not a valid node number. Must be between 1 and $NUMBER_OF_NODES." >&2
-  exit 1
-fi`
-}
-
-function scriptHeader() {
-  return isWin32()
-    ? '@ECHO OFF\nSETLOCAL'
-    : '#!/bin/bash'
-}
-
 export function generateAttachScript(config) {
   const command = getAttachCommand(config)
   return `${scriptHeader()}
@@ -110,52 +83,21 @@ ${validateNodeNumberInput(config)}
 ${command}`
 }
 
-function bashRunCommand(config) {
-  return `${setEnvironmentCommand(config)}
-$BIN_GETH --exec "loadScript(\\"$1\\")" attach qdata/dd1/geth.ipc`
-}
-
-function dockerRunCommand() {
-  if (isWin32()) {
-    // TODO fix this
-    return `FOR /F "tokens=* USEBACKQ" %%g IN (\`docker-compose ps -q node1\`) DO set DOCKER_CONTAINER=%%g
-docker cp %1 %DOCKER_CONTAINER%:/%1
-docker-compose exec node1 /bin/sh -c "geth --exec 'loadScript(\\"%1\\")' attach qdata/dd/geth.ipc"
-`
-  }
-  return `docker cp $1 "$(docker-compose ps -q node1)":/$1
-docker-compose exec node1 /bin/sh -c "geth --exec 'loadScript(\\"$1\\")' attach qdata/dd/geth.ipc"
-`
-}
-
-function kubernetesRunCommand() {
-  if (isWin32()) {
-    return `
-SET NODE_NUMBER=1
-FOR /f "delims=" %%g IN ('kubectl get pod --field-selector=status.phase^=Running -o name ^| findstr quorum-node%NODE_NUMBER%') DO set POD=%%g
-ECHO ON
-kubectl exec -it %POD% -c quorum -- /etc/quorum/qdata/contracts/runscript.sh /etc/quorum/qdata/contracts/%1
-    `
-  }
-  return `POD=$('kubectl get pod --field-selector=status.phase^=Running -o name | grep quorum-node$NODE_NUMBER')
-kubectl $NAMESPACE exec -it $POD -c quorum -- /etc/quorum/qdata/contracts/runscript.sh /etc/quorum/qdata/contracts/$1`
-}
-
-function generateRunCommand(config) {
+function generateRunscriptCommand(config) {
   switch (config.network.deployment) {
     case 'bash':
-      return bashRunCommand(config)
+      return bashRunscriptCommand(config)
     case 'docker-compose':
-      return dockerRunCommand()
+      return dockerRunscriptCommand()
     case 'kubernetes':
-      return kubernetesRunCommand()
+      return kubernetesRunscriptCommand()
     default:
       return ''
   }
 }
 
 export function generateRunScript(config) {
-  const command = generateRunCommand(config)
+  const command = generateRunscriptCommand(config)
   return `${scriptHeader()}
 ${filenameCheck()}
 ${command}
@@ -165,26 +107,11 @@ ${command}
 function filenameCheck() {
   if (isWin32()) {
     return `if NOT "%1"=="private_contract.js" if NOT "%1"=="public_contract.js" (
-    echo Please provide a valid script file to execute (i.e. ./runscript.sh private_contract.js) && EXIT /B 1
+  echo Please provide a valid script file to execute (i.e. ./runscript.sh private_contract.js) && EXIT /B 1
 )`
   }
   return `if [ -z $1 ] || [ ! -f $1 ]; then
-echo "Please provide a valid script file to execute (i.e. ./runscript.sh private_contract.js)" >&2
-exit 1
+  echo "Please provide a valid script file to execute (i.e. ./runscript.sh private_contract.js)" >&2
+  exit 1
 fi`
-}
-
-// eslint-disable-next-line import/prefer-default-export
-export function generateAndCopyExampleScripts(config) {
-  const networkPath = joinPath(cwd(), 'network', config.network.name)
-  writeFile(joinPath(networkPath, isWin32() ? 'runscript.cmd' : 'runscript.sh'), generateRunScript(config), true)
-  writeFile(joinPath(networkPath, isWin32() ? 'attach.cmd' : 'attach.sh'), generateAttachScript(config), true)
-  copyFile(
-    joinPath(libRootDir(), 'lib', 'public_contract.js'),
-    joinPath(networkPath, 'public_contract.js'),
-  )
-  if (isTessera(config.network.transactionManager)) {
-    const nodeTwoPublicKey = loadTesseraPublicKey(config, 2)
-    writeFile(joinPath(networkPath, 'private_contract.js'), generatePrivateContractExample(nodeTwoPublicKey))
-  }
 }

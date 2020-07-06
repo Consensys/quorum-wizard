@@ -6,7 +6,10 @@ import {
   libRootDir,
   writeFile,
 } from '../utils/fileUtils'
-import { executeSync } from '../utils/execUtils'
+import {
+  executeSync,
+  isWin32,
+} from '../utils/execUtils'
 import {
   buildCakeshopDir,
   generateCakeshopScript,
@@ -30,7 +33,7 @@ export function buildBashScript(config) {
   const commands = createCommands(config)
 
   const startScript = [
-    '#!/bin/bash',
+    scriptHeader(),
     'echo "\nStarting Quorum network...\n"',
     setEnvironmentCommand(config),
     commands.tesseraStart,
@@ -90,7 +93,6 @@ export function createCommands(config) {
   }
   return obj
 }
-
 
 export async function buildBash(config) {
   const bashDetails = buildBashScript(config)
@@ -195,4 +197,50 @@ done
 
 echo "All Tessera nodes started"
 `
+}
+
+export function bashAttachCommand(config) {
+  return `${setEnvironmentCommand(config)}
+$BIN_GETH attach qdata/dd$1/geth.ipc`
+}
+
+export function bashRunscriptCommand(config) {
+  return `${setEnvironmentCommand(config)}
+$BIN_GETH --exec "loadScript(\\"$1\\")" attach qdata/dd1/geth.ipc`
+}
+
+export function scriptHeader() {
+  return isWin32()
+    ? '@ECHO OFF\nSETLOCAL'
+    : '#!/bin/bash'
+}
+
+export function validateNodeNumberInput(config) {
+  if (isWin32()) {
+    return `SET NUMBER_OF_NODES=${config.nodes.length}
+SET /A NODE_NUMBER=%1
+
+if "%1"=="" (
+    echo Please provide the number of the node to attach to (i.e. ./attach.sh 2) && EXIT /B 1
+)
+
+if %NODE_NUMBER% EQU 0 (
+    echo Please provide the number of the node to attach to (i.e. ./attach.sh 2) && EXIT /B 1
+)
+
+if %NODE_NUMBER% GEQ %NUMBER_OF_NODES%+1 (
+    echo %1 is not a valid node number. Must be between 1 and %NUMBER_OF_NODES%. && EXIT /B 1
+)`
+  }
+  return `NUMBER_OF_NODES=${config.nodes.length}
+NODE_NUMBER=$1
+case "$NODE_NUMBER" in ("" | *[!0-9]*)
+  echo 'Please provide the number of the node to attach to (i.e. ./attach.sh 2)' >&2
+  exit 1
+esac
+
+if [ "$NODE_NUMBER" -lt 1 ] || [ "$NODE_NUMBER" -gt $NUMBER_OF_NODES ]; then
+  echo "$NODE_NUMBER is not a valid node number. Must be between 1 and $NUMBER_OF_NODES." >&2
+  exit 1
+fi`
 }

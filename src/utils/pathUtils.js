@@ -15,7 +15,6 @@ export function verifyPathInsideDirectory(root, path) {
   || path === ROOT
   || removeTrailingSlash(root) === removeTrailingSlash(path)
   || path.indexOf(root) !== 0) {
-    console.log(`Path (${path}) was outside working directory (${root})`)
     throw new Error('Path was outside of working directory')
   }
 }

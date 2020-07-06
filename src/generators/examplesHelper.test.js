@@ -12,15 +12,17 @@ import {
 } from '../utils/fileUtils'
 import { generateAndCopyExampleScripts, generateAttachScript, generateRunScript } from './examplesHelper'
 import { loadTesseraPublicKey } from './transactionManager'
-import { setEnvironmentCommand } from './bashHelper'
+import { pathToCakeshop, pathToQuorumBinary, pathToTesseraJar } from './binaryHelper'
 
-jest.mock('./bashHelper')
+jest.mock('./binaryHelper')
 jest.mock('../utils/fileUtils')
 jest.mock('./transactionManager')
 cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 loadTesseraPublicKey.mockReturnValue('publickey')
-setEnvironmentCommand.mockReturnValue('BIN_GETH=path/to/binary')
+pathToQuorumBinary.mockReturnValue('path/to/binary')
+pathToTesseraJar.mockReturnValue('path/to/binary')
+pathToCakeshop.mockReturnValue('path/to/binary')
 
 const CONFIG = {
   network: {

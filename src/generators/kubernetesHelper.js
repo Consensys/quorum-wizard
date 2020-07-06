@@ -1,12 +1,9 @@
-import {
-  writeFile,
-} from '../utils/fileUtils'
-import {
-  getFullNetworkPath,
-} from './networkCreator'
+import { writeFile } from '../utils/fileUtils'
+import { getFullNetworkPath } from './networkCreator'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
 import { isWin32 } from '../utils/execUtils'
+import { scriptHeader, validateNodeNumberInput } from './bashHelper'
 
 // eslint-disable-next-line import/prefer-default-export
 export async function createKubernetes(config) {
@@ -27,25 +24,25 @@ export async function createKubernetes(config) {
 }
 
 function createStartScript() {
-  return `#!/bin/bash
-# check minikube is running
-minikube ip > /dev/null 2>&1
+  return `${scriptHeader()}
+
+# check kubectl is installed
+kubectl > /dev/null 2>&1
 EXIT_CODE=$?
 
 if [ $EXIT_CODE -ne 0 ];
 then
-  printf "Error: minikube is not running, please install and start before running this script.\n"
+  printf "Error: kubectl not found, please install kubectl before running this script.\n"
   printf "For more information, see our qubernetes project: https://github.com/jpmorganchase/qubernetes\n"
   exit $EXIT_CODE
 fi
 
-# check kubectl is installed
-kubectl version > /dev/null 2>&1
+kubectl cluster-info >nul 2>&1
 EXIT_CODE=$?
 
 if [ $EXIT_CODE -ne 0 ];
 then
-  printf "Error: kubectl is not running, please install kubectl before running this script.\n"
+  printf "Could not connect to a kubernetes cluster. Please make sure you have minikube or another local kubernetes cluster running.\n"
   printf "For more information, see our qubernetes project: https://github.com/jpmorganchase/qubernetes\n"
   exit $EXIT_CODE
 fi
@@ -56,7 +53,7 @@ echo "\nRun 'kubectl get pods' to check status of pods\n"
 }
 
 function createStartScriptWindows() {
-  return `@ECHO OFF
+  return `${scriptHeader()}
 kubectl >nul 2>&1
 if ERRORLEVEL 1 (
   echo kubectl not found on your machine. Please make sure you have Kubernetes installed && EXIT /B 1
@@ -72,7 +69,7 @@ echo Run 'kubectl get pods' to check status of pods`
 }
 
 function createStopScript() {
-  return `#!/bin/bash
+  return `${scriptHeader()}
 kubectl delete -f out -f out/deployments`
 }
 
@@ -81,20 +78,10 @@ function createStopScriptWindows() {
 }
 
 function createEndpointScript(config) {
-  return `
-#!/bin/bash
-NUMBER_OF_NODES=${config.nodes.length}
-case "$1" in ("" | *[!0-9]*)
-  echo 'Please provide the number of the node to get endpoints for (i.e. ./getEndpoints.sh 2)' >&2
-  exit 1
-esac
+  return `${scriptHeader()}
+${validateNodeNumberInput(config)}
 
-if [ "$1" -lt 1 ] || [ "$1" -gt $NUMBER_OF_NODES ]; then
-  echo "$1 is not a valid node number. Must be between 1 and $NUMBER_OF_NODES." >&2
-  exit 1
-fi
-
-IP_ADDRESS=$(minikube ip)
+IP_ADDRESS=$(minikube ip 2>/dev/null || echo localhost)
 
 QUORUM_PORT=$(kubectl get service quorum-node$1 -o=jsonpath='{range.spec.ports[?(@.name=="rpc-listener")]}{.nodePort}')
 
@@ -106,22 +93,8 @@ echo tessera 3rd party: http://$IP_ADDRESS:$TESSERA_PORT
 }
 
 function createEndpointScriptWindows(config) {
-  return `@ECHO OFF
-SETLOCAL
-SET NUMBER_OF_NODES=${config.nodes.length}
-SET /A input=%1
-
-if "%1"=="" (
-    echo Please provide the number of the node to attach to (i.e. ./attach.sh 2) && EXIT /B 1
-)
-
-if %input% EQU 0 (
-    echo Please provide the number of the node to attach to (i.e. ./attach.sh 2) && EXIT /B 1
-)
-
-if %input% GEQ %NUMBER_OF_NODES%+1 (
-    echo %1 is not a valid node number. Must be between 1 and %NUMBER_OF_NODES%. && EXIT /B 1
-)
+  return `${scriptHeader()}
+${validateNodeNumberInput(config)}
 
 FOR /f "delims=" %%g IN ('minikube ip ^|^| echo localhost') DO set IP_ADDRESS=%%g
 
@@ -131,4 +104,30 @@ FOR /F "tokens=* USEBACKQ" %%g IN (\`kubectl get service quorum-node%input% -o^=
 
 echo quorum rpc: http://%IP_ADDRESS%:%QUORUM_PORT%
 echo tessera 3rd party: http://%IP_ADDRESS%:%TESSERA_PORT%`
+}
+
+export function kubernetesAttachCommand() {
+  if (isWin32()) {
+    return `
+FOR /f "delims=" %%g IN ('kubectl get pod --field-selector=status.phase^=Running -o name ^| findstr quorum-node%NODE_NUMBER%') DO set POD=%%g
+ECHO ON
+kubectl exec -it %POD% -c quorum -- /geth-helpers/geth-attach.sh`
+  }
+  return `POD=$(kubectl get pod --field-selector=status.phase=Running -o name | grep quorum-node$NODE_NUMBER)
+kubectl $NAMESPACE exec -it $POD -c quorum -- /geth-helpers/geth-attach.sh`
+}
+
+export function kubernetesRunscriptCommand() {
+  if (isWin32()) {
+    return `
+SET NODE_NUMBER=1
+FOR /f "delims=" %%g IN ('kubectl get pod --field-selector=status.phase^=Running -o name ^| findstr quorum-node%NODE_NUMBER%') DO set POD=%%g
+ECHO ON
+kubectl exec -it %POD% -c quorum -- /etc/quorum/qdata/contracts/runscript.sh /etc/quorum/qdata/contracts/%1
+    `
+  }
+  return `
+NODE_NUMBER=1
+POD=$(kubectl get pod --field-selector=status.phase=Running -o name | grep quorum-node$NODE_NUMBER)
+kubectl $NAMESPACE exec -it $POD -c quorum -- /etc/quorum/qdata/contracts/runscript.sh /etc/quorum/qdata/contracts/$1`
 }

@@ -129,6 +129,7 @@ describe('creates network resources with remote qubernetes container from answer
         ...containerPortInfo,
       },
     })
+    readFileToString.mockReturnValueOnce('')
     generateResourcesRemote(config)
 
     expect(buildKubernetesResource).toHaveBeenCalled()
@@ -145,6 +146,7 @@ describe('creates network resources with remote qubernetes container from answer
         ...containerPortInfo,
       },
     })
+    readFileToString.mockReturnValueOnce('')
     generateResourcesRemote(config)
 
     expect(buildKubernetesResource).toHaveBeenCalled()
