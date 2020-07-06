@@ -32,7 +32,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -51,6 +51,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
+      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -72,7 +73,8 @@ x-quorum-def:
         --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
-        \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+        $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}} \\\\
+        $$EXTRA_ARGS
   expose:
     - \\"\${QUORUM_P2P_PORT:-21000}\\"
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
@@ -164,6 +166,7 @@ services:
     ports:
       - \\"56000:8545\\"
       - \\"57000:8645\\"
+      - \\"58000:8547\\"
     volumes:
       - 2-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
@@ -194,6 +197,7 @@ services:
     ports:
       - \\"56001:8545\\"
       - \\"57001:8645\\"
+      - \\"58001:8547\\"
     volumes:
       - 2-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
@@ -275,7 +279,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -294,6 +298,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
+      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -315,7 +320,8 @@ x-quorum-def:
         --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
-        \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+        $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}} \\\\
+        $$EXTRA_ARGS
   expose:
     - \\"\${QUORUM_P2P_PORT:-21000}\\"
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
@@ -383,6 +389,7 @@ services:
     ports:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
+      - \\"24000:8547\\"
     volumes:
       - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
@@ -413,6 +420,7 @@ services:
     ports:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
+      - \\"24001:8547\\"
     volumes:
       - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
@@ -443,6 +451,7 @@ services:
     ports:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
+      - \\"24002:8547\\"
     volumes:
       - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
@@ -514,7 +523,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -533,6 +542,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
+      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -554,7 +564,8 @@ x-quorum-def:
         --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
-        \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+        $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}} \\\\
+        $$EXTRA_ARGS
   expose:
     - \\"\${QUORUM_P2P_PORT:-21000}\\"
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
@@ -646,6 +657,7 @@ services:
     ports:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
+      - \\"24000:8547\\"
     volumes:
       - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
@@ -676,6 +688,7 @@ services:
     ports:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
+      - \\"24001:8547\\"
     volumes:
       - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
@@ -706,6 +719,7 @@ services:
     ports:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
+      - \\"24002:8547\\"
     volumes:
       - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
@@ -788,7 +802,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -807,6 +821,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
+      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -828,7 +843,8 @@ x-quorum-def:
         --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
-        \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+        $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}} \\\\
+        $$EXTRA_ARGS
   expose:
     - \\"\${QUORUM_P2P_PORT:-21000}\\"
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
@@ -896,6 +912,7 @@ services:
     ports:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
+      - \\"24000:8547\\"
     volumes:
       - 3-nodes-raft-tessera-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
@@ -926,6 +943,7 @@ services:
     ports:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
+      - \\"24001:8547\\"
     volumes:
       - 3-nodes-raft-tessera-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
@@ -956,6 +974,7 @@ services:
     ports:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
+      - \\"24002:8547\\"
     volumes:
       - 3-nodes-raft-tessera-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
@@ -1027,7 +1046,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1046,6 +1065,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
+      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -1067,7 +1087,8 @@ x-quorum-def:
         --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
-        \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+        $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}} \\\\
+        $$EXTRA_ARGS
   expose:
     - \\"\${QUORUM_P2P_PORT:-21000}\\"
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
@@ -1102,6 +1123,7 @@ services:
     ports:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
+      - \\"24000:8547\\"
     volumes:
       - 5-nodes-istanbul-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
@@ -1117,6 +1139,7 @@ services:
     ports:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
+      - \\"24001:8547\\"
     volumes:
       - 5-nodes-istanbul-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
@@ -1132,6 +1155,7 @@ services:
     ports:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
+      - \\"24002:8547\\"
     volumes:
       - 5-nodes-istanbul-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
@@ -1147,6 +1171,7 @@ services:
     ports:
       - \\"22003:8545\\"
       - \\"23003:8645\\"
+      - \\"24003:8547\\"
     volumes:
       - 5-nodes-istanbul-docker-compose-vol4:/qdata
       - ./qdata:/examples:ro
@@ -1162,6 +1187,7 @@ services:
     ports:
       - \\"22004:8545\\"
       - \\"23004:8645\\"
+      - \\"24004:8547\\"
     volumes:
       - 5-nodes-istanbul-docker-compose-vol5:/qdata
       - ./qdata:/examples:ro
@@ -1231,7 +1257,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off %DOCKER_IP%$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1250,6 +1276,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
+      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -1271,7 +1298,8 @@ x-quorum-def:
         --port \${QUORUM_P2P_PORT:-21000} \\\\
         --unlock 0 \\\\
         --password $\${DDIR}/keystore/password.txt \\\\
-        \${QUORUM_GETH_ARGS:-} $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+        $\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}} \\\\
+        $$EXTRA_ARGS
   expose:
     - \\"\${QUORUM_P2P_PORT:-21000}\\"
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
@@ -1282,6 +1310,7 @@ services:
     ports:
       - \\"22000:8545\\"
       - \\"23000:8645\\"
+      - \\"24000:8547\\"
     volumes:
       - 5-nodes-istanbul-docker-compose-vol1:/qdata
       - ./qdata:/examples:ro
@@ -1297,6 +1326,7 @@ services:
     ports:
       - \\"22001:8545\\"
       - \\"23001:8645\\"
+      - \\"24001:8547\\"
     volumes:
       - 5-nodes-istanbul-docker-compose-vol2:/qdata
       - ./qdata:/examples:ro
@@ -1312,6 +1342,7 @@ services:
     ports:
       - \\"22002:8545\\"
       - \\"23002:8645\\"
+      - \\"24002:8547\\"
     volumes:
       - 5-nodes-istanbul-docker-compose-vol3:/qdata
       - ./qdata:/examples:ro
@@ -1327,6 +1358,7 @@ services:
     ports:
       - \\"22003:8545\\"
       - \\"23003:8645\\"
+      - \\"24003:8547\\"
     volumes:
       - 5-nodes-istanbul-docker-compose-vol4:/qdata
       - ./qdata:/examples:ro
@@ -1342,6 +1374,7 @@ services:
     ports:
       - \\"22004:8545\\"
       - \\"23004:8645\\"
+      - \\"24004:8547\\"
     volumes:
       - 5-nodes-istanbul-docker-compose-vol5:/qdata
       - ./qdata:/examples:ro

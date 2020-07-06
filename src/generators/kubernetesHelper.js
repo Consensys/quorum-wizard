@@ -14,18 +14,18 @@ export async function createKubernetes(config) {
   info('Writing start script...')
 
   writeFile(joinPath(networkPath, 'start.sh'), createStartScript(), true)
-  writeFile(joinPath(networkPath, 'stop.sh'), 'kubectl delete -f out -f out/deployments', true)
+  writeFile(joinPath(networkPath, 'stop.sh'), createStopScript(), true)
   writeFile(joinPath(networkPath, 'getEndpoints.sh'), createEndpointScript(config), true)
   info('Done')
 }
 
 function createStartScript() {
-  return `
+  return `#!/bin/bash
 # check minikube is running
 minikube ip > /dev/null 2>&1
 EXIT_CODE=$?
 
-if [[ EXIT_CODE -ne 0 ]];
+if [ $EXIT_CODE -ne 0 ];
 then
   printf "Error: minikube is not running, please install and start before running this script.\n"
   printf "For more information, see our qubernetes project: https://github.com/jpmorganchase/qubernetes\n"
@@ -36,7 +36,7 @@ fi
 kubectl version > /dev/null 2>&1
 EXIT_CODE=$?
 
-if [[ EXIT_CODE -ne 0 ]];
+if [ $EXIT_CODE -ne 0 ];
 then
   printf "Error: kubectl is not running, please install kubectl before running this script.\n"
   printf "For more information, see our qubernetes project: https://github.com/jpmorganchase/qubernetes\n"
@@ -46,6 +46,11 @@ fi
 kubectl apply -f out -f out/deployments
 echo "\nRun 'kubectl get pods' to check status of pods\n"
 `
+}
+
+function createStopScript() {
+  return `#!/bin/bash
+kubectl delete -f out -f out/deployments`
 }
 
 function createEndpointScript(config) {

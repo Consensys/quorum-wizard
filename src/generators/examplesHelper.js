@@ -116,5 +116,15 @@ export function generateAndCopyExampleScripts(config) {
   if (isTessera(config.network.transactionManager)) {
     const nodeTwoPublicKey = loadTesseraPublicKey(config, 2)
     writeFile(joinPath(networkPath, 'private_contract.js'), generatePrivateContractExample(nodeTwoPublicKey))
+    if (config.network.txGenerate) {
+      copyFile(
+        joinPath(networkPath, 'private_contract.js'),
+        joinPath(networkPath, 'out', 'config', 'scripts', 'private_contract.js')
+      )
+      copyFile(
+        joinPath(networkPath, 'private_contract.js'),
+        joinPath(networkPath, 'resources', 'scripts', 'private_contract.js')
+      )
+    }
   }
 }

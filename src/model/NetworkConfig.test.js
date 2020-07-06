@@ -1,4 +1,4 @@
-import { createConfigFromAnswers, isQuorum260Plus } from './NetworkConfig'
+import { createConfigFromAnswers } from './NetworkConfig'
 import { isJava11Plus } from '../utils/execUtils'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 
@@ -190,10 +190,4 @@ test('creates 7nodes istanbul no-TM custom docker config', () => {
     },
   })
   expect(config).toMatchSnapshot()
-})
-
-test('tests if quorum version is 2.6.0 or higher', () => {
-  expect(isQuorum260Plus('2.6.1')).toBeTruthy()
-  expect(isQuorum260Plus('2.6.0')).toBeTruthy()
-  expect(isQuorum260Plus('2.5.0')).not.toBeTruthy()
 })

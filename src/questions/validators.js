@@ -30,6 +30,20 @@ export function transformCakeshopAnswer(answer) {
   return 'none'
 }
 
+export function transformSplunkAnswer(answer) {
+  if (answer === 'Yes') {
+    return true
+  }
+  return false
+}
+
+export function transformTxGenerateAnswer(answer) {
+  if (answer === 'Yes') {
+    return true
+  }
+  return false
+}
+
 export function disableIfWrongJavaVersion({ type }) {
   if (type === 'jar8' && isJava11Plus()) {
     return 'Disabled, requires Java 8'

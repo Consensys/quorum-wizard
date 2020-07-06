@@ -133,8 +133,7 @@ describe('creates network resources with remote qubernetes container from answer
 
     expect(buildKubernetesResource).toHaveBeenCalled()
     expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
-    expect(createFolder).toBeCalledWith(createNetPath(config, 'out', 'config'), true)
-    expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'out', 'config'))
+    expect(copyDirectory).toBeCalledWith(createNetPath(config, 'out', 'config'), createNetPath(config, 'resources'))
   })
   it('Creates new resources and keys for docker with new keys', () => {
     const config = createConfigFromAnswers({
@@ -150,6 +149,7 @@ describe('creates network resources with remote qubernetes container from answer
 
     expect(buildKubernetesResource).toHaveBeenCalled()
     expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
+    expect(copyDirectory).toBeCalledWith(createNetPath(config, 'out', 'config'), createNetPath(config, 'resources'))
   })
   it('Creates new resources for kubernetes using pregen keys', () => {
     const config = createConfigFromAnswers({
@@ -164,8 +164,6 @@ describe('creates network resources with remote qubernetes container from answer
 
     expect(buildKubernetesResource).toHaveBeenCalled()
     expect(writeFile).toBeCalledWith(createNetPath(config, 'qubernetes.yaml'), anything(), false)
-    expect(createFolder).toBeCalledWith(createNetPath(config, 'out', 'config'), true)
-    expect(copyDirectory).toBeCalledWith(createLibPath('7nodes'), createNetPath(config, 'out', 'config'))
   })
   it('Creates new resources for kubernetes with new keys', () => {
     const config = createConfigFromAnswers({
@@ -228,7 +226,7 @@ describe('creates qdata directory for bash network', () => {
         joinPath(createNetPath(config, `qdata/dd${i}`), 'static-nodes.json'),
       )
       expect(copyFile).toBeCalledWith(
-        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'key'),
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'acctkeyfile.json'),
         createNetPath(config, `qdata/dd${i}/keystore`, 'key'),
       )
       expect(copyFile).toBeCalledWith(
@@ -294,7 +292,7 @@ describe('creates qdata directory for bash network no tessera', () => {
         joinPath(createNetPath(config, `qdata/dd${i}`), 'static-nodes.json'),
       )
       expect(copyFile).toBeCalledWith(
-        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'key'),
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'acctkeyfile.json'),
         createNetPath(config, `qdata/dd${i}/keystore`, 'key'),
       )
       expect(copyFile).toBeCalledWith(
@@ -356,7 +354,7 @@ describe('creates qdata directory for docker network', () => {
         joinPath(createNetPath(config, `qdata/dd${i}`), 'static-nodes.json'),
       )
       expect(copyFile).toBeCalledWith(
-        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'key'),
+        joinPath(getFullNetworkPath(config), 'resources', `key${i}`, 'acctkeyfile.json'),
         createNetPath(config, `qdata/dd${i}/keystore`, 'key'),
       )
       expect(copyFile).toBeCalledWith(

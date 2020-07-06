@@ -13,13 +13,17 @@ import {
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
-import { buildKubernetesResource } from '../model/ResourceConfig'
+import {
+  buildKubernetesResource,
+  LATEST_QUBERNETES,
+} from '../model/ResourceConfig'
 import {
   isRaft,
   isTessera,
   isDocker,
   isKubernetes,
   isBash,
+  isSplunk,
 } from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
@@ -35,7 +39,7 @@ export function createNetwork(config) {
 }
 
 export function generateResourcesRemote(config) {
-  info('Pulling latest docker container and generating network resources...')
+  info('Pulling docker container and generating network resources...')
   const configDir = joinPath(cwd(), config.network.configDir)
   const networkPath = getFullNetworkPath(config)
   const remoteOutputDir = joinPath(networkPath, 'out', 'config')
@@ -43,31 +47,36 @@ export function generateResourcesRemote(config) {
   const file = buildKubernetesResource(config)
   writeFile(joinPath(networkPath, 'qubernetes.yaml'), file, false)
 
-  if (!config.network.generateKeys) {
-    createFolder(remoteOutputDir, true)
-    copyDirectory(joinPath(libRootDir(), '7nodes'), remoteOutputDir)
-  }
-
   const initScript = isKubernetes(config.network.deployment) ? 'qube-init' : 'quorum-init'
+  const copy7nodes = !config.network.generateKeys ? 'cp -r /qubernetes/7nodes /qubernetes/out/config; ' : ''
   let dockerCommand = `cd ${networkPath}
   ## make sure docker is installed
   docker ps > /dev/null
   EXIT_CODE=$?
 
-  if [[ EXIT_CODE -ne 0 ]];
+  if [ $EXIT_CODE -ne 0 ];
   then
     exit $EXIT_CODE
   fi
 
-  docker pull quorumengineering/qubernetes:latest
+  docker pull quorumengineering/qubernetes:${LATEST_QUBERNETES}
 
-  docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./${initScript} --action=update qubernetes.yaml 2>&1
-  find . -type f -name 'UTC*' -execdir mv {} key ';'
+
+  docker run --rm -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out quorumengineering/qubernetes:${LATEST_QUBERNETES} /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"
   `
 
   if (isDocker(config.network.deployment)) {
     dockerCommand += `
-    sed -i '' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/${buildDockerIp(config.containerPorts.dockerSubnet, '1')}\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
+    sed -i'.bak' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/${buildDockerIp(config.containerPorts.dockerSubnet, '1')}\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
+  }
+  if (isSplunk(config.network.splunk)) {
+    copyDirectory(joinPath(libRootDir(), 'splunk'), joinPath(remoteOutputDir, 'splunk'))
+  }
+
+  if (config.network.txGenerate) {
+    copyDirectory(joinPath(libRootDir(), 'lib', 'scripts'), joinPath(remoteOutputDir, 'scripts'))
+    copyDirectory(joinPath(libRootDir(), 'lib', 'contracts'), joinPath(remoteOutputDir, 'contracts'))
+    // copyFile(joinPath(networkPath, 'private_contract.js'), joinPath(remoteOutputDir, 'scripts', 'private_contract.js'))
   }
 
   try {
@@ -89,6 +98,15 @@ export async function generateResourcesLocally(config) {
     await generateKeys(config, configDir)
   } else {
     copyDirectory(joinPath(libRootDir(), '7nodes'), configDir)
+  }
+
+  if (isSplunk(config.network.splunk)) {
+    copyDirectory(joinPath(libRootDir(), 'splunk'), joinPath(configDir, 'splunk'))
+  }
+
+  if (config.network.txGenerate) {
+    copyDirectory(joinPath(libRootDir(), 'lib', 'scripts'), joinPath(configDir, 'scripts'))
+    copyFile(joinPath(networkPath, 'private_contract.js'), joinPath(configDir, 'scripts', 'private_contract.js'))
   }
 
   generateConsensusConfig(
@@ -116,7 +134,7 @@ export function createQdataDirectory(config) {
 
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
-    const keySource = joinPath(configPath, `key${nodeNumber}`)
+    const keySource = joinPath(configPath, '7nodes', `key${nodeNumber}`)
     const quorumDir = joinPath(qdata, `dd${nodeNumber}`)
     const gethDir = joinPath(quorumDir, 'geth')
     const keyDir = joinPath(quorumDir, 'keystore')
@@ -129,7 +147,7 @@ export function createQdataDirectory(config) {
 
     copyFile(joinPath(configPath, 'permissioned-nodes.json'), joinPath(quorumDir, 'permissioned-nodes.json'))
     copyFile(joinPath(configPath, 'permissioned-nodes.json'), joinPath(quorumDir, 'static-nodes.json'))
-    copyFile(joinPath(keySource, 'key'), joinPath(keyDir, 'key'))
+    copyFile(joinPath(keySource, 'acctkeyfile.json'), joinPath(keyDir, 'key'))
     copyFile(joinPath(keySource, 'nodekey'), joinPath(gethDir, 'nodekey'))
     copyFile(joinPath(keySource, 'password.txt'), passwordDestination)
     copyFile(joinPath(configPath, 'genesis.json'), genesisDestination)

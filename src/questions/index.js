@@ -6,12 +6,14 @@ import {
   isRaft,
   isCakeshop,
   isDocker,
+  isSplunk,
   getContainerPorts,
 } from '../model/NetworkConfig'
 import {
   getCustomizedBashNodes,
   getCustomizedDockerPorts,
   getCustomizedCakeshopPort,
+  getCustomizedSplunkPort,
 } from './customPromptHelper'
 import {
   getPrefilledAnswersForMode,
@@ -54,6 +56,10 @@ async function promptForCustomPorts(answers) {
 
   if (isCakeshop(answers.cakeshop)) {
     answers.cakeshopPort = await getCustomizedCakeshopPort()
+  }
+
+  if (isSplunk(answers.splunk)) {
+    answers.splunkPort = await getCustomizedSplunkPort()
   }
 }
 

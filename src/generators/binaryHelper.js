@@ -1,3 +1,4 @@
+import cmp from 'semver-compare'
 import { wizardHomeDir } from '../utils/fileUtils'
 import { executeSync } from '../utils/execUtils'
 import {
@@ -55,10 +56,8 @@ export function getGethOnPath() {
   try {
     const gethOnPath = executeSync('which geth').toString().trim()
     if (gethOnPath) {
-      const gethVersionOutput = executeSync('geth version').toString()
-      const versionMatch = gethVersionOutput.match(/Quorum Version: (\S+)/)
-      if (versionMatch !== null) {
-        const version = versionMatch[1]
+      const version = getPathGethVersion()
+      if (version !== null) {
         pathChoices.push({
           name: `Quorum ${version} on path (${gethOnPath})`,
           value: 'PATH',
@@ -69,6 +68,20 @@ export function getGethOnPath() {
     // either no geth or the version call errored, don't include it in choices
   }
   return pathChoices
+}
+
+export function getPathGethVersion() {
+  const gethVersionOutput = executeSync('geth version').toString()
+  const versionMatch = gethVersionOutput.match(/Quorum Version: (\S+)/)
+  if (versionMatch !== null) {
+    return versionMatch[1]
+  }
+  return null
+}
+
+export function isQuorum260Plus(quorumVersion) {
+  const version = quorumVersion === 'PATH' ? getPathGethVersion() : quorumVersion
+  return cmp(version, '2.6.0') >= 0
 }
 
 export function getDownloadableGethChoices(deployment) {

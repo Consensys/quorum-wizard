@@ -33,7 +33,7 @@ function doExec(keyDir, config) {
   let cmd = `cd ${keyDir} && ${pathToQuorumBinary(config.network.quorumVersion)} account new --keystore ${keyDir} --password password.txt 2>&1
   ${pathToBootnode()} -genkey=nodekey
   ${pathToBootnode()} --nodekey=nodekey --writeaddress > enode
-  find . -type f -name 'UTC*' -execdir mv {} key ';'
+  find . -type f -name 'UTC*' -execdir mv {} acctkeyfile.json ';'
   `
   if (isTessera(config.network.transactionManager)) {
     // blank password for now using `< /dev/null` to automatically answer password prompts

@@ -2,6 +2,7 @@
 
 import 'source-map-support/register'
 import inquirer from 'inquirer'
+import isWsl from 'is-wsl'
 import {
   createLogger,
   debug,
@@ -15,6 +16,8 @@ import {
   isDocker,
   isTessera,
   isKubernetes,
+  isCakeshop,
+  isSplunk,
 } from './model/NetworkConfig'
 import {
   createQdataDirectory,
@@ -46,15 +49,18 @@ const { argv } = yargs
   .version()
   .strict()
 
+createLogger(argv.v)
+debug('Showing debug logs')
+
 if (process.platform === 'win32') {
   info('Unfortunately, Windows OS is not yet supported by Quorum tooling.')
 
   process.exit(1)
+} else if (isWsl) {
+  info('Unfortunately, Windows Subsystem for Linux (WSL) is not yet supported by Quorum tooling.')
+
+  process.exit(1)
 }
-
-createLogger(argv.v)
-debug('Showing debug logs')
-
 
 if (argv.q) {
   buildNetwork('quickstart')
@@ -127,16 +133,25 @@ function printInstructions(config) {
   info('./start.sh')
   info('')
   info('A sample simpleStorage contract is provided to deploy to your network')
-  info('To use run ./runscript.sh public-contract.js from the network folder')
+  info('To use run ./runscript.sh public_contract.js from the network folder')
   info('')
   if (isTessera(config.network.transactionManager)) {
     info(`A private simpleStorage contract was created with privateFor set to use Node 2's public key: ${loadTesseraPublicKey(config, 2)}`)
-    info('To use run ./runscript private-contract.js from the network folder')
+    info('To use run ./runscript private_contract.js from the network folder')
     info('')
   }
   if (isKubernetes(config.network.deployment)) {
     info('A script to retrieve the quorum rpc and tessera 3rd party endpoints to use with remix or cakeshop is provided')
     info('To use run ./getEndpoints.sh from the network folder')
+    info('')
+  }
+  if(isCakeshop(config.network.spcakeshoplunk)) {
+    info('After starting, Cakeshop will be accessible here: http://localhost:8999')
+    info('')
+  }
+  if(isSplunk(config.network.splunk)) {
+    info('After starting, Splunk will be accessible here: http://localhost:8000')
+    info('The default credentials are admin:changeme')
     info('')
   }
 }

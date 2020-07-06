@@ -1,4 +1,3 @@
-import cmp from 'semver-compare'
 import { isJava11Plus } from '../utils/execUtils'
 import {
   LATEST_CAKESHOP,
@@ -21,12 +20,15 @@ export function createConfigFromAnswers(answers) {
     transactionManager = isJava11Plus() ? LATEST_TESSERA : LATEST_TESSERA_J8,
     deployment = 'bash',
     cakeshop = isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8,
+    splunk = false,
+    txGenerate = false,
     generateKeys = false,
     networkId = '10',
     genesisLocation = 'none',
     customizePorts = false,
     nodes = [],
     cakeshopPort = '8999',
+    splunkPort = '8000',
     remoteDebug = false,
     containerPorts = undefined,
   } = answers
@@ -46,10 +48,14 @@ export function createConfigFromAnswers(answers) {
       configDir: `network/${networkFolder}/resources`,
       deployment,
       cakeshop,
+      splunk,
+      txGenerate,
       networkId,
       customizePorts,
       cakeshopPort,
       remoteDebug,
+      splunkIp: (splunk) ? cidrhost(dockerSubnet, 66) : '127.0.0.1',
+      splunkPort,
     },
     nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(
       numberNodes,
@@ -79,6 +85,7 @@ export function generateNodeConfigs(
   const devP2pPort = 21000
   const rpcPort = 22000
   const wsPort = 23000
+  const graphQlPort = 24000
   const raftPort = 50401
   const thirdPartyPort = 9081
   const p2pPort = 9001
@@ -92,6 +99,7 @@ export function generateNodeConfigs(
         rpcPort: rpcPort + i,
         wsPort: wsPort + i,
         raftPort: raftPort + i,
+        graphQlPort: graphQlPort + i,
       },
     }
     if (isTessera(transactionManager)) {
@@ -115,6 +123,7 @@ export function getContainerPorts(deployment) {
       p2pPort: 21000,
       raftPort: 50400,
       wsPort: 8645,
+      graphQlPort: 8547,
     },
     tm: {
       p2pPort: 9000,
@@ -151,6 +160,6 @@ export function isCakeshop(cakeshop) {
   return cakeshop !== 'none'
 }
 
-export function isQuorum260Plus(quorumVersion) {
-  return cmp(quorumVersion, '2.6.0') >= 0
+export function isSplunk(splunk) {
+  return splunk === true || splunk === 'Yes'
 }
