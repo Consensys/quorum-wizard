@@ -1,4 +1,4 @@
-import { homedir } from 'os'
+import { homedir, release } from 'os'
 import { join, normalize } from 'path'
 import { existsSync, removeSync } from 'fs-extra'
 import { removeFolder, wizardHomeDir } from './fileUtils'
@@ -9,7 +9,7 @@ jest.mock('os')
 jest.mock('./pathUtils')
 existsSync.mockReturnValue(true)
 homedir.mockReturnValue('/path/to/user/home')
-
+release.mockReturnValue('19.5.0')
 
 describe('safely removes network folder', () => {
   it('does not try to remove when verification throws error', () => {
