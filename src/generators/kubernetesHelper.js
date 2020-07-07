@@ -96,11 +96,11 @@ function createEndpointScriptWindows(config) {
   return `${scriptHeader()}
 ${validateNodeNumberInput(config)}
 
-FOR /f "delims=" %%g IN ('minikube ip ^|^| echo localhost') DO set IP_ADDRESS=%%g
+FOR /f "delims=" %%g IN ('minikube ip 2^>nul ^|^| echo localhost') DO set IP_ADDRESS=%%g
 
-FOR /F "tokens=* USEBACKQ" %%g IN (\`kubectl get service quorum-node%input% -o^=jsonpath^="{range.spec.ports[?(@.name=='rpc-listener')]}{.nodePort}"\`) DO set QUORUM_PORT=%%g
+FOR /F "tokens=* USEBACKQ" %%g IN (\`kubectl get service quorum-node%NODE_NUMBER% -o^=jsonpath^="{range.spec.ports[?(@.name=='rpc-listener')]}{.nodePort}"\`) DO set QUORUM_PORT=%%g
 
-FOR /F "tokens=* USEBACKQ" %%g IN (\`kubectl get service quorum-node%input% -o^=jsonpath^="{range.spec.ports[?(@.name=='tm-tessera-third-part')]}{.nodePort}"\`) DO set TESSERA_PORT=%%g
+FOR /F "tokens=* USEBACKQ" %%g IN (\`kubectl get service quorum-node%NODE_NUMBER% -o^=jsonpath^="{range.spec.ports[?(@.name=='tm-tessera-third-part')]}{.nodePort}"\`) DO set TESSERA_PORT=%%g
 
 echo quorum rpc: http://%IP_ADDRESS%:%QUORUM_PORT%
 echo tessera 3rd party: http://%IP_ADDRESS%:%TESSERA_PORT%`
