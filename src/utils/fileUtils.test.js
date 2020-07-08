@@ -1,15 +1,16 @@
-import { homedir, release } from 'os'
 import { join, normalize } from 'path'
 import { existsSync, removeSync } from 'fs-extra'
 import { removeFolder, wizardHomeDir } from './fileUtils'
 import { joinPath, verifyPathInsideDirectory } from './pathUtils'
 
 jest.mock('fs-extra')
-jest.mock('os')
+jest.mock('os', () => ({
+  homedir: jest.fn(() => '/path/to/user/home'),
+  // is-wsl uses os.release() during initialization, must be mocked here, not using .mockReturnValue
+  release: jest.fn(() => '19.5.0'),
+}))
 jest.mock('./pathUtils')
 existsSync.mockReturnValue(true)
-homedir.mockReturnValue('/path/to/user/home')
-release.mockReturnValue('19.5.0')
 
 describe('safely removes network folder', () => {
   it('does not try to remove when verification throws error', () => {
