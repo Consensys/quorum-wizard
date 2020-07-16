@@ -2,7 +2,7 @@ import {
   getFullNetworkPath,
 } from './networkCreator'
 import {
-  copyFile,
+  copyFile, FILES,
   libRootDir,
   writeFile,
 } from '../utils/fileUtils'
@@ -103,8 +103,8 @@ export async function buildBash(config) {
   }
 
   info('Writing start script...')
-  writeFile(joinPath(networkPath, 'start.sh'), bashDetails.startScript, true)
-  copyFile(joinPath(libRootDir(), 'lib', 'stop.sh'), joinPath(networkPath, 'stop.sh'))
+  writeFile(joinPath(networkPath, FILES.start), bashDetails.startScript, true)
+  copyFile(joinPath(libRootDir(), 'lib', FILES.stop), joinPath(networkPath, FILES.stop))
 
   info('Initializing quorum...')
   bashDetails.initCommands.forEach((command) => executeSync(command))
@@ -199,39 +199,46 @@ echo "All Tessera nodes started"
 `
 }
 
-export function bashAttachCommand(config) {
+export function attachCommandBash(config) {
   return `${setEnvironmentCommand(config)}
 $BIN_GETH attach qdata/dd$1/geth.ipc`
 }
 
-export function bashRunscriptCommand(config) {
+export function runscriptCommandBash(config) {
   return `${setEnvironmentCommand(config)}
 $BIN_GETH --exec "loadScript(\\"$1\\")" attach qdata/dd1/geth.ipc`
 }
 
-export function scriptHeader() {
-  return isWin32()
-    ? '@ECHO OFF\nSETLOCAL'
-    : '#!/bin/bash'
+function scriptHeaderWindows() {
+  return '@ECHO OFF\nSETLOCAL'
 }
 
-export function validateNodeNumberInput(config) {
-  if (isWin32()) {
-    return `SET NUMBER_OF_NODES=${config.nodes.length}
+function scriptHeaderBash() {
+  return '#!/bin/bash'
+}
+
+export function scriptHeader() {
+  return isWin32() ? scriptHeaderWindows() : scriptHeaderBash()
+}
+
+function validateEnvNodeNumberWindows(config) {
+  return `SET NUMBER_OF_NODES=${config.nodes.length}
 SET /A NODE_NUMBER=%1
 
 if "%1"=="" (
-    echo Please provide the number of the node to attach to (i.e. ./attach.sh 2) && EXIT /B 1
+    echo Please provide the number of the node to attach to (i.e. attach.cmd 2) && EXIT /B 1
 )
 
 if %NODE_NUMBER% EQU 0 (
-    echo Please provide the number of the node to attach to (i.e. ./attach.sh 2) && EXIT /B 1
+    echo Please provide the number of the node to attach to (i.e. attach.cmd 2) && EXIT /B 1
 )
 
 if %NODE_NUMBER% GEQ %NUMBER_OF_NODES%+1 (
     echo %1 is not a valid node number. Must be between 1 and %NUMBER_OF_NODES%. && EXIT /B 1
 )`
-  }
+}
+
+function validateEnvNodeNumberBash(config) {
   return `NUMBER_OF_NODES=${config.nodes.length}
 NODE_NUMBER=$1
 case "$NODE_NUMBER" in ("" | *[!0-9]*)
@@ -243,4 +250,8 @@ if [ "$NODE_NUMBER" -lt 1 ] || [ "$NODE_NUMBER" -gt $NUMBER_OF_NODES ]; then
   echo "$NODE_NUMBER is not a valid node number. Must be between 1 and $NUMBER_OF_NODES." >&2
   exit 1
 fi`
+}
+
+export function validateNodeNumberInput(config) {
+  return isWin32() ? validateEnvNodeNumberWindows(config) : validateEnvNodeNumberBash(config)
 }

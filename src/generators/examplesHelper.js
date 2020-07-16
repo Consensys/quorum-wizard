@@ -1,6 +1,6 @@
 import {
   copyFile,
-  cwd,
+  cwd, FILES,
   libRootDir,
   writeFile,
 } from '../utils/fileUtils'
@@ -8,8 +8,8 @@ import { loadTesseraPublicKey } from './transactionManager'
 import { isTessera } from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
 import {
-  bashAttachCommand,
-  bashRunscriptCommand,
+  attachCommandBash,
+  runscriptCommandBash,
   scriptHeader,
   validateNodeNumberInput,
 } from './bashHelper'
@@ -25,15 +25,16 @@ import {
 
 export function generateAndCopyExampleScripts(config) {
   const networkPath = joinPath(cwd(), 'network', config.network.name)
-  writeFile(joinPath(networkPath, isWin32() ? 'runscript.cmd' : 'runscript.sh'), generateRunScript(config), true)
-  writeFile(joinPath(networkPath, isWin32() ? 'attach.cmd' : 'attach.sh'), generateAttachScript(config), true)
+  writeFile(joinPath(networkPath, FILES.runscript), generateRunScript(config), true)
+  writeFile(joinPath(networkPath, FILES.attach), generateAttachScript(config), true)
   copyFile(
-    joinPath(libRootDir(), 'lib', 'public_contract.js'),
-    joinPath(networkPath, 'public_contract.js'),
+    joinPath(libRootDir(), 'lib', FILES.publicContract),
+    joinPath(networkPath, FILES.publicContract),
   )
   if (isTessera(config.network.transactionManager)) {
     const nodeTwoPublicKey = loadTesseraPublicKey(config, 2)
-    writeFile(joinPath(networkPath, 'private_contract.js'), generatePrivateContractExample(nodeTwoPublicKey))
+    writeFile(joinPath(networkPath, FILES.privateContract),
+      generatePrivateContractExample(nodeTwoPublicKey))
   }
 }
 
@@ -66,7 +67,7 @@ var simple = simpleContract.new(42, {from:web3.eth.accounts[0], data: bytecode, 
 function getAttachCommand(config) {
   switch (config.network.deployment) {
     case 'bash':
-      return bashAttachCommand(config)
+      return attachCommandBash(config)
     case 'docker-compose':
       return dockerAttachCommand()
     case 'kubernetes':
@@ -86,7 +87,7 @@ ${command}`
 function generateRunscriptCommand(config) {
   switch (config.network.deployment) {
     case 'bash':
-      return bashRunscriptCommand(config)
+      return runscriptCommandBash(config)
     case 'docker-compose':
       return dockerRunscriptCommand()
     case 'kubernetes':
@@ -105,13 +106,19 @@ ${command}
 }
 
 function filenameCheck() {
-  if (isWin32()) {
-    return `if NOT "%1"=="private_contract.js" if NOT "%1"=="public_contract.js" (
-  echo Please provide a valid script file to execute (i.e. ./runscript.sh private_contract.js) && EXIT /B 1
+  return isWin32() ? filenameCheckWindows() : filenameCheckBash()
+}
+
+function filenameCheckWindows() {
+  return `if NOT "%1"=="${FILES.privateContract}" if NOT "%1"=="${FILES.publicContract}" (
+  echo Please provide a valid script file to execute (i.e. ${FILES.run}${FILES.runscript} ${FILES.privateContract}) && EXIT /B 1
 )`
-  }
+}
+
+function filenameCheckBash() {
   return `if [ -z $1 ] || [ ! -f $1 ]; then
-  echo "Please provide a valid script file to execute (i.e. ./runscript.sh private_contract.js)" >&2
+  echo "Please provide a valid script file to execute (i.e. ${FILES.run}${FILES.runscript} ${FILES.privateContract})" >&2
   exit 1
 fi`
 }
+

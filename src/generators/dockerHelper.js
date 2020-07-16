@@ -1,4 +1,5 @@
 import {
+  FILES,
   formatNewLine,
   libRootDir,
   readFileToString,
@@ -68,8 +69,8 @@ export async function createDockerCompose(config) {
   info('Writing start script...')
   writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)
   writeFile(joinPath(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
-  writeFile(joinPath(networkPath, isWin32() ? 'start.cmd' : 'start.sh'), getStartCommands(), true)
-  writeFile(joinPath(networkPath, isWin32() ? 'stop.cmd' : 'stop.sh'), getStopCommands(), true)
+  writeFile(joinPath(networkPath, FILES.start), getStartCommands(), true)
+  writeFile(joinPath(networkPath, FILES.stop), getStopCommands(), true)
   info('Done')
 }
 
@@ -182,21 +183,31 @@ ${config.nodes.map((_, i) => `  "${networkName}-vol${i + 1}":`).join('\n')}
   "${networkName}-cakeshopvol":`
 }
 
-export function dockerAttachCommand() {
-  if (isWin32()) {
-    return 'docker-compose exec node%1 /bin/sh -c "geth attach qdata/dd/geth.ipc"'
-  }
+function dockerAttachCommandWindows() {
+  return 'docker-compose exec node%1 /bin/sh -c "geth attach qdata/dd/geth.ipc"'
+}
+
+function dockerAttachCommandBash() {
   return 'docker-compose exec node$1 /bin/sh -c "geth attach qdata/dd/geth.ipc"'
 }
 
-export function dockerRunscriptCommand() {
-  if (isWin32()) {
-    return `FOR /F "tokens=* USEBACKQ" %%g IN (\`docker-compose ps -q node1\`) DO set DOCKER_CONTAINER=%%g
+export function dockerAttachCommand() {
+  return isWin32() ? dockerAttachCommandWindows() : dockerAttachCommandBash()
+}
+
+function dockerRunScriptCommandWindows() {
+  return `FOR /F "tokens=* USEBACKQ" %%g IN (\`docker-compose ps -q node1\`) DO set DOCKER_CONTAINER=%%g
 docker cp %1 %DOCKER_CONTAINER%:/%1
 docker-compose exec node1 /bin/sh -c "geth --exec 'loadScript(\\"%1\\")' attach qdata/dd/geth.ipc"
 `
-  }
+}
+
+function dockerRunScriptCommandBash() {
   return `docker cp $1 "$(docker-compose ps -q node1)":/$1
 docker-compose exec node1 /bin/sh -c "geth --exec 'loadScript(\\"$1\\")' attach qdata/dd/geth.ipc"
 `
+}
+
+export function dockerRunscriptCommand() {
+  return isWin32() ? dockerRunScriptCommandWindows() : dockerRunScriptCommandBash()
 }

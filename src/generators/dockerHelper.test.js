@@ -3,7 +3,7 @@ import {
   createConfigFromAnswers,
 } from '../model/NetworkConfig'
 import {
-  cwd,
+  cwd, FILES,
   formatNewLine,
   libRootDir,
   readFileToString,
@@ -79,13 +79,13 @@ describe('generates docker-compose directory', () => {
     )
 
     expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), 'start.sh'),
+      joinPath(getFullNetworkPath(), FILES.start),
       expect.anything(),
       true,
     )
 
     expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), 'stop.sh'),
+      joinPath(getFullNetworkPath(), FILES.stop),
       expect.anything(),
       true,
     )
@@ -113,13 +113,13 @@ describe('generates docker-compose directory', () => {
     )
 
     expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), 'start.sh'),
+      joinPath(getFullNetworkPath(), FILES.start),
       expect.anything(),
       true,
     )
 
     expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), 'stop.sh'),
+      joinPath(getFullNetworkPath(), FILES.stop),
       expect.anything(),
       true,
     )

@@ -13,8 +13,10 @@ import {
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
-import { buildKubernetesResource, LATEST_QUBERNETES, } from '../model/ResourceConfig'
-import { isBash, isDocker, isKubernetes, isRaft, isTessera, } from '../model/NetworkConfig'
+import { buildKubernetesResource, LATEST_QUBERNETES } from '../model/ResourceConfig'
+import {
+  isBash, isDocker, isKubernetes, isRaft, isTessera,
+} from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
 import { info } from '../utils/log'

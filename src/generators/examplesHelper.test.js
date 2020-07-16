@@ -6,7 +6,7 @@ import {
 } from '../utils/testHelper'
 import {
   copyFile,
-  cwd,
+  cwd, FILES,
   libRootDir,
   writeFile,
 } from '../utils/fileUtils'
@@ -37,29 +37,29 @@ const CONFIG = {
 }
 
 describe('generates and copies over example scripts', () => {
-  it('generates private-contract with node 2 and copies over the 3 example scripts', () => {
+  it('generates private_contract with node 2 and copies over the 3 example scripts', () => {
     generateAndCopyExampleScripts(CONFIG)
     expect(writeFile).toBeCalledWith(
-      createNetPath(CONFIG, 'runscript.sh'),
+      createNetPath(CONFIG, FILES.runscript),
       expect.anything(),
       true,
     )
     expect(writeFile).toBeCalledWith(
-      createNetPath(CONFIG, 'attach.sh'),
+      createNetPath(CONFIG, FILES.attach),
       expect.anything(),
       true,
     )
     expect(copyFile).toBeCalledWith(
-      createLibPath('lib', 'public_contract.js'),
-      createNetPath(CONFIG, 'public_contract.js'),
+      createLibPath('lib', FILES.publicContract),
+      createNetPath(CONFIG, FILES.publicContract),
     )
     expect(writeFile).toBeCalledWith(
-      createNetPath(CONFIG, 'private_contract.js'),
+      createNetPath(CONFIG, FILES.privateContract),
       expect.anything(),
     )
     expect(loadTesseraPublicKey).toBeCalledWith(CONFIG, 2)
   })
-  it('generates public-contract and copies over the 2 example scripts', () => {
+  it('generates public_contract and copies over the 2 example scripts', () => {
     const config = {
       ...CONFIG,
       network: {
@@ -69,13 +69,13 @@ describe('generates and copies over example scripts', () => {
     }
     generateAndCopyExampleScripts(config)
     expect(writeFile).toBeCalledWith(
-      createNetPath(config, 'runscript.sh'),
+      createNetPath(config, FILES.runscript),
       expect.anything(),
       true,
     )
     expect(copyFile).toBeCalledWith(
-      createLibPath('lib', 'public_contract.js'),
-      createNetPath(config, 'public_contract.js'),
+      createLibPath('lib', FILES.publicContract),
+      createNetPath(config, FILES.publicContract),
     )
   })
   it('generates the runscript and attach shell scripts for bash', () => {

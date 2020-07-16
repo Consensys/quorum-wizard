@@ -86,7 +86,6 @@ describe('prompts the user with different sets of questions based on first choic
     expect(getCustomizedDockerPorts).toHaveBeenCalledTimes(0)
   })
 
-
   it('simple', async () => {
     prompt.mockResolvedValue(SIMPLE_CONFIG)
     await promptUser('simple')

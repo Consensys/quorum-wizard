@@ -1,4 +1,4 @@
-import { writeFile } from '../utils/fileUtils'
+import { FILES, writeFile } from '../utils/fileUtils'
 import { getFullNetworkPath } from './networkCreator'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
@@ -11,19 +11,17 @@ export async function createKubernetes(config) {
 
   info('Writing start script...')
 
-  if (isWin32()) {
-    writeFile(joinPath(networkPath, 'start.cmd'), createStartScriptWindows(), true)
-    writeFile(joinPath(networkPath, 'stop.cmd'), createStopScriptWindows(), true)
-    writeFile(joinPath(networkPath, 'getEndpoints.cmd'), createEndpointScriptWindows(config), true)
-  } else {
-    writeFile(joinPath(networkPath, 'start.sh'), createStartScript(), true)
-    writeFile(joinPath(networkPath, 'stop.sh'), createStopScript(), true)
-    writeFile(joinPath(networkPath, 'getEndpoints.sh'), createEndpointScript(config), true)
-  }
+  writeFile(joinPath(networkPath, FILES.start), createStartScript(), true)
+  writeFile(joinPath(networkPath, FILES.stop), createStopScript(), true)
+  writeFile(joinPath(networkPath, FILES.getEndpoints), createEndpointScript(config), true)
   info('Done')
 }
 
 function createStartScript() {
+  return isWin32() ? createStartScriptWindows() : createStartScriptBash()
+}
+
+function createStartScriptBash() {
   return `${scriptHeader()}
 
 # check kubectl is installed
@@ -69,6 +67,10 @@ echo Run 'kubectl get pods' to check status of pods`
 }
 
 function createStopScript() {
+  return isWin32() ? createStopScriptWindows() : createStopScriptBash()
+}
+
+function createStopScriptBash() {
   return `${scriptHeader()}
 kubectl delete -f out -f out/deployments`
 }
@@ -78,6 +80,10 @@ function createStopScriptWindows() {
 }
 
 function createEndpointScript(config) {
+  return isWin32() ? createEndpointScriptWindows(config) : createEndpointScriptBash(config)
+}
+
+function createEndpointScriptBash(config) {
   return `${scriptHeader()}
 ${validateNodeNumberInput(config)}
 

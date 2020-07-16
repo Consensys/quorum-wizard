@@ -11,10 +11,22 @@ import {
 } from 'fs-extra'
 import { resolve } from 'path'
 import { joinPath, verifyPathInsideDirectory } from './pathUtils'
+import { isWin32 } from './execUtils'
 
 // this file is in $ROOT/build/utils/ and the bin, lib, and 7nodes folders are in $ROOT.
 // Go up two folders and cache that path for later use
 const libRoot = resolve(__dirname, '../..')
+
+export const FILES = {
+  run: isWin32() ? '' : './', // `./start.sh` in shell, just `start.cmd` in windows
+  start: isWin32() ? 'start.cmd' : 'start.sh',
+  stop: isWin32() ? 'stop.cmd' : 'stop.sh',
+  attach: isWin32() ? 'attach.cmd' : 'attach.sh',
+  runscript: isWin32() ? 'runscript.cmd' : 'runscript.sh',
+  getEndpoints: isWin32() ? 'getEndpoints.cmd' : 'getEndpoints.sh',
+  publicContract: 'public_contract.js',
+  privateContract: 'private_contract.js',
+}
 
 export function cwd() {
   return process.cwd()

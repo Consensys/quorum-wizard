@@ -12,7 +12,7 @@ import {
   copyFile,
   createFolder,
   writeJsonFile,
-  wizardHomeDir,
+  wizardHomeDir, FILES,
 } from '../utils/fileUtils'
 import {
   TEST_CWD,
@@ -66,7 +66,6 @@ test('creates quickstart start script without insecure unlock flag on quorum pre
   const bash = buildBashScript(config).startScript
   expect(bash).toMatchSnapshot()
 })
-
 
 test('creates 3nodes raft bash tessera', () => {
   const config = createConfigFromAnswers(baseNetwork)
@@ -159,8 +158,8 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
 test('build bash with tessera', () => {
   const config = createConfigFromAnswers(baseNetwork)
   buildBash(config)
-  expect(writeFile).toBeCalledWith(createNetPath(config, 'start.sh'), anything(), true)
-  expect(copyFile).toBeCalledWith(createLibPath('lib', 'stop.sh'), createNetPath(config, 'stop.sh'))
+  expect(writeFile).toBeCalledWith(createNetPath(config, FILES.start), anything(), true)
+  expect(copyFile).toBeCalledWith(createLibPath('lib', FILES.stop), createNetPath(config, FILES.stop))
 })
 
 test('build bash with tessera and cakeshop', () => {
@@ -172,8 +171,8 @@ test('build bash with tessera and cakeshop', () => {
   expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', 'cakeshop', 'local'), true)
   expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'qdata', 'cakeshop', 'local'), 'cakeshop.json', anything())
   expect(writeFile).toBeCalledWith(createNetPath(config, 'qdata', 'cakeshop', 'local', 'application.properties'), anything(), false)
-  expect(writeFile).toBeCalledWith(createNetPath(config, 'start.sh'), anything(), true)
-  expect(copyFile).toBeCalledWith(createLibPath('lib', 'stop.sh'), createNetPath(config, 'stop.sh'))
+  expect(writeFile).toBeCalledWith(createNetPath(config, FILES.start), anything(), true)
+  expect(copyFile).toBeCalledWith(createLibPath('lib', FILES.stop), createNetPath(config, FILES.stop))
 })
 
 test('build bash remote debug', () => {
@@ -182,6 +181,6 @@ test('build bash remote debug', () => {
     remoteDebug: true,
   })
   buildBash(config)
-  expect(writeFile).toBeCalledWith(createNetPath(config, 'start.sh'), anything(), true)
-  expect(copyFile).toBeCalledWith(createLibPath('lib', 'stop.sh'), createNetPath(config, 'stop.sh'))
+  expect(writeFile).toBeCalledWith(createNetPath(config, FILES.start), anything(), true)
+  expect(copyFile).toBeCalledWith(createLibPath('lib', FILES.stop), createNetPath(config, FILES.stop))
 })

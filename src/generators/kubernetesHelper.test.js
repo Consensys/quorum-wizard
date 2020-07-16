@@ -3,7 +3,7 @@ import {
   createConfigFromAnswers,
 } from '../model/NetworkConfig'
 import {
-  cwd,
+  cwd, FILES,
   libRootDir,
   readFileToString,
   writeFile,
@@ -42,13 +42,13 @@ describe('generates kubernetes directory', () => {
     await createKubernetes(config)
 
     expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), 'start.sh'),
+      joinPath(getFullNetworkPath(), FILES.start),
       expect.anything(),
       true,
     )
 
     expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), 'stop.sh'),
+      joinPath(getFullNetworkPath(), FILES.stop),
       expect.anything(),
       true,
     )

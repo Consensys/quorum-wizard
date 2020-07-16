@@ -31,6 +31,7 @@ import {
   loadTesseraPublicKey,
 } from './generators/transactionManager'
 import { downloadAndCopyBinaries } from './generators/binaryHelper'
+import { FILES } from './utils/fileUtils'
 
 const yargs = require('yargs')
 
@@ -109,27 +110,26 @@ function printInstructions(config) {
   info('Quorum network created')
   info('')
   if (isKubernetes(config.network.deployment)) {
-    info('Running the kubernetes deployment is currently only supported on minikube.')
-    info('Before starting the network please make sure minikube is running and kubectl is installed and setup properly')
+    info('Before starting the network please make sure kubectl is installed and setup properly')
     info('Check out our qubernetes project docs for more info: https://github.com/jpmorganchase/qubernetes')
     info('')
   }
   info('Run the following commands to start your network:')
   info('')
   info(`cd network/${config.network.name}`)
-  info('./start.sh')
+  info(`${FILES.run}${FILES.start}`)
   info('')
   info('A sample simpleStorage contract is provided to deploy to your network')
-  info('To use run ./runscript.sh public-contract.js from the network folder')
+  info(`To use run ${FILES.run}${FILES.runscript} ${FILES.publicContract} from the network folder`)
   info('')
   if (isTessera(config.network.transactionManager)) {
     info(`A private simpleStorage contract was created with privateFor set to use Node 2's public key: ${loadTesseraPublicKey(config, 2)}`)
-    info('To use run ./runscript private-contract.js from the network folder')
+    info(`To use run ${FILES.run}${FILES.runscript} ${FILES.privateContract} from the network folder`)
     info('')
   }
   if (isKubernetes(config.network.deployment)) {
     info('A script to retrieve the quorum rpc and tessera 3rd party endpoints to use with remix or cakeshop is provided')
-    info('To use run ./getEndpoints.sh from the network folder')
+    info(`To use run ${FILES.run}${FILES.getEndpoints}  from the network folder`)
     info('')
   }
 }
