@@ -1,5 +1,4 @@
 import {
-  FILES,
   formatNewLine,
   libRootDir,
   readFileToString,
@@ -9,7 +8,7 @@ import { getFullNetworkPath } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
 import { isCakeshop, isTessera } from '../model/NetworkConfig'
 import { info } from '../utils/log'
-import { joinPath } from '../utils/pathUtils'
+import { SCRIPTS, joinPath } from '../utils/pathUtils'
 import { buildDockerIp, cidrhost } from '../utils/subnetUtils'
 import { isQuorum260Plus } from './binaryHelper'
 import { isWin32 } from '../utils/execUtils'
@@ -69,8 +68,8 @@ export async function createDockerCompose(config) {
   info('Writing start script...')
   writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)
   writeFile(joinPath(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
-  writeFile(joinPath(networkPath, FILES.start), getStartCommands(), true)
-  writeFile(joinPath(networkPath, FILES.stop), getStopCommands(), true)
+  writeFile(joinPath(networkPath, SCRIPTS.start.filename), getStartCommands(), true)
+  writeFile(joinPath(networkPath, SCRIPTS.stop.filename), getStopCommands(), true)
   info('Done')
 }
 

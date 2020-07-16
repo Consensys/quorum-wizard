@@ -8,6 +8,7 @@ jest.mock('os', () => ({
   homedir: jest.fn(() => '/path/to/user/home'),
   // is-wsl uses os.release() during initialization, must be mocked here, not using .mockReturnValue
   release: jest.fn(() => '19.5.0'),
+  platform: jest.fn(() => 'darwin')
 }))
 jest.mock('./pathUtils')
 existsSync.mockReturnValue(true)

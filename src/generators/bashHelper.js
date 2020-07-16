@@ -2,8 +2,7 @@ import {
   getFullNetworkPath,
 } from './networkCreator'
 import {
-  copyFile, FILES,
-  libRootDir,
+  copyFile, libRootDir,
   writeFile,
 } from '../utils/fileUtils'
 import {
@@ -27,7 +26,7 @@ import {
 } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { formatTesseraKeysOutput } from './transactionManager'
-import { joinPath } from '../utils/pathUtils'
+import { SCRIPTS, joinPath } from '../utils/pathUtils'
 
 export function buildBashScript(config) {
   const commands = createCommands(config)
@@ -103,8 +102,8 @@ export async function buildBash(config) {
   }
 
   info('Writing start script...')
-  writeFile(joinPath(networkPath, FILES.start), bashDetails.startScript, true)
-  copyFile(joinPath(libRootDir(), 'lib', FILES.stop), joinPath(networkPath, FILES.stop))
+  writeFile(joinPath(networkPath, SCRIPTS.start.filename), bashDetails.startScript, true)
+  copyFile(joinPath(libRootDir(), 'lib', SCRIPTS.stop.filename), joinPath(networkPath, SCRIPTS.stop.filename))
 
   info('Initializing quorum...')
   bashDetails.initCommands.forEach((command) => executeSync(command))

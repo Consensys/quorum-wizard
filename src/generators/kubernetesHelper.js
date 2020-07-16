@@ -1,7 +1,7 @@
-import { FILES, writeFile } from '../utils/fileUtils'
+import { writeFile } from '../utils/fileUtils'
 import { getFullNetworkPath } from './networkCreator'
 import { info } from '../utils/log'
-import { joinPath } from '../utils/pathUtils'
+import { SCRIPTS, joinPath } from '../utils/pathUtils'
 import { isWin32 } from '../utils/execUtils'
 import { scriptHeader, validateNodeNumberInput } from './bashHelper'
 
@@ -11,9 +11,9 @@ export async function createKubernetes(config) {
 
   info('Writing start script...')
 
-  writeFile(joinPath(networkPath, FILES.start), createStartScript(), true)
-  writeFile(joinPath(networkPath, FILES.stop), createStopScript(), true)
-  writeFile(joinPath(networkPath, FILES.getEndpoints), createEndpointScript(config), true)
+  writeFile(joinPath(networkPath, SCRIPTS.start.filename), createStartScript(), true)
+  writeFile(joinPath(networkPath, SCRIPTS.stop.filename), createStopScript(), true)
+  writeFile(joinPath(networkPath, SCRIPTS.getEndpoints.filename), createEndpointScript(config), true)
   info('Done')
 }
 

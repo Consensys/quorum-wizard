@@ -3,8 +3,7 @@ import {
   createConfigFromAnswers,
 } from '../model/NetworkConfig'
 import {
-  cwd, FILES,
-  formatNewLine,
+  cwd, formatNewLine,
   libRootDir,
   readFileToString,
   writeFile,
@@ -18,7 +17,7 @@ import {
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
 import { info } from '../utils/log'
-import { joinPath } from '../utils/pathUtils'
+import { SCRIPTS, joinPath } from '../utils/pathUtils'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from './download'
 
 jest.mock('../utils/fileUtils')
@@ -79,13 +78,13 @@ describe('generates docker-compose directory', () => {
     )
 
     expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), FILES.start),
+      joinPath(getFullNetworkPath(), SCRIPTS.start.filename),
       expect.anything(),
       true,
     )
 
     expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), FILES.stop),
+      joinPath(getFullNetworkPath(), SCRIPTS.stop.filename),
       expect.anything(),
       true,
     )
@@ -113,13 +112,13 @@ describe('generates docker-compose directory', () => {
     )
 
     expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), FILES.start),
+      joinPath(getFullNetworkPath(), SCRIPTS.start.filename),
       expect.anything(),
       true,
     )
 
     expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), FILES.stop),
+      joinPath(getFullNetworkPath(), SCRIPTS.stop.filename),
       expect.anything(),
       true,
     )

@@ -3,8 +3,7 @@ import {
   createConfigFromAnswers,
 } from '../model/NetworkConfig'
 import {
-  cwd, FILES,
-  libRootDir,
+  cwd, libRootDir,
   readFileToString,
   writeFile,
 } from '../utils/fileUtils'
@@ -14,7 +13,7 @@ import {
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
 import { info } from '../utils/log'
-import { joinPath } from '../utils/pathUtils'
+import { SCRIPTS, joinPath } from '../utils/pathUtils'
 import { LATEST_QUORUM, LATEST_TESSERA } from './download'
 
 jest.mock('../utils/fileUtils')
@@ -42,13 +41,13 @@ describe('generates kubernetes directory', () => {
     await createKubernetes(config)
 
     expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), FILES.start),
+      joinPath(getFullNetworkPath(), SCRIPTS.start.filename),
       expect.anything(),
       true,
     )
 
     expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), FILES.stop),
+      joinPath(getFullNetworkPath(), SCRIPTS.stop.filename),
       expect.anything(),
       true,
     )

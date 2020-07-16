@@ -6,13 +6,13 @@ import {
 } from '../utils/testHelper'
 import {
   copyFile,
-  cwd, FILES,
-  libRootDir,
+  cwd, libRootDir,
   writeFile,
 } from '../utils/fileUtils'
 import { generateAndCopyExampleScripts, generateAttachScript, generateRunScript } from './examplesHelper'
 import { loadTesseraPublicKey } from './transactionManager'
 import { pathToCakeshop, pathToQuorumBinary, pathToTesseraJar } from './binaryHelper'
+import { SCRIPTS } from '../utils/pathUtils'
 
 jest.mock('./binaryHelper')
 jest.mock('../utils/fileUtils')
@@ -40,22 +40,24 @@ describe('generates and copies over example scripts', () => {
   it('generates private_contract with node 2 and copies over the 3 example scripts', () => {
     generateAndCopyExampleScripts(CONFIG)
     expect(writeFile).toBeCalledWith(
-      createNetPath(CONFIG, FILES.runscript),
+      createNetPath(CONFIG, SCRIPTS.runscript.filename),
       expect.anything(),
       true,
     )
     expect(writeFile).toBeCalledWith(
-      createNetPath(CONFIG, FILES.attach),
+      createNetPath(CONFIG, SCRIPTS.attach.filename),
       expect.anything(),
       true,
     )
-    expect(copyFile).toBeCalledWith(
-      createLibPath('lib', FILES.publicContract),
-      createNetPath(CONFIG, FILES.publicContract),
+    expect(writeFile).toBeCalledWith(
+      createNetPath(CONFIG, SCRIPTS.publicContract.filename),
+      expect.anything(),
+      false,
     )
     expect(writeFile).toBeCalledWith(
-      createNetPath(CONFIG, FILES.privateContract),
+      createNetPath(CONFIG, SCRIPTS.privateContract.filename),
       expect.anything(),
+      false,
     )
     expect(loadTesseraPublicKey).toBeCalledWith(CONFIG, 2)
   })
@@ -69,13 +71,14 @@ describe('generates and copies over example scripts', () => {
     }
     generateAndCopyExampleScripts(config)
     expect(writeFile).toBeCalledWith(
-      createNetPath(config, FILES.runscript),
+      createNetPath(config, SCRIPTS.runscript.filename),
       expect.anything(),
       true,
     )
-    expect(copyFile).toBeCalledWith(
-      createLibPath('lib', FILES.publicContract),
-      createNetPath(config, FILES.publicContract),
+    expect(writeFile).toBeCalledWith(
+      createNetPath(config, SCRIPTS.publicContract.filename),
+      expect.anything(),
+      false,
     )
   })
   it('generates the runscript and attach shell scripts for bash', () => {

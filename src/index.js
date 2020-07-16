@@ -2,23 +2,13 @@
 
 import 'source-map-support/register'
 import inquirer from 'inquirer'
-import {
-  createLogger,
-  debug,
-  info,
-} from './utils/log'
+import { createLogger, debug, info, } from './utils/log'
 import { promptUser } from './questions'
 import { INITIAL_MODE } from './questions/questions'
+import { createConfigFromAnswers, isBash, isDocker, isKubernetes, isTessera, } from './model/NetworkConfig'
 import {
-  createConfigFromAnswers,
-  isBash,
-  isDocker,
-  isTessera,
-  isKubernetes,
-} from './model/NetworkConfig'
-import {
-  createQdataDirectory,
   createNetwork,
+  createQdataDirectory,
   generateResourcesLocally,
   generateResourcesRemote,
 } from './generators/networkCreator'
@@ -26,12 +16,9 @@ import { buildBash } from './generators/bashHelper'
 import { createDockerCompose } from './generators/dockerHelper'
 import { createKubernetes } from './generators/kubernetesHelper'
 import { generateAndCopyExampleScripts } from './generators/examplesHelper'
-import {
-  formatTesseraKeysOutput,
-  loadTesseraPublicKey,
-} from './generators/transactionManager'
+import { formatTesseraKeysOutput, loadTesseraPublicKey, } from './generators/transactionManager'
 import { downloadAndCopyBinaries } from './generators/binaryHelper'
-import { FILES } from './utils/fileUtils'
+import { SCRIPTS, wrapScript } from './utils/pathUtils'
 
 const yargs = require('yargs')
 
@@ -117,19 +104,19 @@ function printInstructions(config) {
   info('Run the following commands to start your network:')
   info('')
   info(`cd network/${config.network.name}`)
-  info(`${FILES.run}${FILES.start}`)
+  info(`${wrapScript(SCRIPTS.start.filename)}`)
   info('')
   info('A sample simpleStorage contract is provided to deploy to your network')
-  info(`To use run ${FILES.run}${FILES.runscript} ${FILES.publicContract} from the network folder`)
+  info(`To use run ${wrapScript(SCRIPTS.runscript.filename)} ${SCRIPTS.publicContract.filename} from the network folder`)
   info('')
   if (isTessera(config.network.transactionManager)) {
     info(`A private simpleStorage contract was created with privateFor set to use Node 2's public key: ${loadTesseraPublicKey(config, 2)}`)
-    info(`To use run ${FILES.run}${FILES.runscript} ${FILES.privateContract} from the network folder`)
+    info(`To use run ${wrapScript(SCRIPTS.runscript.filename)} ${SCRIPTS.privateContract.filename} from the network folder`)
     info('')
   }
   if (isKubernetes(config.network.deployment)) {
     info('A script to retrieve the quorum rpc and tessera 3rd party endpoints to use with remix or cakeshop is provided')
-    info(`To use run ${FILES.run}${FILES.getEndpoints}  from the network folder`)
+    info(`To use run ${wrapScript(SCRIPTS.getEndpoints.filename)}  from the network folder`)
     info('')
   }
 }

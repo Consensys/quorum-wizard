@@ -21,7 +21,7 @@ import {
   LATEST_TESSERA_J8,
 } from '../generators/download'
 import { error } from '../utils/log'
-import { FILES } from '../utils/fileUtils'
+import { SCRIPTS } from '../utils/pathUtils'
 
 export const INITIAL_MODE = {
   type: 'list',
@@ -44,7 +44,7 @@ We have 3 options to help you start exploring Quorum:
       Choose to generate keys, customize ports for both bash and docker, or change the network id
 
 Quorum Wizard will generate your startup files and everything required to bring up your network.
-All you need to do is go to the specified location and run ${FILES.start}
+All you need to do is go to the specified location and run ${SCRIPTS.start.filename}
 
 `,
 
