@@ -5,20 +5,24 @@ import inquirer from 'inquirer'
 import { createLogger, debug, info, } from './utils/log'
 import { promptUser } from './questions'
 import { INITIAL_MODE } from './questions/questions'
-import { createConfigFromAnswers, isBash, isDocker, isKubernetes, isTessera, } from './model/NetworkConfig'
+import { createConfigFromAnswers, isBash, isCakeshop, isDocker, isKubernetes, isTessera, } from './model/NetworkConfig'
 import {
   createNetwork,
   createQdataDirectory,
   generateResourcesLocally,
-  generateResourcesRemote,
+  generateResourcesRemote, getFullNetworkPath,
 } from './generators/networkCreator'
-import { buildBash } from './generators/bashHelper'
-import { createDockerCompose } from './generators/dockerHelper'
-import { createKubernetes } from './generators/kubernetesHelper'
+import { buildBash, initBash } from './generators/bashHelper'
+import { createDockerCompose, initDockerCompose } from './generators/dockerHelper'
+import { createKubernetes, initKubernetes } from './generators/kubernetesHelper'
 import { generateAndCopyExampleScripts } from './generators/examplesHelper'
 import { formatTesseraKeysOutput, loadTesseraPublicKey, } from './generators/transactionManager'
-import { downloadAndCopyBinaries } from './generators/binaryHelper'
-import { SCRIPTS, wrapScript } from './utils/pathUtils'
+import { downloadAndCopyBinaries, pathToQuorumBinary } from './generators/binaryHelper'
+import { joinPath, wrapScript } from './utils/pathUtils'
+import { executeSync } from './utils/execUtils'
+import { buildCakeshopDir } from './generators/cakeshopHelper'
+import { cwd, writeFile } from './utils/fileUtils'
+import SCRIPTS from './generators/scripts'
 
 const yargs = require('yargs')
 
@@ -57,38 +61,49 @@ async function buildNetwork(mode) {
     await downloadAndCopyBinaries(config)
   }
   await createDirectory(config)
-  await createScript(config)
-  generateAndCopyExampleScripts(config)
+  createScripts(config)
   printInstructions(config)
 }
 
 async function createDirectory(config) {
+  createNetwork(config)
   if (isBash(config.network.deployment)) {
-    createNetwork(config)
     await generateResourcesLocally(config)
     createQdataDirectory(config)
+    await initBash(config)
   } else if (isDocker(config.network.deployment)) {
-    createNetwork(config)
     generateResourcesRemote(config)
     createQdataDirectory(config)
+    await initDockerCompose(config)
   } else if (isKubernetes(config.network.deployment)) {
-    createNetwork(config)
     generateResourcesRemote(config)
   } else {
     throw new Error('Only bash, docker, and kubernetes deployments are supported')
   }
 }
-
-async function createScript(config) {
-  if (isBash(config.network.deployment)) {
-    await buildBash(config)
-  } else if (isDocker(config.network.deployment)) {
-    await createDockerCompose(config)
-  } else if (isKubernetes(config.network.deployment)) {
-    await createKubernetes(config)
-  } else {
-    throw new Error('Only bash, docker, and kubernetes deployments are supported')
+function createScripts(config) {
+  const scripts = [
+    SCRIPTS.start,
+    SCRIPTS.stop,
+    SCRIPTS.runscript,
+    SCRIPTS.attach,
+    SCRIPTS.publicContract,
+  ]
+  if (isTessera(config.network.transactionManager)) {
+    scripts.push(SCRIPTS.privateContract)
   }
+  if (isKubernetes(config.network.deployment)) {
+    scripts.push(SCRIPTS.getEndpoints)
+  }
+
+  const networkPath = getFullNetworkPath(config)
+  scripts.forEach((script) => {
+    writeFile(
+      joinPath(networkPath, script.filename),
+      script.generate(config),
+      script.executable
+    )
+  })
 }
 
 function printInstructions(config) {

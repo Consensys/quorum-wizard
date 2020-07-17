@@ -12,7 +12,7 @@ import {
 import { generateAndCopyExampleScripts, generateAttachScript, generateRunScript } from './examplesHelper'
 import { loadTesseraPublicKey } from './transactionManager'
 import { pathToCakeshop, pathToQuorumBinary, pathToTesseraJar } from './binaryHelper'
-import { SCRIPTS } from '../utils/pathUtils'
+import SCRIPTS from './scripts'
 
 jest.mock('./binaryHelper')
 jest.mock('../utils/fileUtils')

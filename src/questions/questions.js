@@ -21,7 +21,7 @@ import {
   LATEST_TESSERA_J8,
 } from '../generators/download'
 import { error } from '../utils/log'
-import { SCRIPTS } from '../utils/pathUtils'
+import SCRIPTS from '../generators/scripts'
 
 export const INITIAL_MODE = {
   type: 'list',

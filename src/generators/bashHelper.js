@@ -1,34 +1,33 @@
-import {
-  getFullNetworkPath,
-} from './networkCreator'
-import {
-  copyFile, libRootDir,
-  writeFile,
-} from '../utils/fileUtils'
-import {
-  executeSync,
-  isWin32,
-} from '../utils/execUtils'
-import {
-  buildCakeshopDir,
-  generateCakeshopScript,
-} from './cakeshopHelper'
-import {
-  isQuorum260Plus,
-  pathToCakeshop,
-  pathToQuorumBinary,
-  pathToTesseraJar,
-} from './binaryHelper'
-import {
-  isRaft,
-  isTessera,
-  isCakeshop,
-} from '../model/NetworkConfig'
+import { getFullNetworkPath, } from './networkCreator'
+import { executeSync, } from '../utils/execUtils'
+import { buildCakeshopDir, generateCakeshopScript, } from './cakeshopHelper'
+import { isQuorum260Plus, pathToQuorumBinary, } from './binaryHelper'
+import { isCakeshop, isRaft, isTessera, } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { formatTesseraKeysOutput } from './transactionManager'
-import { SCRIPTS, joinPath } from '../utils/pathUtils'
+import { joinPath } from '../utils/pathUtils'
+import { scriptHeader, setEnvironmentCommand } from './scripts/general'
 
-export function buildBashScript(config) {
+export async function initBash(config) {
+  const initCommands = []
+  const networkPath = getFullNetworkPath(config)
+  config.nodes.forEach((node, i) => {
+    const nodeNumber = i + 1
+    const quorumDir = joinPath('qdata', `dd${nodeNumber}`)
+    const genesisLocation = joinPath(quorumDir, 'genesis.json')
+    const initCommand = `cd ${networkPath} && ${pathToQuorumBinary(config.network.quorumVersion)} --datadir ${quorumDir} init ${genesisLocation} 2>&1`
+    initCommands.push(initCommand)
+  })
+
+  if (isCakeshop(config.network.cakeshop)) {
+    buildCakeshopDir(config, joinPath(networkPath, 'qdata'))
+  }
+  info('Initializing quorum...')
+  initCommands.forEach((command) => executeSync(command))
+  info('Done')
+}
+
+export function startScriptBash(config) {
   const commands = createCommands(config)
 
   const startScript = [
@@ -44,15 +43,10 @@ export function buildBashScript(config) {
     `echo "${formatTesseraKeysOutput(config)}"`,
   ]
 
-  return {
-    startScript: startScript.join('\n'),
-    initCommands: commands.initStart,
-  }
+  return startScript.join('\n')
 }
 
 export function createCommands(config) {
-  const networkPath = getFullNetworkPath(config)
-  const initCommands = []
   const startCommands = []
   const tmStartCommands = []
 
@@ -60,12 +54,9 @@ export function createCommands(config) {
     const nodeNumber = i + 1
     const quorumDir = joinPath('qdata', `dd${nodeNumber}`)
     const tmDir = joinPath('qdata', `c${nodeNumber}`)
-    const genesisLocation = joinPath(quorumDir, 'genesis.json')
     const keyDir = joinPath(quorumDir, 'keystore')
     const passwordDestination = joinPath(keyDir, 'password.txt')
     const logs = joinPath('qdata', 'logs')
-    const initCommand = `cd ${networkPath} && ${pathToQuorumBinary(config.network.quorumVersion)} --datadir ${quorumDir} init ${genesisLocation} 2>&1`
-    initCommands.push(initCommand)
 
     const tmIpcLocation = isTessera(config.network.transactionManager)
       ? joinPath(tmDir, 'tm.ipc')
@@ -85,29 +76,10 @@ export function createCommands(config) {
     }
   })
 
-  const obj = {
+  return {
     tesseraStart: tmStartCommands.join('\n'),
     gethStart: startCommands.join('\n'),
-    initStart: initCommands,
   }
-  return obj
-}
-
-export async function buildBash(config) {
-  const bashDetails = buildBashScript(config)
-  const networkPath = getFullNetworkPath(config)
-
-  if (isCakeshop(config.network.cakeshop)) {
-    buildCakeshopDir(config, joinPath(networkPath, 'qdata'))
-  }
-
-  info('Writing start script...')
-  writeFile(joinPath(networkPath, SCRIPTS.start.filename), bashDetails.startScript, true)
-  copyFile(joinPath(libRootDir(), 'lib', SCRIPTS.stop.filename), joinPath(networkPath, SCRIPTS.stop.filename))
-
-  info('Initializing quorum...')
-  bashDetails.initCommands.forEach((command) => executeSync(command))
-  info('Done')
 }
 
 export function createGethStartCommand(config, node, passwordDestination, nodeNumber, tmIpcPath) {
@@ -149,19 +121,6 @@ function checkTesseraUpcheck(nodes) {
     fi`)
 }
 
-export function setEnvironmentCommand(config) {
-  const lines = []
-  lines.push(`BIN_GETH=${pathToQuorumBinary(config.network.quorumVersion)}`)
-  if (isTessera(config.network.transactionManager)) {
-    lines.push(`BIN_TESSERA=${pathToTesseraJar(config.network.transactionManager)}`)
-  }
-  if (isCakeshop(config.network.cakeshop)) {
-    lines.push(`BIN_CAKESHOP=${pathToCakeshop(config.network.cakeshop)}`)
-  }
-  lines.push('')
-  return lines.join('\n')
-}
-
 export function waitForTesseraNodesCommand(config) {
   if (!isTessera(config.network.transactionManager)) {
     return ''
@@ -198,59 +157,3 @@ echo "All Tessera nodes started"
 `
 }
 
-export function attachCommandBash(config) {
-  return `${setEnvironmentCommand(config)}
-$BIN_GETH attach qdata/dd$1/geth.ipc`
-}
-
-export function runscriptCommandBash(config) {
-  return `${setEnvironmentCommand(config)}
-$BIN_GETH --exec "loadScript(\\"$1\\")" attach qdata/dd1/geth.ipc`
-}
-
-function scriptHeaderWindows() {
-  return '@ECHO OFF\nSETLOCAL'
-}
-
-function scriptHeaderBash() {
-  return '#!/bin/bash'
-}
-
-export function scriptHeader() {
-  return isWin32() ? scriptHeaderWindows() : scriptHeaderBash()
-}
-
-function validateEnvNodeNumberWindows(config) {
-  return `SET NUMBER_OF_NODES=${config.nodes.length}
-SET /A NODE_NUMBER=%1
-
-if "%1"=="" (
-    echo Please provide the number of the node to attach to (i.e. attach.cmd 2) && EXIT /B 1
-)
-
-if %NODE_NUMBER% EQU 0 (
-    echo Please provide the number of the node to attach to (i.e. attach.cmd 2) && EXIT /B 1
-)
-
-if %NODE_NUMBER% GEQ %NUMBER_OF_NODES%+1 (
-    echo %1 is not a valid node number. Must be between 1 and %NUMBER_OF_NODES%. && EXIT /B 1
-)`
-}
-
-function validateEnvNodeNumberBash(config) {
-  return `NUMBER_OF_NODES=${config.nodes.length}
-NODE_NUMBER=$1
-case "$NODE_NUMBER" in ("" | *[!0-9]*)
-  echo 'Please provide the number of the node to attach to (i.e. ./attach.sh 2)' >&2
-  exit 1
-esac
-
-if [ "$NODE_NUMBER" -lt 1 ] || [ "$NODE_NUMBER" -gt $NUMBER_OF_NODES ]; then
-  echo "$NODE_NUMBER is not a valid node number. Must be between 1 and $NUMBER_OF_NODES." >&2
-  exit 1
-fi`
-}
-
-export function validateNodeNumberInput(config) {
-  return isWin32() ? validateEnvNodeNumberWindows(config) : validateEnvNodeNumberBash(config)
-}

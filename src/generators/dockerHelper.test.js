@@ -17,8 +17,9 @@ import {
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
 import { info } from '../utils/log'
-import { SCRIPTS, joinPath } from '../utils/pathUtils'
+import { joinPath } from '../utils/pathUtils'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from './download'
+import SCRIPTS from './scripts'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')

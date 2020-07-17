@@ -1,18 +1,11 @@
-import {
-  formatNewLine,
-  libRootDir,
-  readFileToString,
-  writeFile,
-} from '../utils/fileUtils'
+import { formatNewLine, libRootDir, readFileToString, writeFile, } from '../utils/fileUtils'
 import { getFullNetworkPath } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
 import { isCakeshop, isTessera } from '../model/NetworkConfig'
 import { info } from '../utils/log'
-import { SCRIPTS, joinPath } from '../utils/pathUtils'
+import { joinPath } from '../utils/pathUtils'
 import { buildDockerIp, cidrhost } from '../utils/subnetUtils'
 import { isQuorum260Plus } from './binaryHelper'
-import { isWin32 } from '../utils/execUtils'
-import { scriptHeader } from './bashHelper'
 
 export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
@@ -54,7 +47,7 @@ export function buildDockerCompose(config) {
   ].join('')
 }
 
-export async function createDockerCompose(config) {
+export async function initDockerCompose(config) {
   info('Building docker-compose file...')
   const file = buildDockerCompose(config)
 
@@ -64,13 +57,8 @@ export async function createDockerCompose(config) {
   if (isCakeshop(config.network.cakeshop)) {
     buildCakeshopDir(config, qdata)
   }
-
-  info('Writing start script...')
   writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)
   writeFile(joinPath(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
-  writeFile(joinPath(networkPath, SCRIPTS.start.filename), getStartCommands(), true)
-  writeFile(joinPath(networkPath, SCRIPTS.stop.filename), getStopCommands(), true)
-  info('Done')
 }
 
 function createEnvFile(config, hasTessera) {
@@ -92,16 +80,6 @@ TESSERA_3PARTY_PORT=${config.containerPorts.tm.thirdPartyPort}`)
 QUORUM_GETH_ARGS="--allow-insecure-unlock --graphql --graphql.port ${config.containerPorts.quorum.graphQlPort} --graphql.corsdomain=* --graphql.addr=0.0.0.0"`)
   }
   return env
-}
-
-function getStartCommands() {
-  return `${scriptHeader()}
-docker-compose up -d`
-}
-
-function getStopCommands() {
-  return `${scriptHeader()}
-docker-compose down`
 }
 
 function buildNodeService(config, node, i, hasTessera) {
@@ -180,33 +158,4 @@ networks:
 volumes:
 ${config.nodes.map((_, i) => `  "${networkName}-vol${i + 1}":`).join('\n')}
   "${networkName}-cakeshopvol":`
-}
-
-function dockerAttachCommandWindows() {
-  return 'docker-compose exec node%1 /bin/sh -c "geth attach qdata/dd/geth.ipc"'
-}
-
-function dockerAttachCommandBash() {
-  return 'docker-compose exec node$1 /bin/sh -c "geth attach qdata/dd/geth.ipc"'
-}
-
-export function dockerAttachCommand() {
-  return isWin32() ? dockerAttachCommandWindows() : dockerAttachCommandBash()
-}
-
-function dockerRunScriptCommandWindows() {
-  return `FOR /F "tokens=* USEBACKQ" %%g IN (\`docker-compose ps -q node1\`) DO set DOCKER_CONTAINER=%%g
-docker cp %1 %DOCKER_CONTAINER%:/%1
-docker-compose exec node1 /bin/sh -c "geth --exec 'loadScript(\\"%1\\")' attach qdata/dd/geth.ipc"
-`
-}
-
-function dockerRunScriptCommandBash() {
-  return `docker cp $1 "$(docker-compose ps -q node1)":/$1
-docker-compose exec node1 /bin/sh -c "geth --exec 'loadScript(\\"$1\\")' attach qdata/dd/geth.ipc"
-`
-}
-
-export function dockerRunscriptCommand() {
-  return isWin32() ? dockerRunScriptCommandWindows() : dockerRunScriptCommandBash()
 }

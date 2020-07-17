@@ -1,6 +1,6 @@
 import { anything } from 'expect'
 import {
-  buildBashScript,
+  startScriptBash,
   buildBash,
 } from './bashHelper'
 import { createConfigFromAnswers } from '../model/NetworkConfig'
@@ -25,7 +25,7 @@ import { info } from '../utils/log'
 import { generateAccounts } from './consensusHelper'
 import { isJava11Plus } from '../utils/execUtils'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from './download'
-import { SCRIPTS } from '../utils/pathUtils'
+import SCRIPTS from './scripts'
 
 jest.mock('../utils/fileUtils')
 jest.mock('./consensusHelper')
@@ -50,27 +50,27 @@ const baseNetwork = {
 
 test('creates quickstart config', () => {
   const config = createConfigFromAnswers({})
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
 
 test('creates quickstart config with java 8', () => {
   isJava11Plus.mockReturnValue(false)
   const config = createConfigFromAnswers({})
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
   isJava11Plus.mockReturnValue(true)
 })
 
 test('creates quickstart start script without insecure unlock flag on quorum pre-2.6.0', () => {
   const config = createConfigFromAnswers({ quorumVersion: '2.5.0' })
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
 
 test('creates 3nodes raft bash tessera', () => {
   const config = createConfigFromAnswers(baseNetwork)
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
 
@@ -79,7 +79,7 @@ test('creates 3nodes raft bash tessera cakeshop', () => {
     ...baseNetwork,
     cakeshop: LATEST_CAKESHOP,
   })
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
 
@@ -88,7 +88,7 @@ test('creates 3nodes raft bash no tessera', () => {
     ...baseNetwork,
     transactionManager: 'none',
   })
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
 
@@ -101,7 +101,7 @@ test('creates 3nodes raft bash tessera custom', () => {
     customizePorts: false,
     nodes: [],
   })
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
 
@@ -152,7 +152,7 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
     cakeshopPort: '7999',
     nodes,
   })
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
 
