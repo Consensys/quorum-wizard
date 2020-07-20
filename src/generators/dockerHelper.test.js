@@ -11,7 +11,9 @@ import {
 } from '../utils/fileUtils'
 import {
   buildDockerCompose,
+  getDockerRegistry,
   initDockerCompose,
+  setDockerRegistry,
 } from './dockerHelper'
 import {
   TEST_CWD,
@@ -52,6 +54,24 @@ const baseNetwork = {
     },
   },
 }
+
+describe('sets docker registry with command line flags', () => {
+  it('sets registry to empty string when flag is not present', async () => {
+    setDockerRegistry(undefined)
+    expect(getDockerRegistry()).toBe('')
+  })
+  it('sets the registry url from the flag', async () => {
+    setDockerRegistry('registry.hub.docker.com/')
+    expect(getDockerRegistry()).toBe('registry.hub.docker.com/')
+  })
+  it('adds a trailing slash if missing', async () => {
+    setDockerRegistry('registry.hub.docker.com')
+    expect(getDockerRegistry()).toBe('registry.hub.docker.com/')
+  })
+  it('throws an error if you include the url scheme', async () => {
+    expect(() => setDockerRegistry('http://registry.hub.docker.com')).toThrow(new Error('Docker registry url should NOT include http(s):// at the beginning'))
+  })
+})
 
 describe('generates docker-compose directory', () => {
   it('given docker details builds files to run docker', async () => {

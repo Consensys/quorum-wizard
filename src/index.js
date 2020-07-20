@@ -16,7 +16,7 @@ import {
   generateResourcesRemote,
 } from './generators/networkCreator'
 import { initBash } from './generators/bashHelper'
-import { initDockerCompose } from './generators/dockerHelper'
+import { initDockerCompose, setDockerRegistry } from './generators/dockerHelper'
 import { formatTesseraKeysOutput, loadTesseraPublicKey } from './generators/transactionManager'
 import { downloadAndCopyBinaries } from './generators/binaryHelper'
 import { wrapScript } from './utils/pathUtils'
@@ -31,6 +31,9 @@ const { argv } = yargs
   .boolean('v')
   .alias('v', 'verbose')
   .describe('v', 'Turn on additional logs for debugging')
+  .string('r')
+  .alias('r', 'registry')
+  .describe('r', 'Use a custom docker registry (instead of registry.hub.docker.com)')
   .help()
   .alias('h', 'help')
   .version()
@@ -38,6 +41,7 @@ const { argv } = yargs
 
 createLogger(argv.v)
 debug('Showing debug logs')
+setDockerRegistry(argv.r)
 
 if (argv.q) {
   buildNetwork('quickstart')
