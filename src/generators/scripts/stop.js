@@ -1,5 +1,4 @@
-import { addScriptExtension, scriptHeader } from './general'
-import { isWin32 } from '../../utils/execUtils'
+import { addScriptExtension, scriptHeader } from './utils'
 
 export default {
   filename: addScriptExtension('stop'),
@@ -15,10 +14,10 @@ export default {
       default:
         return ''
     }
-  }
+  },
 }
 
-export function stopScriptBash () {
+export function stopScriptBash() {
   return `#!/bin/bash
 killall -INT geth
 killall constellation-node
@@ -47,7 +46,7 @@ fi
 `
 }
 
-export function stopScriptDocker () {
+export function stopScriptDocker() {
   return `${scriptHeader()}
 docker-compose down`
 }

@@ -1,10 +1,8 @@
 import { pathToCakeshop, pathToQuorumBinary, pathToTesseraJar } from '../binaryHelper'
 import { isCakeshop, isTessera } from '../../model/NetworkConfig'
 import { isWin32 } from '../../utils/execUtils'
-import { wrapScript } from '../../utils/pathUtils'
-import SCRIPTS from './index'
 
-export function setEnvironmentCommand (config) {
+export function setEnvironmentCommand(config) {
   const lines = []
   lines.push(`BIN_GETH=${pathToQuorumBinary(config.network.quorumVersion)}`)
   if (isTessera(config.network.transactionManager)) {
@@ -21,22 +19,22 @@ export function addScriptExtension(filename) {
   return `${filename}${isWin32() ? '.cmd' : '.sh'}`
 }
 
-export function scriptHeader () {
+export function scriptHeader() {
   return isWin32() ? scriptHeaderWindows() : scriptHeaderBash()
 }
-function scriptHeaderWindows () {
+function scriptHeaderWindows() {
   return '@ECHO OFF\nSETLOCAL'
 }
 
-function scriptHeaderBash () {
+function scriptHeaderBash() {
   return '#!/bin/bash'
 }
 
-export function validateNodeNumberInput (config) {
+export function validateNodeNumberInput(config) {
   return isWin32() ? validateEnvNodeNumberWindows(config) : validateEnvNodeNumberBash(config)
 }
 
-function validateEnvNodeNumberWindows (config) {
+function validateEnvNodeNumberWindows(config) {
   return `SET NUMBER_OF_NODES=${config.nodes.length}
 SET /A NODE_NUMBER=%1
 
@@ -53,7 +51,7 @@ if %NODE_NUMBER% GEQ %NUMBER_OF_NODES%+1 (
 )`
 }
 
-function validateEnvNodeNumberBash (config) {
+function validateEnvNodeNumberBash(config) {
   return `NUMBER_OF_NODES=${config.nodes.length}
 NODE_NUMBER=$1
 case "$NODE_NUMBER" in ("" | *[!0-9]*)
@@ -67,23 +65,22 @@ if [ "$NODE_NUMBER" -lt 1 ] || [ "$NODE_NUMBER" -gt $NUMBER_OF_NODES ]; then
 fi`
 }
 
-export function filenameCheck () {
+export function filenameCheck() {
   return isWin32() ? filenameCheckWindows() : filenameCheckBash()
 }
 
-function filenameCheckWindows () {
-  // TODO this should allow for any existing file
+function filenameCheckWindows() {
   return `if "%1"=="" (
-  echo Please provide a valid script file to execute (i.e. ${wrapScript(SCRIPTS.runscript.filename)} ${SCRIPTS.privateContract.filename}^) && EXIT /B 1
+  echo Please provide a valid script file to execute as the first parameter (i.e. private_contract.js^) && EXIT /B 1
 )
 if NOT EXIST %1 (
-  echo Please provide a valid script file to execute (i.e. ${wrapScript(SCRIPTS.runscript.filename)} ${SCRIPTS.privateContract.filename}^) && EXIT /B 1
+  echo Please provide a valid script file to execute as the first parameter (i.e. private_contract.js^) && EXIT /B 1
 )`
 }
 
-function filenameCheckBash () {
+function filenameCheckBash() {
   return `if [ -z $1 ] || [ ! -f $1 ]; then
-  echo "Please provide a valid script file to execute (i.e. ${wrapScript(SCRIPTS.runscript.filename)} ${SCRIPTS.privateContract.filename})" >&2
+  echo "Please provide a valid script file to execute as the first parameter (i.e. private_contract.js)" >&2
   exit 1
 fi`
 }

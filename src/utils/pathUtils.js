@@ -23,7 +23,7 @@ export function removeTrailingSlash(path) {
   return path.replace(/\/$/, '').replace(/\\$/, '')
 }
 
-export function wrapScript (script) {
+export function wrapScript(script) {
   // `./start.sh` in shell, just `start.cmd` in windows
   return isWin32() ? script : `./${script}`
 }

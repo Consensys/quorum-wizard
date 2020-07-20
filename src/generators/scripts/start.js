@@ -1,5 +1,5 @@
 import { startScriptBash } from '../bashHelper'
-import { addScriptExtension, scriptHeader } from './general'
+import { addScriptExtension, scriptHeader } from './utils'
 import { isWin32 } from '../../utils/execUtils'
 
 export default {
@@ -16,15 +16,15 @@ export default {
       default:
         return ''
     }
-  }
+  },
 }
 
-function startScriptDocker () {
+function startScriptDocker() {
   return `${scriptHeader()}
 docker-compose up -d`
 }
 
-function startScriptKubernetesBash () {
+function startScriptKubernetesBash() {
   return `${scriptHeader()}
 
 # check kubectl is installed
@@ -53,7 +53,7 @@ echo "\nRun 'kubectl get pods' to check status of pods\n"
 `
 }
 
-function startScriptKubernetesWindows () {
+function startScriptKubernetesWindows() {
   return `${scriptHeader()}
 kubectl >nul 2>&1
 if ERRORLEVEL 1 (

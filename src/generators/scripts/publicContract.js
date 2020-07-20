@@ -1,8 +1,7 @@
 export default {
   filename: 'public_contract.js',
   executable: false,
-  generate: () =>
-    `a = eth.accounts[0]
+  generate: () => `a = eth.accounts[0]
 web3.eth.defaultAccount = a;
 
 // abi and bytecode generated from simplestorage.sol:
@@ -23,5 +22,5 @@ var simple = simpleContract.new(42, {from:web3.eth.accounts[0], data: bytecode, 
       console.log(contract);
     }
   }
-});`
+});`,
 }

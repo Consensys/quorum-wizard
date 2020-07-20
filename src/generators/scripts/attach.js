@@ -1,16 +1,17 @@
-import { addScriptExtension, scriptHeader, setEnvironmentCommand, validateNodeNumberInput } from './general'
+import {
+  addScriptExtension, scriptHeader, setEnvironmentCommand, validateNodeNumberInput,
+} from './utils'
 import { isWin32 } from '../../utils/execUtils'
 
 export default {
   filename: addScriptExtension('attach'),
   executable: true,
-  generate: (config) =>
-    `${scriptHeader()}
+  generate: (config) => `${scriptHeader()}
 ${validateNodeNumberInput(config)}
-${attachCommand(config)}`
+${attachCommand(config)}`,
 }
 
-function attachCommand (config) {
+function attachCommand(config) {
   switch (config.network.deployment) {
     case 'bash':
       return attachCommandBash(config)
@@ -23,28 +24,27 @@ function attachCommand (config) {
   }
 }
 
-export function attachCommandBash (config) {
+export function attachCommandBash(config) {
   return `${setEnvironmentCommand(config)}
 $BIN_GETH attach qdata/dd$1/geth.ipc`
 }
 
-function attachCommandDockerWindows () {
+function attachCommandDockerWindows() {
   return 'docker-compose exec node%NODE_NUMBER% /bin/sh -c "geth attach qdata/dd/geth.ipc"'
 }
 
-function attachCommandDockerBash () {
+function attachCommandDockerBash() {
   return 'docker-compose exec node$NODE_NUMBER /bin/sh -c "geth attach qdata/dd/geth.ipc"'
 }
 
-function attachCommandKubernetesWindows () {
+function attachCommandKubernetesWindows() {
   return `
 FOR /f "delims=" %%g IN ('kubectl get pod --field-selector=status.phase^=Running -o name ^| findstr quorum-node%NODE_NUMBER%') DO set POD=%%g
 ECHO ON
 kubectl exec -it %POD% -c quorum -- /geth-helpers/geth-attach.sh`
 }
 
-function attachCommandKubernetesBash () {
+function attachCommandKubernetesBash() {
   return `POD=$(kubectl get pod --field-selector=status.phase=Running -o name | grep quorum-node$NODE_NUMBER)
 kubectl $NAMESPACE exec -it $POD -c quorum -- /geth-helpers/geth-attach.sh`
 }
-

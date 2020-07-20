@@ -5,7 +5,7 @@ import {
   getFullNetworkPath,
   createNetwork,
   generateResourcesLocally,
-  generateResourcesRemote,
+  generateResourcesRemote, createScripts,
 } from './networkCreator'
 import {
   createConfigFromAnswers,
@@ -20,7 +20,7 @@ import {
   writeJsonFile,
   removeFolder,
   copyDirectory,
-  writeFile,
+  writeFile, writeScript,
 } from '../utils/fileUtils'
 import {
   createNetPath,
@@ -33,6 +33,7 @@ import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { buildKubernetesResource } from '../model/ResourceConfig'
 import { executeSync } from '../utils/execUtils'
 import { LATEST_QUORUM, LATEST_TESSERA } from './download'
+import SCRIPTS from './scripts'
 
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
@@ -417,5 +418,67 @@ describe('creates static nodes json', () => {
       .mockReturnValueOnce('def')
       .mockReturnValueOnce('ghi')
     expect(createStaticNodes(nodes, 'istanbul', testDir)).toEqual(expected)
+  })
+})
+
+describe('creates scripts for networks', () => {
+  it('Generates the correct files for bash', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+    })
+    createScripts(config)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.start)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.stop)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.attach)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.runscript)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.publicContract)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.privateContract)
+    expect(writeScript).not.toBeCalledWith(createNetPath(config), config, SCRIPTS.getEndpoints)
+  })
+  it('Generates the correct files for bash, no tessera', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      transactionManager: 'none',
+    })
+    createScripts(config)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.start)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.stop)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.attach)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.runscript)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.publicContract)
+    expect(writeScript).not.toBeCalledWith(createNetPath(config), config, SCRIPTS.privateContract)
+    expect(writeScript).not.toBeCalledWith(createNetPath(config), config, SCRIPTS.getEndpoints)
+  })
+  it('Generates the correct files for docker', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      deployment: 'docker-compose',
+      containerPorts: {
+        dockerSubnet: '172.16.239.0/24',
+        ...containerPortInfo,
+      },
+    })
+    createScripts(config)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.start)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.stop)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.attach)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.runscript)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.publicContract)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.privateContract)
+    expect(writeScript).not.toBeCalledWith(createNetPath(config), config, SCRIPTS.getEndpoints)
+  })
+  it('Generates the correct files for kubernetes', () => {
+    const config = createConfigFromAnswers({
+      ...baseNetwork,
+      deployment: 'kubernetes',
+    })
+    createScripts(config)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.start)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.stop)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.attach)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.runscript)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.publicContract)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.privateContract)
+    expect(writeScript).toBeCalledWith(createNetPath(config), config, SCRIPTS.getEndpoints)
   })
 })

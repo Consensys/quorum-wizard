@@ -43,6 +43,14 @@ export function writeFile(filePath, contents, executable = false) {
   }
 }
 
+export function writeScript(networkPath, config, script) {
+  writeFile(
+    joinPath(networkPath, script.filename),
+    script.generate(config),
+    script.executable,
+  )
+}
+
 export function removeFolder(networkPath = '') {
   verifyPathInsideDirectory(cwd(), networkPath)
 

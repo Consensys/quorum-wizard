@@ -1,12 +1,12 @@
-import { getFullNetworkPath, } from './networkCreator'
-import { executeSync, } from '../utils/execUtils'
-import { buildCakeshopDir, generateCakeshopScript, } from './cakeshopHelper'
-import { isQuorum260Plus, pathToQuorumBinary, } from './binaryHelper'
-import { isCakeshop, isRaft, isTessera, } from '../model/NetworkConfig'
+import { getFullNetworkPath } from './networkCreator'
+import { executeSync } from '../utils/execUtils'
+import { buildCakeshopDir, generateCakeshopScript } from './cakeshopHelper'
+import { isQuorum260Plus, pathToQuorumBinary } from './binaryHelper'
+import { isCakeshop, isRaft, isTessera } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { formatTesseraKeysOutput } from './transactionManager'
 import { joinPath } from '../utils/pathUtils'
-import { scriptHeader, setEnvironmentCommand } from './scripts/general'
+import { scriptHeader, setEnvironmentCommand } from './scripts/utils'
 
 export async function initBash(config) {
   const initCommands = []
@@ -156,4 +156,3 @@ done
 echo "All Tessera nodes started"
 `
 }
-

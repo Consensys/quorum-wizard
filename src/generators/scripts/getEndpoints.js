@@ -1,4 +1,4 @@
-import { addScriptExtension, scriptHeader, validateNodeNumberInput } from './general'
+import { addScriptExtension, scriptHeader, validateNodeNumberInput } from './utils'
 import { isWin32 } from '../../utils/execUtils'
 import { isKubernetes } from '../../model/NetworkConfig'
 
@@ -6,18 +6,18 @@ export default {
   filename: addScriptExtension('getEndpoints'),
   executable: true,
   generate: (config) => {
-    if(!isKubernetes(config.network.deployment)) {
+    if (!isKubernetes(config.network.deployment)) {
       throw new Error('getEndpoints script only used for Kubernetes deployments')
     }
     return endpointScriptKubernetes(config)
   },
 }
 
-export function endpointScriptKubernetes (config) {
+export function endpointScriptKubernetes(config) {
   return isWin32() ? endpointScriptKubernetesWindows(config) : endpointScriptKubernetesBash(config)
 }
 
-function endpointScriptKubernetesBash (config) {
+function endpointScriptKubernetesBash(config) {
   return `${scriptHeader()}
 ${validateNodeNumberInput(config)}
 
@@ -32,7 +32,7 @@ echo tessera 3rd party: http://$IP_ADDRESS:$TESSERA_PORT
 `
 }
 
-function endpointScriptKubernetesWindows (config) {
+function endpointScriptKubernetesWindows(config) {
   return `${scriptHeader()}
 ${validateNodeNumberInput(config)}
 

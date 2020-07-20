@@ -3,14 +3,15 @@ import {
   createConfigFromAnswers,
 } from '../model/NetworkConfig'
 import {
-  cwd, formatNewLine,
+  cwd,
+  formatNewLine,
   libRootDir,
   readFileToString,
   writeFile,
 } from '../utils/fileUtils'
 import {
   buildDockerCompose,
-  createDockerCompose,
+  initDockerCompose,
 } from './dockerHelper'
 import {
   TEST_CWD,
@@ -19,7 +20,6 @@ import {
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from './download'
-import SCRIPTS from './scripts'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')
@@ -58,7 +58,7 @@ describe('generates docker-compose directory', () => {
     const config = createConfigFromAnswers(baseNetwork)
 
     readFileToString.mockReturnValueOnce('test')
-    await createDockerCompose(config)
+    await initDockerCompose(config)
 
     expect(writeFile).toBeCalledWith(
       joinPath(getFullNetworkPath(), 'qdata', 'cakeshop', 'local', 'application.properties'),
@@ -77,18 +77,6 @@ describe('generates docker-compose directory', () => {
       expect.anything(),
       false,
     )
-
-    expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), SCRIPTS.start.filename),
-      expect.anything(),
-      true,
-    )
-
-    expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), SCRIPTS.stop.filename),
-      expect.anything(),
-      true,
-    )
   })
   it('given docker details builds files to run docker', async () => {
     const config = createConfigFromAnswers({
@@ -98,7 +86,7 @@ describe('generates docker-compose directory', () => {
     })
 
     readFileToString.mockReturnValueOnce('test')
-    await createDockerCompose(config)
+    await initDockerCompose(config)
 
     expect(writeFile).toBeCalledWith(
       joinPath(getFullNetworkPath(), 'docker-compose.yml'),
@@ -110,18 +98,6 @@ describe('generates docker-compose directory', () => {
       joinPath(getFullNetworkPath(), '.env'),
       expect.anything(),
       false,
-    )
-
-    expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), SCRIPTS.start.filename),
-      expect.anything(),
-      true,
-    )
-
-    expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), SCRIPTS.stop.filename),
-      expect.anything(),
-      true,
     )
   })
 })

@@ -2,26 +2,24 @@
 
 import 'source-map-support/register'
 import inquirer from 'inquirer'
-import { createLogger, debug, info, } from './utils/log'
+import { createLogger, debug, info } from './utils/log'
 import { promptUser } from './questions'
 import { INITIAL_MODE } from './questions/questions'
-import { createConfigFromAnswers, isBash, isCakeshop, isDocker, isKubernetes, isTessera, } from './model/NetworkConfig'
+import {
+  createConfigFromAnswers, isBash, isDocker, isKubernetes, isTessera,
+} from './model/NetworkConfig'
 import {
   createNetwork,
   createQdataDirectory,
+  createScripts,
   generateResourcesLocally,
-  generateResourcesRemote, getFullNetworkPath,
+  generateResourcesRemote,
 } from './generators/networkCreator'
-import { buildBash, initBash } from './generators/bashHelper'
-import { createDockerCompose, initDockerCompose } from './generators/dockerHelper'
-import { createKubernetes, initKubernetes } from './generators/kubernetesHelper'
-import { generateAndCopyExampleScripts } from './generators/examplesHelper'
-import { formatTesseraKeysOutput, loadTesseraPublicKey, } from './generators/transactionManager'
-import { downloadAndCopyBinaries, pathToQuorumBinary } from './generators/binaryHelper'
-import { joinPath, wrapScript } from './utils/pathUtils'
-import { executeSync } from './utils/execUtils'
-import { buildCakeshopDir } from './generators/cakeshopHelper'
-import { cwd, writeFile } from './utils/fileUtils'
+import { initBash } from './generators/bashHelper'
+import { initDockerCompose } from './generators/dockerHelper'
+import { formatTesseraKeysOutput, loadTesseraPublicKey } from './generators/transactionManager'
+import { downloadAndCopyBinaries } from './generators/binaryHelper'
+import { wrapScript } from './utils/pathUtils'
 import SCRIPTS from './generators/scripts'
 
 const yargs = require('yargs')
@@ -80,30 +78,6 @@ async function createDirectory(config) {
   } else {
     throw new Error('Only bash, docker, and kubernetes deployments are supported')
   }
-}
-function createScripts(config) {
-  const scripts = [
-    SCRIPTS.start,
-    SCRIPTS.stop,
-    SCRIPTS.runscript,
-    SCRIPTS.attach,
-    SCRIPTS.publicContract,
-  ]
-  if (isTessera(config.network.transactionManager)) {
-    scripts.push(SCRIPTS.privateContract)
-  }
-  if (isKubernetes(config.network.deployment)) {
-    scripts.push(SCRIPTS.getEndpoints)
-  }
-
-  const networkPath = getFullNetworkPath(config)
-  scripts.forEach((script) => {
-    writeFile(
-      joinPath(networkPath, script.filename),
-      script.generate(config),
-      script.executable
-    )
-  })
 }
 
 function printInstructions(config) {

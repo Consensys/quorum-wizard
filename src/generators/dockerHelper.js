@@ -1,4 +1,6 @@
-import { formatNewLine, libRootDir, readFileToString, writeFile, } from '../utils/fileUtils'
+import {
+  formatNewLine, libRootDir, readFileToString, writeFile,
+} from '../utils/fileUtils'
 import { getFullNetworkPath } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
 import { isCakeshop, isTessera } from '../model/NetworkConfig'

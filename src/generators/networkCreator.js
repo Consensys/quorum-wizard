@@ -9,6 +9,7 @@ import {
   removeFolder,
   writeFile,
   writeJsonFile,
+  writeScript,
 } from '../utils/fileUtils'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
@@ -21,6 +22,7 @@ import { joinPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
 import { info } from '../utils/log'
 import { buildDockerIp } from '../utils/subnetUtils'
+import SCRIPTS from './scripts'
 
 export function createNetwork(config) {
   info('Building network directory...')
@@ -167,4 +169,23 @@ export function getFullNetworkPath(config) {
   }
 
   return joinPath(cwd(), 'network', networkFolderName)
+}
+
+export function createScripts(config) {
+  const scripts = [
+    SCRIPTS.start,
+    SCRIPTS.stop,
+    SCRIPTS.runscript,
+    SCRIPTS.attach,
+    SCRIPTS.publicContract,
+  ]
+  if (isTessera(config.network.transactionManager)) {
+    scripts.push(SCRIPTS.privateContract)
+  }
+  if (isKubernetes(config.network.deployment)) {
+    scripts.push(SCRIPTS.getEndpoints)
+  }
+
+  const networkPath = getFullNetworkPath(config)
+  scripts.forEach((script) => writeScript(networkPath, config, script))
 }
