@@ -194,7 +194,7 @@ export const QUESTIONS = [
 ]
 
 export const QUICKSTART_ANSWERS = {
-  deployment: isWindows() ? undefined : 'bash',
+  deployment: isWindows() ? 'docker-compose' : 'bash',
   name: '3-nodes-quickstart',
   numberNodes: 3,
   consensus: 'raft',
