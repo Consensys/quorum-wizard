@@ -41,11 +41,11 @@ function validateEnvNodeNumberWindows (config) {
 SET /A NODE_NUMBER=%1
 
 if "%1"=="" (
-    echo Please provide the number of the node to attach to (i.e. attach.cmd 2) && EXIT /B 1
+    echo Please provide the number of the node to attach to (i.e. attach.cmd 2^) && EXIT /B 1
 )
 
 if %NODE_NUMBER% EQU 0 (
-    echo Please provide the number of the node to attach to (i.e. attach.cmd 2) && EXIT /B 1
+    echo Please provide the number of the node to attach to (i.e. attach.cmd 2^) && EXIT /B 1
 )
 
 if %NODE_NUMBER% GEQ %NUMBER_OF_NODES%+1 (
@@ -73,8 +73,11 @@ export function filenameCheck () {
 
 function filenameCheckWindows () {
   // TODO this should allow for any existing file
-  return `if NOT "%1"=="${SCRIPTS.privateContract.filename}" if NOT "%1"=="${SCRIPTS.publicContract.filename}" (
-  echo Please provide a valid script file to execute (i.e. ${wrapScript(SCRIPTS.runscript.filename)} ${SCRIPTS.privateContract.filename}) && EXIT /B 1
+  return `if "%1"=="" (
+  echo Please provide a valid script file to execute (i.e. ${wrapScript(SCRIPTS.runscript.filename)} ${SCRIPTS.privateContract.filename}^) && EXIT /B 1
+)
+if NOT EXIST %1 (
+  echo Please provide a valid script file to execute (i.e. ${wrapScript(SCRIPTS.runscript.filename)} ${SCRIPTS.privateContract.filename}^) && EXIT /B 1
 )`
 }
 
