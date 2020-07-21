@@ -1,3 +1,4 @@
+import { normalize } from 'path'
 import { cwd, libRootDir } from './fileUtils'
 import { joinPath } from './pathUtils'
 
@@ -11,9 +12,9 @@ export function overrideProcessValue(key, value) {
 }
 
 export function createNetPath(config, ...relativePaths) {
-  return joinPath(cwd(), 'network', config.network.name, ...relativePaths)
+  return joinPath(normalize(cwd()), 'network', config.network.name, ...relativePaths)
 }
 
 export function createLibPath(...relativePaths) {
-  return joinPath(libRootDir(), ...relativePaths)
+  return joinPath(normalize(libRootDir()), ...relativePaths)
 }

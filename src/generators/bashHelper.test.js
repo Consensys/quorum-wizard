@@ -1,7 +1,7 @@
 import { anything } from 'expect'
 import {
-  buildBashScript,
-  buildBash,
+  initBash,
+  startScriptBash,
 } from './bashHelper'
 import { createConfigFromAnswers } from '../model/NetworkConfig'
 import {
@@ -9,7 +9,6 @@ import {
   libRootDir,
   readFileToString,
   writeFile,
-  copyFile,
   createFolder,
   writeJsonFile,
   wizardHomeDir,
@@ -19,7 +18,6 @@ import {
   TEST_LIB_ROOT_DIR,
   TEST_WIZARD_HOME_DIR,
   createNetPath,
-  createLibPath,
 } from '../utils/testHelper'
 import { info } from '../utils/log'
 import { generateAccounts } from './consensusHelper'
@@ -49,28 +47,27 @@ const baseNetwork = {
 
 test('creates quickstart config', () => {
   const config = createConfigFromAnswers({})
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
 
 test('creates quickstart config with java 8', () => {
   isJava11Plus.mockReturnValue(false)
   const config = createConfigFromAnswers({})
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
   isJava11Plus.mockReturnValue(true)
 })
 
 test('creates quickstart start script without insecure unlock flag on quorum pre-2.6.0', () => {
   const config = createConfigFromAnswers({ quorumVersion: '2.5.0' })
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
 
-
 test('creates 3nodes raft bash tessera', () => {
   const config = createConfigFromAnswers(baseNetwork)
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
 
@@ -79,7 +76,7 @@ test('creates 3nodes raft bash tessera cakeshop', () => {
     ...baseNetwork,
     cakeshop: LATEST_CAKESHOP,
   })
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
 
@@ -88,7 +85,7 @@ test('creates 3nodes raft bash no tessera', () => {
     ...baseNetwork,
     transactionManager: 'none',
   })
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
 
@@ -101,7 +98,7 @@ test('creates 3nodes raft bash tessera custom', () => {
     customizePorts: false,
     nodes: [],
   })
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
 
@@ -152,15 +149,8 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
     cakeshopPort: '7999',
     nodes,
   })
-  const bash = buildBashScript(config).startScript
+  const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
-})
-
-test('build bash with tessera', () => {
-  const config = createConfigFromAnswers(baseNetwork)
-  buildBash(config)
-  expect(writeFile).toBeCalledWith(createNetPath(config, 'start.sh'), anything(), true)
-  expect(copyFile).toBeCalledWith(createLibPath('lib', 'stop.sh'), createNetPath(config, 'stop.sh'))
 })
 
 test('build bash with tessera and cakeshop', () => {
@@ -168,20 +158,8 @@ test('build bash with tessera and cakeshop', () => {
     ...baseNetwork,
     cakeshop: LATEST_CAKESHOP,
   })
-  buildBash(config)
+  initBash(config)
   expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', 'cakeshop', 'local'), true)
   expect(writeJsonFile).toBeCalledWith(createNetPath(config, 'qdata', 'cakeshop', 'local'), 'cakeshop.json', anything())
   expect(writeFile).toBeCalledWith(createNetPath(config, 'qdata', 'cakeshop', 'local', 'application.properties'), anything(), false)
-  expect(writeFile).toBeCalledWith(createNetPath(config, 'start.sh'), anything(), true)
-  expect(copyFile).toBeCalledWith(createLibPath('lib', 'stop.sh'), createNetPath(config, 'stop.sh'))
-})
-
-test('build bash remote debug', () => {
-  const config = createConfigFromAnswers({
-    ...baseNetwork,
-    remoteDebug: true,
-  })
-  buildBash(config)
-  expect(writeFile).toBeCalledWith(createNetPath(config, 'start.sh'), anything(), true)
-  expect(copyFile).toBeCalledWith(createLibPath('lib', 'stop.sh'), createNetPath(config, 'stop.sh'))
 })

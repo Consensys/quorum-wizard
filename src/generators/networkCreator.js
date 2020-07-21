@@ -1,33 +1,28 @@
 import sanitize from 'sanitize-filename'
 import {
+  copyDirectory,
   copyFile,
   createFolder,
   cwd,
   libRootDir,
   readFileToString,
   removeFolder,
-  writeJsonFile,
-  copyDirectory,
   writeFile,
+  writeJsonFile,
+  writeScript,
 } from '../utils/fileUtils'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
+import { buildKubernetesResource, LATEST_QUBERNETES } from '../model/ResourceConfig'
 import {
-  buildKubernetesResource,
-  LATEST_QUBERNETES,
-} from '../model/ResourceConfig'
-import {
-  isRaft,
-  isTessera,
-  isDocker,
-  isKubernetes,
-  isBash,
+  isBash, isDocker, isKubernetes, isRaft, isTessera,
 } from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
 import { info } from '../utils/log'
 import { buildDockerIp } from '../utils/subnetUtils'
+import SCRIPTS from './scripts'
 
 export function createNetwork(config) {
   info('Building network directory...')
@@ -48,33 +43,25 @@ export function generateResourcesRemote(config) {
 
   const initScript = isKubernetes(config.network.deployment) ? 'qube-init' : 'quorum-init'
   const copy7nodes = !config.network.generateKeys ? 'cp -r /qubernetes/7nodes /qubernetes/out/config; ' : ''
-  let dockerCommand = `cd ${networkPath}
-  ## make sure docker is installed
-  docker ps > /dev/null
-  EXIT_CODE=$?
-
-  if [ $EXIT_CODE -ne 0 ];
-  then
-    exit $EXIT_CODE
-  fi
-
-  docker pull quorumengineering/qubernetes:${LATEST_QUBERNETES}
-
-
-  docker run --rm -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out quorumengineering/qubernetes:${LATEST_QUBERNETES} /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"
-  `
-
-  if (isDocker(config.network.deployment)) {
-    dockerCommand += `
-    sed -i'.bak' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/${buildDockerIp(config.containerPorts.dockerSubnet, '1')}\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
-  }
+  const dockerCommands = [
+    `cd ${networkPath}`,
+    `docker pull quorumengineering/qubernetes:${LATEST_QUBERNETES}`,
+    `docker run --rm -v ${joinPath(networkPath, 'qubernetes.yaml')}:/qubernetes/qubernetes.yaml -v ${joinPath(networkPath, 'out')}:/qubernetes/out quorumengineering/qubernetes:${LATEST_QUBERNETES} /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"`,
+  ]
 
   try {
-    executeSync(dockerCommand)
+    dockerCommands.forEach(executeSync)
   } catch (e) {
     throw new Error('Remote generation failed')
   }
   if (isDocker(config.network.deployment)) {
+    const permissionedNodesLocation = joinPath(networkPath, 'out/config/permissioned-nodes.json')
+    const nodesWithSubnetReplaced = readFileToString(permissionedNodesLocation)
+      .replace(
+        /%QUORUM-NODE([0-9])_SERVICE_HOST%/g,
+        `${buildDockerIp(config.containerPorts.dockerSubnet, '1')}$1`,
+      )
+    writeFile(permissionedNodesLocation, nodesWithSubnetReplaced)
     copyDirectory(remoteOutputDir, configDir)
   }
 }
@@ -182,4 +169,23 @@ export function getFullNetworkPath(config) {
   }
 
   return joinPath(cwd(), 'network', networkFolderName)
+}
+
+export function createScripts(config) {
+  const scripts = [
+    SCRIPTS.start,
+    SCRIPTS.stop,
+    SCRIPTS.runscript,
+    SCRIPTS.attach,
+    SCRIPTS.publicContract,
+  ]
+  if (isTessera(config.network.transactionManager)) {
+    scripts.push(SCRIPTS.privateContract)
+  }
+  if (isKubernetes(config.network.deployment)) {
+    scripts.push(SCRIPTS.getEndpoints)
+  }
+
+  const networkPath = getFullNetworkPath(config)
+  scripts.forEach((script) => writeScript(networkPath, config, script))
 }

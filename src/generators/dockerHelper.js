@@ -1,21 +1,12 @@
 import {
-  formatNewLine,
-  libRootDir,
-  readFileToString,
-  writeFile,
+  formatNewLine, libRootDir, readFileToString, writeFile,
 } from '../utils/fileUtils'
 import { getFullNetworkPath } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
-import {
-  isTessera,
-  isCakeshop,
-} from '../model/NetworkConfig'
+import { isCakeshop, isTessera } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
-import {
-  cidrhost,
-  buildDockerIp,
-} from '../utils/subnetUtils'
+import { buildDockerIp, cidrhost } from '../utils/subnetUtils'
 import { isQuorum260Plus } from './binaryHelper'
 
 export function buildDockerCompose(config) {
@@ -58,7 +49,7 @@ export function buildDockerCompose(config) {
   ].join('')
 }
 
-export async function createDockerCompose(config) {
+export async function initDockerCompose(config) {
   info('Building docker-compose file...')
   const file = buildDockerCompose(config)
 
@@ -68,18 +59,8 @@ export async function createDockerCompose(config) {
   if (isCakeshop(config.network.cakeshop)) {
     buildCakeshopDir(config, qdata)
   }
-
-  info('Writing start script...')
-  const startCommands = `#!/bin/bash
-docker-compose up -d`
-  const stopCommand = `#!/bin/bash
-docker-compose down`
-
   writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)
   writeFile(joinPath(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
-  writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
-  writeFile(joinPath(networkPath, 'stop.sh'), stopCommand, true)
-  info('Done')
 }
 
 function createEnvFile(config, hasTessera) {
