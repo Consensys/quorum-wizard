@@ -20,14 +20,21 @@ export async function execute(command, options) {
 let JAVA_VERSION
 
 export function runJavaVersionLookup() {
-  const regexMatcher = /[0-9]+\.?[0-9]+?/
-  const versionMatch = executeSync('java -version 2>&1')
-    .toString()
-    .trim()
-    .match(regexMatcher)
+  let versionText
+  try {
+    versionText = executeSync('java -version 2>&1')
+      .toString()
+      .trim()
+  } catch (e) {
+    // java probably doesn't exist
+    return 0
+  }
+  const versionMatch = versionText
+    .match(/[0-9]+\.?[0-9]+?/)
 
   if (versionMatch === null) {
-    throw new Error('Could not read Java version number. Please make sure Java is installed on your machine.')
+    // java exists but output is unrecognized
+    throw new Error(`Could not read Java version number in output: ${versionText}`)
   }
 
   const version = versionMatch[0]
@@ -38,11 +45,23 @@ export function runJavaVersionLookup() {
   return parseInt(version, 10)
 }
 
-export function isJava11Plus() {
+export function getJavaVersion() {
   if (!JAVA_VERSION) {
     JAVA_VERSION = runJavaVersionLookup()
   }
-  return JAVA_VERSION >= 11
+  return JAVA_VERSION
+}
+
+export function isJava11Plus() {
+  return getJavaVersion() >= 11
+}
+
+export function isJava8() {
+  return getJavaVersion() === 8
+}
+
+export function isJavaMissing() {
+  return getJavaVersion() === 0
 }
 
 export function isWindows() {
