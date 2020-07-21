@@ -38,7 +38,7 @@ then
   exit $EXIT_CODE
 fi
 
-kubectl cluster-info >nul 2>&1
+kubectl cluster-info > /dev/null 2>&1
 EXIT_CODE=$?
 
 if [ $EXIT_CODE -ne 0 ];
