@@ -21,8 +21,9 @@ import {
 } from '../utils/testHelper'
 import { info } from '../utils/log'
 import { generateAccounts } from './consensusHelper'
-import { isJava11Plus } from '../utils/execUtils'
-import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from './download'
+import {
+  LATEST_CAKESHOP, LATEST_CAKESHOP_J8, LATEST_QUORUM, LATEST_TESSERA, LATEST_TESSERA_J8,
+} from './download'
 
 jest.mock('../utils/fileUtils')
 jest.mock('./consensusHelper')
@@ -33,7 +34,6 @@ libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 wizardHomeDir.mockReturnValue(TEST_WIZARD_HOME_DIR)
 generateAccounts.mockReturnValue('accounts')
 readFileToString.mockReturnValue('publicKey')
-isJava11Plus.mockReturnValue(true)
 info.mockReturnValue('log')
 
 const baseNetwork = {
@@ -52,11 +52,12 @@ test('creates quickstart config', () => {
 })
 
 test('creates quickstart config with java 8', () => {
-  isJava11Plus.mockReturnValue(false)
-  const config = createConfigFromAnswers({})
+  const config = createConfigFromAnswers({
+    transactionManager: LATEST_TESSERA_J8,
+    cakeshop: LATEST_CAKESHOP_J8,
+  })
   const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
-  isJava11Plus.mockReturnValue(true)
 })
 
 test('creates quickstart start script without insecure unlock flag on quorum pre-2.6.0', () => {
