@@ -20,9 +20,10 @@ import {
 } from '../model/NetworkConfig'
 import { joinPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
-import { info } from '../utils/log'
+import { info, error } from '../utils/log'
 import { buildDockerIp } from '../utils/subnetUtils'
 import SCRIPTS from './scripts'
+import { getDockerRegistry } from './dockerHelper'
 
 export function createNetwork(config) {
   info('Building network directory...')
@@ -43,15 +44,17 @@ export function generateResourcesRemote(config) {
 
   const initScript = isKubernetes(config.network.deployment) ? 'qube-init' : 'quorum-init'
   const copy7nodes = !config.network.generateKeys ? 'cp -r /qubernetes/7nodes /qubernetes/out/config; ' : ''
+  const qubernetesImage = `${getDockerRegistry()}quorumengineering/qubernetes:${LATEST_QUBERNETES}`
   const dockerCommands = [
     `cd ${networkPath}`,
-    `docker pull quorumengineering/qubernetes:${LATEST_QUBERNETES}`,
-    `docker run --rm -v ${joinPath(networkPath, 'qubernetes.yaml')}:/qubernetes/qubernetes.yaml -v ${joinPath(networkPath, 'out')}:/qubernetes/out quorumengineering/qubernetes:${LATEST_QUBERNETES} /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"`,
+    `docker pull ${qubernetesImage}`,
+    `docker run --rm -v ${joinPath(networkPath, 'qubernetes.yaml')}:/qubernetes/qubernetes.yaml -v ${joinPath(networkPath, 'out')}:/qubernetes/out ${qubernetesImage} /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"`,
   ]
 
   try {
     dockerCommands.forEach(executeSync)
   } catch (e) {
+    error('\nGenerating resources in Qubernetes Docker container failed.\nYou may not be able to access DockerHub from your machine.\nIf you have a custom docker registry, re-run the wizard with the registry flag: quorum-wizard --registry yourcustomregistry.example.com\n')
     throw new Error('Remote generation failed')
   }
   if (isDocker(config.network.deployment)) {
