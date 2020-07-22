@@ -21,7 +21,15 @@ function endpointScriptKubernetesBash(config) {
   return `${scriptHeader()}
 ${validateNodeNumberInput(config)}
 
-IP_ADDRESS=$(minikube ip 2>/dev/null || echo localhost)
+minikube ip > /dev/null 2>&1
+EXIT_CODE=$?
+
+if [ $EXIT_CODE -ne 0 ];
+then
+  IP_ADDRESS=localhost
+else
+  IP_ADDRESS=$(minikube ip)
+fi
 
 QUORUM_PORT=$(kubectl get service quorum-node$1 -o=jsonpath='{range.spec.ports[?(@.name=="rpc-listener")]}{.nodePort}')
 
@@ -35,6 +43,13 @@ echo tessera 3rd party: http://$IP_ADDRESS:$TESSERA_PORT
 function endpointScriptKubernetesWindows(config) {
   return `${scriptHeader()}
 ${validateNodeNumberInput(config)}
+
+minikube ip >nul 2>&1
+if ERRORLEVEL 1 (
+  FOR /f "delims=" %%g IN ('minikube ip') DO set IP_ADDRESS=%%g
+) else (
+  set IP_ADDRESS=localhost
+)
 
 FOR /f "delims=" %%g IN ('minikube ip 2^>nul ^|^| echo localhost') DO set IP_ADDRESS=%%g
 
