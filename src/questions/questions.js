@@ -138,7 +138,7 @@ export const TOOLS = {
     },
     new Separator('=== Third Party Tools ==='),
     {
-      name: 'Splunk',
+      name: 'Splunk, See your world. Maybe wish you hadn\'t.',
       value: 'splunk'
     },
     {
