@@ -16,7 +16,7 @@ quorum:
   Genesis_File: out/config/genesis.json
   quorum:
     Raft_Port: 50400
-    Quorum_Version: 2.6.0
+    Quorum_Version: 2.7.0
   storage:
     Type: PVC
     Capacity: 200Mi
@@ -52,7 +52,7 @@ quorum:
   Genesis_File: out/config/genesis.json
   quorum:
     Raft_Port: 50400
-    Quorum_Version: 2.6.0
+    Quorum_Version: 2.7.0
   storage:
     Type: PVC
     Capacity: 200Mi
@@ -88,7 +88,7 @@ quorum:
   Genesis_File: out/config/genesis.json
   quorum:
     Raft_Port: 50400
-    Quorum_Version: 2.6.0
+    Quorum_Version: 2.7.0
   storage:
     Type: PVC
     Capacity: 200Mi
@@ -124,7 +124,7 @@ quorum:
   Genesis_File: out/config/genesis.json
   quorum:
     Raft_Port: 50400
-    Quorum_Version: 2.6.0
+    Quorum_Version: 2.7.0
   storage:
     Type: PVC
     Capacity: 200Mi

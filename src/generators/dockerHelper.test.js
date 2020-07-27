@@ -11,7 +11,9 @@ import {
 } from '../utils/fileUtils'
 import {
   buildDockerCompose,
-  createDockerCompose,
+  getDockerRegistry,
+  initDockerCompose,
+  setDockerRegistry,
 } from './dockerHelper'
 import {
   TEST_CWD,
@@ -53,12 +55,30 @@ const baseNetwork = {
   },
 }
 
+describe('sets docker registry with command line flags', () => {
+  it('sets registry to empty string when flag is not present', async () => {
+    setDockerRegistry(undefined)
+    expect(getDockerRegistry()).toBe('')
+  })
+  it('sets the registry url from the flag', async () => {
+    setDockerRegistry('registry.hub.docker.com/')
+    expect(getDockerRegistry()).toBe('registry.hub.docker.com/')
+  })
+  it('adds a trailing slash if missing', async () => {
+    setDockerRegistry('registry.hub.docker.com')
+    expect(getDockerRegistry()).toBe('registry.hub.docker.com/')
+  })
+  it('throws an error if you include the url scheme', async () => {
+    expect(() => setDockerRegistry('http://registry.hub.docker.com')).toThrow(new Error('Docker registry url should NOT include http(s):// at the beginning'))
+  })
+})
+
 describe('generates docker-compose directory', () => {
   it('given docker details builds files to run docker', async () => {
     const config = createConfigFromAnswers(baseNetwork)
 
     readFileToString.mockReturnValueOnce('test')
-    await createDockerCompose(config)
+    await initDockerCompose(config)
 
     expect(writeFile).toBeCalledWith(
       joinPath(getFullNetworkPath(), 'qdata', 'cakeshop', 'local', 'application.properties'),
@@ -77,18 +97,6 @@ describe('generates docker-compose directory', () => {
       expect.anything(),
       false,
     )
-
-    expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), 'start.sh'),
-      expect.anything(),
-      true,
-    )
-
-    expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), 'stop.sh'),
-      expect.anything(),
-      true,
-    )
   })
   it('given docker details builds files to run docker', async () => {
     const config = createConfigFromAnswers({
@@ -98,7 +106,7 @@ describe('generates docker-compose directory', () => {
     })
 
     readFileToString.mockReturnValueOnce('test')
-    await createDockerCompose(config)
+    await initDockerCompose(config)
 
     expect(writeFile).toBeCalledWith(
       joinPath(getFullNetworkPath(), 'docker-compose.yml'),
@@ -110,18 +118,6 @@ describe('generates docker-compose directory', () => {
       joinPath(getFullNetworkPath(), '.env'),
       expect.anything(),
       false,
-    )
-
-    expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), 'start.sh'),
-      expect.anything(),
-      true,
-    )
-
-    expect(writeFile).toBeCalledWith(
-      joinPath(getFullNetworkPath(), 'stop.sh'),
-      expect.anything(),
-      true,
     )
   })
 })

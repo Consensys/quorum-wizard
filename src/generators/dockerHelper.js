@@ -1,25 +1,36 @@
 import {
-  copyFile,
-  formatNewLine,
-  libRootDir,
-  readFileToString,
-  writeFile,
+  copyFile, formatNewLine, libRootDir, readFileToString, writeFile,
 } from '../utils/fileUtils'
 import { getFullNetworkPath } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
 import { loadTesseraPublicKey } from './transactionManager'
-import {
-  isTessera,
-  isCakeshop,
-  isSplunk,
-} from '../model/NetworkConfig'
+import { isCakeshop, isTessera, isSplunk } from '../model/NetworkConfig'
 import { info } from '../utils/log'
-import { joinPath } from '../utils/pathUtils'
-import {
-  cidrhost,
-  buildDockerIp,
-} from '../utils/subnetUtils'
+import { joinPath, removeTrailingSlash } from '../utils/pathUtils'
+import { buildDockerIp, cidrhost } from '../utils/subnetUtils'
 import { isQuorum260Plus } from './binaryHelper'
+
+let DOCKER_REGISTRY
+
+export function setDockerRegistry(registry) {
+  if (!registry) {
+    DOCKER_REGISTRY = ''
+    return
+  }
+
+  if (registry.indexOf('http') === 0) {
+    throw new Error('Docker registry url should NOT include http(s):// at the beginning')
+  }
+
+  // make sure that there is a trailing slash
+  DOCKER_REGISTRY = `${removeTrailingSlash(registry)}/`
+
+  info(`Using custom docker registry: ${DOCKER_REGISTRY}`)
+}
+
+export function getDockerRegistry() {
+  return DOCKER_REGISTRY
+}
 
 export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
@@ -106,7 +117,7 @@ export function buildSplunkDockerCompose(config) {
   ].join('')
 }
 
-export async function createDockerCompose(config) {
+export async function initDockerCompose(config) {
   info('Building docker-compose file...')
   const splunkFile = buildSplunkDockerCompose(config)
   const file = buildDockerCompose(config)
@@ -157,6 +168,10 @@ TESSERA_3PARTY_PORT=${config.containerPorts.tm.thirdPartyPort}`)
   if (isQuorum260Plus(config.network.quorumVersion)) {
     env = env.concat(`
 QUORUM_GETH_ARGS="--allow-insecure-unlock --graphql --graphql.port ${config.containerPorts.quorum.graphQlPort} --graphql.corsdomain=* --graphql.addr=0.0.0.0"`)
+  }
+  if (getDockerRegistry() !== '') {
+    env = env.concat(`
+DOCKER_REGISTRY=${getDockerRegistry()}`)
   }
   return env
 }
