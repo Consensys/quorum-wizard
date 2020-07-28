@@ -121,7 +121,7 @@ export async function initDockerCompose(config) {
   info('Building docker-compose file...')
   const splunkFile = buildSplunkDockerCompose(config)
   const file = buildDockerCompose(config)
-
+console.log(config.network)
   const hasSplunk = isSplunk(config.network.splunk)
   const networkPath = getFullNetworkPath(config)
   const qdata = joinPath(networkPath, 'qdata')
@@ -130,24 +130,11 @@ export async function initDockerCompose(config) {
     buildCakeshopDir(config, qdata)
   }
 
-  info('Writing start script...')
-  const startCommands = `#!/bin/bash
-docker-compose up -d`
-  const stopCommand = `#!/bin/bash
-docker-compose down`
-
   if (hasSplunk) {
     writeFile(joinPath(networkPath, 'docker-compose-splunk.yml'), splunkFile, false)
   }
   writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)
   writeFile(joinPath(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
-  if (config.network.txGenerate) {
-    copyFile(joinPath(libRootDir(), 'lib', 'start-with-splunk-txns.sh'), joinPath(networkPath, 'start.sh'))
-    copyFile(joinPath(libRootDir(), 'lib', 'stop-with-splunk.sh'), joinPath(networkPath, 'stop.sh'))
-  } else {
-    writeFile(joinPath(networkPath, 'start.sh'), startCommands, true)
-    writeFile(joinPath(networkPath, 'stop.sh'), stopCommand, true)
-  }
   info('Done')
 }
 

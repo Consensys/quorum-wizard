@@ -1,4 +1,6 @@
 import { startScriptBash } from '../bashHelper'
+import { libRootDir, readFileToString } from '../../utils/fileUtils'
+import { joinPath } from '../../utils/pathUtils'
 import { addScriptExtension, scriptHeader } from './utils'
 import { isWin32 } from '../../utils/execUtils'
 
@@ -10,7 +12,7 @@ export default {
       case 'bash':
         return startScriptBash(config)
       case 'docker-compose':
-        return startScriptDocker()
+        return startScriptDocker(config)
       case 'kubernetes':
         return isWin32() ? startScriptKubernetesWindows() : startScriptKubernetesBash()
       default:
@@ -19,7 +21,10 @@ export default {
   },
 }
 
-function startScriptDocker() {
+function startScriptDocker(config) {
+  if (config.network.txGenerate) {
+    return readFileToString(joinPath(libRootDir(), 'lib', 'start-with-splunk-txns.sh'))
+  }
   return `${scriptHeader()}
 docker-compose up -d`
 }

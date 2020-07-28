@@ -73,7 +73,6 @@ export function generateResourcesRemote(config) {
   if (config.network.txGenerate) {
     copyDirectory(joinPath(libRootDir(), 'lib', 'scripts'), joinPath(remoteOutputDir, 'scripts'))
     copyDirectory(joinPath(libRootDir(), 'lib', 'contracts'), joinPath(remoteOutputDir, 'contracts'))
-    // copyFile(joinPath(networkPath, 'private_contract.js'), joinPath(remoteOutputDir, 'scripts', 'private_contract.js'))
   }
 }
 
@@ -123,7 +122,6 @@ export function createQdataDirectory(config) {
   config.nodes.forEach((node, i) => {
     const nodeNumber = i + 1
     const keySource = joinPath(configPath, `key${nodeNumber}`)
-    console.log(keySource)
     const quorumDir = joinPath(qdata, `dd${nodeNumber}`)
     const gethDir = joinPath(quorumDir, 'geth')
     const keyDir = joinPath(quorumDir, 'keystore')

@@ -1,3 +1,5 @@
+import { libRootDir, readFileToString } from '../../utils/fileUtils'
+import { joinPath } from '../../utils/pathUtils'
 import { addScriptExtension, scriptHeader } from './utils'
 
 export default {
@@ -8,7 +10,7 @@ export default {
       case 'bash':
         return stopScriptBash(config)
       case 'docker-compose':
-        return stopScriptDocker()
+        return stopScriptDocker(config)
       case 'kubernetes':
         return stopScriptKubernetes()
       default:
@@ -46,7 +48,10 @@ fi
 `
 }
 
-export function stopScriptDocker() {
+export function stopScriptDocker(config) {
+  if (config.network.txGenerate) {
+    return readFileToString(joinPath(libRootDir(), 'lib', 'stop-with-splunk.sh'))
+  }
   return `${scriptHeader()}
 docker-compose down`
 }
