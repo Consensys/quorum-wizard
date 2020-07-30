@@ -23,27 +23,6 @@ export function validateNetworkId(input) {
   return true
 }
 
-export function transformCakeshopAnswer(answer) {
-  if (answer === 'Yes') {
-    return isJava8() ? LATEST_CAKESHOP_J8 : LATEST_CAKESHOP
-  }
-  return 'none'
-}
-
-export function transformSplunkAnswer(answer) {
-  if (answer === 'Yes') {
-    return true
-  }
-  return false
-}
-
-export function transformTxGenerateAnswer(answer) {
-  if (answer === 'Yes') {
-    return true
-  }
-  return false
-}
-
 export function disableIfWrongJavaVersion({ type }) {
   if (type === 'jar8' && !isJava8()) {
     return 'Disabled, requires Java 8'
