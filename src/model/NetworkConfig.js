@@ -17,9 +17,6 @@ export function createConfigFromAnswers(answers) {
     quorumVersion = LATEST_QUORUM,
     transactionManager = LATEST_TESSERA,
     deployment = 'bash',
-    // cakeshop = LATEST_CAKESHOP,
-    // splunk = false,
-    // txGenerate = false,
     tools = [],
     generateKeys = false,
     networkId = '10',
@@ -169,8 +166,4 @@ export function isRaft(consensus) {
 
 export function isCakeshop(cakeshop) {
   return cakeshop !== 'none'
-}
-
-export function isSplunk(splunk) {
-  return splunk === true || splunk === 'Yes'
 }

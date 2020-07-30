@@ -32,38 +32,6 @@ splunk:
           index: logs
           sourcetype: cadvisor
           disabled: 0
-        "logs://node1":
-          index: logs
-          sourcetype: node1
-          disabled: 0
-        "logs://txmanager1":
-          index: logs
-          sourcetype: txmanager1
-          disabled: 0
-        "logs://node2":
-          index: logs
-          sourcetype: node2
-          disabled: 0
-        "logs://txmanager2":
-          index: logs
-          sourcetype: txmanager2
-          disabled: 0
-        "logs://node3":
-          index: logs
-          sourcetype: node3
-          disabled: 0
-        "logs://txmanager3":
-          index: logs
-          sourcetype: txmanager3
-          disabled: 0
-        "logs://node4":
-          index: logs
-          sourcetype: node4
-          disabled: 0
-        "logs://txmanager4":
-          index: logs
-          sourcetype: txmanager4
-          disabled: 0
         "logs://cakeshop":
           index: logs
           sourcetype: cakeshop

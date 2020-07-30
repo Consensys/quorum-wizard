@@ -67,7 +67,7 @@ export function generateResourcesRemote(config) {
     writeFile(permissionedNodesLocation, nodesWithSubnetReplaced)
     copyDirectory(remoteOutputDir, configDir)
   }
-  if (isSplunk(config.network.splunk)) {
+  if (config.network.splunk) {
     copyDirectory(joinPath(libRootDir(), 'splunk'), joinPath(remoteOutputDir, 'splunk'))
   }
   if (config.network.txGenerate) {
@@ -85,15 +85,6 @@ export async function generateResourcesLocally(config) {
     await generateKeys(config, configDir)
   } else {
     copyDirectory(joinPath(libRootDir(), '7nodes'), configDir)
-  }
-
-  if (isSplunk(config.network.splunk)) {
-    copyDirectory(joinPath(libRootDir(), 'splunk'), joinPath(configDir, 'splunk'))
-  }
-
-  if (config.network.txGenerate) {
-    copyDirectory(joinPath(libRootDir(), 'lib', 'scripts'), joinPath(configDir, 'scripts'))
-    copyFile(joinPath(networkPath, 'private_contract.js'), joinPath(configDir, 'scripts', 'private_contract.js'))
   }
 
   generateConsensusConfig(

@@ -4,7 +4,7 @@ import {
 import { getFullNetworkPath } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
 import { loadTesseraPublicKey } from './transactionManager'
-import { isCakeshop, isTessera, isSplunk } from '../model/NetworkConfig'
+import { isCakeshop, isTessera } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { joinPath, removeTrailingSlash } from '../utils/pathUtils'
 import { buildDockerIp, cidrhost } from '../utils/subnetUtils'
@@ -35,7 +35,7 @@ export function getDockerRegistry() {
 export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
   const hasCakeshop = isCakeshop(config.network.cakeshop)
-  const hasSplunk = isSplunk(config.network.splunk)
+  const hasSplunk = config.network.splunk
   const txGenerate = config.network.txGenerate
 
   const quorumDefinitions = readFileToString(joinPath(
@@ -121,8 +121,7 @@ export async function initDockerCompose(config) {
   info('Building docker-compose file...')
   const splunkFile = buildSplunkDockerCompose(config)
   const file = buildDockerCompose(config)
-console.log(config.network)
-  const hasSplunk = isSplunk(config.network.splunk)
+  const hasSplunk = config.network.splunk
   const networkPath = getFullNetworkPath(config)
   const qdata = joinPath(networkPath, 'qdata')
 

@@ -12,10 +12,11 @@ import {
 import {
   defaultNetworkName,
   isRaft,
-  isKubernetes, isBash,
+  isKubernetes, isBash, isDocker
 } from '../model/NetworkConfig'
+
 import {
-  executeSync, isJava8, isJavaMissing, isWindows,
+  executeSync, isJava8, isJavaMissing, isWindows, isWin32
 } from '../utils/execUtils'
 import {
   LATEST_CAKESHOP,
@@ -134,19 +135,23 @@ export const TOOLS = {
     new Separator('=== Quorum Tools ==='),
     {
       name: 'Cakeshop, Quorum\'s official block explorer',
-      value: 'cakeshop'
+      value: 'cakeshop',
+      disabled: isBash(answers.deployment) && isJavaMissing() ? 'Disabled, Java is required to use Cakeshop' : false
     },
     new Separator('=== Third Party Tools ==='),
     {
       name: 'Splunk, Mine your own business.',
-      value: 'splunk'
+      value: 'splunk',
+      disbaled: !isDocker(answers.deployment) || isWin32() ? 'Disabled, splunk is available with docker-compose' : false
     },
     {
       name: 'Splunk Transaction Auto-generator',
-      value: 'txGenerate'
+      value: 'txGenerate',
+      disbaled: !isDocker(answers.deployment) ? 'Disabled, transaction generator is available with docker-compose' : false
     },
   ]),
-  default: []
+  default: [],
+  when: (answers) => !isKubernetes(answers.deployment)
 }
 
 export const KEY_GENERATION = {
