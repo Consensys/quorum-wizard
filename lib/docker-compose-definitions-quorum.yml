@@ -48,7 +48,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $${GENESIS_FILE} | grep chainId | awk -F " " '{print $$2}' | awk -F "," '{print $$1}')
       GETH_ARGS_raft="--raft --raftport ${QUORUM_RAFT_PORT:-50400}"
       GETH_ARGS_istanbul="--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full"
-      EXTRA_ARGS=${QUORUM_GETH_ARGS:-}
+      EXTRA_ARGS="${QUORUM_GETH_ARGS:-}"
       geth --datadir $${DDIR} init $${GENESIS_FILE}
       geth \
         --identity node$${NODE_ID}-${QUORUM_CONSENSUS:-istanbul} \
