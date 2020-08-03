@@ -101,7 +101,7 @@ TESSERA_3PARTY_PORT=${config.containerPorts.tm.thirdPartyPort}`)
   }
   if (isQuorum260Plus(config.network.quorumVersion)) {
     env = env.concat(`
-QUORUM_GETH_ARGS="--allow-insecure-unlock --graphql --graphql.port ${config.containerPorts.quorum.graphQlPort} --graphql.corsdomain=* --graphql.addr=0.0.0.0"`)
+QUORUM_GETH_ARGS=--allow-insecure-unlock --graphql --graphql.port ${config.containerPorts.quorum.graphQlPort} --graphql.corsdomain=* --graphql.addr=0.0.0.0`)
   }
   if (getDockerRegistry() !== '') {
     env = env.concat(`
