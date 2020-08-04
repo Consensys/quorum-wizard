@@ -95,10 +95,13 @@ export function buildDockerCompose(config) {
 }
 
 export function buildSplunkDockerCompose(config) {
+  let version = `version: "3.6"
+`
   let services = [buildSplunkService(config)]
   info('Splunk>')
 
   return [
+    version,
     'services:',
     services.join(''),
     buildSplunkEndService(config),
