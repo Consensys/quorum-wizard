@@ -68,10 +68,10 @@ export function generateResourcesRemote(config) {
     copyDirectory(remoteOutputDir, configDir)
   }
   if (config.network.splunk) {
-    copyDirectory(joinPath(libRootDir(), 'splunk'), joinPath(remoteOutputDir, 'splunk'))
+    copyDirectory(joinPath(libRootDir(), 'lib', 'splunk'), joinPath(remoteOutputDir, 'splunk'))
   }
   if (config.network.txGenerate) {
-    copyDirectory(joinPath(libRootDir(), 'lib', 'contracts'), joinPath(remoteOutputDir, 'contracts'))
+    copyDirectory(joinPath(libRootDir(), 'lib', 'splunk', 'contracts'), joinPath(remoteOutputDir, 'contracts'))
   }
 }
 
