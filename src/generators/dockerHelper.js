@@ -58,10 +58,6 @@ export function buildDockerCompose(config) {
     'lib/docker-compose-definitions-splunk-helpers.yml'
   )) : ''
 
-  const cadvisdorDefinitions = hasSplunk ? buildCadvisorDefinition(config) : ''
-
-  const ethloggerDefinitions = hasSplunk ? buildEthloggerDefinitions(config) : ''
-
   let services = config.nodes.map((node, i) => {
     let allServices = buildNodeService(config, node, i, hasTessera, hasSplunk, txGenerate)
     if (hasTessera) {
@@ -92,8 +88,6 @@ export function buildDockerCompose(config) {
     formatNewLine(tesseraDefinitions),
     formatNewLine(cakeshopDefinitions),
     formatNewLine(splunkDefinitions),
-    formatNewLine(cadvisdorDefinitions),
-    formatNewLine(ethloggerDefinitions),
     'services:',
     services.join(''),
     buildEndService(config),
@@ -101,16 +95,10 @@ export function buildDockerCompose(config) {
 }
 
 export function buildSplunkDockerCompose(config) {
-  const splunkDefinitions = readFileToString(joinPath(
-    libRootDir(),
-    'lib/docker-compose-definitions-splunk.yml'
-  ))
-
   let services = [buildSplunkService(config)]
   info('Splunk>')
 
   return [
-    formatNewLine(splunkDefinitions),
     'services:',
     services.join(''),
     buildSplunkEndService(config),
@@ -240,9 +228,22 @@ function buildSplunkService(config) {
   const networkName = config.network.name
   return `
   splunk:
-    << : *splunk-def
+    image: splunk/splunk:8.0.4-debian
     container_name: splunk
     hostname: splunk
+    environment:
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113
+      - SPLUNK_PASSWORD=changeme
+      - SPLUNK_APPS_URL=https://github.com/splunk/ethereum-basics/releases/download/latest/ethereum-basics.tgz,https://splunk-quorum.s3.us-east-2.amazonaws.com/oss-quorum-app-for-splunk_109.tgz,https://splunk-quorum.s3.us-east-2.amazonaws.com/maps-for-splunk_315.tgz
+    expose:
+      - "8000"
+      - "8088"
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8000']
+      interval: 5s
+      timeout: 5s
+      retries: 20
     ports:
       - "${config.network.splunkPort}:8000"
       - "8088:8088"
@@ -258,25 +259,18 @@ function buildSplunkService(config) {
         ipv4_address: ${config.network.splunkIp}`
 }
 
-function buildCadvisorDefinition(config) {
-  return `
-x-cadvisor-def:
-  &cadvisor-def
-  image: google/cadvisor:latest
-  command:
-    - --storage_driver=statsd
-    - --storage_driver_host=${config.network.splunkIp}:8125
-    - --docker_only=true
-  user: root`
-}
-
 function buildCadvisorService(config) {
   const networkName = config.network.name
   return `
   cadvisor:
-    << : *cadvisor-def
+    image: google/cadvisor:latest
     container_name: cadvisor
     hostname: cadvisor
+    command:
+      - --storage_driver=statsd
+      - --storage_driver_host=${config.network.splunkIp}:8125
+      - --docker_only=true
+    user: root
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
@@ -287,46 +281,36 @@ function buildCadvisorService(config) {
     logging: *default-logging`
 }
 
-function buildEthloggerDefinitions(config) {
-  let ethloggerDefs = ''
-  config.nodes.forEach((node, i) => {
-    ethloggerDefs += `
-x-ethlogger${i+1}-def:
-  &ethlogger${i+1}-def
-  image: splunkdlt/ethlogger:latest
-  environment:
-    - ETH_RPC_URL=http://node${i+1}:${config.containerPorts.quorum.rpcPort}
-    - NETWORK_NAME=quorum
-    - START_AT_BLOCK=genesis
-    - SPLUNK_HEC_URL=https://${config.network.splunkIp}:8088
-    - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113
-    - SPLUNK_EVENTS_INDEX=ethereum
-    - SPLUNK_METRICS_INDEX=metrics
-    - SPLUNK_INTERNAL_INDEX=metrics
-    - SPLUNK_HEC_REJECT_INVALID_CERTS=false
-    - ABI_DIR=/app/abis
-    - COLLECT_PEER_INFO=true
-    - DEBUG=ethlogger:abi:*
-  depends_on:
-    - node${i+1}
-  restart: unless-stopped`
-  })
-  return ethloggerDefs
-}
-
 function buildEthloggerService(config) {
   const networkName = config.network.name
   let ethloggers = ''
 
   config.nodes.forEach((node, i) => {
+    const instance = i+1
     ethloggers += `
-  ethlogger${i+1}:
-    << : *ethlogger${i+1}-def
-    container_name: ethlogger${i+1}
-    hostname: ethlogger${i+1}
+  ethlogger${instance}:
+    image: splunkdlt/ethlogger:latest
+    container_name: ethlogger${instance}
+    hostname: ethlogger${instance}
+    environment:
+      - ETH_RPC_URL=http://node${instance}:${config.containerPorts.quorum.rpcPort}
+      - NETWORK_NAME=quorum
+      - START_AT_BLOCK=genesis
+      - SPLUNK_HEC_URL=https://${config.network.splunkIp}:8088
+      - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113
+      - SPLUNK_EVENTS_INDEX=ethereum
+      - SPLUNK_METRICS_INDEX=metrics
+      - SPLUNK_INTERNAL_INDEX=metrics
+      - SPLUNK_HEC_REJECT_INVALID_CERTS=false
+      - ABI_DIR=/app/abis
+      - COLLECT_PEER_INFO=true
+      - DEBUG=ethlogger:abi:*
+    depends_on:
+      - node${instance}
+    restart: unless-stopped
     volumes:
       - ./out/config/splunk/abis:/app/abis:ro
-      - ethlogger-state${i+1}:/app
+      - ethlogger-state${instance}:/app
     networks:
       - ${networkName}-net
     logging: *default-logging`
