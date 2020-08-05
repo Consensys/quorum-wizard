@@ -255,7 +255,7 @@ function buildSplunkService(config) {
       - splunk-var:/opt/splunk/var
       - splunk-etc:/opt/splunk/etc
       - ./out/config/splunk/splunk-config.yml:/tmp/defaults/default.yml
-      - ./out/config/splunk/dashboards:/dashboards
+      - ./out/config/splunk/dashboards:/opt/splunk/etc/apps/search/local/data/ui/views
       - ./out/config/splunk/airport_geo.csv:/opt/splunk/etc/apps/splunk-app-quorum/lookups/airport_geo.csv
     networks:
       ${networkName}-net:
