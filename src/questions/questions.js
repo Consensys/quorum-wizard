@@ -142,12 +142,12 @@ export const TOOLS = {
     {
       name: 'Splunk, Mine your own business.',
       value: 'splunk',
-      disbaled: !isDocker(answers.deployment) || isWin32() ? 'Disabled, splunk is available with docker-compose' : false
+      disabled: !isDocker(answers.deployment) || isWin32() ? 'Disabled, splunk is available with docker-compose' : false
     },
     {
       name: 'Splunk Transaction Auto-generator',
       value: 'txGenerate',
-      disbaled: !isDocker(answers.deployment) ? 'Disabled, transaction generator is available with docker-compose' : false
+      disabled: !isDocker(answers.deployment) ? 'Disabled, transaction generator is available with docker-compose' : false
     },
   ]),
   default: [],
