@@ -47,16 +47,6 @@ test('rejects network id that is not a number', () => {
   expect(validateNetworkId('n')).toEqual('Network ID must be a number')
 })
 
-test('Turns cakeshop answer from boolean to version/none', () => {
-  expect(transformCakeshopAnswer('No')).toEqual('none')
-  isJava11Plus.mockReturnValue(false)
-  isJava8.mockReturnValue(true)
-  expect(transformCakeshopAnswer('Yes')).toEqual(LATEST_CAKESHOP_J8)
-  isJava11Plus.mockReturnValue(true)
-  isJava8.mockReturnValue(false)
-  expect(transformCakeshopAnswer('Yes')).toEqual(LATEST_CAKESHOP)
-})
-
 test('Disables java choices based on java version', () => {
   isJava11Plus.mockReturnValue(true)
   isJava8.mockReturnValue(false)

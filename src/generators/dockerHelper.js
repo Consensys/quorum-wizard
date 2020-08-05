@@ -353,6 +353,17 @@ function buildTxGenService(hasSplunk, config, pubkeys) {
 
 function buildEndService(config) {
   const networkName = config.network.name
+  const volumes = []
+  config.nodes.forEach((_node, i) => {
+    const nodeNumber = i + 1
+    volumes.push(`  "${networkName}-vol${nodeNumber}":`)
+    if (config.network.splunk) {
+      volumes.push(`  "ethlogger-state${nodeNumber}":`)
+    }
+  })
+  if (isCakeshop(config.network.cakeshop)) {
+    volumes.push(`  "${networkName}-cakeshopvol":`)
+  }
   return `
 networks:
   ${networkName}-net:
@@ -363,9 +374,7 @@ networks:
       config:
         - subnet: ${config.containerPorts.dockerSubnet}
 volumes:
-${config.nodes.map((_, i) => `  "ethlogger-state${i + 1}":`).join('\n')}
-${config.nodes.map((_, i) => `  "${networkName}-vol${i + 1}":`).join('\n')}
-  "${networkName}-cakeshopvol":`
+${volumes.join('\n')}`
 }
 
 function buildSplunkEndService(config) {

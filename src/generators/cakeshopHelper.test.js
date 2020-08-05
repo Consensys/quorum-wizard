@@ -27,7 +27,7 @@ describe('creates a cakeshop directory structure for bash', () => {
     consensus: 'raft',
     quorumVersion: LATEST_QUORUM,
     transactionManager: LATEST_TESSERA,
-    cakeshop: LATEST_CAKESHOP,
+    tools: ['cakeshop'],
     deployment: 'bash',
   }
   it('creates directory structure for cakeshop files and moves them in', () => {

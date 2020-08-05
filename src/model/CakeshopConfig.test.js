@@ -8,7 +8,7 @@ const baseNetwork = {
   quorumVersion: LATEST_QUORUM,
   transactionManager: LATEST_TESSERA,
   deployment: 'bash',
-  cakeshop: LATEST_CAKESHOP,
+  tools: ['cakeshop'],
 }
 
 const containerPortInfo = {
