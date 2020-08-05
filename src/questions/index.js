@@ -54,11 +54,11 @@ async function promptForCustomPorts(answers) {
     )
   }
 
-  if (isCakeshop(answers.tools.includes('cakeshop'))) {
+  if (answers.tools.includes('cakeshop')) {
     answers.cakeshopPort = await getCustomizedCakeshopPort()
   }
 
-  if (isSplunk(answers.tools.includes('splunk'))) {
+  if (answers.tools.includes('splunk')) {
     answers.splunkPort = await getCustomizedSplunkPort()
   }
 }

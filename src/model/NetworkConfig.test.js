@@ -12,7 +12,7 @@ const baseNetwork = {
   quorumVersion: LATEST_QUORUM,
   transactionManager: LATEST_TESSERA,
   deployment: 'bash',
-  cakeshop: 'none',
+  tools: [],
 }
 
 const containerPortInfo = {
@@ -71,7 +71,7 @@ test('creates 5nodes raft no-TM cakeshop docker config', () => {
     numberNodes: '5',
     transactionManager: 'none',
     deployment: 'docker-compose',
-    cakeshop: LATEST_CAKESHOP,
+    tools: ['cakeshop'],
     containerPorts: {
       dockerSubnet: '172.16.239.0/24',
       ...containerPortInfo,
@@ -116,7 +116,7 @@ test('creates 7nodes istanbul cakeshop config', () => {
     ...baseNetwork,
     numberNodes: '7',
     consensus: 'istanbul',
-    cakeshop: LATEST_CAKESHOP,
+    tools: ['cakeshop'],
   })
   expect(config).toMatchSnapshot()
 })

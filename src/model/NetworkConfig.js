@@ -8,6 +8,7 @@ import {
   getDockerSubnet,
   cidrhost,
 } from '../utils/subnetUtils'
+import { isJava11Plus, isJava8 } from '../utils/execUtils'
 
 export function createConfigFromAnswers(answers) {
   const {
@@ -17,7 +18,7 @@ export function createConfigFromAnswers(answers) {
     quorumVersion = LATEST_QUORUM,
     transactionManager = LATEST_TESSERA,
     deployment = 'bash',
-    tools = [],
+    tools = ['cakeshop'],
     generateKeys = false,
     networkId = '10',
     genesisLocation = 'none',
@@ -137,7 +138,7 @@ function getCakeshopVersionFromTools(deployment, tools) {
   } else if (!isBash(deployment)) {
     return LATEST_CAKESHOP
   }
-  return isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8
+  return isJava8() ? LATEST_CAKESHOP_J8 : LATEST_CAKESHOP
 }
 
 export function isTessera(tessera) {

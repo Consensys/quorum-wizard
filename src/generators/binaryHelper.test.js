@@ -125,7 +125,7 @@ describe('Downloads binaries', () => {
   const baseNetwork = {
     quorumVersion: LATEST_QUORUM,
     transactionManager: LATEST_TESSERA,
-    cakeshop: 'none',
+    tools: [],
     consensus: 'raft',
     generateKeys: false,
     deployment: 'bash',
