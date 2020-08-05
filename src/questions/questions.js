@@ -238,7 +238,7 @@ export const QUICKSTART_ANSWERS = () => {
     consensus: 'raft',
     quorumVersion: LATEST_QUORUM,
     transactionManager,
-    cakeshop,
+    generateKeys: false,
     tools: ['cakeshop'],
     networkId: '10',
     customizePorts: false,
