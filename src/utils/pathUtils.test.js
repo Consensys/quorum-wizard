@@ -1,6 +1,10 @@
 import { join, normalize } from 'path'
-import { joinPath, removeTrailingSlash, verifyPathInsideDirectory } from './pathUtils'
+import { joinPath, removeTrailingSlash, unixifyPath, verifyPathInsideDirectory } from './pathUtils'
 import { cwd } from './fileUtils'
+import { isWin32 } from './execUtils'
+
+jest.mock('./execUtils')
+isWin32.mockReturnValue(false)
 
 describe('joins paths safely', () => {
   it('joins regular paths', () => {
@@ -48,4 +52,19 @@ describe('verifies that path is inside of specified root folder', () => {
 it('removes trailing slash from path strings', () => {
   expect(removeTrailingSlash(normalize('/home/test/'))).toEqual(normalize('/home/test'))
   expect(removeTrailingSlash(normalize('/home/test'))).toEqual(normalize('/home/test'))
+})
+
+it('does not change paths on non-windows os', () => {
+  isWin32.mockReturnValue(false)
+  expect(unixifyPath('/home/test')).toEqual(normalize('/home/test'))
+  // backslash is a valid path character on unix machines
+  expect(unixifyPath('/ho\\me/test')).toEqual(normalize('/ho\\me/test'))
+})
+
+it('switches windows paths from C:\\test\ to /c/test/', () => {
+  isWin32.mockReturnValue(true)
+  expect(unixifyPath('/home/test')).toEqual(normalize('/home/test'))
+  expect(unixifyPath('C:\\home\\test')).toEqual(normalize('/c/home/test'))
+  // keep relative paths but convert backslashes
+  expect(unixifyPath('home\\test')).toEqual(normalize('home/test'))
 })

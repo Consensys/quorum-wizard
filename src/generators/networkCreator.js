@@ -18,7 +18,7 @@ import { buildKubernetesResource, LATEST_QUBERNETES } from '../model/ResourceCon
 import {
   isBash, isDocker, isKubernetes, isRaft, isTessera, isSplunk,
 } from '../model/NetworkConfig'
-import { joinPath } from '../utils/pathUtils'
+import { joinPath, unixifyPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
 import { info, error } from '../utils/log'
 import { buildDockerIp } from '../utils/subnetUtils'
@@ -40,15 +40,18 @@ export function generateResourcesRemote(config) {
   const remoteOutputDir = joinPath(networkPath, 'out', 'config')
 
   const file = buildKubernetesResource(config)
-  writeFile(joinPath(networkPath, 'qubernetes.yaml'), file, false)
+  const qubernetesYamlPath = joinPath(networkPath, 'qubernetes.yaml')
+  writeFile(qubernetesYamlPath, file, false)
 
   const initScript = isKubernetes(config.network.deployment) ? 'qube-init' : 'quorum-init'
   const copy7nodes = !config.network.generateKeys ? 'cp -r /qubernetes/7nodes /qubernetes/out/config; ' : ''
   const qubernetesImage = `${getDockerRegistry()}quorumengineering/qubernetes:${LATEST_QUBERNETES}`
+  const outPath = joinPath(networkPath, 'out')
   const dockerCommands = [
     `cd ${networkPath}`,
     `docker pull ${qubernetesImage}`,
-    `docker run --rm -v ${joinPath(networkPath, 'qubernetes.yaml')}:/qubernetes/qubernetes.yaml -v ${joinPath(networkPath, 'out')}:/qubernetes/out ${qubernetesImage} /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"`,
+    // docker volumes using C:\folder\ style paths can cause problems, convert to /c/folder/ on windows
+    `docker run --rm -v ${unixifyPath(qubernetesYamlPath)}:/qubernetes/qubernetes.yaml -v ${unixifyPath(outPath)}:/qubernetes/out ${qubernetesImage} /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"`,
   ]
 
   try {
