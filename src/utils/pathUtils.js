@@ -1,4 +1,4 @@
-import { join, parse } from 'path'
+import { join, parse, posix } from 'path'
 import { isWin32 } from './execUtils'
 
 // C:\\ on windows, for example
@@ -26,4 +26,17 @@ export function removeTrailingSlash(path) {
 export function wrapScript(script) {
   // `./start.sh` in shell, just `start.cmd` in windows
   return isWin32() ? script : `./${script}`
+}
+
+// convert C:\folder\ to /c/folder/ for docker on windows
+export function unixifyPath(path) {
+  if(!isWin32()) {
+    return path
+  }
+  let unixifiedPath = path.replace(/\\/g, '/')
+  const matcher = unixifiedPath.match(/^(\w):(.*)$/)
+  if(matcher) {
+    return posix.join('/', matcher[1].toLowerCase(), matcher[2])
+  }
+  return unixifiedPath
 }

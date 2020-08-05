@@ -1,6 +1,6 @@
 {
   "name": "quorum-wizard",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Tool for walking through the setup of networks.",
   "main": "src/index.js",
   "bin": {
@@ -43,7 +43,7 @@
   "dependencies": {
     "@babel/runtime": "^7.8.3",
     "axios": "^0.19.2",
-    "ethers": "^4.0.0",
+    "ethers": "^5.0.7",
     "fs-extra": "^9.0.0",
     "inquirer": "^7.0.0",
     "ip-address": "^6.3.0",
