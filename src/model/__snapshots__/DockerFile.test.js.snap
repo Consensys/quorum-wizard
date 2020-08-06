@@ -9,11 +9,11 @@ exports[`creates 2nodes raft docker tessera cakeshop custom ports 1`] = `
 # To use Constellation, set QUORUM_TX_MANAGER_DOCKER_IMAGE to Constellation docker image,
 # e.g.: QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/constellation:0.3.2 docker-compose up -d
 # To use Remix, set QUORUM_GETH_ARGS=\\"--rpccorsdomain https://remix.ethereum.org\\"
-version: \\"3.6\\"
+version: \\"2.3\\"
 x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
-  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
+  image: \\"\${DOCKER_REGISTRY:-}\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:\${QUORUM_RPC_PORT:-8545}\\"]
     interval: 3s
@@ -32,7 +32,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off txmanager$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -51,7 +51,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
-      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
+      EXTRA_ARGS=\\"\${QUORUM_GETH_ARGS:-}\\"
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -80,7 +80,7 @@ x-quorum-def:
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
 x-tx-manager-def:
   &tx-manager-def
-  image: \\"\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
+  image: \\"\${DOCKER_REGISTRY:-}\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
   restart: \\"no\\"
   healthcheck:
     test: [\\"CMD-SHELL\\", \\"[ -S /qdata/tm/tm.ipc ] || exit 1\\"]
@@ -137,7 +137,7 @@ x-tx-manager-def:
     - \\"\${TESSERA_3PARTY_PORT:-9080}\\"
 x-cakeshop-def:
   &cakeshop-def
-  image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
+  image: \\"\${DOCKER_REGISTRY:-}\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
   expose:
     - \\"8999\\"
   restart: \\"no\\"
@@ -256,11 +256,11 @@ exports[`creates 3nodes raft docker tessera custom 1`] = `
 # To use Constellation, set QUORUM_TX_MANAGER_DOCKER_IMAGE to Constellation docker image,
 # e.g.: QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/constellation:0.3.2 docker-compose up -d
 # To use Remix, set QUORUM_GETH_ARGS=\\"--rpccorsdomain https://remix.ethereum.org\\"
-version: \\"3.6\\"
+version: \\"2.3\\"
 x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
-  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
+  image: \\"\${DOCKER_REGISTRY:-}\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:\${QUORUM_RPC_PORT:-8545}\\"]
     interval: 3s
@@ -279,7 +279,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off txmanager$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -298,7 +298,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
-      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
+      EXTRA_ARGS=\\"\${QUORUM_GETH_ARGS:-}\\"
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -327,7 +327,7 @@ x-quorum-def:
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
 x-tx-manager-def:
   &tx-manager-def
-  image: \\"\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
+  image: \\"\${DOCKER_REGISTRY:-}\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
   restart: \\"no\\"
   healthcheck:
     test: [\\"CMD-SHELL\\", \\"[ -S /qdata/tm/tm.ipc ] || exit 1\\"]
@@ -500,11 +500,11 @@ exports[`creates 3nodes raft dockerFile tessera cakeshop 1`] = `
 # To use Constellation, set QUORUM_TX_MANAGER_DOCKER_IMAGE to Constellation docker image,
 # e.g.: QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/constellation:0.3.2 docker-compose up -d
 # To use Remix, set QUORUM_GETH_ARGS=\\"--rpccorsdomain https://remix.ethereum.org\\"
-version: \\"3.6\\"
+version: \\"2.3\\"
 x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
-  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
+  image: \\"\${DOCKER_REGISTRY:-}\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:\${QUORUM_RPC_PORT:-8545}\\"]
     interval: 3s
@@ -523,7 +523,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off txmanager$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -542,7 +542,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
-      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
+      EXTRA_ARGS=\\"\${QUORUM_GETH_ARGS:-}\\"
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -571,7 +571,7 @@ x-quorum-def:
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
 x-tx-manager-def:
   &tx-manager-def
-  image: \\"\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
+  image: \\"\${DOCKER_REGISTRY:-}\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
   restart: \\"no\\"
   healthcheck:
     test: [\\"CMD-SHELL\\", \\"[ -S /qdata/tm/tm.ipc ] || exit 1\\"]
@@ -628,7 +628,7 @@ x-tx-manager-def:
     - \\"\${TESSERA_3PARTY_PORT:-9080}\\"
 x-cakeshop-def:
   &cakeshop-def
-  image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
+  image: \\"\${DOCKER_REGISTRY:-}\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
   expose:
     - \\"8999\\"
   restart: \\"no\\"
@@ -779,11 +779,11 @@ exports[`creates 3nodes raft dockerFile tessera no cakeshop 1`] = `
 # To use Constellation, set QUORUM_TX_MANAGER_DOCKER_IMAGE to Constellation docker image,
 # e.g.: QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/constellation:0.3.2 docker-compose up -d
 # To use Remix, set QUORUM_GETH_ARGS=\\"--rpccorsdomain https://remix.ethereum.org\\"
-version: \\"3.6\\"
+version: \\"2.3\\"
 x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
-  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
+  image: \\"\${DOCKER_REGISTRY:-}\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:\${QUORUM_RPC_PORT:-8545}\\"]
     interval: 3s
@@ -802,7 +802,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off txmanager$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -821,7 +821,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
-      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
+      EXTRA_ARGS=\\"\${QUORUM_GETH_ARGS:-}\\"
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -850,7 +850,7 @@ x-quorum-def:
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
 x-tx-manager-def:
   &tx-manager-def
-  image: \\"\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
+  image: \\"\${DOCKER_REGISTRY:-}\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}\\"
   restart: \\"no\\"
   healthcheck:
     test: [\\"CMD-SHELL\\", \\"[ -S /qdata/tm/tm.ipc ] || exit 1\\"]
@@ -1023,11 +1023,11 @@ exports[`creates 5nodes istanbul dockerFile no tessera cakeshop 1`] = `
 # To use Constellation, set QUORUM_TX_MANAGER_DOCKER_IMAGE to Constellation docker image,
 # e.g.: QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/constellation:0.3.2 docker-compose up -d
 # To use Remix, set QUORUM_GETH_ARGS=\\"--rpccorsdomain https://remix.ethereum.org\\"
-version: \\"3.6\\"
+version: \\"2.3\\"
 x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
-  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
+  image: \\"\${DOCKER_REGISTRY:-}\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:\${QUORUM_RPC_PORT:-8545}\\"]
     interval: 3s
@@ -1046,7 +1046,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off txmanager$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1065,7 +1065,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
-      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
+      EXTRA_ARGS=\\"\${QUORUM_GETH_ARGS:-}\\"
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\
@@ -1094,7 +1094,7 @@ x-quorum-def:
     - \\"\${QUORUM_RAFT_PORT:-50400}\\"
 x-cakeshop-def:
   &cakeshop-def
-  image: \\"\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
+  image: \\"\${DOCKER_REGISTRY:-}\${CAKESHOP_DOCKER_IMAGE:-quorumengineering/cakeshop:0.11.0}\\"
   expose:
     - \\"8999\\"
   restart: \\"no\\"
@@ -1234,11 +1234,11 @@ exports[`creates 5nodes istanbul dockerFile no tessera no cakeshop 1`] = `
 # To use Constellation, set QUORUM_TX_MANAGER_DOCKER_IMAGE to Constellation docker image,
 # e.g.: QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/constellation:0.3.2 docker-compose up -d
 # To use Remix, set QUORUM_GETH_ARGS=\\"--rpccorsdomain https://remix.ethereum.org\\"
-version: \\"3.6\\"
+version: \\"2.3\\"
 x-quorum-def:
   &quorum-def
   restart: \\"on-failure\\"
-  image: \\"\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
+  image: \\"\${DOCKER_REGISTRY:-}\${QUORUM_DOCKER_IMAGE:-quorumengineering/quorum:2.5.0}\\"
   healthcheck:
     test: [\\"CMD\\", \\"wget\\", \\"--spider\\", \\"--proxy\\", \\"off\\", \\"http://localhost:\${QUORUM_RPC_PORT:-8545}\\"]
     interval: 3s
@@ -1257,7 +1257,7 @@ x-quorum-def:
       do
         set -e
         if [ -S $\${PRIVATE_CONFIG} ] && \\\\
-          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off \${DOCKER_IP}$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
+          [ \\"I'm up!\\" == \\"$$(wget --timeout $\${UDS_WAIT} -qO- --proxy off txmanager$\${NODE_ID}:\${TESSERA_P2P_PORT:-9000}/upcheck)\\" ];
         then break
         else
           echo \\"Sleep $\${UDS_WAIT} seconds. Waiting for TxManager.\\"
@@ -1276,7 +1276,7 @@ x-quorum-def:
       NETWORK_ID=$$(cat $\${GENESIS_FILE} | grep chainId | awk -F \\" \\" '{print $$2}' | awk -F \\",\\" '{print $$1}')
       GETH_ARGS_raft=\\"--raft --raftport \${QUORUM_RAFT_PORT:-50400}\\"
       GETH_ARGS_istanbul=\\"--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full\\"
-      EXTRA_ARGS=\${QUORUM_GETH_ARGS:-}
+      EXTRA_ARGS=\\"\${QUORUM_GETH_ARGS:-}\\"
       geth --datadir $\${DDIR} init $\${GENESIS_FILE}
       geth \\\\
         --identity node$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\\\

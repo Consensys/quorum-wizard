@@ -10,6 +10,7 @@ import {
 import {
   defaultNetworkName,
   isRaft,
+  isBash,
   isKubernetes,
   CUSTOM_CONFIG_LOCATION,
 } from '../model/NetworkConfig'
@@ -17,7 +18,7 @@ import {
   getAvailableConfigs,
   getConfigPath,
 } from '../generators/networkCreator'
-import { isJava11Plus, executeSync } from '../utils/execUtils'
+import { executeSync, isJava8, isJavaMissing, isWindows } from '../utils/execUtils'
 import {
   exists,
   readJsonFile,
@@ -30,7 +31,8 @@ import {
   LATEST_TESSERA,
   LATEST_TESSERA_J8,
 } from '../generators/download'
-
+import { error } from '../utils/log'
+import SCRIPTS from '../generators/scripts'
 
 export const INITIAL_MODE = {
   type: 'list',
@@ -53,7 +55,7 @@ We have 3 options to help you start exploring Quorum:
       Choose to generate keys, customize ports for both bash and docker, or change the network id
 
 Quorum Wizard will generate your startup files and everything required to bring up your network.
-All you need to do is go to the specified location and run ./start.sh
+All you need to do is go to the specified location and run ${SCRIPTS.start.filename}
 
 `,
 
@@ -82,11 +84,17 @@ export const DEPLOYMENT_TYPE = {
       dockerDisabled = 'Disabled, docker must be running on your machine'
     }
 
+    const bashDisabled = isWindows() ? 'Disabled, Bash not supported on Windows systems' : false
+
+    if (dockerDisabled && bashDisabled) {
+      error('Docker must be running on your machine to use the wizard on Windows.')
+      process.exit(1)
+    }
+
     return [
-      'bash',
+      { name: 'bash', disabled: bashDisabled },
       { name: 'docker-compose', disabled: dockerDisabled },
       { name: 'kubernetes', disabled: dockerDisabled },
-      // 'vagrant',
     ]
   },
 }
@@ -129,7 +137,10 @@ export const CAKESHOP = {
   type: 'list', // can't transform answer from boolean on confirm questions, so it had to be a list
   name: 'cakeshop',
   message: 'Do you want to run Cakeshop (our chain explorer) with your network?',
-  choices: ['No', 'Yes'],
+  choices: (answers) => ([
+    'No',
+    { name: 'Yes', disabled: isBash(answers.deployment) && isJavaMissing() ? 'Disabled, Java is required to use Cakeshop' : false },
+  ]),
   default: 'No',
   when: (answers) => !isKubernetes(answers.deployment),
   filter: transformCakeshopAnswer,
@@ -227,17 +238,33 @@ export const QUESTIONS = [
   CUSTOMIZE_PORTS,
 ]
 
-export const QUICKSTART_ANSWERS = {
-  name: '3-nodes-raft-tessera-bash',
-  numberNodes: 3,
-  consensus: 'raft',
-  quorumVersion: LATEST_QUORUM,
-  transactionManager: isJava11Plus() ? LATEST_TESSERA : LATEST_TESSERA_J8,
-  deployment: 'bash',
-  cakeshop: isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8,
-  generateKeys: false,
-  networkId: '10',
-  customizePorts: false,
+export const QUICKSTART_ANSWERS = () => {
+  let deployment; let transactionManager; let
+    cakeshop
+  if (isWindows()) {
+    // on windows make this undefined so they can choose, and so we can check if docker is running
+    deployment = undefined
+
+    // only containers, no need to worry about java version
+    transactionManager = LATEST_TESSERA
+    cakeshop = LATEST_CAKESHOP
+  } else {
+    deployment = 'bash'
+    transactionManager = isJava8() ? LATEST_TESSERA_J8 : LATEST_TESSERA
+    cakeshop = isJava8() ? LATEST_CAKESHOP_J8 : LATEST_CAKESHOP
+  }
+  return {
+    deployment,
+    name: '3-nodes-quickstart',
+    numberNodes: 3,
+    consensus: 'raft',
+    quorumVersion: LATEST_QUORUM,
+    transactionManager,
+    cakeshop,
+    generateKeys: false,
+    networkId: '10',
+    customizePorts: false,
+  }
 }
 
 export const SIMPLE_ANSWERS = {
@@ -251,7 +278,7 @@ export const CUSTOM_ANSWERS = {}
 export function getPrefilledAnswersForMode(mode) {
   switch (mode) {
     case 'quickstart':
-      return QUICKSTART_ANSWERS
+      return QUICKSTART_ANSWERS()
     case 'simple':
       return SIMPLE_ANSWERS
     case 'custom':

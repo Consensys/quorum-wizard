@@ -1,15 +1,17 @@
-import { homedir } from 'os'
-import { join } from 'path'
+import { join, normalize } from 'path'
 import { existsSync, removeSync } from 'fs-extra'
 import { removeFolder, wizardHomeDir } from './fileUtils'
 import { joinPath, verifyPathInsideDirectory } from './pathUtils'
 
 jest.mock('fs-extra')
-jest.mock('os')
+jest.mock('os', () => ({
+  homedir: jest.fn(() => '/path/to/user/home'),
+  // is-wsl uses os.release() during initialization, must be mocked here, not using .mockReturnValue
+  release: jest.fn(() => '19.5.0'),
+  platform: jest.fn(() => 'darwin'),
+}))
 jest.mock('./pathUtils')
 existsSync.mockReturnValue(true)
-homedir.mockReturnValue('/path/to/user/home')
-
 
 describe('safely removes network folder', () => {
   it('does not try to remove when verification throws error', () => {
@@ -32,5 +34,5 @@ describe('safely removes network folder', () => {
 
 test('returns the quorum wizard dot folder inside the user\'s home folder', () => {
   joinPath.mockImplementation((...segments) => join(...segments))
-  expect(wizardHomeDir()).toEqual('/path/to/user/home/.quorum-wizard')
+  expect(wizardHomeDir()).toEqual(normalize('/path/to/user/home/.quorum-wizard'))
 })
