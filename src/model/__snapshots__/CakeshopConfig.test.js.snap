@@ -44,17 +44,17 @@ exports[`creates 3nodes raft dockerFile no tessera cakeshop 1`] = `
 Array [
   Object {
     "name": "node1",
-    "rpcUrl": "http://host.docker.internal:22000",
+    "rpcUrl": "http://node1:8545",
     "transactionManagerUrl": "",
   },
   Object {
     "name": "node2",
-    "rpcUrl": "http://host.docker.internal:22001",
+    "rpcUrl": "http://node2:8545",
     "transactionManagerUrl": "",
   },
   Object {
     "name": "node3",
-    "rpcUrl": "http://host.docker.internal:22002",
+    "rpcUrl": "http://node3:8545",
     "transactionManagerUrl": "",
   },
 ]
@@ -64,18 +64,18 @@ exports[`creates 3nodes raft dockerFile tessera cakeshop 1`] = `
 Array [
   Object {
     "name": "node1",
-    "rpcUrl": "http://host.docker.internal:22000",
-    "transactionManagerUrl": "http://host.docker.internal:9081",
+    "rpcUrl": "http://node1:8545",
+    "transactionManagerUrl": "http://txmanager1:9080",
   },
   Object {
     "name": "node2",
-    "rpcUrl": "http://host.docker.internal:22001",
-    "transactionManagerUrl": "http://host.docker.internal:9082",
+    "rpcUrl": "http://node2:8545",
+    "transactionManagerUrl": "http://txmanager2:9080",
   },
   Object {
     "name": "node3",
-    "rpcUrl": "http://host.docker.internal:22002",
-    "transactionManagerUrl": "http://host.docker.internal:9083",
+    "rpcUrl": "http://node3:8545",
+    "transactionManagerUrl": "http://txmanager3:9080",
   },
 ]
 `;

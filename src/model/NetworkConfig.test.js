@@ -1,12 +1,11 @@
 import { createConfigFromAnswers } from './NetworkConfig'
-import { isJava11Plus } from '../utils/execUtils'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 import { getOutputPath } from '../utils/fileUtils'
 import { TEST_CWD } from '../utils/testHelper'
 
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
-isJava11Plus.mockReturnValue(true)
+// isJava11Plus.mockReturnValue(true)
 getOutputPath.mockReturnValue(TEST_CWD)
 
 // rather than having big test jsons that we match to, we can just use snapshot
@@ -37,13 +36,6 @@ const containerPortInfo = {
 test('creates quickstart config', () => {
   const config = createConfigFromAnswers({})
   expect(config).toMatchSnapshot()
-})
-
-test('creates quickstart setup with java 8', () => {
-  isJava11Plus.mockReturnValue(false)
-  const config = createConfigFromAnswers({})
-  expect(config).toMatchSnapshot()
-  isJava11Plus.mockReturnValue(true)
 })
 
 test('creates 7nodes istanbul config', () => {

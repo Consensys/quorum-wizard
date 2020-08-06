@@ -79,7 +79,7 @@ export function getPlatformSpecificUrl({ url }) {
   return platformUrl
 }
 
-export const LATEST_QUORUM = '2.6.0'
+export const LATEST_QUORUM = '2.7.0'
 export const LATEST_TESSERA = '0.10.5'
 export const LATEST_TESSERA_J8 = '0.10.2'
 export const LATEST_CAKESHOP = '0.11.0'
@@ -89,6 +89,18 @@ export const LATEST_BOOTNODE = '1.9.7'
 
 export const BINARIES = {
   quorum: {
+    '2.7.0': {
+      name: 'geth',
+      description: 'Quorum 2.7.0',
+      url: {
+        darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.7.0/geth_v2.7.0_darwin_amd64.tar.gz',
+        linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.7.0/geth_v2.7.0_linux_amd64.tar.gz',
+      },
+      type: 'tar.gz',
+      files: [
+        'geth',
+      ],
+    },
     '2.6.0': {
       name: 'geth',
       description: 'Quorum 2.6.0',

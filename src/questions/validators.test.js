@@ -4,7 +4,7 @@ import {
   validateNetworkId,
   validateNumberStringInRange,
 } from './validators'
-import { isJava11Plus } from '../utils/execUtils'
+import { isJava11Plus, isJava8 } from '../utils/execUtils'
 import { LATEST_CAKESHOP, LATEST_CAKESHOP_J8 } from '../generators/download'
 
 jest.mock('../utils/execUtils')
@@ -49,17 +49,21 @@ test('rejects network id that is not a number', () => {
 
 test('Turns cakeshop answer from boolean to version/none', () => {
   expect(transformCakeshopAnswer('No')).toEqual('none')
-  isJava11Plus.mockReturnValueOnce(false)
+  isJava11Plus.mockReturnValue(false)
+  isJava8.mockReturnValue(true)
   expect(transformCakeshopAnswer('Yes')).toEqual(LATEST_CAKESHOP_J8)
-  isJava11Plus.mockReturnValueOnce(true)
+  isJava11Plus.mockReturnValue(true)
+  isJava8.mockReturnValue(false)
   expect(transformCakeshopAnswer('Yes')).toEqual(LATEST_CAKESHOP)
 })
 
 test('Disables java choices based on java version', () => {
   isJava11Plus.mockReturnValue(true)
+  isJava8.mockReturnValue(false)
   expect(disableIfWrongJavaVersion({ type: 'jar' })).toEqual(false)
   expect(disableIfWrongJavaVersion({ type: 'jar8' })).toEqual('Disabled, requires Java 8')
   isJava11Plus.mockReturnValue(false)
+  isJava8.mockReturnValue(true)
   expect(disableIfWrongJavaVersion({ type: 'jar' })).toEqual('Disabled, requires Java 11+')
   expect(disableIfWrongJavaVersion({ type: 'jar8' })).toEqual(false)
 })

@@ -1,4 +1,5 @@
 import { getOutputPath, libRootDir } from './fileUtils'
+import { normalize } from 'path'
 import { joinPath } from './pathUtils'
 
 export const TEST_CWD = '/current/working/dir'
@@ -15,5 +16,5 @@ export function createNetPath(config, ...relativePaths) {
 }
 
 export function createLibPath(...relativePaths) {
-  return joinPath(libRootDir(), ...relativePaths)
+  return joinPath(normalize(libRootDir()), ...relativePaths)
 }

@@ -1,4 +1,4 @@
-import { isJava11Plus } from '../utils/execUtils'
+import { isJava11Plus, isJava8 } from '../utils/execUtils'
 import { LATEST_CAKESHOP, LATEST_CAKESHOP_J8 } from '../generators/download'
 
 export function validateNumberStringInRange(input, low, high) {
@@ -25,13 +25,13 @@ export function validateNetworkId(input) {
 
 export function transformCakeshopAnswer(answer) {
   if (answer === 'Yes') {
-    return isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8
+    return isJava8() ? LATEST_CAKESHOP_J8 : LATEST_CAKESHOP
   }
   return 'none'
 }
 
 export function disableIfWrongJavaVersion({ type }) {
-  if (type === 'jar8' && isJava11Plus()) {
+  if (type === 'jar8' && !isJava8()) {
     return 'Disabled, requires Java 8'
   }
   if (type === 'jar' && !isJava11Plus()) {
