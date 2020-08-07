@@ -65,7 +65,6 @@ function buildBashQuestions(numberNodes, hasTessera, i, prevAnswers, isRaft) {
   return questions
 }
 
-
 export async function getCustomizedBashNodes(numberNodes, hasTessera, isRaft) {
   let answers
   const nodes = []

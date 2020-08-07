@@ -1,13 +1,13 @@
 import { homedir } from 'os'
 import {
-  existsSync,
-  writeFileSync,
   chmodSync,
-  removeSync,
-  mkdirSync,
   copyFileSync,
-  readFileSync,
   copySync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  removeSync,
+  writeFileSync,
 } from 'fs-extra'
 import { resolve } from 'path'
 import { joinPath, verifyPathInsideDirectory } from './pathUtils'
@@ -41,6 +41,14 @@ export function writeFile(filePath, contents, executable = false) {
   if (executable) {
     chmodSync(filePath, '755')
   }
+}
+
+export function writeScript(networkPath, config, script) {
+  writeFile(
+    joinPath(networkPath, script.filename),
+    script.generate(config),
+    script.executable,
+  )
 }
 
 export function removeFolder(networkPath = '') {

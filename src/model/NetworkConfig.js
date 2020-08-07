@@ -1,10 +1,7 @@
-import { isJava11Plus } from '../utils/execUtils'
 import {
   LATEST_CAKESHOP,
-  LATEST_CAKESHOP_J8,
   LATEST_QUORUM,
   LATEST_TESSERA,
-  LATEST_TESSERA_J8,
 } from '../generators/download'
 import {
   getDockerSubnet,
@@ -18,10 +15,10 @@ export function createConfigFromAnswers(answers) {
     consensus = 'raft',
     quorumVersion = LATEST_QUORUM,
     quorumVersionMore = undefined,
-    transactionManager = isJava11Plus() ? LATEST_TESSERA : LATEST_TESSERA_J8,
+    transactionManager = LATEST_TESSERA,
     transactionManagerMore = undefined,
     deployment = 'bash',
-    cakeshop = isJava11Plus() ? LATEST_CAKESHOP : LATEST_CAKESHOP_J8,
+    cakeshop = LATEST_CAKESHOP,
     generateKeys = false,
     networkId = '10',
     genesisLocation = 'none',

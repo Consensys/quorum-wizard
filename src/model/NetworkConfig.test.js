@@ -1,9 +1,7 @@
 import { createConfigFromAnswers } from './NetworkConfig'
-import { isJava11Plus } from '../utils/execUtils'
 import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 
 jest.mock('../utils/execUtils')
-isJava11Plus.mockReturnValue(true)
 
 // rather than having big test jsons that we match to, we can just use snapshot
 // tests, where it will compare against the last time you ran and if it's
@@ -33,13 +31,6 @@ const containerPortInfo = {
 test('creates quickstart config', () => {
   const config = createConfigFromAnswers({})
   expect(config).toMatchSnapshot()
-})
-
-test('creates quickstart setup with java 8', () => {
-  isJava11Plus.mockReturnValue(false)
-  const config = createConfigFromAnswers({})
-  expect(config).toMatchSnapshot()
-  isJava11Plus.mockReturnValue(true)
 })
 
 test('creates 7nodes istanbul config', () => {

@@ -122,7 +122,7 @@ export function getPlatformSpecificUrl({ url }) {
   return platformUrl
 }
 
-export const LATEST_QUORUM = '2.6.0'
+export const LATEST_QUORUM = '2.7.0'
 export const LATEST_TESSERA = '0.10.5'
 export const LATEST_TESSERA_J8 = '0.10.2'
 export const LATEST_CAKESHOP = '0.11.0'

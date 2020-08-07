@@ -1,30 +1,29 @@
 import sanitize from 'sanitize-filename'
 import {
+  copyDirectory,
   copyFile,
   createFolder,
   cwd,
   libRootDir,
   readFileToString,
   removeFolder,
-  writeJsonFile,
-  copyDirectory,
   writeFile,
+  writeJsonFile,
+  writeScript,
 } from '../utils/fileUtils'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
-import { buildKubernetesResource } from '../model/ResourceConfig'
+import { buildKubernetesResource, LATEST_QUBERNETES } from '../model/ResourceConfig'
 import {
-  isRaft,
-  isTessera,
-  isDocker,
-  isKubernetes,
-  isBash,
+  isBash, isDocker, isKubernetes, isRaft, isTessera,
 } from '../model/NetworkConfig'
-import { joinPath } from '../utils/pathUtils'
+import { joinPath, unixifyPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
-import { info } from '../utils/log'
+import { info, error } from '../utils/log'
 import { buildDockerIp } from '../utils/subnetUtils'
+import SCRIPTS from './scripts'
+import { getDockerRegistry } from './dockerHelper'
 
 export function createNetwork(config) {
   info('Building network directory...')
@@ -35,47 +34,40 @@ export function createNetwork(config) {
 }
 
 export function generateResourcesRemote(config) {
-  info('Pulling latest docker container and generating network resources...')
+  info('Pulling docker container and generating network resources...')
   const configDir = joinPath(cwd(), config.network.configDir)
   const networkPath = getFullNetworkPath(config)
   const remoteOutputDir = joinPath(networkPath, 'out', 'config')
 
   const file = buildKubernetesResource(config)
-  writeFile(joinPath(networkPath, 'qubernetes.yaml'), file, false)
-
-  if (!config.network.generateKeys) {
-    createFolder(remoteOutputDir, true)
-    copyDirectory(joinPath(libRootDir(), '7nodes'), remoteOutputDir)
-  }
+  const qubernetesYamlPath = joinPath(networkPath, 'qubernetes.yaml')
+  writeFile(qubernetesYamlPath, file, false)
 
   const initScript = isKubernetes(config.network.deployment) ? 'qube-init' : 'quorum-init'
-  let dockerCommand = `cd ${networkPath}
-  ## make sure docker is installed
-  docker ps > /dev/null
-  EXIT_CODE=$?
-
-  if [ $EXIT_CODE -ne 0 ];
-  then
-    exit $EXIT_CODE
-  fi
-
-  docker pull quorumengineering/qubernetes:latest
-
-  docker run -v ${networkPath}/qubernetes.yaml:/qubernetes/qubernetes.yaml -v ${networkPath}/out:/qubernetes/out  quorumengineering/qubernetes ./${initScript} --action=update qubernetes.yaml 2>&1
-  find . -type f -name 'UTC*' -execdir mv {} key ';'
-  `
-
-  if (isDocker(config.network.deployment)) {
-    dockerCommand += `
-    sed -i'.bak' 's/%QUORUM-NODE\\([0-9]\\)_SERVICE_HOST%/${buildDockerIp(config.containerPorts.dockerSubnet, '1')}\\1/g' ${networkPath}/out/config/permissioned-nodes.json`
-  }
+  const copy7nodes = !config.network.generateKeys ? 'cp -r /qubernetes/7nodes /qubernetes/out/config; ' : ''
+  const qubernetesImage = `${getDockerRegistry()}quorumengineering/qubernetes:${LATEST_QUBERNETES}`
+  const outPath = joinPath(networkPath, 'out')
+  const dockerCommands = [
+    `cd ${networkPath}`,
+    `docker pull ${qubernetesImage}`,
+    // docker volumes using C:\folder\ style paths can cause problems, convert to /c/folder/ on windows
+    `docker run --rm -v ${unixifyPath(qubernetesYamlPath)}:/qubernetes/qubernetes.yaml -v ${unixifyPath(outPath)}:/qubernetes/out ${qubernetesImage} /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"`,
+  ]
 
   try {
-    executeSync(dockerCommand)
+    dockerCommands.forEach(executeSync)
   } catch (e) {
+    error('\nGenerating resources in Qubernetes Docker container failed.\nYou may not be able to access DockerHub from your machine.\nIf you have a custom docker registry, re-run the wizard with the registry flag: quorum-wizard --registry yourcustomregistry.example.com\n')
     throw new Error('Remote generation failed')
   }
   if (isDocker(config.network.deployment)) {
+    const permissionedNodesLocation = joinPath(networkPath, 'out/config/permissioned-nodes.json')
+    const nodesWithSubnetReplaced = readFileToString(permissionedNodesLocation)
+      .replace(
+        /%QUORUM-NODE([0-9])_SERVICE_HOST%/g,
+        `${buildDockerIp(config.containerPorts.dockerSubnet, '1')}$1`,
+      )
+    writeFile(permissionedNodesLocation, nodesWithSubnetReplaced)
     copyDirectory(remoteOutputDir, configDir)
   }
 }
@@ -129,7 +121,7 @@ export function createQdataDirectory(config) {
 
     copyFile(joinPath(configPath, 'permissioned-nodes.json'), joinPath(quorumDir, 'permissioned-nodes.json'))
     copyFile(joinPath(configPath, 'permissioned-nodes.json'), joinPath(quorumDir, 'static-nodes.json'))
-    copyFile(joinPath(keySource, 'key'), joinPath(keyDir, 'key'))
+    copyFile(joinPath(keySource, 'acctkeyfile.json'), joinPath(keyDir, 'key'))
     copyFile(joinPath(keySource, 'nodekey'), joinPath(gethDir, 'nodekey'))
     copyFile(joinPath(keySource, 'password.txt'), passwordDestination)
     copyFile(joinPath(configPath, 'genesis.json'), genesisDestination)
@@ -183,4 +175,23 @@ export function getFullNetworkPath(config) {
   }
 
   return joinPath(cwd(), 'network', networkFolderName)
+}
+
+export function createScripts(config) {
+  const scripts = [
+    SCRIPTS.start,
+    SCRIPTS.stop,
+    SCRIPTS.runscript,
+    SCRIPTS.attach,
+    SCRIPTS.publicContract,
+  ]
+  if (isTessera(config.network.transactionManager)) {
+    scripts.push(SCRIPTS.privateContract)
+  }
+  if (isKubernetes(config.network.deployment)) {
+    scripts.push(SCRIPTS.getEndpoints)
+  }
+
+  const networkPath = getFullNetworkPath(config)
+  scripts.forEach((script) => writeScript(networkPath, config, script))
 }

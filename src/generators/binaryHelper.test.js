@@ -1,4 +1,3 @@
-
 import { any } from 'expect'
 import {
   downloadAndCopyBinaries,
@@ -7,7 +6,12 @@ import {
   pathToQuorumBinary,
   pathToTesseraJar,
 } from './binaryHelper'
-import { isJava11Plus } from '../utils/execUtils'
+import {
+  executeSync,
+  isJava11Plus,
+  isJava8,
+  isJavaMissing,
+} from '../utils/execUtils'
 import {
   cwd,
   libRootDir,
@@ -43,7 +47,6 @@ cwd.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 wizardHomeDir.mockReturnValue(TEST_WIZARD_HOME_DIR)
 downloadIfMissing.mockReturnValue(Promise.resolve())
-isJava11Plus.mockReturnValue(false)
 info.mockReturnValue('log')
 getLatestCakeshop.mockReturnValue(LATEST_CAKESHOP)
 

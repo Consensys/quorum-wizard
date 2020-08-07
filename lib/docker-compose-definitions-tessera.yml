@@ -1,6 +1,6 @@
 x-tx-manager-def:
   &tx-manager-def
-  image: "${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}"
+  image: "${DOCKER_REGISTRY:-}${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.10.2}"
   restart: "no"
   healthcheck:
     test: ["CMD-SHELL", "[ -S /qdata/tm/tm.ipc ] || exit 1"]

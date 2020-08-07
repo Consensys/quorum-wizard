@@ -1,11 +1,4 @@
-import {
-  getFullNetworkPath,
-} from './networkCreator'
-import {
-  copyFile,
-  libRootDir,
-  writeFile,
-} from '../utils/fileUtils'
+import { getFullNetworkPath } from './networkCreator'
 import { executeSync } from '../utils/execUtils'
 import {
   buildCakeshopDir,
@@ -25,12 +18,32 @@ import { info } from '../utils/log'
 import { formatTesseraKeysOutput } from './transactionManager'
 import { joinPath } from '../utils/pathUtils'
 import { isQuorum260Plus } from './versionHelper'
+import { scriptHeader, setEnvironmentCommand } from './scripts/utils'
 
-export function buildBashScript(config) {
+export async function initBash(config) {
+  const initCommands = []
+  const networkPath = getFullNetworkPath(config)
+  config.nodes.forEach((node, i) => {
+    const nodeNumber = i + 1
+    const quorumDir = joinPath('qdata', `dd${nodeNumber}`)
+    const genesisLocation = joinPath(quorumDir, 'genesis.json')
+    const initCommand = `cd ${networkPath} && ${pathToQuorumBinary(config.network.quorumVersion)} --datadir ${quorumDir} init ${genesisLocation} 2>&1`
+    initCommands.push(initCommand)
+  })
+
+  if (isCakeshop(config.network.cakeshop)) {
+    buildCakeshopDir(config, joinPath(networkPath, 'qdata'))
+  }
+  info('Initializing quorum...')
+  initCommands.forEach((command) => executeSync(command))
+  info('Done')
+}
+
+export function startScriptBash(config) {
   const commands = createCommands(config)
 
   const startScript = [
-    '#!/bin/bash',
+    scriptHeader(),
     'echo "\nStarting Quorum network...\n"',
     setEnvironmentCommand(config),
     commands.tesseraStart,
@@ -42,15 +55,10 @@ export function buildBashScript(config) {
     `echo "${formatTesseraKeysOutput(config)}"`,
   ]
 
-  return {
-    startScript: startScript.join('\n'),
-    initCommands: commands.initStart,
-  }
+  return startScript.join('\n')
 }
 
 export function createCommands(config) {
-  const networkPath = getFullNetworkPath(config)
-  const initCommands = []
   const startCommands = []
   const tmStartCommands = []
 
@@ -58,12 +66,9 @@ export function createCommands(config) {
     const nodeNumber = i + 1
     const quorumDir = joinPath('qdata', `dd${nodeNumber}`)
     const tmDir = joinPath('qdata', `c${nodeNumber}`)
-    const genesisLocation = joinPath(quorumDir, 'genesis.json')
     const keyDir = joinPath(quorumDir, 'keystore')
     const passwordDestination = joinPath(keyDir, 'password.txt')
     const logs = joinPath('qdata', 'logs')
-    const initCommand = `cd ${networkPath} && ${pathToQuorumBinary(config.network.quorumVersion)} --datadir ${quorumDir} init ${genesisLocation} 2>&1`
-    initCommands.push(initCommand)
 
     const tmIpcLocation = isTessera(config.network.transactionManager)
       ? joinPath(tmDir, 'tm.ipc')
@@ -83,30 +88,10 @@ export function createCommands(config) {
     }
   })
 
-  const obj = {
+  return {
     tesseraStart: tmStartCommands.join('\n'),
     gethStart: startCommands.join('\n'),
-    initStart: initCommands,
   }
-  return obj
-}
-
-
-export async function buildBash(config) {
-  const bashDetails = buildBashScript(config)
-  const networkPath = getFullNetworkPath(config)
-
-  if (isCakeshop(config.network.cakeshop)) {
-    buildCakeshopDir(config, joinPath(networkPath, 'qdata'))
-  }
-
-  info('Writing start script...')
-  writeFile(joinPath(networkPath, 'start.sh'), bashDetails.startScript, true)
-  copyFile(joinPath(libRootDir(), 'lib', 'stop.sh'), joinPath(networkPath, 'stop.sh'))
-
-  info('Initializing quorum...')
-  bashDetails.initCommands.forEach((command) => executeSync(command))
-  info('Done')
 }
 
 export function createGethStartCommand(config, node, passwordDestination, nodeNumber, tmIpcPath) {
@@ -146,19 +131,6 @@ function checkTesseraUpcheck(nodes) {
         echo "Node ${i + 1} is not yet listening on http"
         DOWN=true
     fi`)
-}
-
-export function setEnvironmentCommand(config) {
-  const lines = []
-  lines.push(`BIN_GETH=${pathToQuorumBinary(config.network.quorumVersion)}`)
-  if (isTessera(config.network.transactionManager)) {
-    lines.push(`BIN_TESSERA=${pathToTesseraJar(config.network.transactionManager)}`)
-  }
-  if (isCakeshop(config.network.cakeshop)) {
-    lines.push(`BIN_CAKESHOP=${pathToCakeshop(config.network.cakeshop)}`)
-  }
-  lines.push('')
-  return lines.join('\n')
 }
 
 export function waitForTesseraNodesCommand(config) {
