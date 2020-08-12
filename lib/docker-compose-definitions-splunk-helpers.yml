@@ -1,10 +1,3 @@
-x-tx-gen-def:
-  &tx-gen-def
-  image: splunkdlt/ethereum-transaction-generator:latest
-  entrypoint:
-    - tail
-    - -f
-    - /dev/null
 x-logging:
   &default-logging
   driver: splunk
