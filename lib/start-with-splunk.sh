@@ -1,10 +1,4 @@
 #!/bin/bash
-
-export CONTRACTS_PATH=$(pwd)/out/config/contracts
-export ABI_PATH=$(pwd)/out/config/splunk/abis
-
-docker run -v ${CONTRACTS_PATH}:/txgen/contracts -v ${ABI_PATH}:/txgen/abis --entrypoint=./compile-and-copy.sh splunkdlt/ethereum-transaction-generator
-
 docker-compose -f docker-compose-splunk.yml up -d
 
 sleep 3
