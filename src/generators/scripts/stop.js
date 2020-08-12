@@ -49,7 +49,7 @@ fi
 }
 
 export function stopScriptDocker(config) {
-  if (config.network.txGenerate) {
+  if (config.network.splunk) {
     return readFileToString(joinPath(libRootDir(), 'lib', 'stop-with-splunk.sh'))
   }
   return `${scriptHeader()}

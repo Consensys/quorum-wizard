@@ -22,12 +22,8 @@ export default {
 }
 
 function startScriptDocker(config) {
-  if (config.network.splunk && config.network.txGenerate) {
-    return readFileToString(joinPath(libRootDir(), 'lib', 'start-with-splunk-txns.sh'))
-  } else if (config.network.splunk && !config.network.txGenerate) {
+  if (config.network.splunk) {
     return readFileToString(joinPath(libRootDir(), 'lib', 'start-with-splunk.sh'))
-  } else if (!config.network.splunk && config.network.txGenerate) {
-    return readFileToString(joinPath(libRootDir(), 'lib', 'start-with-txns.sh'))
   }
   return `${scriptHeader()}
 docker-compose up -d`

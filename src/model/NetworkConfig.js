@@ -34,7 +34,6 @@ export function createConfigFromAnswers(answers) {
   const dockerSubnet = (isDocker(deployment) && containerPorts !== undefined) ? containerPorts.dockerSubnet : ''
   const cakeshop = getCakeshopVersionFromTools(deployment, tools)
   const splunk = tools.includes('splunk')
-  const txGenerate = tools.includes('txGenerate')
   return {
     network: {
       name: networkFolder,
@@ -49,7 +48,6 @@ export function createConfigFromAnswers(answers) {
       deployment,
       cakeshop,
       splunk,
-      txGenerate,
       networkId,
       customizePorts,
       cakeshopPort,
