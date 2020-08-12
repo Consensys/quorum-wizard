@@ -73,9 +73,6 @@ export function generateResourcesRemote(config) {
   if (config.network.splunk) {
     copyDirectory(joinPath(libRootDir(), 'lib', 'splunk'), joinPath(remoteOutputDir, 'splunk'))
   }
-  if (config.network.txGenerate) {
-    copyDirectory(joinPath(libRootDir(), 'lib', 'splunk', 'contracts'), joinPath(remoteOutputDir, 'contracts'))
-  }
 }
 
 export async function generateResourcesLocally(config) {

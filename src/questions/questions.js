@@ -1,7 +1,6 @@
 import {
   transformCakeshopAnswer,
   transformSplunkAnswer,
-  transformTxGenerateAnswer,
   validateNetworkId,
   validateNumberStringInRange,
 } from './validators'
@@ -143,11 +142,6 @@ export const TOOLS = {
       name: 'Splunk, Mine your own business.',
       value: 'splunk',
       disabled: !isDocker(answers.deployment) || isWin32() ? 'Disabled, splunk is available with docker-compose' : false
-    },
-    {
-      name: 'Splunk Transaction Auto-generator',
-      value: 'txGenerate',
-      disabled: !isDocker(answers.deployment) ? 'Disabled, transaction generator is available with docker-compose' : false
     },
   ]),
   default: [],

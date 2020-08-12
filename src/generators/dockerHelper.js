@@ -36,7 +36,6 @@ export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
   const hasCakeshop = isCakeshop(config.network.cakeshop)
   const hasSplunk = config.network.splunk
-  const txGenerate = config.network.txGenerate
 
   const quorumDefinitions = readFileToString(joinPath(
     libRootDir(),
@@ -59,7 +58,7 @@ export function buildDockerCompose(config) {
   )) : ''
 
   let services = config.nodes.map((node, i) => {
-    let allServices = buildNodeService(config, node, i, hasTessera, hasSplunk, txGenerate)
+    let allServices = buildNodeService(config, node, i, hasTessera, hasSplunk)
     if (hasTessera) {
       allServices = [allServices, buildTesseraService(config, node, i, hasSplunk)].join('')
     }
@@ -72,15 +71,6 @@ export function buildDockerCompose(config) {
     services = [services.join(''),
       buildEthloggerService(config),
       buildCadvisorService(config)]
-  }
-  if (txGenerate) {
-    let pubkeys = []
-    config.nodes.forEach((_, i) => {
-      pubkeys.push(loadTesseraPublicKey(config, i + 1))
-    });
-
-    services = [services.join(''),
-      buildTxGenService(hasSplunk, config, pubkeys)]
   }
 
   return [
@@ -153,7 +143,7 @@ DOCKER_REGISTRY=${getDockerRegistry()}`)
   return env
 }
 
-function buildNodeService(config, node, i, hasTessera, hasSplunk, txGenerate) {
+function buildNodeService(config, node, i, hasTessera, hasSplunk) {
   const networkName = config.network.name
   const txManager = hasTessera
     ? `depends_on:
@@ -238,7 +228,7 @@ function buildSplunkService(config) {
       - SPLUNK_START_ARGS=--accept-license
       - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113
       - SPLUNK_PASSWORD=changeme
-      - SPLUNK_APPS_URL=https://github.com/splunk/ethereum-basics/releases/download/latest/ethereum-basics.tgz,https://splunk-quorum.s3.us-east-2.amazonaws.com/oss-quorum-app-for-splunk_109.tgz,https://splunk-quorum.s3.us-east-2.amazonaws.com/maps-for-splunk_315.tgz
+      - SPLUNK_APPS_URL=https://github.com/splunk/ethereum-basics/releases/download/latest/ethereum-basics.tgz,https://splunk-quorum.s3.us-east-2.amazonaws.com/oss-quorum-app-for-splunk_109.tgz
     expose:
       - "8000"
       - "8088"
@@ -255,8 +245,6 @@ function buildSplunkService(config) {
       - splunk-var:/opt/splunk/var
       - splunk-etc:/opt/splunk/etc
       - ./out/config/splunk/splunk-config.yml:/tmp/defaults/default.yml
-      - ./out/config/splunk/dashboards:/opt/splunk/etc/apps/search/local/data/ui/views
-      - ./out/config/splunk/airport_geo.csv:/opt/splunk/etc/apps/splunk-app-quorum/lookups/airport_geo.csv
     networks:
       ${networkName}-net:
         ipv4_address: ${config.network.splunkIp}`
@@ -305,50 +293,17 @@ function buildEthloggerService(config) {
       - SPLUNK_METRICS_INDEX=metrics
       - SPLUNK_INTERNAL_INDEX=metrics
       - SPLUNK_HEC_REJECT_INVALID_CERTS=false
-      - ABI_DIR=/app/abis
       - COLLECT_PEER_INFO=true
-      - DEBUG=ethlogger:abi:*
     depends_on:
       - node${instance}
     restart: unless-stopped
     volumes:
-      - ./out/config/splunk/abis:/app/abis:ro
       - ethlogger-state${instance}:/app
     networks:
       - ${networkName}-net
     logging: *default-logging`
   })
   return ethloggers
-}
-
-function buildTxGenService(hasSplunk, config, pubkeys) {
-  const networkName = config.network.name
-  const splunkLogging = hasSplunk
-    ? `logging: *default-logging` : ``
-  let nodeVars = ''
-  config.nodes.forEach((node, i) => {
-    nodeVars += `
-      - NODE${i + 1}=${node.quorum.ip}:${config.containerPorts.quorum.rpcPort}`
-  });
-  let pubkeyVars = ''
-  pubkeys.forEach((pubkey, i) => {
-    pubkeyVars += `
-      - PUBKEY${i + 1}=${pubkey}`
-  });
-
-  return `
-  tx-gen:
-    << : *tx-gen-def
-    container_name: txgen
-    environment:
-      - QUORUM=true${nodeVars}${pubkeyVars}
-    volumes:
-      - ./out/config/contracts:/txgen/contracts
-      - ./out/config/splunk/abis:/txgen/build/contracts
-      - ./out/config/splunk/contract_config.json:/txgen/contract_config.json
-    networks:
-      - ${networkName}-net
-    ${splunkLogging}`
 }
 
 function buildEndService(config) {
