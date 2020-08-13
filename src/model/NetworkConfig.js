@@ -22,7 +22,7 @@ export function createConfigFromAnswers(answers) {
     genesisLocation = 'none',
     customizePorts = false,
     nodes = [],
-    cakeshopPort = '8999',
+    cakeshopPort = isKubernetes(deployment) ? '30108' : '8999',
     remoteDebug = false,
     containerPorts = undefined,
   } = answers
@@ -51,7 +51,6 @@ export function createConfigFromAnswers(answers) {
       numberNodes,
       transactionManager,
       deployment,
-      cakeshop,
       dockerSubnet,
     ),
     containerPorts,
@@ -69,7 +68,6 @@ export function generateNodeConfigs(
   numberNodes,
   transactionManager,
   deployment,
-  cakeshop,
   dockerSubnet,
 ) {
   const devP2pPort = 21000

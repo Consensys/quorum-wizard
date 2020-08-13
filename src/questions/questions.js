@@ -132,7 +132,6 @@ export const CAKESHOP = {
     { name: 'Yes', disabled: isBash(answers.deployment) && isJavaMissing() ? 'Disabled, Java is required to use Cakeshop' : false },
   ]),
   default: 'No',
-  when: (answers) => !isKubernetes(answers.deployment),
   filter: transformCakeshopAnswer,
 }
 

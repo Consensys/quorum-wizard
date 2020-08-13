@@ -823,7 +823,7 @@ Object {
   },
   "network": Object {
     "cakeshop": "none",
-    "cakeshopPort": "8999",
+    "cakeshopPort": "30108",
     "configDir": "network/7-nodes-istanbul-tessera-kubernetes/resources",
     "consensus": "istanbul",
     "customizePorts": false,
@@ -1167,7 +1167,7 @@ Object {
   },
   "network": Object {
     "cakeshop": "none",
-    "cakeshopPort": "8999",
+    "cakeshopPort": "30108",
     "configDir": "network/7-nodes-raft-tessera-kubernetes/resources",
     "consensus": "raft",
     "customizePorts": false,

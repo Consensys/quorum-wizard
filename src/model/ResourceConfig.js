@@ -1,6 +1,7 @@
 import { getDockerRegistry } from '../generators/dockerHelper'
+import { isCakeshop } from './NetworkConfig'
 
-export const LATEST_QUBERNETES = 'v0.1.3-rc1'
+export const LATEST_QUBERNETES = 'v0.1.3'
 
 // eslint-disable-next-line import/prefer-default-export
 export function buildKubernetesResource(config) {
@@ -8,6 +9,7 @@ export function buildKubernetesResource(config) {
     buildGeneralDetails(config),
     buildQuorumDetails(config),
     buildTesseraDetails(config),
+    buildCakeshopDetails(config),
     buildGethDetails(config),
     buildKubernetesDetails(config),
   ].join('')
@@ -55,6 +57,19 @@ function buildTesseraDetails(config) {
     Port: ${config.containerPorts.tm.p2pPort}
     3Party_Port: ${config.containerPorts.tm.thirdPartyPort}
     Tessera_Config_Dir: out/config`
+}
+
+function buildCakeshopDetails(config) {
+  if (!isCakeshop(config.network.cakeshop)) {
+    return ''
+  }
+  return `
+cakeshop:
+  version: latest
+  Docker_Repo: ${getDockerRegistry()}quorumengineering
+  service:
+    type: NodePort
+    nodePort: ${config.network.cakeshopPort}`
 }
 
 function buildKubernetesDetails(config) {

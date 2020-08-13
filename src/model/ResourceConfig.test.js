@@ -4,11 +4,14 @@ import {
   TEST_CWD,
 } from '../utils/testHelper'
 import { buildKubernetesResource } from './ResourceConfig'
-import { LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import { LATEST_QUORUM, LATEST_TESSERA, LATEST_CAKESHOP } from '../generators/download'
+import { getDockerRegistry } from '../generators/dockerHelper'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')
+jest.mock('../generators/dockerHelper')
 getFullNetworkPath.mockReturnValue(`${TEST_CWD}/test-network`)
+getDockerRegistry.mockReturnValue('')
 
 const containerPortInfo = {
   quorum: {
@@ -75,6 +78,24 @@ test('creates 7nodes istanbul docker generate keys no tessera', () => {
     deployment: 'docker-compose',
     consensus: 'istanbul',
     transactionManger: 'none',
+    generateKeys: true,
+    containerPorts: {
+      dockerSubnet: '172.16.239.0/24',
+      ...containerPortInfo,
+    },
+  })
+  const kubernetes = buildKubernetesResource(config)
+  expect(kubernetes).toMatchSnapshot()
+})
+
+test('creates 7nodes istanbul docker generate keys with cakeshop', () => {
+  const config = createConfigFromAnswers({
+    ...baseNetwork,
+    numberNodes: '7',
+    deployment: 'docker-compose',
+    consensus: 'istanbul',
+    cakeshop: LATEST_CAKESHOP,
+    cakeshopPort: 8999,
     generateKeys: true,
     containerPorts: {
       dockerSubnet: '172.16.239.0/24',
