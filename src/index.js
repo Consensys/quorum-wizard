@@ -113,11 +113,11 @@ function printInstructions(config) {
     info('')
   }
   if(isCakeshop(config.network.cakeshop)) {
-    info('After starting, Cakeshop will be accessible here: http://localhost:8999')
+    info(`After starting, Cakeshop will be accessible here: http://localhost:${config.network.cakeshopPort}`)
     info('')
   }
   if(config.network.splunk) {
-    info('After starting, Splunk will be accessible here: http://localhost:8000')
+    info(`After starting, Splunk will be accessible here: http://localhost:${config.network.splunkPort}`)
     info('The default credentials are admin:changeme')
     info('')
   }
