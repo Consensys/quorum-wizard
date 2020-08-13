@@ -6,7 +6,7 @@ import { createLogger, debug, info } from './utils/log'
 import { promptUser } from './questions'
 import { INITIAL_MODE } from './questions/questions'
 import {
-  createConfigFromAnswers, isBash, isDocker, isKubernetes, isTessera, isCakeshop
+  createConfigFromAnswers, isBash, isDocker, isKubernetes, isTessera, isCakeshop,
 } from './model/NetworkConfig'
 import {
   createNetwork,
@@ -112,11 +112,11 @@ function printInstructions(config) {
     info(`To use run ${wrapScript(SCRIPTS.getEndpoints.filename)}  from the network folder`)
     info('')
   }
-  if(isCakeshop(config.network.cakeshop)) {
+  if (isCakeshop(config.network.cakeshop)) {
     info(`After starting, Cakeshop will be accessible here: http://localhost:${config.network.cakeshopPort}`)
     info('')
   }
-  if(config.network.splunk) {
+  if (config.network.splunk) {
     info(`After starting, Splunk will be accessible here: http://localhost:${config.network.splunkPort}`)
     info('The default credentials are admin:changeme')
     info('')

@@ -57,7 +57,7 @@ test('creates quickstart config with java 8', () => {
   isJava8.mockReturnValueOnce(true)
   const config = createConfigFromAnswers({
     transactionManager: LATEST_TESSERA_J8,
-    tools: ['cakeshop']
+    tools: ['cakeshop'],
   })
   const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()

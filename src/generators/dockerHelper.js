@@ -1,9 +1,8 @@
 import {
-  copyFile, formatNewLine, libRootDir, readFileToString, writeFile,
+  formatNewLine, libRootDir, readFileToString, writeFile,
 } from '../utils/fileUtils'
 import { getFullNetworkPath } from './networkCreator'
 import { buildCakeshopDir } from './cakeshopHelper'
-import { loadTesseraPublicKey } from './transactionManager'
 import { isCakeshop, isTessera } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { joinPath, removeTrailingSlash } from '../utils/pathUtils'
@@ -54,7 +53,7 @@ export function buildDockerCompose(config) {
 
   const splunkDefinitions = hasSplunk ? readFileToString(joinPath(
     libRootDir(),
-    'lib/docker-compose-definitions-splunk-helpers.yml'
+    'lib/docker-compose-definitions-splunk-helpers.yml',
   )) : ''
 
   let services = config.nodes.map((node, i) => {
@@ -85,9 +84,9 @@ export function buildDockerCompose(config) {
 }
 
 export function buildSplunkDockerCompose(config) {
-  let version = `version: "3.6"
+  const version = `version: "3.6"
 `
-  let services = [buildSplunkService(config)]
+  const services = [buildSplunkService(config)]
   info('Splunk>')
 
   return [
@@ -153,7 +152,7 @@ function buildNodeService(config, node, i, hasTessera, hasSplunk) {
     : `environment:
       - PRIVATE_CONFIG=ignore`
   const splunkLogging = hasSplunk
-    ? `logging: *default-logging` : ``
+    ? 'logging: *default-logging' : ''
 
   return `
   node${i + 1}:
@@ -178,7 +177,7 @@ function buildNodeService(config, node, i, hasTessera, hasSplunk) {
 function buildTesseraService(config, node, i, hasSplunk) {
   const networkName = config.network.name
   const splunkLogging = hasSplunk
-    ? `logging: *default-logging` : ``
+    ? 'logging: *default-logging' : ''
   return `
   txmanager${i + 1}:
     << : *tx-manager-def
@@ -199,7 +198,7 @@ function buildTesseraService(config, node, i, hasSplunk) {
 
 function buildCakeshopService(config, hasSplunk) {
   const splunkLogging = hasSplunk
-    ? `logging: *default-logging` : ``
+    ? 'logging: *default-logging' : ''
   const networkName = config.network.name
   return `
   cakeshop:
@@ -277,7 +276,7 @@ function buildEthloggerService(config) {
   let ethloggers = ''
 
   config.nodes.forEach((node, i) => {
-    const instance = i+1
+    const instance = i + 1
     ethloggers += `
   ethlogger${instance}:
     image: splunkdlt/ethlogger:latest

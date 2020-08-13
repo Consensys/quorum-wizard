@@ -1,11 +1,9 @@
 import {
   disableIfWrongJavaVersion,
-  transformCakeshopAnswer,
   validateNetworkId,
   validateNumberStringInRange,
 } from './validators'
 import { isJava11Plus, isJava8 } from '../utils/execUtils'
-import { LATEST_CAKESHOP, LATEST_CAKESHOP_J8 } from '../generators/download'
 
 jest.mock('../utils/execUtils')
 

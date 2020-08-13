@@ -173,7 +173,7 @@ export async function getCustomizedSplunkPort() {
     type: 'input',
     name: 'splunkPort',
     message: 'input splunk port',
-    default: '8000'
+    default: '8000',
   }
   const answer = await inquirer.prompt(question)
 

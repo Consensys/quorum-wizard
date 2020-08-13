@@ -1,5 +1,4 @@
 import { isJava11Plus, isJava8 } from '../utils/execUtils'
-import { LATEST_CAKESHOP, LATEST_CAKESHOP_J8 } from '../generators/download'
 
 export function validateNumberStringInRange(input, low, high) {
   const number = parseInt(input, 10)

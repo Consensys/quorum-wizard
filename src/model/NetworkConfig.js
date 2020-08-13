@@ -8,7 +8,7 @@ import {
   getDockerSubnet,
   cidrhost,
 } from '../utils/subnetUtils'
-import { isJava11Plus, isJava8 } from '../utils/execUtils'
+import { isJava8 } from '../utils/execUtils'
 
 export function createConfigFromAnswers(answers) {
   const {
@@ -133,7 +133,8 @@ export function getContainerPorts(deployment) {
 function getCakeshopVersionFromTools(deployment, tools) {
   if (!tools.includes('cakeshop')) {
     return 'none'
-  } else if (!isBash(deployment)) {
+  }
+  if (!isBash(deployment)) {
     return LATEST_CAKESHOP
   }
   return isJava8() ? LATEST_CAKESHOP_J8 : LATEST_CAKESHOP

@@ -15,7 +15,7 @@ import {
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
-import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from './download'
+import { LATEST_QUORUM, LATEST_TESSERA } from './download'
 
 jest.mock('../utils/fileUtils')
 cwd.mockReturnValue(TEST_CWD)

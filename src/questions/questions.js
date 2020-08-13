@@ -1,6 +1,5 @@
+import { Separator } from 'inquirer'
 import {
-  transformCakeshopAnswer,
-  transformSplunkAnswer,
   validateNetworkId,
   validateNumberStringInRange,
 } from './validators'
@@ -11,20 +10,17 @@ import {
 import {
   defaultNetworkName,
   isRaft,
-  isKubernetes, isBash, isDocker
+  isKubernetes, isBash, isDocker,
 } from '../model/NetworkConfig'
 
 import {
-  executeSync, isJava8, isJavaMissing, isWindows, isWin32
+  executeSync, isJava8, isJavaMissing, isWindows, isWin32,
 } from '../utils/execUtils'
 import {
-  LATEST_CAKESHOP,
-  LATEST_CAKESHOP_J8,
   LATEST_QUORUM,
   LATEST_TESSERA,
   LATEST_TESSERA_J8,
 } from '../generators/download'
-import { Separator } from 'inquirer'
 import { error } from '../utils/log'
 import SCRIPTS from '../generators/scripts'
 
@@ -135,24 +131,24 @@ export const TOOLS = {
     {
       name: 'Cakeshop, Quorum\'s official block explorer',
       value: 'cakeshop',
-      disabled: isBash(answers.deployment) && isJavaMissing() ? 'Disabled, Java is required to use Cakeshop' : false
+      disabled: isBash(answers.deployment) && isJavaMissing() ? 'Disabled, Java is required to use Cakeshop' : false,
     },
     new Separator('=== Third Party Tools ==='),
     {
       name: 'Splunk, Mine your own business.',
       value: 'splunk',
       disabled: () => {
-        if(!isDocker(answers.deployment)) {
+        if (!isDocker(answers.deployment)) {
           return 'Disabled, Splunk is only available with docker-compose'
-        } else if (isWin32()) {
+        } if (isWin32()) {
           return 'Disabled, Splunk not available on Windows'
         }
         return false
-      }
+      },
     },
   ]),
   default: [],
-  when: (answers) => !isKubernetes(answers.deployment)
+  when: (answers) => !isKubernetes(answers.deployment),
 }
 
 export const KEY_GENERATION = {
@@ -218,19 +214,17 @@ export const QUESTIONS = [
 ]
 
 export const QUICKSTART_ANSWERS = () => {
-  let deployment; let transactionManager; let
-    cakeshop
+  let deployment
+  let transactionManager
   if (isWindows()) {
     // on windows make this undefined so they can choose, and so we can check if docker is running
     deployment = undefined
 
     // only containers, no need to worry about java version
     transactionManager = LATEST_TESSERA
-    cakeshop = LATEST_CAKESHOP
   } else {
     deployment = 'bash'
     transactionManager = isJava8() ? LATEST_TESSERA_J8 : LATEST_TESSERA
-    cakeshop = isJava8() ? LATEST_CAKESHOP_J8 : LATEST_CAKESHOP
   }
   return {
     deployment,
