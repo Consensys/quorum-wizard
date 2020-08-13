@@ -1,5 +1,6 @@
 import {
   transformCakeshopAnswer,
+  transformSplunkAnswer,
   validateNetworkId,
   validateNumberStringInRange,
 } from './validators'
@@ -10,10 +11,11 @@ import {
 import {
   defaultNetworkName,
   isRaft,
-  isKubernetes, isBash,
+  isKubernetes, isBash, isDocker
 } from '../model/NetworkConfig'
+
 import {
-  executeSync, isJava8, isJavaMissing, isWindows,
+  executeSync, isJava8, isJavaMissing, isWindows, isWin32
 } from '../utils/execUtils'
 import {
   LATEST_CAKESHOP,
@@ -22,6 +24,7 @@ import {
   LATEST_TESSERA,
   LATEST_TESSERA_J8,
 } from '../generators/download'
+import { Separator } from 'inquirer'
 import { error } from '../utils/log'
 import SCRIPTS from '../generators/scripts'
 
@@ -123,16 +126,25 @@ export const TRANSACTION_MANAGER = {
   choices: ({ deployment }) => getDownloadableTesseraChoices(deployment),
 }
 
-export const CAKESHOP = {
-  type: 'list', // can't transform answer from boolean on confirm questions, so it had to be a list
-  name: 'cakeshop',
-  message: 'Do you want to run Cakeshop (our chain explorer) with your network?',
+export const TOOLS = {
+  type: 'checkbox',
+  name: 'tools',
+  message: 'What tools would you like to deploy alongside your network?',
   choices: (answers) => ([
-    'No',
-    { name: 'Yes', disabled: isBash(answers.deployment) && isJavaMissing() ? 'Disabled, Java is required to use Cakeshop' : false },
+    new Separator('=== Quorum Tools ==='),
+    {
+      name: 'Cakeshop, Quorum\'s official block explorer',
+      value: 'cakeshop',
+      disabled: isBash(answers.deployment) && isJavaMissing() ? 'Disabled, Java is required to use Cakeshop' : false
+    },
+    new Separator('=== Third Party Tools ==='),
+    {
+      name: 'Splunk, Mine your own business.',
+      value: 'splunk',
+      disabled: !isDocker(answers.deployment) || isWin32() ? 'Disabled, splunk is available with docker-compose' : false
+    },
   ]),
-  default: 'No',
-  filter: transformCakeshopAnswer,
+  default: [],
 }
 
 export const KEY_GENERATION = {
@@ -189,7 +201,7 @@ export const QUESTIONS = [
   NUMBER_NODES,
   QUORUM_VERSION,
   TRANSACTION_MANAGER,
-  CAKESHOP,
+  TOOLS,
   KEY_GENERATION,
   NETWORK_ID,
   // GENESIS_LOCATION,
@@ -219,8 +231,8 @@ export const QUICKSTART_ANSWERS = () => {
     consensus: 'raft',
     quorumVersion: LATEST_QUORUM,
     transactionManager,
-    cakeshop,
     generateKeys: false,
+    tools: ['cakeshop'],
     networkId: '10',
     customizePorts: false,
   }

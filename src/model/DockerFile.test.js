@@ -8,7 +8,7 @@ const baseNetwork = {
   quorumVersion: LATEST_QUORUM,
   transactionManager: LATEST_TESSERA,
   deployment: 'bash',
-  cakeshop: 'none',
+  tools: [],
   containerPorts: {
     dockerSubnet: '172.16.239.0/24',
     quorum: {
@@ -50,7 +50,7 @@ test('creates 3nodes raft dockerFile tessera cakeshop', () => {
   const config = createConfigFromAnswers({
     ...baseNetwork,
     deployment: 'docker-compose',
-    cakeshop: LATEST_CAKESHOP,
+    tools: ['cakeshop'],
   })
   const docker = buildDockerCompose(config)
   expect(docker).toMatchSnapshot()
@@ -63,7 +63,7 @@ test('creates 5nodes istanbul dockerFile no tessera cakeshop', () => {
     consensus: 'istanbul',
     transactionManager: 'none',
     deployment: 'docker-compose',
-    cakeshop: LATEST_CAKESHOP,
+    tools: ['cakeshop'],
   })
   const docker = buildDockerCompose(config)
   expect(docker).toMatchSnapshot()
@@ -121,7 +121,7 @@ test('creates 2nodes raft docker tessera cakeshop custom ports', () => {
     ...baseNetwork,
     numberNodes: '2',
     deployment: 'docker-compose',
-    cakeshop: LATEST_CAKESHOP,
+    tools: ['cakeshop'],
     generateKeys: false,
     networkId: 10,
     genesisLocation: 'none',

@@ -115,4 +115,13 @@ function printInstructions(config) {
     info(`To use run ${wrapScript(SCRIPTS.getEndpoints.filename)}  from the network folder`)
     info('')
   }
+  if(isCakeshop(config.network.cakeshop)) {
+    info('After starting, Cakeshop will be accessible here: http://localhost:8999')
+    info('')
+  }
+  if(config.network.splunk) {
+    info('After starting, Splunk will be accessible here: http://localhost:8000')
+    info('The default credentials are admin:changeme')
+    info('')
+  }
 }

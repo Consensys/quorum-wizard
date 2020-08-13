@@ -18,7 +18,7 @@ const SIMPLE_CONFIG = {
   quorumVersion: LATEST_QUORUM,
   transactionManager: LATEST_TESSERA,
   deployment: 'bash',
-  cakeshop: 'none',
+  tools: [],
 }
 
 const CUSTOM_CONFIG = {
@@ -263,7 +263,7 @@ describe('build customized node info from custom prompts', () => {
     it('customize, bash ports', async () => {
       prompt.mockResolvedValue({
         ...CUSTOM_CONFIG,
-        cakeshop: LATEST_CAKESHOP,
+        tools: ['cakeshop'],
         consensus: 'raft',
       })
       await promptUser('custom')

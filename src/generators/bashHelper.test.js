@@ -22,8 +22,9 @@ import {
 import { info } from '../utils/log'
 import { generateAccounts } from './consensusHelper'
 import {
-  LATEST_CAKESHOP, LATEST_CAKESHOP_J8, LATEST_QUORUM, LATEST_TESSERA, LATEST_TESSERA_J8,
+  LATEST_QUORUM, LATEST_TESSERA, LATEST_TESSERA_J8,
 } from './download'
+import { isJava8 } from '../utils/execUtils'
 
 jest.mock('../utils/fileUtils')
 jest.mock('./consensusHelper')
@@ -35,13 +36,14 @@ wizardHomeDir.mockReturnValue(TEST_WIZARD_HOME_DIR)
 generateAccounts.mockReturnValue('accounts')
 readFileToString.mockReturnValue('publicKey')
 info.mockReturnValue('log')
+isJava8.mockReturnValue(false)
 
 const baseNetwork = {
   numberNodes: '3',
   consensus: 'raft',
   quorumVersion: LATEST_QUORUM,
   transactionManager: LATEST_TESSERA,
-  cakeshop: 'none',
+  tools: [],
   deployment: 'bash',
 }
 
@@ -52,9 +54,10 @@ test('creates quickstart config', () => {
 })
 
 test('creates quickstart config with java 8', () => {
+  isJava8.mockReturnValueOnce(true)
   const config = createConfigFromAnswers({
     transactionManager: LATEST_TESSERA_J8,
-    cakeshop: LATEST_CAKESHOP_J8,
+    tools: ['cakeshop']
   })
   const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
@@ -75,7 +78,7 @@ test('creates 3nodes raft bash tessera', () => {
 test('creates 3nodes raft bash tessera cakeshop', () => {
   const config = createConfigFromAnswers({
     ...baseNetwork,
-    cakeshop: LATEST_CAKESHOP,
+    tools: ['cakeshop'],
   })
   const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
@@ -142,7 +145,7 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
     quorumVersion: LATEST_QUORUM,
     transactionManager: LATEST_TESSERA,
     deployment: 'bash',
-    cakeshop: LATEST_CAKESHOP,
+    tools: ['cakeshop'],
     generateKeys: false,
     networkId: 10,
     genesisLocation: 'none',
@@ -157,7 +160,7 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
 test('build bash with tessera and cakeshop', () => {
   const config = createConfigFromAnswers({
     ...baseNetwork,
-    cakeshop: LATEST_CAKESHOP,
+    tools: ['cakeshop'],
   })
   initBash(config)
   expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', 'cakeshop', 'local'), true)

@@ -16,7 +16,7 @@ import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
 import { buildKubernetesResource, LATEST_QUBERNETES } from '../model/ResourceConfig'
 import {
-  isBash, isDocker, isKubernetes, isRaft, isTessera,
+  isBash, isDocker, isKubernetes, isRaft, isTessera, isSplunk,
 } from '../model/NetworkConfig'
 import { joinPath, unixifyPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
@@ -69,6 +69,9 @@ export function generateResourcesRemote(config) {
       )
     writeFile(permissionedNodesLocation, nodesWithSubnetReplaced)
     copyDirectory(remoteOutputDir, configDir)
+  }
+  if (config.network.splunk) {
+    copyDirectory(joinPath(libRootDir(), 'lib', 'splunk'), joinPath(remoteOutputDir, 'splunk'))
   }
 }
 
