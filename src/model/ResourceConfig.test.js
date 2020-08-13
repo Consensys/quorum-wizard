@@ -4,7 +4,7 @@ import {
   TEST_CWD,
 } from '../utils/testHelper'
 import { buildKubernetesResource } from './ResourceConfig'
-import { LATEST_QUORUM, LATEST_TESSERA, LATEST_CAKESHOP } from '../generators/download'
+import { LATEST_QUORUM, LATEST_TESSERA} from '../generators/download'
 import { getDockerRegistry } from '../generators/dockerHelper'
 
 jest.mock('../utils/fileUtils')
@@ -94,7 +94,7 @@ test('creates 7nodes istanbul docker generate keys with cakeshop', () => {
     numberNodes: '7',
     deployment: 'docker-compose',
     consensus: 'istanbul',
-    cakeshop: LATEST_CAKESHOP,
+    tools: ['cakeshop'],
     cakeshopPort: 8999,
     generateKeys: true,
     containerPorts: {
