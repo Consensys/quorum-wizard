@@ -129,7 +129,7 @@ export const TRANSACTION_MANAGER = {
 export const TOOLS = {
   type: 'checkbox',
   name: 'tools',
-  message: 'What tools would you like to deploy alongside your network?',
+  message: 'What tools would you like to deploy alongside your network? (Press space to select options, then press enter)',
   choices: (answers) => ([
     new Separator('=== Quorum Tools ==='),
     {
@@ -141,7 +141,14 @@ export const TOOLS = {
     {
       name: 'Splunk, Mine your own business.',
       value: 'splunk',
-      disabled: !isDocker(answers.deployment) || isWin32() ? 'Disabled, splunk is available with docker-compose' : false
+      disabled: () => {
+        if(!isDocker(answers.deployment)) {
+          return 'Disabled, Splunk is only available with docker-compose'
+        } else if (isWin32()) {
+          return 'Disabled, Splunk not available on Windows'
+        }
+        return false
+      }
     },
   ]),
   default: [],
