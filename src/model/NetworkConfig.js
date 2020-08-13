@@ -1,5 +1,6 @@
 import {
   LATEST_CAKESHOP,
+  LATEST_CAKESHOP_J8,
   LATEST_QUORUM,
   LATEST_TESSERA,
 } from '../generators/download'
@@ -7,6 +8,7 @@ import {
   getDockerSubnet,
   cidrhost,
 } from '../utils/subnetUtils'
+import { isJava11Plus, isJava8 } from '../utils/execUtils'
 
 export function createConfigFromAnswers(answers) {
   const {
@@ -16,19 +18,22 @@ export function createConfigFromAnswers(answers) {
     quorumVersion = LATEST_QUORUM,
     transactionManager = LATEST_TESSERA,
     deployment = 'bash',
-    cakeshop = LATEST_CAKESHOP,
+    tools = ['cakeshop'],
     generateKeys = false,
     networkId = '10',
     genesisLocation = 'none',
     customizePorts = false,
     nodes = [],
     cakeshopPort = '8999',
+    splunkPort = '8000',
     remoteDebug = false,
     containerPorts = undefined,
   } = answers
   const networkFolder = name
     || defaultNetworkName(numberNodes, consensus, transactionManager, deployment)
   const dockerSubnet = (isDocker(deployment) && containerPorts !== undefined) ? containerPorts.dockerSubnet : ''
+  const cakeshop = getCakeshopVersionFromTools(deployment, tools)
+  const splunk = tools.includes('splunk')
   return {
     network: {
       name: networkFolder,
@@ -42,10 +47,13 @@ export function createConfigFromAnswers(answers) {
       configDir: `network/${networkFolder}/resources`,
       deployment,
       cakeshop,
+      splunk,
       networkId,
       customizePorts,
       cakeshopPort,
       remoteDebug,
+      splunkIp: (splunk) ? cidrhost(dockerSubnet, 66) : '127.0.0.1',
+      splunkPort,
     },
     nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(
       numberNodes,
@@ -120,6 +128,15 @@ export function getContainerPorts(deployment) {
       thirdPartyPort: 9080,
     },
   }
+}
+
+function getCakeshopVersionFromTools(deployment, tools) {
+  if (!tools.includes('cakeshop')) {
+    return 'none'
+  } else if (!isBash(deployment)) {
+    return LATEST_CAKESHOP
+  }
+  return isJava8() ? LATEST_CAKESHOP_J8 : LATEST_CAKESHOP
 }
 
 export function isTessera(tessera) {

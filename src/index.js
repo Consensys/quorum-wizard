@@ -6,7 +6,7 @@ import { createLogger, debug, info } from './utils/log'
 import { promptUser } from './questions'
 import { INITIAL_MODE } from './questions/questions'
 import {
-  createConfigFromAnswers, isBash, isDocker, isKubernetes, isTessera,
+  createConfigFromAnswers, isBash, isDocker, isKubernetes, isTessera, isCakeshop
 } from './model/NetworkConfig'
 import {
   createNetwork,
@@ -110,6 +110,15 @@ function printInstructions(config) {
   if (isKubernetes(config.network.deployment)) {
     info('A script to retrieve the quorum rpc and tessera 3rd party endpoints to use with remix or cakeshop is provided')
     info(`To use run ${wrapScript(SCRIPTS.getEndpoints.filename)}  from the network folder`)
+    info('')
+  }
+  if(isCakeshop(config.network.cakeshop)) {
+    info('After starting, Cakeshop will be accessible here: http://localhost:8999')
+    info('')
+  }
+  if(config.network.splunk) {
+    info('After starting, Splunk will be accessible here: http://localhost:8000')
+    info('The default credentials are admin:changeme')
     info('')
   }
 }

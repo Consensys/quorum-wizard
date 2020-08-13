@@ -162,6 +162,7 @@ x-cakeshop-def:
 services:
   node1:
     << : *quorum-def
+    container_name: node1
     hostname: node1
     ports:
       - \\"56000:8545\\"
@@ -178,8 +179,10 @@ services:
     networks:
       2-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
+    
   txmanager1:
     << : *tx-manager-def
+    container_name: txmanager1
     hostname: txmanager1
     ports:
       - \\"5081:9080\\"
@@ -191,8 +194,10 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
+    
   node2:
     << : *quorum-def
+    container_name: node2
     hostname: node2
     ports:
       - \\"56001:8545\\"
@@ -209,8 +214,10 @@ services:
     networks:
       2-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
+    
   txmanager2:
     << : *tx-manager-def
+    container_name: txmanager2
     hostname: txmanager2
     ports:
       - \\"5082:9080\\"
@@ -222,8 +229,10 @@ services:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
+    
   cakeshop:
     << : *cakeshop-def
+    container_name: cakeshop
     hostname: cakeshop
     ports:
       - \\"7999:8999\\"
@@ -232,7 +241,8 @@ services:
       - ./qdata:/examples:ro
     networks:
       2-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.2
+        ipv4_address: 172.16.239.75
+    
 networks:
   2-nodes-raft-tessera-docker-compose-net:
     name: 2-nodes-raft-tessera-docker-compose-net
@@ -385,6 +395,7 @@ x-tx-manager-def:
 services:
   node1:
     << : *quorum-def
+    container_name: node1
     hostname: node1
     ports:
       - \\"22000:8545\\"
@@ -401,8 +412,10 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
+    
   txmanager1:
     << : *tx-manager-def
+    container_name: txmanager1
     hostname: txmanager1
     ports:
       - \\"9081:9080\\"
@@ -414,8 +427,10 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
+    
   node2:
     << : *quorum-def
+    container_name: node2
     hostname: node2
     ports:
       - \\"22001:8545\\"
@@ -432,8 +447,10 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
+    
   txmanager2:
     << : *tx-manager-def
+    container_name: txmanager2
     hostname: txmanager2
     ports:
       - \\"9082:9080\\"
@@ -445,8 +462,10 @@ services:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
+    
   node3:
     << : *quorum-def
+    container_name: node3
     hostname: node3
     ports:
       - \\"22002:8545\\"
@@ -463,8 +482,10 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.13
+    
   txmanager3:
     << : *tx-manager-def
+    container_name: txmanager3
     hostname: txmanager3
     ports:
       - \\"9083:9080\\"
@@ -476,6 +497,7 @@ services:
         ipv4_address: 172.16.239.103
     environment:
       - NODE_ID=3
+    
 networks:
   3-nodes-raft-tessera-docker-compose-net:
     name: 3-nodes-raft-tessera-docker-compose-net
@@ -487,8 +509,7 @@ networks:
 volumes:
   \\"3-nodes-raft-tessera-docker-compose-vol1\\":
   \\"3-nodes-raft-tessera-docker-compose-vol2\\":
-  \\"3-nodes-raft-tessera-docker-compose-vol3\\":
-  \\"3-nodes-raft-tessera-docker-compose-cakeshopvol\\":"
+  \\"3-nodes-raft-tessera-docker-compose-vol3\\":"
 `;
 
 exports[`creates 3nodes raft dockerFile tessera cakeshop 1`] = `
@@ -653,6 +674,7 @@ x-cakeshop-def:
 services:
   node1:
     << : *quorum-def
+    container_name: node1
     hostname: node1
     ports:
       - \\"22000:8545\\"
@@ -669,8 +691,10 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
+    
   txmanager1:
     << : *tx-manager-def
+    container_name: txmanager1
     hostname: txmanager1
     ports:
       - \\"9081:9080\\"
@@ -682,8 +706,10 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
+    
   node2:
     << : *quorum-def
+    container_name: node2
     hostname: node2
     ports:
       - \\"22001:8545\\"
@@ -700,8 +726,10 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
+    
   txmanager2:
     << : *tx-manager-def
+    container_name: txmanager2
     hostname: txmanager2
     ports:
       - \\"9082:9080\\"
@@ -713,8 +741,10 @@ services:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
+    
   node3:
     << : *quorum-def
+    container_name: node3
     hostname: node3
     ports:
       - \\"22002:8545\\"
@@ -731,8 +761,10 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.13
+    
   txmanager3:
     << : *tx-manager-def
+    container_name: txmanager3
     hostname: txmanager3
     ports:
       - \\"9083:9080\\"
@@ -744,8 +776,10 @@ services:
         ipv4_address: 172.16.239.103
     environment:
       - NODE_ID=3
+    
   cakeshop:
     << : *cakeshop-def
+    container_name: cakeshop
     hostname: cakeshop
     ports:
       - \\"8999:8999\\"
@@ -754,7 +788,8 @@ services:
       - ./qdata:/examples:ro
     networks:
       3-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.2
+        ipv4_address: 172.16.239.75
+    
 networks:
   3-nodes-raft-tessera-docker-compose-net:
     name: 3-nodes-raft-tessera-docker-compose-net
@@ -908,6 +943,7 @@ x-tx-manager-def:
 services:
   node1:
     << : *quorum-def
+    container_name: node1
     hostname: node1
     ports:
       - \\"22000:8545\\"
@@ -924,8 +960,10 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
+    
   txmanager1:
     << : *tx-manager-def
+    container_name: txmanager1
     hostname: txmanager1
     ports:
       - \\"9081:9080\\"
@@ -937,8 +975,10 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
+    
   node2:
     << : *quorum-def
+    container_name: node2
     hostname: node2
     ports:
       - \\"22001:8545\\"
@@ -955,8 +995,10 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
+    
   txmanager2:
     << : *tx-manager-def
+    container_name: txmanager2
     hostname: txmanager2
     ports:
       - \\"9082:9080\\"
@@ -968,8 +1010,10 @@ services:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
+    
   node3:
     << : *quorum-def
+    container_name: node3
     hostname: node3
     ports:
       - \\"22002:8545\\"
@@ -986,8 +1030,10 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.13
+    
   txmanager3:
     << : *tx-manager-def
+    container_name: txmanager3
     hostname: txmanager3
     ports:
       - \\"9083:9080\\"
@@ -999,6 +1045,7 @@ services:
         ipv4_address: 172.16.239.103
     environment:
       - NODE_ID=3
+    
 networks:
   3-nodes-raft-tessera-docker-compose-net:
     name: 3-nodes-raft-tessera-docker-compose-net
@@ -1010,8 +1057,7 @@ networks:
 volumes:
   \\"3-nodes-raft-tessera-docker-compose-vol1\\":
   \\"3-nodes-raft-tessera-docker-compose-vol2\\":
-  \\"3-nodes-raft-tessera-docker-compose-vol3\\":
-  \\"3-nodes-raft-tessera-docker-compose-cakeshopvol\\":"
+  \\"3-nodes-raft-tessera-docker-compose-vol3\\":"
 `;
 
 exports[`creates 5nodes istanbul dockerFile no tessera cakeshop 1`] = `
@@ -1119,6 +1165,7 @@ x-cakeshop-def:
 services:
   node1:
     << : *quorum-def
+    container_name: node1
     hostname: node1
     ports:
       - \\"22000:8545\\"
@@ -1133,8 +1180,10 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.11
+    
   node2:
     << : *quorum-def
+    container_name: node2
     hostname: node2
     ports:
       - \\"22001:8545\\"
@@ -1149,8 +1198,10 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.12
+    
   node3:
     << : *quorum-def
+    container_name: node3
     hostname: node3
     ports:
       - \\"22002:8545\\"
@@ -1165,8 +1216,10 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.13
+    
   node4:
     << : *quorum-def
+    container_name: node4
     hostname: node4
     ports:
       - \\"22003:8545\\"
@@ -1181,8 +1234,10 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.14
+    
   node5:
     << : *quorum-def
+    container_name: node5
     hostname: node5
     ports:
       - \\"22004:8545\\"
@@ -1197,8 +1252,10 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.15
+    
   cakeshop:
     << : *cakeshop-def
+    container_name: cakeshop
     hostname: cakeshop
     ports:
       - \\"8999:8999\\"
@@ -1207,7 +1264,8 @@ services:
       - ./qdata:/examples:ro
     networks:
       5-nodes-istanbul-docker-compose-net:
-        ipv4_address: 172.16.239.2
+        ipv4_address: 172.16.239.75
+    
 networks:
   5-nodes-istanbul-docker-compose-net:
     name: 5-nodes-istanbul-docker-compose-net
@@ -1306,6 +1364,7 @@ x-quorum-def:
 services:
   node1:
     << : *quorum-def
+    container_name: node1
     hostname: node1
     ports:
       - \\"22000:8545\\"
@@ -1320,8 +1379,10 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.11
+    
   node2:
     << : *quorum-def
+    container_name: node2
     hostname: node2
     ports:
       - \\"22001:8545\\"
@@ -1336,8 +1397,10 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.12
+    
   node3:
     << : *quorum-def
+    container_name: node3
     hostname: node3
     ports:
       - \\"22002:8545\\"
@@ -1352,8 +1415,10 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.13
+    
   node4:
     << : *quorum-def
+    container_name: node4
     hostname: node4
     ports:
       - \\"22003:8545\\"
@@ -1368,8 +1433,10 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.14
+    
   node5:
     << : *quorum-def
+    container_name: node5
     hostname: node5
     ports:
       - \\"22004:8545\\"
@@ -1384,6 +1451,7 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.15
+    
 networks:
   5-nodes-istanbul-docker-compose-net:
     name: 5-nodes-istanbul-docker-compose-net
@@ -1397,6 +1465,5 @@ volumes:
   \\"5-nodes-istanbul-docker-compose-vol2\\":
   \\"5-nodes-istanbul-docker-compose-vol3\\":
   \\"5-nodes-istanbul-docker-compose-vol4\\":
-  \\"5-nodes-istanbul-docker-compose-vol5\\":
-  \\"5-nodes-istanbul-docker-compose-cakeshopvol\\":"
+  \\"5-nodes-istanbul-docker-compose-vol5\\":"
 `;
