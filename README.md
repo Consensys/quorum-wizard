@@ -30,16 +30,19 @@ Note: Many installations of npm don't have permission to install global modules 
 Here are the dependencies (in addition to NodeJS) that are required depending on the mode that you run the wizard in:
 
 Bash:
+
 - Java (when running Tessera and/or Cakeshop)
 
 Docker Compose:
+
 - Docker
 - docker-compose
 
 Kubernetes:
+
 - Docker (for generating resources during network creation)
 - kubectl
-- minikube
+- minikube, Docker Desktop with Kubernetes enabled, or some other kubernetes context
 
 ## Options
 
