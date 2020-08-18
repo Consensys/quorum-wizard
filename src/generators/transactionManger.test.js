@@ -3,7 +3,7 @@ import {
   formatTesseraKeysOutput,
 } from './transactionManager'
 import { readFileToString } from '../utils/fileUtils'
-import { getFullNetworkPath } from './networkCreator'
+import { getFullNetworkPath } from './networkHelper'
 import { TEST_CWD } from '../utils/testHelper'
 
 jest.mock('../utils/fileUtils')

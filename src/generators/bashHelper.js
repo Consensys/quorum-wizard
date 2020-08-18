@@ -1,4 +1,4 @@
-import { getFullNetworkPath } from './networkCreator'
+import { getFullNetworkPath } from './networkHelper'
 import { executeSync } from '../utils/execUtils'
 import { buildCakeshopDir, generateCakeshopScript } from './cakeshopHelper'
 import { isQuorum260Plus, pathToQuorumBinary } from './binaryHelper'

@@ -1,4 +1,4 @@
-import { getFullNetworkPath } from '../generators/networkCreator'
+import { getFullNetworkPath } from '../generators/networkHelper'
 import { createConfigFromAnswers } from './NetworkConfig'
 import {
   TEST_CWD,

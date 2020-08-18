@@ -1,4 +1,4 @@
-import { getFullNetworkPath } from './networkCreator'
+import { getFullNetworkPath } from './networkHelper'
 import {
   createConfigFromAnswers,
 } from '../model/NetworkConfig'
@@ -150,7 +150,7 @@ services:
     networks:
       1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
-    
+
   txmanager1:
     << : *tx-manager-def
     container_name: txmanager1
@@ -165,7 +165,7 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
-    
+
 networks:
   1-nodes-raft-tessera-docker-compose-net:
     name: 1-nodes-raft-tessera-docker-compose-net
@@ -213,7 +213,7 @@ services:
     networks:
       1-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.11
-    
+
 networks:
   1-nodes-istanbul-docker-compose-net:
     name: 1-nodes-istanbul-docker-compose-net
@@ -257,7 +257,7 @@ services:
     networks:
       1-nodes-raft-docker-compose-net:
         ipv4_address: 172.16.239.11
-    
+
   cakeshop:
     << : *cakeshop-def
     container_name: cakeshop
@@ -270,7 +270,7 @@ services:
     networks:
       1-nodes-raft-docker-compose-net:
         ipv4_address: 172.16.239.75
-    
+
 networks:
   1-nodes-raft-docker-compose-net:
     name: 1-nodes-raft-docker-compose-net
@@ -318,7 +318,7 @@ services:
     networks:
       1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
-    
+
   txmanager1:
     << : *tx-manager-def
     container_name: txmanager1
@@ -333,7 +333,7 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
-    
+
   cakeshop:
     << : *cakeshop-def
     container_name: cakeshop
@@ -346,7 +346,7 @@ services:
     networks:
       1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.75
-    
+
 networks:
   1-nodes-raft-tessera-docker-compose-net:
     name: 1-nodes-raft-tessera-docker-compose-net

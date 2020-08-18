@@ -19,7 +19,7 @@ import {
   NETWORK_NAME,
   QUESTIONS,
 } from './questions'
-import { getFullNetworkPath } from '../generators/networkCreator'
+import { getFullNetworkPath } from '../generators/networkHelper'
 import { exists } from '../utils/fileUtils'
 
 // eslint-disable-next-line import/prefer-default-export

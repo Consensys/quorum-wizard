@@ -2,11 +2,11 @@ import { anything } from 'expect'
 import {
   createQdataDirectory,
   createStaticNodes,
-  getFullNetworkPath,
   createNetwork,
   generateResourcesLocally,
   generateResourcesRemote, createScripts,
 } from './networkCreator'
+import { getFullNetworkPath } from './networkHelper'
 import {
   createConfigFromAnswers,
   generateNodeConfigs,
