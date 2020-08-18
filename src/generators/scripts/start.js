@@ -1,6 +1,4 @@
 import { startScriptBash } from '../bashHelper'
-import { libRootDir, readFileToString } from '../../utils/fileUtils'
-import { joinPath } from '../../utils/pathUtils'
 import { addScriptExtension, scriptHeader } from './utils'
 import { isWin32 } from '../../utils/execUtils'
 

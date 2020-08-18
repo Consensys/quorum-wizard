@@ -1,5 +1,3 @@
-import { libRootDir, readFileToString } from '../../utils/fileUtils'
-import { joinPath } from '../../utils/pathUtils'
 import { addScriptExtension, scriptHeader } from './utils'
 
 export default {
