@@ -7,7 +7,7 @@ import { LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 import { cidrhost } from '../utils/subnetUtils'
 
 jest.mock('inquirer')
-jest.mock('../generators/networkCreator')
+jest.mock('../generators/networkHelper')
 jest.mock('../utils/fileUtils')
 jest.mock('../utils/subnetUtils')
 exists.mockReturnValue(false)

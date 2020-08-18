@@ -24,7 +24,7 @@ import { joinPath } from '../utils/pathUtils'
 import { LATEST_QUORUM, LATEST_TESSERA } from './download'
 
 jest.mock('../utils/fileUtils')
-jest.mock('../generators/networkCreator')
+jest.mock('../generators/networkHelper')
 jest.mock('../utils/log')
 
 cwd.mockReturnValue(TEST_CWD)
@@ -133,7 +133,7 @@ describe('generates docker-compose script details', () => {
 services:
   node1:
     << : *quorum-def
-    container_name: node1
+    container_name: 1-nodes-raft-tessera-docker-compose-node1
     hostname: node1
     ports:
       - "22000:8545"
@@ -150,10 +150,10 @@ services:
     networks:
       1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
-
+    
   txmanager1:
     << : *tx-manager-def
-    container_name: txmanager1
+    container_name: 1-nodes-raft-tessera-docker-compose-txmanager1
     hostname: txmanager1
     ports:
       - "9081:9080"
@@ -165,7 +165,7 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
-
+    
 networks:
   1-nodes-raft-tessera-docker-compose-net:
     name: 1-nodes-raft-tessera-docker-compose-net
@@ -198,7 +198,7 @@ volumes:
 services:
   node1:
     << : *quorum-def
-    container_name: node1
+    container_name: 1-nodes-istanbul-docker-compose-node1
     hostname: node1
     ports:
       - "22000:8545"
@@ -213,7 +213,7 @@ services:
     networks:
       1-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.11
-
+    
 networks:
   1-nodes-istanbul-docker-compose-net:
     name: 1-nodes-istanbul-docker-compose-net
@@ -228,7 +228,6 @@ volumes:
 
     readFileToString.mockReturnValueOnce('definitions')
     formatNewLine.mockReturnValueOnce('quorumDefinitions\n')
-
     expect(buildDockerCompose(config)).toEqual(expected)
   })
 
@@ -242,7 +241,7 @@ volumes:
 services:
   node1:
     << : *quorum-def
-    container_name: node1
+    container_name: 1-nodes-raft-docker-compose-node1
     hostname: node1
     ports:
       - "22000:8545"
@@ -257,10 +256,10 @@ services:
     networks:
       1-nodes-raft-docker-compose-net:
         ipv4_address: 172.16.239.11
-
+    
   cakeshop:
     << : *cakeshop-def
-    container_name: cakeshop
+    container_name: 1-nodes-raft-docker-compose-cakeshop
     hostname: cakeshop
     ports:
       - "8999:8999"
@@ -270,7 +269,7 @@ services:
     networks:
       1-nodes-raft-docker-compose-net:
         ipv4_address: 172.16.239.75
-
+    
 networks:
   1-nodes-raft-docker-compose-net:
     name: 1-nodes-raft-docker-compose-net
@@ -301,7 +300,7 @@ volumes:
 services:
   node1:
     << : *quorum-def
-    container_name: node1
+    container_name: 1-nodes-raft-tessera-docker-compose-node1
     hostname: node1
     ports:
       - "22000:8545"
@@ -318,10 +317,10 @@ services:
     networks:
       1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
-
+    
   txmanager1:
     << : *tx-manager-def
-    container_name: txmanager1
+    container_name: 1-nodes-raft-tessera-docker-compose-txmanager1
     hostname: txmanager1
     ports:
       - "9081:9080"
@@ -333,10 +332,10 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
-
+    
   cakeshop:
     << : *cakeshop-def
-    container_name: cakeshop
+    container_name: 1-nodes-raft-tessera-docker-compose-cakeshop
     hostname: cakeshop
     ports:
       - "8999:8999"
@@ -346,7 +345,7 @@ services:
     networks:
       1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.75
-
+    
 networks:
   1-nodes-raft-tessera-docker-compose-net:
     name: 1-nodes-raft-tessera-docker-compose-net

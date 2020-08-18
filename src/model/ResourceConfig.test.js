@@ -7,7 +7,7 @@ import { buildKubernetesResource } from './ResourceConfig'
 import { LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 
 jest.mock('../utils/fileUtils')
-jest.mock('../generators/networkCreator')
+jest.mock('../generators/networkHelper')
 getFullNetworkPath.mockReturnValue(`${TEST_CWD}/test-network`)
 
 const containerPortInfo = {

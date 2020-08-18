@@ -15,7 +15,7 @@ import { LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 
 jest.mock('inquirer')
 jest.mock('./customPromptHelper')
-jest.mock('../generators/networkCreator')
+jest.mock('../generators/networkHelper')
 jest.mock('../utils/fileUtils')
 exists.mockReturnValue(false)
 

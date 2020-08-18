@@ -7,7 +7,7 @@ import { getFullNetworkPath } from './networkHelper'
 import { TEST_CWD } from '../utils/testHelper'
 
 jest.mock('../utils/fileUtils')
-jest.mock('../generators/networkCreator')
+jest.mock('../generators/networkHelper')
 getFullNetworkPath.mockReturnValue(`${TEST_CWD}/test-network`)
 readFileToString.mockReturnValue('pubkey')
 

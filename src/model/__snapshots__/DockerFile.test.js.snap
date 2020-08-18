@@ -162,7 +162,7 @@ x-cakeshop-def:
 services:
   node1:
     << : *quorum-def
-    container_name: node1
+    container_name: 2-nodes-raft-tessera-docker-compose-node1
     hostname: node1
     ports:
       - \\"56000:8545\\"
@@ -182,7 +182,7 @@ services:
     
   txmanager1:
     << : *tx-manager-def
-    container_name: txmanager1
+    container_name: 2-nodes-raft-tessera-docker-compose-txmanager1
     hostname: txmanager1
     ports:
       - \\"5081:9080\\"
@@ -197,7 +197,7 @@ services:
     
   node2:
     << : *quorum-def
-    container_name: node2
+    container_name: 2-nodes-raft-tessera-docker-compose-node2
     hostname: node2
     ports:
       - \\"56001:8545\\"
@@ -217,7 +217,7 @@ services:
     
   txmanager2:
     << : *tx-manager-def
-    container_name: txmanager2
+    container_name: 2-nodes-raft-tessera-docker-compose-txmanager2
     hostname: txmanager2
     ports:
       - \\"5082:9080\\"
@@ -232,7 +232,7 @@ services:
     
   cakeshop:
     << : *cakeshop-def
-    container_name: cakeshop
+    container_name: 2-nodes-raft-tessera-docker-compose-cakeshop
     hostname: cakeshop
     ports:
       - \\"7999:8999\\"
@@ -395,7 +395,7 @@ x-tx-manager-def:
 services:
   node1:
     << : *quorum-def
-    container_name: node1
+    container_name: 3-nodes-raft-tessera-docker-compose-node1
     hostname: node1
     ports:
       - \\"22000:8545\\"
@@ -415,7 +415,7 @@ services:
     
   txmanager1:
     << : *tx-manager-def
-    container_name: txmanager1
+    container_name: 3-nodes-raft-tessera-docker-compose-txmanager1
     hostname: txmanager1
     ports:
       - \\"9081:9080\\"
@@ -430,7 +430,7 @@ services:
     
   node2:
     << : *quorum-def
-    container_name: node2
+    container_name: 3-nodes-raft-tessera-docker-compose-node2
     hostname: node2
     ports:
       - \\"22001:8545\\"
@@ -450,7 +450,7 @@ services:
     
   txmanager2:
     << : *tx-manager-def
-    container_name: txmanager2
+    container_name: 3-nodes-raft-tessera-docker-compose-txmanager2
     hostname: txmanager2
     ports:
       - \\"9082:9080\\"
@@ -465,7 +465,7 @@ services:
     
   node3:
     << : *quorum-def
-    container_name: node3
+    container_name: 3-nodes-raft-tessera-docker-compose-node3
     hostname: node3
     ports:
       - \\"22002:8545\\"
@@ -485,7 +485,7 @@ services:
     
   txmanager3:
     << : *tx-manager-def
-    container_name: txmanager3
+    container_name: 3-nodes-raft-tessera-docker-compose-txmanager3
     hostname: txmanager3
     ports:
       - \\"9083:9080\\"
@@ -674,7 +674,7 @@ x-cakeshop-def:
 services:
   node1:
     << : *quorum-def
-    container_name: node1
+    container_name: 3-nodes-raft-tessera-docker-compose-node1
     hostname: node1
     ports:
       - \\"22000:8545\\"
@@ -694,7 +694,7 @@ services:
     
   txmanager1:
     << : *tx-manager-def
-    container_name: txmanager1
+    container_name: 3-nodes-raft-tessera-docker-compose-txmanager1
     hostname: txmanager1
     ports:
       - \\"9081:9080\\"
@@ -709,7 +709,7 @@ services:
     
   node2:
     << : *quorum-def
-    container_name: node2
+    container_name: 3-nodes-raft-tessera-docker-compose-node2
     hostname: node2
     ports:
       - \\"22001:8545\\"
@@ -729,7 +729,7 @@ services:
     
   txmanager2:
     << : *tx-manager-def
-    container_name: txmanager2
+    container_name: 3-nodes-raft-tessera-docker-compose-txmanager2
     hostname: txmanager2
     ports:
       - \\"9082:9080\\"
@@ -744,7 +744,7 @@ services:
     
   node3:
     << : *quorum-def
-    container_name: node3
+    container_name: 3-nodes-raft-tessera-docker-compose-node3
     hostname: node3
     ports:
       - \\"22002:8545\\"
@@ -764,7 +764,7 @@ services:
     
   txmanager3:
     << : *tx-manager-def
-    container_name: txmanager3
+    container_name: 3-nodes-raft-tessera-docker-compose-txmanager3
     hostname: txmanager3
     ports:
       - \\"9083:9080\\"
@@ -779,7 +779,7 @@ services:
     
   cakeshop:
     << : *cakeshop-def
-    container_name: cakeshop
+    container_name: 3-nodes-raft-tessera-docker-compose-cakeshop
     hostname: cakeshop
     ports:
       - \\"8999:8999\\"
@@ -943,7 +943,7 @@ x-tx-manager-def:
 services:
   node1:
     << : *quorum-def
-    container_name: node1
+    container_name: 3-nodes-raft-tessera-docker-compose-node1
     hostname: node1
     ports:
       - \\"22000:8545\\"
@@ -963,7 +963,7 @@ services:
     
   txmanager1:
     << : *tx-manager-def
-    container_name: txmanager1
+    container_name: 3-nodes-raft-tessera-docker-compose-txmanager1
     hostname: txmanager1
     ports:
       - \\"9081:9080\\"
@@ -978,7 +978,7 @@ services:
     
   node2:
     << : *quorum-def
-    container_name: node2
+    container_name: 3-nodes-raft-tessera-docker-compose-node2
     hostname: node2
     ports:
       - \\"22001:8545\\"
@@ -998,7 +998,7 @@ services:
     
   txmanager2:
     << : *tx-manager-def
-    container_name: txmanager2
+    container_name: 3-nodes-raft-tessera-docker-compose-txmanager2
     hostname: txmanager2
     ports:
       - \\"9082:9080\\"
@@ -1013,7 +1013,7 @@ services:
     
   node3:
     << : *quorum-def
-    container_name: node3
+    container_name: 3-nodes-raft-tessera-docker-compose-node3
     hostname: node3
     ports:
       - \\"22002:8545\\"
@@ -1033,7 +1033,7 @@ services:
     
   txmanager3:
     << : *tx-manager-def
-    container_name: txmanager3
+    container_name: 3-nodes-raft-tessera-docker-compose-txmanager3
     hostname: txmanager3
     ports:
       - \\"9083:9080\\"
@@ -1165,7 +1165,7 @@ x-cakeshop-def:
 services:
   node1:
     << : *quorum-def
-    container_name: node1
+    container_name: 5-nodes-istanbul-docker-compose-node1
     hostname: node1
     ports:
       - \\"22000:8545\\"
@@ -1183,7 +1183,7 @@ services:
     
   node2:
     << : *quorum-def
-    container_name: node2
+    container_name: 5-nodes-istanbul-docker-compose-node2
     hostname: node2
     ports:
       - \\"22001:8545\\"
@@ -1201,7 +1201,7 @@ services:
     
   node3:
     << : *quorum-def
-    container_name: node3
+    container_name: 5-nodes-istanbul-docker-compose-node3
     hostname: node3
     ports:
       - \\"22002:8545\\"
@@ -1219,7 +1219,7 @@ services:
     
   node4:
     << : *quorum-def
-    container_name: node4
+    container_name: 5-nodes-istanbul-docker-compose-node4
     hostname: node4
     ports:
       - \\"22003:8545\\"
@@ -1237,7 +1237,7 @@ services:
     
   node5:
     << : *quorum-def
-    container_name: node5
+    container_name: 5-nodes-istanbul-docker-compose-node5
     hostname: node5
     ports:
       - \\"22004:8545\\"
@@ -1255,7 +1255,7 @@ services:
     
   cakeshop:
     << : *cakeshop-def
-    container_name: cakeshop
+    container_name: 5-nodes-istanbul-docker-compose-cakeshop
     hostname: cakeshop
     ports:
       - \\"8999:8999\\"
@@ -1364,7 +1364,7 @@ x-quorum-def:
 services:
   node1:
     << : *quorum-def
-    container_name: node1
+    container_name: 5-nodes-istanbul-docker-compose-node1
     hostname: node1
     ports:
       - \\"22000:8545\\"
@@ -1382,7 +1382,7 @@ services:
     
   node2:
     << : *quorum-def
-    container_name: node2
+    container_name: 5-nodes-istanbul-docker-compose-node2
     hostname: node2
     ports:
       - \\"22001:8545\\"
@@ -1400,7 +1400,7 @@ services:
     
   node3:
     << : *quorum-def
-    container_name: node3
+    container_name: 5-nodes-istanbul-docker-compose-node3
     hostname: node3
     ports:
       - \\"22002:8545\\"
@@ -1418,7 +1418,7 @@ services:
     
   node4:
     << : *quorum-def
-    container_name: node4
+    container_name: 5-nodes-istanbul-docker-compose-node4
     hostname: node4
     ports:
       - \\"22003:8545\\"
@@ -1436,7 +1436,7 @@ services:
     
   node5:
     << : *quorum-def
-    container_name: node5
+    container_name: 5-nodes-istanbul-docker-compose-node5
     hostname: node5
     ports:
       - \\"22004:8545\\"
