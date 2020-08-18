@@ -157,7 +157,7 @@ function buildNodeService(config, node, i, hasTessera, hasSplunk) {
   return `
   node${i + 1}:
     << : *quorum-def
-    container_name: node${i + 1}
+    container_name: ${networkName}-node${i + 1}
     hostname: node${i + 1}
     ports:
       - "${node.quorum.rpcPort}:${config.containerPorts.quorum.rpcPort}"
@@ -181,7 +181,7 @@ function buildTesseraService(config, node, i, hasSplunk) {
   return `
   txmanager${i + 1}:
     << : *tx-manager-def
-    container_name: txmanager${i + 1}
+    container_name: ${networkName}-txmanager${i + 1}
     hostname: txmanager${i + 1}
     ports:
       - "${node.tm.thirdPartyPort}:${config.containerPorts.tm.thirdPartyPort}"
@@ -203,7 +203,7 @@ function buildCakeshopService(config, hasSplunk) {
   return `
   cakeshop:
     << : *cakeshop-def
-    container_name: cakeshop
+    container_name: ${networkName}-cakeshop
     hostname: cakeshop
     ports:
       - "${config.network.cakeshopPort}:8999"
@@ -221,7 +221,7 @@ function buildSplunkService(config) {
   return `
   splunk:
     image: splunk/splunk:8.0.4-debian
-    container_name: splunk
+    container_name: ${networkName}-splunk
     hostname: splunk
     environment:
       - SPLUNK_START_ARGS=--accept-license
@@ -238,11 +238,9 @@ function buildSplunkService(config) {
       retries: 20
     ports:
       - "${config.network.splunkPort}:8000"
-      - "8088:8088"
-      - "8125:8125"
     volumes:
-      - splunk-var:/opt/splunk/var
-      - splunk-etc:/opt/splunk/etc
+      - ${networkName}-splunk-var:/opt/splunk/var
+      - ${networkName}-splunk-etc:/opt/splunk/etc
       - ./out/config/splunk/splunk-config.yml:/tmp/defaults/default.yml
     networks:
       ${networkName}-net:
@@ -254,7 +252,7 @@ function buildCadvisorService(config) {
   return `
   cadvisor:
     image: google/cadvisor:latest
-    container_name: cadvisor
+    container_name: ${networkName}-cadvisor
     hostname: cadvisor
     command:
       - --storage_driver=statsd
@@ -280,7 +278,7 @@ function buildEthloggerService(config) {
     ethloggers += `
   ethlogger${instance}:
     image: splunkdlt/ethlogger:latest
-    container_name: ethlogger${instance}
+    container_name: ${networkName}-ethlogger${instance}
     hostname: ethlogger${instance}
     environment:
       - ETH_RPC_URL=http://node${instance}:${config.containerPorts.quorum.rpcPort}
@@ -297,7 +295,7 @@ function buildEthloggerService(config) {
       - node${instance}
     restart: unless-stopped
     volumes:
-      - ethlogger-state${instance}:/app
+      - ${networkName}-ethlogger-state${instance}:/app
     networks:
       - ${networkName}-net
     logging: *default-logging`
@@ -312,7 +310,7 @@ function buildEndService(config) {
     const nodeNumber = i + 1
     volumes.push(`  "${networkName}-vol${nodeNumber}":`)
     if (config.network.splunk) {
-      volumes.push(`  "ethlogger-state${nodeNumber}":`)
+      volumes.push(`  "${networkName}-ethlogger-state${nodeNumber}":`)
     }
   })
   if (isCakeshop(config.network.cakeshop)) {
@@ -343,6 +341,6 @@ networks:
       config:
         - subnet: ${config.containerPorts.dockerSubnet}
 volumes:
-  "splunk-var":
-  "splunk-etc":`
+  "${networkName}-splunk-var":
+  "${networkName}-splunk-etc":`
 }
