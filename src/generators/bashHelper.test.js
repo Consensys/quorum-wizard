@@ -22,7 +22,7 @@ import {
 import { info } from '../utils/log'
 import { generateAccounts } from './consensusHelper'
 import {
-  LATEST_QUORUM, LATEST_TESSERA, LATEST_TESSERA_J8,
+  LATEST_QUORUM, LATEST_TESSERA,
 } from './download'
 
 jest.mock('../utils/fileUtils')

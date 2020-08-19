@@ -212,21 +212,19 @@ export const QUESTIONS = [
   CUSTOMIZE_PORTS,
 ]
 
-export const QUICKSTART_ANSWERS = () => {
-  return {
-    // on windows make this undefined so they can choose, and so we can check if docker is running
-    deployment: isWindows() ? undefined : 'bash',
-    name: '3-nodes-quickstart',
-    numberNodes: 3,
-    consensus: 'raft',
-    quorumVersion: LATEST_QUORUM,
-    transactionManager: LATEST_TESSERA,
-    generateKeys: false,
-    tools: ['cakeshop'],
-    networkId: '10',
-    customizePorts: false,
-  }
-}
+export const QUICKSTART_ANSWERS = () => ({
+  // on windows make this undefined so they can choose, and so we can check if docker is running
+  deployment: isWindows() ? undefined : 'bash',
+  name: '3-nodes-quickstart',
+  numberNodes: 3,
+  consensus: 'raft',
+  quorumVersion: LATEST_QUORUM,
+  transactionManager: LATEST_TESSERA,
+  generateKeys: false,
+  tools: ['cakeshop'],
+  networkId: '10',
+  customizePorts: false,
+})
 
 export const SIMPLE_ANSWERS = {
   generateKeys: false,
