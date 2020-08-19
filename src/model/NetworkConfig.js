@@ -1,14 +1,5 @@
-import {
-  LATEST_CAKESHOP,
-  LATEST_CAKESHOP_J8,
-  LATEST_QUORUM,
-  LATEST_TESSERA,
-} from '../generators/download'
-import {
-  getDockerSubnet,
-  cidrhost,
-} from '../utils/subnetUtils'
-import { isJava8 } from '../utils/execUtils'
+import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA, } from '../generators/download'
+import { cidrhost, getDockerSubnet, } from '../utils/subnetUtils'
 
 export function createConfigFromAnswers(answers) {
   const {
@@ -32,7 +23,7 @@ export function createConfigFromAnswers(answers) {
   const networkFolder = name
     || defaultNetworkName(numberNodes, consensus, transactionManager, deployment)
   const dockerSubnet = (isDocker(deployment) && containerPorts !== undefined) ? containerPorts.dockerSubnet : ''
-  const cakeshop = getCakeshopVersionFromTools(deployment, tools)
+  const cakeshop = tools.includes('cakeshop') ? LATEST_CAKESHOP : 'none'
   const splunk = tools.includes('splunk')
   return {
     network: {
@@ -128,16 +119,6 @@ export function getContainerPorts(deployment) {
       thirdPartyPort: 9080,
     },
   }
-}
-
-function getCakeshopVersionFromTools(deployment, tools) {
-  if (!tools.includes('cakeshop')) {
-    return 'none'
-  }
-  if (!isBash(deployment)) {
-    return LATEST_CAKESHOP
-  }
-  return isJava8() ? LATEST_CAKESHOP_J8 : LATEST_CAKESHOP
 }
 
 export function isTessera(tessera) {
