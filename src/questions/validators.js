@@ -1,4 +1,4 @@
-import { isJava11Plus, isJava8 } from '../utils/execUtils'
+import { isJava11Plus } from '../utils/execUtils'
 
 export function validateNumberStringInRange(input, low, high) {
   const number = parseInt(input, 10)
@@ -23,9 +23,6 @@ export function validateNetworkId(input) {
 }
 
 export function disableIfWrongJavaVersion({ type }) {
-  if (type === 'jar8' && !isJava8()) {
-    return 'Disabled, requires Java 8'
-  }
   if (type === 'jar' && !isJava11Plus()) {
     return 'Disabled, requires Java 11+'
   }

@@ -22,9 +22,8 @@ import {
 import { info } from '../utils/log'
 import { generateAccounts } from './consensusHelper'
 import {
-  LATEST_QUORUM, LATEST_TESSERA, LATEST_TESSERA_J8,
+  LATEST_QUORUM, LATEST_TESSERA,
 } from './download'
-import { isJava8 } from '../utils/execUtils'
 
 jest.mock('../utils/fileUtils')
 jest.mock('./consensusHelper')
@@ -36,7 +35,6 @@ wizardHomeDir.mockReturnValue(TEST_WIZARD_HOME_DIR)
 generateAccounts.mockReturnValue('accounts')
 readFileToString.mockReturnValue('publicKey')
 info.mockReturnValue('log')
-isJava8.mockReturnValue(false)
 
 const baseNetwork = {
   numberNodes: '3',
@@ -49,16 +47,6 @@ const baseNetwork = {
 
 test('creates quickstart config', () => {
   const config = createConfigFromAnswers({})
-  const bash = startScriptBash(config)
-  expect(bash).toMatchSnapshot()
-})
-
-test('creates quickstart config with java 8', () => {
-  isJava8.mockReturnValueOnce(true)
-  const config = createConfigFromAnswers({
-    transactionManager: LATEST_TESSERA_J8,
-    tools: ['cakeshop'],
-  })
   const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
