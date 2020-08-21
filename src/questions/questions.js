@@ -14,12 +14,11 @@ import {
 } from '../model/NetworkConfig'
 
 import {
-  executeSync, isJava8, isJavaMissing, isWindows, isWin32,
+  executeSync, isWindows, isWin32, isJava11Plus,
 } from '../utils/execUtils'
 import {
   LATEST_QUORUM,
   LATEST_TESSERA,
-  LATEST_TESSERA_J8,
 } from '../generators/download'
 import { error } from '../utils/log'
 import SCRIPTS from '../generators/scripts'
@@ -131,7 +130,7 @@ export const TOOLS = {
     {
       name: 'Cakeshop, Quorum\'s official block explorer',
       value: 'cakeshop',
-      disabled: isBash(answers.deployment) && isJavaMissing() ? 'Disabled, Java is required to use Cakeshop' : false,
+      disabled: isBash(answers.deployment) && !isJava11Plus() ? 'Disabled, Java 11+ is required to use Cakeshop' : false,
     },
     new Separator('=== Third Party Tools ==='),
     {
@@ -213,32 +212,19 @@ export const QUESTIONS = [
   CUSTOMIZE_PORTS,
 ]
 
-export const QUICKSTART_ANSWERS = () => {
-  let deployment
-  let transactionManager
-  if (isWindows()) {
-    // on windows make this undefined so they can choose, and so we can check if docker is running
-    deployment = undefined
-
-    // only containers, no need to worry about java version
-    transactionManager = LATEST_TESSERA
-  } else {
-    deployment = 'bash'
-    transactionManager = isJava8() ? LATEST_TESSERA_J8 : LATEST_TESSERA
-  }
-  return {
-    deployment,
-    name: '3-nodes-quickstart',
-    numberNodes: 3,
-    consensus: 'raft',
-    quorumVersion: LATEST_QUORUM,
-    transactionManager,
-    generateKeys: false,
-    tools: ['cakeshop'],
-    networkId: '10',
-    customizePorts: false,
-  }
-}
+export const QUICKSTART_ANSWERS = () => ({
+  // on windows make this undefined so they can choose, and so we can check if docker is running
+  deployment: isWindows() ? undefined : 'bash',
+  name: '3-nodes-quickstart',
+  numberNodes: 3,
+  consensus: 'raft',
+  quorumVersion: LATEST_QUORUM,
+  transactionManager: LATEST_TESSERA,
+  generateKeys: false,
+  tools: ['cakeshop'],
+  networkId: '10',
+  customizePorts: false,
+})
 
 export const SIMPLE_ANSWERS = {
   generateKeys: false,

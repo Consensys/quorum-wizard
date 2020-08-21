@@ -91,7 +91,7 @@ export function createGethStartCommand(config, node, passwordDestination, nodeNu
   } = node.quorum
   const quorum26Flags = isQuorum260Plus(quorumVersion) ? `--allow-insecure-unlock --graphql --graphql.port ${graphQlPort} --graphql.corsdomain=* --graphql.addr 0.0.0.0` : ''
 
-  const args = `--nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --ws --wsaddr 0.0.0.0 --wsorigins=* --emitcheckpoints --unlock 0 --password ${passwordDestination} ${quorum26Flags}`
+  const args = `--nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --ws --wsaddr 0.0.0.0 --wsorigins=* --wsapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --emitcheckpoints --unlock 0 --password ${passwordDestination} ${quorum26Flags}`
   const consensusArgs = isRaft(consensus)
     ? `--raft --raftport ${raftPort}`
     : '--istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1'
