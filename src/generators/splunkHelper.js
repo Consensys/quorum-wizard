@@ -19,7 +19,7 @@ function buildSplunkService(config) {
   return `
   splunk:
     image: splunk/splunk:8.0.4-debian
-    container_name: ${networkName}-splunk
+    container_name: splunk-${networkName}
     hostname: splunk
     environment:
       - SPLUNK_START_ARGS=--accept-license
@@ -37,8 +37,8 @@ function buildSplunkService(config) {
     ports:
       - "${config.network.splunkPort}:8000"
     volumes:
-      - ${networkName}-splunk-var:/opt/splunk/var
-      - ${networkName}-splunk-etc:/opt/splunk/etc
+      - splunk-var:/opt/splunk/var
+      - splunk-etc:/opt/splunk/etc
       - ./out/config/splunk/splunk-config.yml:/tmp/defaults/default.yml
     networks:
       ${networkName}-net:
@@ -57,8 +57,8 @@ networks:
       config:
         - subnet: ${config.containerPorts.dockerSubnet}
 volumes:
-  "${networkName}-splunk-var":
-  "${networkName}-splunk-etc":`
+  "splunk-var":
+  "splunk-etc":`
 }
 
 export function buildCadvisorService(config) {
@@ -66,7 +66,7 @@ export function buildCadvisorService(config) {
   return `
   cadvisor:
     image: google/cadvisor:latest
-    container_name: ${networkName}-cadvisor
+    container_name: cadvisor-${networkName}
     hostname: cadvisor
     command:
       - --storage_driver=statsd
@@ -92,7 +92,7 @@ export function buildEthloggerService(config) {
     ethloggers += `
   ethlogger${instance}:
     image: splunkdlt/ethlogger:latest
-    container_name: ${networkName}-ethlogger${instance}
+    container_name: ethlogger${instance}-${networkName}
     hostname: ethlogger${instance}
     environment:
       - ETH_RPC_URL=http://node${instance}:${config.containerPorts.quorum.rpcPort}
@@ -109,7 +109,7 @@ export function buildEthloggerService(config) {
       - node${instance}
     restart: unless-stopped
     volumes:
-      - ${networkName}-ethlogger-state${instance}:/app
+      - ethlogger-state${instance}:/app
     networks:
       - ${networkName}-net
     logging: *default-logging`

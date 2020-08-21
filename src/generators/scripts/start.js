@@ -25,7 +25,7 @@ function startSplunkDocker(config) {
   sleep 3
 
   echo -n 'Waiting for splunk to start.'
-  until docker logs ${config.network.name}-splunk | grep -m 1 'Ansible playbook complete'
+  until docker logs splunk-${config.network.name} | grep -m 1 'Ansible playbook complete'
   do
     echo -n "."
     sleep 5

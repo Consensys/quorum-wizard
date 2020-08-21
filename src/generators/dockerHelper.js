@@ -143,14 +143,14 @@ function buildNodeService(config, node, i, hasTessera, hasSplunk) {
   return `
   node${i + 1}:
     << : *quorum-def
-    container_name: ${networkName}-node${i + 1}
+    container_name: node${i + 1}-${networkName}
     hostname: node${i + 1}
     ports:
       - "${node.quorum.rpcPort}:${config.containerPorts.quorum.rpcPort}"
       - "${node.quorum.wsPort}:${config.containerPorts.quorum.wsPort}"
       - "${node.quorum.graphQlPort}:${config.containerPorts.quorum.graphQlPort}"
     volumes:
-      - ${networkName}-vol${i + 1}:/qdata
+      - vol${i + 1}:/qdata
       - ./qdata:/examples:ro
     ${txManager}
       - NODE_ID=${i + 1}
@@ -167,12 +167,12 @@ function buildTesseraService(config, node, i, hasSplunk) {
   return `
   txmanager${i + 1}:
     << : *tx-manager-def
-    container_name: ${networkName}-txmanager${i + 1}
+    container_name: txmanager${i + 1}-${networkName}
     hostname: txmanager${i + 1}
     ports:
       - "${node.tm.thirdPartyPort}:${config.containerPorts.tm.thirdPartyPort}"
     volumes:
-      - ${networkName}-vol${i + 1}:/qdata
+      - vol${i + 1}:/qdata
       - ./qdata:/examples:ro
     networks:
       ${networkName}-net:
@@ -189,12 +189,12 @@ function buildCakeshopService(config, hasSplunk) {
   return `
   cakeshop:
     << : *cakeshop-def
-    container_name: ${networkName}-cakeshop
+    container_name: cakeshop-${networkName}
     hostname: cakeshop
     ports:
       - "${config.network.cakeshopPort}:8999"
     volumes:
-      - ${networkName}-cakeshopvol:/qdata
+      - cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
       ${networkName}-net:
@@ -207,13 +207,13 @@ function buildEndService(config) {
   const volumes = []
   config.nodes.forEach((_node, i) => {
     const nodeNumber = i + 1
-    volumes.push(`  "${networkName}-vol${nodeNumber}":`)
+    volumes.push(`  "vol${nodeNumber}":`)
     if (config.network.splunk) {
-      volumes.push(`  "${networkName}-ethlogger-state${nodeNumber}":`)
+      volumes.push(`  "ethlogger-state${nodeNumber}":`)
     }
   })
   if (isCakeshop(config.network.cakeshop)) {
-    volumes.push(`  "${networkName}-cakeshopvol":`)
+    volumes.push(`  "cakeshopvol":`)
   }
   return `
 networks:
