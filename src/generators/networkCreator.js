@@ -58,7 +58,7 @@ export function generateResourcesRemote(config) {
   const dockerCommands = [
     `cd ${networkPath}`,
     `docker pull ${qubernetesImage}`,
-    // docker volumes using C:\folder\ style paths can cause problems, convert to /c/folder/ on windows
+    // docker volumes using C:\folder\ style paths cause problems, convert to /c/folder/ on windows
     `docker run --rm -v ${unixifyPath(qubernetesYamlPath)}:/qubernetes/qubernetes.yaml -v ${unixifyPath(outPath)}:/qubernetes/out ${qubernetesImage} /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"`,
   ]
 
@@ -77,6 +77,9 @@ export function generateResourcesRemote(config) {
       )
     writeFile(permissionedNodesLocation, nodesWithSubnetReplaced)
     copyDirectory(remoteOutputDir, configDir)
+  }
+  if (config.network.splunk) {
+    copyDirectory(joinPath(libRootDir(), 'lib', 'splunk'), joinPath(remoteOutputDir, 'splunk'))
   }
 }
 

@@ -56,14 +56,6 @@ export function isJava11Plus() {
   return getJavaVersion() >= 11
 }
 
-export function isJava8() {
-  return getJavaVersion() === 8
-}
-
-export function isJavaMissing() {
-  return getJavaVersion() === 0
-}
-
 export function isWindows() {
   return isWin32() || isWindowsSubsystemLinux()
 }

@@ -1,6 +1,6 @@
 import { createConfigFromAnswers } from './NetworkConfig'
 import { generateCakeshopConfig } from './CakeshopConfig'
-import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import { LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 
 const baseNetwork = {
   numberNodes: '3',
@@ -8,7 +8,7 @@ const baseNetwork = {
   quorumVersion: LATEST_QUORUM,
   transactionManager: LATEST_TESSERA,
   deployment: 'bash',
-  cakeshop: LATEST_CAKESHOP,
+  tools: ['cakeshop'],
 }
 
 const containerPortInfo = {

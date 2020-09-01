@@ -30,16 +30,19 @@ Note: Many installations of npm don't have permission to install global modules 
 Here are the dependencies (in addition to NodeJS) that are required depending on the mode that you run the wizard in:
 
 Bash:
+
 - Java (when running Tessera and/or Cakeshop)
 
 Docker Compose:
+
 - Docker
 - docker-compose
 
 Kubernetes:
+
 - Docker (for generating resources during network creation)
 - kubectl
-- minikube
+- minikube, Docker Desktop with Kubernetes enabled, or some other kubernetes context
 
 ## Options
 
@@ -59,13 +62,13 @@ To explore the features of Quorum and deploy a private contract, follow the inst
 ## Developing
 Clone this repo to your local machine.
 
-`yarn install` to get all the dependencies.
+`npm install` to get all the dependencies.
 
-`yarn test:watch` to automatically run tests on changes
+`npm run test:watch` to automatically run tests on changes
 
-`yarn start` to automatically build on changes to any files in the src directory
+`npm run start` to automatically build on changes to any files in the src directory
 
-`yarn link` to use your development build when you run the global npm command
+`npm link` to use your development build when you run the global npm command
 
 `quorum-wizard` to run (alternatively, you can run `node build/index.js`)
 

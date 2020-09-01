@@ -1,5 +1,7 @@
 import { join, normalize } from 'path'
-import { joinPath, removeTrailingSlash, unixifyPath, verifyPathInsideDirectory } from './pathUtils'
+import {
+  joinPath, removeTrailingSlash, unixifyPath, verifyPathInsideDirectory,
+} from './pathUtils'
 import { cwd } from './fileUtils'
 import { isWin32 } from './execUtils'
 
@@ -61,7 +63,7 @@ it('does not change paths on non-windows os', () => {
   expect(unixifyPath('/ho\\me/test')).toEqual(normalize('/ho\\me/test'))
 })
 
-it('switches windows paths from C:\\test\ to /c/test/', () => {
+it('switches windows paths from C:\\test\\ to /c/test/', () => {
   isWin32.mockReturnValue(true)
   expect(unixifyPath('/home/test')).toEqual(normalize('/home/test'))
   expect(unixifyPath('C:\\home\\test')).toEqual(normalize('/c/home/test'))

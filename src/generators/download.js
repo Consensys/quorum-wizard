@@ -81,9 +81,7 @@ export function getPlatformSpecificUrl({ url }) {
 
 export const LATEST_QUORUM = '2.7.0'
 export const LATEST_TESSERA = '0.10.5'
-export const LATEST_TESSERA_J8 = '0.10.2'
 export const LATEST_CAKESHOP = '0.11.0'
-export const LATEST_CAKESHOP_J8 = '0.11.0-J8'
 export const LATEST_ISTANBUL_TOOLS = '1.0.3'
 export const LATEST_BOOTNODE = '1.9.7'
 export const QUORUM_PRE_260 = '2.5.0'
@@ -141,12 +139,6 @@ export const BINARIES = {
       url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.4/tessera-app-0.10.4-app.jar',
       type: 'jar',
     },
-    '0.10.2': {
-      name: 'tessera-app.jar',
-      description: 'Tessera 0.10.2',
-      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.2/tessera-app-0.10.2-app.jar',
-      type: 'jar8',
-    },
   },
 
   cakeshop: {
@@ -155,12 +147,6 @@ export const BINARIES = {
       description: 'Cakeshop 0.11.0',
       url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0/cakeshop-0.11.0.war',
       type: 'jar',
-    },
-    '0.11.0-J8': {
-      name: 'cakeshop.war',
-      description: 'Cakeshop 0.11.0-J8',
-      url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0/cakeshop-0.11.0-J8.war',
-      type: 'jar8',
     },
   },
 

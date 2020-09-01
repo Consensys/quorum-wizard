@@ -22,7 +22,7 @@ import {
 import { info } from '../utils/log'
 import { generateAccounts } from './consensusHelper'
 import {
-  LATEST_CAKESHOP, LATEST_CAKESHOP_J8, LATEST_QUORUM, LATEST_TESSERA, LATEST_TESSERA_J8,
+  LATEST_QUORUM, LATEST_TESSERA,
 } from './download'
 
 jest.mock('../utils/fileUtils')
@@ -41,21 +41,12 @@ const baseNetwork = {
   consensus: 'raft',
   quorumVersion: LATEST_QUORUM,
   transactionManager: LATEST_TESSERA,
-  cakeshop: 'none',
+  tools: [],
   deployment: 'bash',
 }
 
 test('creates quickstart config', () => {
   const config = createConfigFromAnswers({})
-  const bash = startScriptBash(config)
-  expect(bash).toMatchSnapshot()
-})
-
-test('creates quickstart config with java 8', () => {
-  const config = createConfigFromAnswers({
-    transactionManager: LATEST_TESSERA_J8,
-    cakeshop: LATEST_CAKESHOP_J8,
-  })
   const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
 })
@@ -75,7 +66,7 @@ test('creates 3nodes raft bash tessera', () => {
 test('creates 3nodes raft bash tessera cakeshop', () => {
   const config = createConfigFromAnswers({
     ...baseNetwork,
-    cakeshop: LATEST_CAKESHOP,
+    tools: ['cakeshop'],
   })
   const bash = startScriptBash(config)
   expect(bash).toMatchSnapshot()
@@ -142,7 +133,7 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
     quorumVersion: LATEST_QUORUM,
     transactionManager: LATEST_TESSERA,
     deployment: 'bash',
-    cakeshop: LATEST_CAKESHOP,
+    tools: ['cakeshop'],
     generateKeys: false,
     networkId: 10,
     genesisLocation: 'none',
@@ -157,7 +148,7 @@ test('creates 2nodes istanbul bash tessera cakeshop custom ports', () => {
 test('build bash with tessera and cakeshop', () => {
   const config = createConfigFromAnswers({
     ...baseNetwork,
-    cakeshop: LATEST_CAKESHOP,
+    tools: ['cakeshop'],
   })
   initBash(config)
   expect(createFolder).toBeCalledWith(createNetPath(config, 'qdata', 'cakeshop', 'local'), true)

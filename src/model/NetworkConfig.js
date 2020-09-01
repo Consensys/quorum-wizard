@@ -1,12 +1,5 @@
-import {
-  LATEST_CAKESHOP,
-  LATEST_QUORUM,
-  LATEST_TESSERA,
-} from '../generators/download'
-import {
-  getDockerSubnet,
-  cidrhost,
-} from '../utils/subnetUtils'
+import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import { cidrhost, getDockerSubnet } from '../utils/subnetUtils'
 
 export function createConfigFromAnswers(answers) {
   const {
@@ -16,19 +9,22 @@ export function createConfigFromAnswers(answers) {
     quorumVersion = LATEST_QUORUM,
     transactionManager = LATEST_TESSERA,
     deployment = 'bash',
-    cakeshop = LATEST_CAKESHOP,
+    tools = ['cakeshop'],
     generateKeys = false,
     networkId = '10',
     genesisLocation = 'none',
     customizePorts = false,
     nodes = [],
     cakeshopPort = '8999',
+    splunkPort = '8000',
     remoteDebug = false,
     containerPorts = undefined,
   } = answers
   const networkFolder = name
     || defaultNetworkName(numberNodes, consensus, transactionManager, deployment)
   const dockerSubnet = (isDocker(deployment) && containerPorts !== undefined) ? containerPorts.dockerSubnet : ''
+  const cakeshop = tools.includes('cakeshop') ? LATEST_CAKESHOP : 'none'
+  const splunk = tools.includes('splunk')
   return {
     network: {
       name: networkFolder,
@@ -42,10 +38,13 @@ export function createConfigFromAnswers(answers) {
       configDir: `network/${networkFolder}/resources`,
       deployment,
       cakeshop,
+      splunk,
       networkId,
       customizePorts,
       cakeshopPort,
       remoteDebug,
+      splunkIp: (splunk) ? cidrhost(dockerSubnet, 66) : '127.0.0.1',
+      splunkPort,
     },
     nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(
       numberNodes,

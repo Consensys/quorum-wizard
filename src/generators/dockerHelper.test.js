@@ -22,7 +22,6 @@ import {
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
 import {
-  LATEST_CAKESHOP,
   LATEST_QUORUM,
   LATEST_TESSERA,
   QUORUM_PRE_260,
@@ -42,7 +41,7 @@ const baseNetwork = {
   consensus: 'raft',
   quorumVersion: LATEST_QUORUM,
   transactionManager: LATEST_TESSERA,
-  cakeshop: LATEST_CAKESHOP,
+  tools: ['cakeshop'],
   deployment: 'docker-compose',
   containerPorts: {
     dockerSubnet: '172.16.239.0/24',
@@ -106,7 +105,7 @@ describe('generates docker-compose directory', () => {
   it('given docker details builds files to run docker', async () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
-      cakeshop: 'none',
+      tools: [],
       transactionManager: 'none',
       quorumVersion: QUORUM_PRE_260,
     })
@@ -133,12 +132,13 @@ describe('generates docker-compose script details', () => {
     const config = createConfigFromAnswers({
       ...baseNetwork,
       numberNodes: '1',
-      cakeshop: 'none',
+      tools: [],
     })
     const services = `
 services:
   node1:
     << : *quorum-def
+    container_name: node1
     hostname: node1
     ports:
       - "22000:8545"
@@ -155,8 +155,10 @@ services:
     networks:
       1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
+    
   txmanager1:
     << : *tx-manager-def
+    container_name: txmanager1
     hostname: txmanager1
     ports:
       - "9081:9080"
@@ -168,6 +170,7 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
+    
 networks:
   1-nodes-raft-tessera-docker-compose-net:
     name: 1-nodes-raft-tessera-docker-compose-net
@@ -177,8 +180,7 @@ networks:
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  "1-nodes-raft-tessera-docker-compose-vol1":
-  "1-nodes-raft-tessera-docker-compose-cakeshopvol":`
+  "1-nodes-raft-tessera-docker-compose-vol1":`
     const expected = `quorumDefinitions\ntesseraDefinitions${services}`
 
     readFileToString.mockReturnValueOnce('definitions')
@@ -194,13 +196,14 @@ volumes:
       ...baseNetwork,
       numberNodes: '1',
       transactionManager: 'none',
-      cakeshop: 'none',
+      tools: [],
       consensus: 'istanbul',
     })
     const services = `
 services:
   node1:
     << : *quorum-def
+    container_name: node1
     hostname: node1
     ports:
       - "22000:8545"
@@ -215,6 +218,7 @@ services:
     networks:
       1-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.11
+    
 networks:
   1-nodes-istanbul-docker-compose-net:
     name: 1-nodes-istanbul-docker-compose-net
@@ -224,8 +228,7 @@ networks:
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  "1-nodes-istanbul-docker-compose-vol1":
-  "1-nodes-istanbul-docker-compose-cakeshopvol":`
+  "1-nodes-istanbul-docker-compose-vol1":`
     const expected = `quorumDefinitions${services}`
 
     readFileToString.mockReturnValueOnce('definitions')
@@ -244,6 +247,7 @@ volumes:
 services:
   node1:
     << : *quorum-def
+    container_name: node1
     hostname: node1
     ports:
       - "22000:8545"
@@ -258,8 +262,10 @@ services:
     networks:
       1-nodes-raft-docker-compose-net:
         ipv4_address: 172.16.239.11
+    
   cakeshop:
     << : *cakeshop-def
+    container_name: cakeshop
     hostname: cakeshop
     ports:
       - "8999:8999"
@@ -268,7 +274,8 @@ services:
       - ./qdata:/examples:ro
     networks:
       1-nodes-raft-docker-compose-net:
-        ipv4_address: 172.16.239.2
+        ipv4_address: 172.16.239.75
+    
 networks:
   1-nodes-raft-docker-compose-net:
     name: 1-nodes-raft-docker-compose-net
@@ -299,6 +306,7 @@ volumes:
 services:
   node1:
     << : *quorum-def
+    container_name: node1
     hostname: node1
     ports:
       - "22000:8545"
@@ -315,8 +323,10 @@ services:
     networks:
       1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
+    
   txmanager1:
     << : *tx-manager-def
+    container_name: txmanager1
     hostname: txmanager1
     ports:
       - "9081:9080"
@@ -328,8 +338,10 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
+    
   cakeshop:
     << : *cakeshop-def
+    container_name: cakeshop
     hostname: cakeshop
     ports:
       - "8999:8999"
@@ -338,7 +350,8 @@ services:
       - ./qdata:/examples:ro
     networks:
       1-nodes-raft-tessera-docker-compose-net:
-        ipv4_address: 172.16.239.2
+        ipv4_address: 172.16.239.75
+    
 networks:
   1-nodes-raft-tessera-docker-compose-net:
     name: 1-nodes-raft-tessera-docker-compose-net

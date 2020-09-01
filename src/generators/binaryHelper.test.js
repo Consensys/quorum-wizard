@@ -14,8 +14,6 @@ import {
 import {
   executeSync,
   isJava11Plus,
-  isJava8,
-  isJavaMissing,
 } from '../utils/execUtils'
 import {
   cwd,
@@ -33,7 +31,6 @@ import {
   LATEST_CAKESHOP,
   LATEST_QUORUM,
   LATEST_TESSERA,
-  LATEST_TESSERA_J8,
 } from './download'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
@@ -125,7 +122,7 @@ describe('Downloads binaries', () => {
   const baseNetwork = {
     quorumVersion: LATEST_QUORUM,
     transactionManager: LATEST_TESSERA,
-    cakeshop: 'none',
+    tools: [],
     consensus: 'raft',
     generateKeys: false,
     deployment: 'bash',
@@ -189,40 +186,28 @@ describe('presents correct binary options', () => {
 })
 
 describe('presents the correct binary options', () => {
-  it('disables java 11 jars if in bash mode and on jdk 8', () => {
+  it('disables java 11 jars if in bash mode and on jdk 8 or no java', () => {
     isJava11Plus.mockReturnValue(false)
-    isJava8.mockReturnValue(true)
-    isJavaMissing.mockReturnValue(false)
     const choices = getDownloadableTesseraChoices('bash')
     expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && typeof choice.disabled === 'string')).toBeTruthy()
-    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && choice.disabled === false)).toBeTruthy()
     expect(choices.includes('none')).toBeTruthy()
   })
-  it('disables 0.10.2 if in bash mode and on jdk 11+', () => {
+  it('Enables if in bash mode and on jdk 11+', () => {
     isJava11Plus.mockReturnValue(true)
-    isJava8.mockReturnValue(false)
-    isJavaMissing.mockReturnValue(false)
     const choices = getDownloadableTesseraChoices('bash')
     expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && choice.disabled === false)).toBeTruthy()
-    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && typeof choice.disabled === 'string')).toBeTruthy()
     expect(choices.includes('none')).toBeTruthy()
   })
   it('does not disable tessera options in docker mode', () => {
     isJava11Plus.mockReturnValue(false)
-    isJava8.mockReturnValue(false)
-    isJavaMissing.mockReturnValue(true)
     const choices = getDownloadableTesseraChoices('docker-compose')
     expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && choice.disabled === false)).toBeTruthy()
-    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && choice.disabled === false)).toBeTruthy()
     expect(choices.includes('none')).toBeTruthy()
   })
   it('forces and doesnt disable tessera options in kubernetes mode', () => {
     isJava11Plus.mockReturnValue(false)
-    isJava8.mockReturnValue(false)
-    isJavaMissing.mockReturnValue(true)
     const choices = getDownloadableTesseraChoices('kubernetes')
     expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA}` && choice.disabled === false)).toBeTruthy()
-    expect(choices.some((choice) => choice.name === `Tessera ${LATEST_TESSERA_J8}` && choice.disabled === false)).toBeTruthy()
     expect(choices.includes('none')).not.toBeTruthy()
   })
 })

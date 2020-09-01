@@ -168,6 +168,18 @@ export async function getCustomizedCakeshopPort() {
   return answer.cakeshopPort
 }
 
+export async function getCustomizedSplunkPort() {
+  const question = {
+    type: 'input',
+    name: 'splunkPort',
+    message: 'input splunk port',
+    default: '8000',
+  }
+  const answer = await inquirer.prompt(question)
+
+  return answer.splunkPort
+}
+
 function numToString(num) {
   return num.toString()
 }

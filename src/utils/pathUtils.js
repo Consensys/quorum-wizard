@@ -30,12 +30,12 @@ export function wrapScript(script) {
 
 // convert C:\folder\ to /c/folder/ for docker on windows
 export function unixifyPath(path) {
-  if(!isWin32()) {
+  if (!isWin32()) {
     return path
   }
-  let unixifiedPath = path.replace(/\\/g, '/')
+  const unixifiedPath = path.replace(/\\/g, '/')
   const matcher = unixifiedPath.match(/^(\w):(.*)$/)
-  if(matcher) {
+  if (matcher) {
     return posix.join('/', matcher[1].toLowerCase(), matcher[2])
   }
   return unixifiedPath
