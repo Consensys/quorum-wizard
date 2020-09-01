@@ -4,7 +4,6 @@ import {
   isBash,
   isTessera,
   isRaft,
-  isCakeshop,
   isDocker,
   getContainerPorts,
 } from '../model/NetworkConfig'
@@ -12,6 +11,7 @@ import {
   getCustomizedBashNodes,
   getCustomizedDockerPorts,
   getCustomizedCakeshopPort,
+  getCustomizedSplunkPort,
 } from './customPromptHelper'
 import {
   getPrefilledAnswersForMode,
@@ -55,8 +55,12 @@ async function promptForCustomPorts(answers) {
     )
   }
 
-  if (isCakeshop(answers.cakeshop)) {
+  if (answers.tools.includes('cakeshop')) {
     answers.cakeshopPort = await getCustomizedCakeshopPort()
+  }
+
+  if (answers.tools.includes('splunk')) {
+    answers.splunkPort = await getCustomizedSplunkPort()
   }
 }
 

@@ -3,7 +3,7 @@ import { promptUser } from './index'
 import { getCustomizedBashNodes, getCustomizedCakeshopPort, getCustomizedDockerPorts } from './customPromptHelper'
 import { CUSTOM_ANSWERS, QUESTIONS } from './questions'
 import { exists } from '../utils/fileUtils'
-import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import { LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 import { cidrhost } from '../utils/subnetUtils'
 
 jest.mock('inquirer')
@@ -18,7 +18,7 @@ const SIMPLE_CONFIG = {
   quorumVersion: LATEST_QUORUM,
   transactionManager: LATEST_TESSERA,
   deployment: 'bash',
-  cakeshop: 'none',
+  tools: [],
 }
 
 const CUSTOM_CONFIG = {
@@ -263,7 +263,7 @@ describe('build customized node info from custom prompts', () => {
     it('customize, bash ports', async () => {
       prompt.mockResolvedValue({
         ...CUSTOM_CONFIG,
-        cakeshop: LATEST_CAKESHOP,
+        tools: ['cakeshop'],
         consensus: 'raft',
       })
       await promptUser('custom')

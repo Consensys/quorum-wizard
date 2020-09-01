@@ -27,7 +27,7 @@ const baseNetwork = {
   consensus: 'raft',
   quorumVersion: LATEST_QUORUM,
   transactionManager: LATEST_TESSERA,
-  cakeshop: 'none',
+  tools: [],
   deployment: 'kubernetes',
   containerPorts: {
     dockerSubnet: '',

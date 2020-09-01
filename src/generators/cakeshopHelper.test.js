@@ -15,7 +15,7 @@ import {
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
-import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from './download'
+import { LATEST_QUORUM, LATEST_TESSERA } from './download'
 
 jest.mock('../utils/fileUtils')
 getOutputPath.mockReturnValue(TEST_CWD)
@@ -27,7 +27,7 @@ describe('creates a cakeshop directory structure for bash', () => {
     consensus: 'raft',
     quorumVersion: LATEST_QUORUM,
     transactionManager: LATEST_TESSERA,
-    cakeshop: LATEST_CAKESHOP,
+    tools: ['cakeshop'],
     deployment: 'bash',
   }
   it('creates directory structure for cakeshop files and moves them in', () => {

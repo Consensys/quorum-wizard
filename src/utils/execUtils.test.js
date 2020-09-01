@@ -45,7 +45,7 @@ describe('Gets java versions', () => {
   it('sets java version to 0 when java -version throws an exception', () => {
     execSync.mockImplementation(() => {
       throw new Error('bash: ava: command not found')
-    });
+    })
     expect(runJavaVersionLookup()).toEqual(0)
   })
   it('throws error on unrecognized version text', () => {
