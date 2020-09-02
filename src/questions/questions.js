@@ -1,6 +1,5 @@
+import { Separator } from 'inquirer'
 import {
-  transformCakeshopAnswer,
-  transformSplunkAnswer,
   validateNetworkId,
   validateNumberStringInRange,
 } from './validators'
@@ -11,20 +10,16 @@ import {
 import {
   defaultNetworkName,
   isRaft,
-  isKubernetes, isBash, isDocker
+  isKubernetes, isBash, isDocker,
 } from '../model/NetworkConfig'
 
 import {
-  executeSync, isJava8, isJavaMissing, isWindows, isWin32
+  executeSync, isWindows, isWin32, isJava11Plus,
 } from '../utils/execUtils'
 import {
-  LATEST_CAKESHOP,
-  LATEST_CAKESHOP_J8,
   LATEST_QUORUM,
   LATEST_TESSERA,
-  LATEST_TESSERA_J8,
 } from '../generators/download'
-import { Separator } from 'inquirer'
 import { error } from '../utils/log'
 import SCRIPTS from '../generators/scripts'
 
@@ -129,19 +124,26 @@ export const TRANSACTION_MANAGER = {
 export const TOOLS = {
   type: 'checkbox',
   name: 'tools',
-  message: 'What tools would you like to deploy alongside your network?',
+  message: 'What tools would you like to deploy alongside your network? (Press space to select options, then press enter)',
   choices: (answers) => ([
     new Separator('=== Quorum Tools ==='),
     {
       name: 'Cakeshop, Quorum\'s official block explorer',
       value: 'cakeshop',
-      disabled: isBash(answers.deployment) && isJavaMissing() ? 'Disabled, Java is required to use Cakeshop' : false
+      disabled: isBash(answers.deployment) && !isJava11Plus() ? 'Disabled, Java 11+ is required to use Cakeshop' : false,
     },
     new Separator('=== Third Party Tools ==='),
     {
       name: 'Splunk, Mine your own business.',
       value: 'splunk',
-      disabled: !isDocker(answers.deployment) || isWin32() ? 'Disabled, splunk is available with docker-compose' : false
+      disabled: () => {
+        if (!isDocker(answers.deployment)) {
+          return 'Disabled, Splunk is only available with docker-compose'
+        } if (isWin32()) {
+          return 'Disabled, Splunk not available on Windows'
+        }
+        return false
+      },
     },
   ]),
   default: [],
@@ -209,34 +211,19 @@ export const QUESTIONS = [
   CUSTOMIZE_PORTS,
 ]
 
-export const QUICKSTART_ANSWERS = () => {
-  let deployment; let transactionManager; let
-    cakeshop
-  if (isWindows()) {
-    // on windows make this undefined so they can choose, and so we can check if docker is running
-    deployment = undefined
-
-    // only containers, no need to worry about java version
-    transactionManager = LATEST_TESSERA
-    cakeshop = LATEST_CAKESHOP
-  } else {
-    deployment = 'bash'
-    transactionManager = isJava8() ? LATEST_TESSERA_J8 : LATEST_TESSERA
-    cakeshop = isJava8() ? LATEST_CAKESHOP_J8 : LATEST_CAKESHOP
-  }
-  return {
-    deployment,
-    name: '3-nodes-quickstart',
-    numberNodes: 3,
-    consensus: 'raft',
-    quorumVersion: LATEST_QUORUM,
-    transactionManager,
-    generateKeys: false,
-    tools: ['cakeshop'],
-    networkId: '10',
-    customizePorts: false,
-  }
-}
+export const QUICKSTART_ANSWERS = () => ({
+  // on windows make this undefined so they can choose, and so we can check if docker is running
+  deployment: isWindows() ? undefined : 'bash',
+  name: '3-nodes-quickstart',
+  numberNodes: 3,
+  consensus: 'raft',
+  quorumVersion: LATEST_QUORUM,
+  transactionManager: LATEST_TESSERA,
+  generateKeys: false,
+  tools: ['cakeshop'],
+  networkId: '10',
+  customizePorts: false,
+})
 
 export const SIMPLE_ANSWERS = {
   generateKeys: false,

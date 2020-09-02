@@ -11,7 +11,7 @@ import {
   getCustomizedDockerPorts,
 } from './customPromptHelper'
 import { exists } from '../utils/fileUtils'
-import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import { LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 
 jest.mock('inquirer')
 jest.mock('./customPromptHelper')

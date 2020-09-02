@@ -1,5 +1,5 @@
 import { createConfigFromAnswers } from './NetworkConfig'
-import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import { LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 
 jest.mock('../utils/execUtils')
 

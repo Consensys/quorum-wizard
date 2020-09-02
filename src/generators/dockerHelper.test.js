@@ -21,7 +21,7 @@ import {
 } from '../utils/testHelper'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
-import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from './download'
+import { LATEST_QUORUM, LATEST_TESSERA } from './download'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')

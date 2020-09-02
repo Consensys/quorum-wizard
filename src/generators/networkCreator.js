@@ -16,7 +16,7 @@ import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
 import { buildKubernetesResource, LATEST_QUBERNETES } from '../model/ResourceConfig'
 import {
-  isBash, isDocker, isKubernetes, isRaft, isTessera, isSplunk,
+  isBash, isDocker, isKubernetes, isRaft, isTessera,
 } from '../model/NetworkConfig'
 import { joinPath, unixifyPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
@@ -50,7 +50,7 @@ export function generateResourcesRemote(config) {
   const dockerCommands = [
     `cd ${networkPath}`,
     `docker pull ${qubernetesImage}`,
-    // docker volumes using C:\folder\ style paths can cause problems, convert to /c/folder/ on windows
+    // docker volumes using C:\folder\ style paths cause problems, convert to /c/folder/ on windows
     `docker run --rm -v ${unixifyPath(qubernetesYamlPath)}:/qubernetes/qubernetes.yaml -v ${unixifyPath(outPath)}:/qubernetes/out ${qubernetesImage} /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"`,
   ]
 

@@ -6,7 +6,7 @@ import { createLogger, debug, info } from './utils/log'
 import { promptUser } from './questions'
 import { INITIAL_MODE } from './questions/questions'
 import {
-  createConfigFromAnswers, isBash, isDocker, isKubernetes, isTessera, isCakeshop
+  createConfigFromAnswers, isBash, isDocker, isKubernetes, isTessera, isCakeshop,
 } from './model/NetworkConfig'
 import {
   createNetwork,

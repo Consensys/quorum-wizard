@@ -3,7 +3,7 @@ import { promptUser } from './index'
 import { getCustomizedBashNodes, getCustomizedCakeshopPort, getCustomizedDockerPorts } from './customPromptHelper'
 import { CUSTOM_ANSWERS, QUESTIONS } from './questions'
 import { exists } from '../utils/fileUtils'
-import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import { LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 import { cidrhost } from '../utils/subnetUtils'
 
 jest.mock('inquirer')

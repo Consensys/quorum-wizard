@@ -4,9 +4,7 @@ import {
   isBash,
   isTessera,
   isRaft,
-  isCakeshop,
   isDocker,
-  isSplunk,
   getContainerPorts,
 } from '../model/NetworkConfig'
 import {
