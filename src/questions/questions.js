@@ -65,7 +65,7 @@ All you need to do is go to the specified location and run ${SCRIPTS.start.filen
     },
     { name: 'Simple Network', value: 'simple' },
     { name: 'Custom Network', value: 'custom' },
-    { name: 'Generate', value: 'generate' },
+    { name: 'Generate from Existing Configuration', value: 'generate' },
     { name: 'Exit', value: 'exit' },
   ],
 }

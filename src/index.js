@@ -43,7 +43,7 @@ const { argv } = yargs
   .command('generate', '--config path to config.json', () => yargs.option('config', {
     desc: 'path to config.json',
   })
-    .coerce('config', (configPath) => readJsonFile(configPath)))
+  .coerce('config', (configPath) => readJsonFile(configPath)))
   .string('r')
   .alias('r', 'registry')
   .describe('r', 'Use a custom docker registry (instead of registry.hub.docker.com)')
