@@ -193,11 +193,9 @@ export function getConfigPath(...relativePaths) {
 }
 
 export function getAvailableConfigs() {
-  let arr = [CUSTOM_CONFIG_LOCATION]
   const configDir = getConfigPath()
-  const availableConfigs = readDir(configDir)
-  arr = arr.concat(availableConfigs)
-  return arr
+  const availableConfigs = readDir(configDir) || []
+  return [CUSTOM_CONFIG_LOCATION, ...availableConfigs]
 }
 
 export function createScripts(config) {
