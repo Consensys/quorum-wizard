@@ -81,10 +81,17 @@ async function regenerateNetwork() {
   try {
     const config = readJsonFile(ans.configLocation)
     config.network.name = ans.name
+    checkValidConfig(config)
     generateNetwork(config)
   } catch (e) {
-    info('Exiting, please provide valid config.json in configs directory')
+    info('Exiting, please provide valid config.json in configs directory: ' + e)
     process.exit(1)
+  }
+}
+
+function checkValidConfig(config) {
+  if (!isBash(config.network.deployment) && Object.keys(config.containerPorts).length === 0) {
+    throw new Error('Provide containerPorts object for docker and kubernetes')
   }
 }
 
