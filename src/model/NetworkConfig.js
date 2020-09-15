@@ -149,4 +149,4 @@ export function isCakeshop(cakeshop) {
   return cakeshop !== 'none'
 }
 
-export const CUSTOM_CONFIG_LOCATION = 'enter path to config.json'
+export const CUSTOM_CONFIG_LOCATION = 'Enter path to config.json'
