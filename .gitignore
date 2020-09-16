@@ -2,8 +2,8 @@
 .idea
 node_modules
 network
+configs
 .DS_Store
 build
 bin/
 coverage/
-

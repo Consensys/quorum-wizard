@@ -21,7 +21,11 @@ import {
 } from '../utils/testHelper'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
-import { LATEST_QUORUM, LATEST_TESSERA } from './download'
+import {
+  LATEST_QUORUM,
+  LATEST_TESSERA,
+  QUORUM_PRE_260,
+} from './download'
 
 jest.mock('../utils/fileUtils')
 jest.mock('../generators/networkCreator')
@@ -103,6 +107,7 @@ describe('generates docker-compose directory', () => {
       ...baseNetwork,
       tools: [],
       transactionManager: 'none',
+      quorumVersion: QUORUM_PRE_260,
     })
 
     readFileToString.mockReturnValueOnce('test')

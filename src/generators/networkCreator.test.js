@@ -5,11 +5,14 @@ import {
   getFullNetworkPath,
   createNetwork,
   generateResourcesLocally,
-  generateResourcesRemote, createScripts,
+  generateResourcesRemote,
+  getAvailableConfigs,
+  createScripts,
 } from './networkCreator'
 import {
   createConfigFromAnswers,
   generateNodeConfigs,
+  CUSTOM_CONFIG_LOCATION,
 } from '../model/NetworkConfig'
 import {
   copyFile,
@@ -20,11 +23,14 @@ import {
   writeJsonFile,
   removeFolder,
   copyDirectory,
-  writeFile, writeScript,
+  writeFile,
+  readDir,
+  writeScript,
 } from '../utils/fileUtils'
 import {
   createNetPath,
   createLibPath,
+  createConfigPath,
   TEST_CWD,
   TEST_LIB_ROOT_DIR,
 } from '../utils/testHelper'
@@ -84,7 +90,8 @@ describe('creates network and config from answers', () => {
 
     expect(removeFolder).toBeCalledWith(createNetPath(config))
     expect(createFolder).toBeCalledWith(createNetPath(config), true)
-    expect(writeJsonFile).toBeCalledWith(createNetPath(config), 'config.json', anything())
+    expect(createFolder).toBeCalledWith(createConfigPath(), true)
+    expect(writeJsonFile).toBeCalledWith(createConfigPath(), `${config.network.name}-config.json`, anything())
   })
 })
 
@@ -418,6 +425,13 @@ describe('creates static nodes json', () => {
       .mockReturnValueOnce('def')
       .mockReturnValueOnce('ghi')
     expect(createStaticNodes(nodes, 'istanbul', testDir)).toEqual(expected)
+  })
+})
+
+describe('tests available config files', () => {
+  it('given directory return files in it as array', () => {
+    readDir.mockReturnValueOnce(['1-config.json', '2-config.json'])
+    expect(getAvailableConfigs()).toEqual([CUSTOM_CONFIG_LOCATION, '1-config.json', '2-config.json'])
   })
 })
 
