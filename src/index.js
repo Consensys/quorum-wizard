@@ -96,7 +96,7 @@ async function regenerateNetwork() {
 
 function checkValidConfig(config) {
   if (!isBash(config.network.deployment) && Object.keys(config.containerPorts).length === 0) {
-    throw new Error('Invalid config: missing containerPorts object for docker and kubernetes')
+    throw new Error('Invalid config: containerPorts object is required for docker and kubernetes')
   }
 }
 
