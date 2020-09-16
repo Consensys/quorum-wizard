@@ -6,6 +6,7 @@ import isWsl from 'is-wsl'
 import {
   createLogger,
   debug,
+  error,
   info,
 } from './utils/log'
 import {
@@ -43,7 +44,11 @@ const { argv } = yargs
   .command('generate', '--config path to config.json', () => yargs.option('config', {
     desc: 'path to config.json',
   })
-  .coerce('config', (configPath) => readJsonFile(configPath)))
+  .coerce('config', (configPath) => {
+    const config = readJsonFile(configPath)
+    checkValidConfig(config)
+    return config
+  }))
   .string('r')
   .alias('r', 'registry')
   .describe('r', 'Use a custom docker registry (instead of registry.hub.docker.com)')
@@ -84,14 +89,14 @@ async function regenerateNetwork() {
     checkValidConfig(config)
     generateNetwork(config)
   } catch (e) {
-    info('Exiting, please provide valid config.json in configs directory: ' + e)
+    error(e.message)
     process.exit(1)
   }
 }
 
 function checkValidConfig(config) {
   if (!isBash(config.network.deployment) && Object.keys(config.containerPorts).length === 0) {
-    throw new Error('Provide containerPorts object for docker and kubernetes')
+    throw new Error('Invalid config: missing containerPorts object for docker and kubernetes')
   }
 }
 
