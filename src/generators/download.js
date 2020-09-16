@@ -80,7 +80,7 @@ export function getPlatformSpecificUrl({ url }) {
 }
 
 export const LATEST_QUORUM = '2.7.0'
-export const LATEST_TESSERA = '0.10.5'
+export const LATEST_TESSERA = '0.10.6'
 export const LATEST_CAKESHOP = '0.11.0'
 export const LATEST_ISTANBUL_TOOLS = '1.0.3'
 export const LATEST_BOOTNODE = '1.9.7'
@@ -126,6 +126,12 @@ export const BINARIES = {
   },
 
   tessera: {
+    '0.10.6': {
+      name: 'tessera-app.jar',
+      description: 'Tessera 0.10.6',
+      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/com/jpmorgan/quorum/tessera-app/0.10.6/tessera-app-0.10.6-app.jar',
+      type: 'jar',
+    },
     '0.10.5': {
       name: 'tessera-app.jar',
       description: 'Tessera 0.10.5',
