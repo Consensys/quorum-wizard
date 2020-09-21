@@ -36,6 +36,7 @@ function buildSplunkService(config) {
       retries: 20
     ports:
       - "${config.network.splunkPort}:8000"
+      - "8088:8088"
     volumes:
       - splunk-var:/opt/splunk/var
       - splunk-etc:/opt/splunk/etc
