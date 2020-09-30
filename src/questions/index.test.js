@@ -1,10 +1,14 @@
 import { prompt } from 'inquirer'
-import { promptUser } from './index'
+import {
+  promptUser,
+  promptGenerate,
+} from './index'
 import {
   CUSTOM_ANSWERS, NETWORK_CONFIRM, NETWORK_NAME,
   QUESTIONS,
   QUICKSTART_ANSWERS,
   SIMPLE_ANSWERS,
+  GENERATE_QUESTIONS,
 } from './questions'
 import {
   getCustomizedBashNodes,
@@ -12,10 +16,12 @@ import {
 } from './customPromptHelper'
 import { exists } from '../utils/fileUtils'
 import { LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import { CUSTOM_CONFIG_LOCATION } from '../model/NetworkConfig'
 
 jest.mock('inquirer')
 jest.mock('./customPromptHelper')
 jest.mock('../generators/networkHelper')
+jest.mock('../generators/networkCreator')
 jest.mock('../utils/fileUtils')
 exists.mockReturnValue(false)
 
@@ -44,6 +50,22 @@ const CUSTOM_CONFIG = {
   genesisLocation: 'testDir',
   customizePorts: true,
   nodes: ['nodes'],
+}
+
+const GENERATE_ANSWERS = {
+  generate: '1-config.json',
+  configLocation: undefined,
+  name: '1',
+}
+
+const GENERATE_CUSTOM_CONFIG_LOCATION_ANSWERS = {
+  generate: CUSTOM_CONFIG_LOCATION,
+  configLocation: 'custom/config/location.json',
+  name: '2',
+}
+
+const GENERATE_NO_NAME_ANSWERS = {
+  generate: '1-config.json',
 }
 
 describe('prompts the user with different sets of questions based on first choice', () => {
@@ -134,5 +156,20 @@ describe('prompts the user with different sets of questions based on first choic
     expect(prompt).toHaveBeenCalledWith(QUESTIONS, CUSTOM_ANSWERS)
     expect(getCustomizedBashNodes).toHaveBeenCalledTimes(0)
     expect(getCustomizedDockerPorts).toHaveBeenCalledTimes(0)
+  })
+  it('regenerate', async () => {
+    prompt.mockResolvedValue(GENERATE_ANSWERS)
+    await promptGenerate()
+    expect(prompt).toHaveBeenCalledWith(GENERATE_QUESTIONS)
+  })
+  it('regenerate - user input config file', async () => {
+    prompt.mockResolvedValue(GENERATE_CUSTOM_CONFIG_LOCATION_ANSWERS)
+    await promptGenerate()
+    expect(prompt).toHaveBeenCalledWith(GENERATE_QUESTIONS)
+  })
+  it('regenerate - no name config file', async () => {
+    prompt.mockResolvedValue(GENERATE_NO_NAME_ANSWERS)
+    await promptGenerate()
+    expect(prompt).toHaveBeenCalledWith(GENERATE_QUESTIONS)
   })
 })

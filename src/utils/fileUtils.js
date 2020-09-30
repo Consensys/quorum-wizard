@@ -3,6 +3,7 @@ import {
   chmodSync,
   copyFileSync,
   copySync,
+  readdirSync,
   existsSync,
   mkdirSync,
   readFileSync,
@@ -34,6 +35,10 @@ export function exists(path) {
 
 export function writeJsonFile(folder, filename, object, space = 2) {
   writeFileSync(joinPath(folder, filename), JSON.stringify(object, null, space))
+}
+
+export function readJsonFile(file) {
+  return JSON.parse(readFileSync(file, 'utf8'))
 }
 
 export function writeFile(filePath, contents, executable = false) {
@@ -82,4 +87,8 @@ export function readFileToString(file) {
 
 export function formatNewLine(file) {
   return file !== '' ? `${file}\n` : file
+}
+
+export function readDir(dir) {
+  return exists(dir) ? readdirSync(dir) : undefined
 }

@@ -191,7 +191,7 @@ Object {
     "splunkHecPort": "8088",
     "splunkIp": "127.0.0.1",
     "splunkPort": "8000",
-    "transactionManager": "0.10.5",
+    "transactionManager": "0.10.6",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -322,7 +322,7 @@ Object {
     "splunkHecPort": "8088",
     "splunkIp": "127.0.0.1",
     "splunkPort": "8000",
-    "transactionManager": "0.10.5",
+    "transactionManager": "0.10.6",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -441,7 +441,7 @@ Object {
     "splunkHecPort": "8088",
     "splunkIp": "127.0.0.1",
     "splunkPort": "8000",
-    "transactionManager": "0.10.5",
+    "transactionManager": "0.10.6",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -575,7 +575,7 @@ Object {
     "splunkHecPort": "8088",
     "splunkIp": "127.0.0.1",
     "splunkPort": "8000",
-    "transactionManager": "0.10.5",
+    "transactionManager": "0.10.6",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -721,7 +721,7 @@ Object {
     "splunkHecPort": "8088",
     "splunkIp": "127.0.0.1",
     "splunkPort": "8000",
-    "transactionManager": "0.10.5",
+    "transactionManager": "0.10.6",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -867,7 +867,7 @@ Object {
     "splunkHecPort": "8088",
     "splunkIp": "127.0.0.1",
     "splunkPort": "8000",
-    "transactionManager": "0.10.5",
+    "transactionManager": "0.10.6",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -1223,7 +1223,7 @@ Object {
     "splunkHecPort": "8088",
     "splunkIp": "127.0.0.1",
     "splunkPort": "8000",
-    "transactionManager": "0.10.5",
+    "transactionManager": "0.10.6",
     "verbosity": 5,
   },
   "nodes": Array [
@@ -1357,7 +1357,7 @@ Object {
     "splunkHecPort": "8088",
     "splunkIp": "127.0.0.1",
     "splunkPort": "8000",
-    "transactionManager": "0.10.5",
+    "transactionManager": "0.10.6",
     "verbosity": 5,
   },
   "nodes": Array [

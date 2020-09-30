@@ -6,6 +6,7 @@ import {
   isRaft,
   isDocker,
   getContainerPorts,
+  CUSTOM_CONFIG_LOCATION,
 } from '../model/NetworkConfig'
 import {
   getCustomizedBashNodes,
@@ -18,9 +19,13 @@ import {
   NETWORK_CONFIRM,
   NETWORK_NAME,
   QUESTIONS,
+  GENERATE_QUESTIONS,
 } from './questions'
-import { getFullNetworkPath } from '../generators/networkHelper'
+import {
+  getConfigPath,
+} from '../generators/networkCreator'
 import { exists } from '../utils/fileUtils'
+import { getFullNetworkPath } from '../generators/networkHelper'
 
 // eslint-disable-next-line import/prefer-default-export
 export async function promptUser(mode) {
@@ -61,6 +66,19 @@ async function promptForCustomPorts(answers) {
     answers.splunkPort = splunkPort
     answers.splunkHecPort = splunkHecPort
   }
+}
+
+export async function promptGenerate() {
+  const answers = await inquirer.prompt(GENERATE_QUESTIONS)
+
+  if (answers.name) {
+    await confirmNetworkName(answers)
+  }
+  if (answers.generate !== CUSTOM_CONFIG_LOCATION) {
+    answers.configLocation = getConfigPath(answers.generate)
+  }
+
+  return answers
 }
 
 async function confirmNetworkName(answers) {

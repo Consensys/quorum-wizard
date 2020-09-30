@@ -8,6 +8,7 @@ import { cidrhost } from '../utils/subnetUtils'
 
 jest.mock('inquirer')
 jest.mock('../generators/networkHelper')
+jest.mock('../generators/networkCreator')
 jest.mock('../utils/fileUtils')
 jest.mock('../utils/subnetUtils')
 exists.mockReturnValue(false)
