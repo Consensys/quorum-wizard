@@ -18,3 +18,7 @@ export function createNetPath(config, ...relativePaths) {
 export function createLibPath(...relativePaths) {
   return joinPath(normalize(libRootDir()), ...relativePaths)
 }
+
+export function createConfigPath(...relativePaths) {
+  return joinPath(cwd(), 'configs', ...relativePaths)
+}

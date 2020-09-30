@@ -150,6 +150,7 @@ module.exports = {
     "/node_modules/",
     "/build/",
     "/network/",
+    "/configs/",
     "/lib/",
   ],
 

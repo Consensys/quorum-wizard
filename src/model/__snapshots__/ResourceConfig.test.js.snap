@@ -22,7 +22,7 @@ quorum:
     Capacity: 200Mi
   tm:
     Name: tessera
-    Tm_Version: 0.10.5
+    Tm_Version: 0.10.6
     Port: 9000
     3Party_Port: 9080
     Tessera_Config_Dir: out/config
@@ -58,7 +58,7 @@ quorum:
     Capacity: 200Mi
   tm:
     Name: tessera
-    Tm_Version: 0.10.5
+    Tm_Version: 0.10.6
     Port: 9000
     3Party_Port: 9080
     Tessera_Config_Dir: out/config
@@ -94,7 +94,7 @@ quorum:
     Capacity: 200Mi
   tm:
     Name: tessera
-    Tm_Version: 0.10.5
+    Tm_Version: 0.10.6
     Port: 9000
     3Party_Port: 9080
     Tessera_Config_Dir: out/config
@@ -130,7 +130,7 @@ quorum:
     Capacity: 200Mi
   tm:
     Name: tessera
-    Tm_Version: 0.10.5
+    Tm_Version: 0.10.6
     Port: 9000
     3Party_Port: 9080
     Tessera_Config_Dir: out/config

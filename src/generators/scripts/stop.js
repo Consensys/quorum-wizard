@@ -1,5 +1,3 @@
-import { libRootDir, readFileToString } from '../../utils/fileUtils'
-import { joinPath } from '../../utils/pathUtils'
 import { addScriptExtension, scriptHeader } from './utils'
 
 export default {
@@ -49,10 +47,9 @@ fi
 }
 
 export function stopScriptDocker(config) {
-  if (config.network.splunk) {
-    return readFileToString(joinPath(libRootDir(), 'lib', 'stop-with-splunk.sh'))
-  }
+  const stopSplunk = config.network.splunk ? 'docker-compose -f docker-compose-splunk.yml down' : ''
   return `${scriptHeader()}
+${stopSplunk}
 docker-compose down`
 }
 

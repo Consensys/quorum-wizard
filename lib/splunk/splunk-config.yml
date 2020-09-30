@@ -28,7 +28,7 @@ splunk:
           connection_host: ip
           index: metrics
           sourcetype: statsd
-        "logs://cadivsor":
+        "logs://cadvisor":
           index: logs
           sourcetype: cadvisor
           disabled: 0

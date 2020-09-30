@@ -3,7 +3,7 @@ import {
   isTessera,
   isKubernetes,
 } from '../model/NetworkConfig'
-import { getFullNetworkPath } from './networkCreator'
+import { getFullNetworkPath } from './networkHelper'
 import { joinPath } from '../utils/pathUtils'
 
 export function formatTesseraKeysOutput(config) {

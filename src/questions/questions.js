@@ -10,12 +10,24 @@ import {
 import {
   defaultNetworkName,
   isRaft,
-  isKubernetes, isBash, isDocker,
+  isBash,
+  isKubernetes,
+  isDocker,
+  CUSTOM_CONFIG_LOCATION,
 } from '../model/NetworkConfig'
 
 import {
+  getAvailableConfigs,
+  getConfigPath,
+} from '../generators/networkCreator'
+import {
   executeSync, isWindows, isWin32, isJava11Plus,
 } from '../utils/execUtils'
+import {
+  exists,
+  readJsonFile,
+} from '../utils/fileUtils'
+
 import {
   LATEST_QUORUM,
   LATEST_TESSERA,
@@ -55,6 +67,7 @@ All you need to do is go to the specified location and run ${SCRIPTS.start.filen
     },
     { name: 'Simple Network', value: 'simple' },
     { name: 'Custom Network', value: 'custom' },
+    { name: 'Generate from Existing Configuration', value: 'generate' },
     { name: 'Exit', value: 'exit' },
   ],
 }
@@ -198,6 +211,36 @@ export const NETWORK_CONFIRM = {
   default: false,
 }
 
+export const GENERATE_NAME = {
+  type: 'input',
+  name: 'name',
+  message: 'What would you like to call this network?',
+  validate: (input) => input.trim() !== '' || 'Network name must not be blank.',
+  default: (answers) => {
+    const configPath = answers.generate === CUSTOM_CONFIG_LOCATION
+      ? answers.configLocation
+      : getConfigPath(answers.generate)
+    const json = readJsonFile(configPath)
+    return json.network.name
+  },
+}
+
+export const GENERATE = {
+  type: 'list',
+  name: 'generate',
+  message: 'Choose from the list of available config.json to generate',
+  choices: getAvailableConfigs(),
+}
+
+export const GENERATE_LOCATION = {
+  type: 'input',
+  name: 'configLocation',
+  message: 'Enter the path of the config.json you would like to use',
+  validate: (input) => exists(input.trim()) || 'Must be a valid path',
+  when: (answers) => answers.generate === CUSTOM_CONFIG_LOCATION,
+  default: undefined,
+}
+
 export const QUESTIONS = [
   DEPLOYMENT_TYPE,
   CONSENSUS_MODE,
@@ -246,3 +289,9 @@ export function getPrefilledAnswersForMode(mode) {
       throw new Error(`Unknown option: ${mode}`)
   }
 }
+
+export const GENERATE_QUESTIONS = [
+  GENERATE,
+  GENERATE_LOCATION,
+  GENERATE_NAME,
+]
