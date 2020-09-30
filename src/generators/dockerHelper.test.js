@@ -1,4 +1,4 @@
-import { getFullNetworkPath } from './networkCreator'
+import { getFullNetworkPath } from './networkHelper'
 import {
   createConfigFromAnswers,
 } from '../model/NetworkConfig'
@@ -21,10 +21,14 @@ import {
 } from '../utils/testHelper'
 import { info } from '../utils/log'
 import { joinPath } from '../utils/pathUtils'
-import { LATEST_QUORUM, LATEST_TESSERA } from './download'
+import {
+  LATEST_QUORUM,
+  LATEST_TESSERA,
+  QUORUM_PRE_260,
+} from './download'
 
 jest.mock('../utils/fileUtils')
-jest.mock('../generators/networkCreator')
+jest.mock('../generators/networkHelper')
 jest.mock('../utils/log')
 
 cwd.mockReturnValue(TEST_CWD)
@@ -103,6 +107,7 @@ describe('generates docker-compose directory', () => {
       ...baseNetwork,
       tools: [],
       transactionManager: 'none',
+      quorumVersion: QUORUM_PRE_260,
     })
 
     readFileToString.mockReturnValueOnce('test')
@@ -133,14 +138,14 @@ describe('generates docker-compose script details', () => {
 services:
   node1:
     << : *quorum-def
-    container_name: node1
+    container_name: node1-1-nodes-raft-tessera-docker-compose
     hostname: node1
     ports:
       - "22000:8545"
       - "23000:8645"
       - "24000:8547"
     volumes:
-      - 1-nodes-raft-tessera-docker-compose-vol1:/qdata
+      - vol1:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager1
@@ -153,12 +158,12 @@ services:
     
   txmanager1:
     << : *tx-manager-def
-    container_name: txmanager1
+    container_name: txmanager1-1-nodes-raft-tessera-docker-compose
     hostname: txmanager1
     ports:
       - "9081:9080"
     volumes:
-      - 1-nodes-raft-tessera-docker-compose-vol1:/qdata
+      - vol1:/qdata
       - ./qdata:/examples:ro
     networks:
       1-nodes-raft-tessera-docker-compose-net:
@@ -175,7 +180,7 @@ networks:
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  "1-nodes-raft-tessera-docker-compose-vol1":`
+  "vol1":`
     const expected = `quorumDefinitions\ntesseraDefinitions${services}`
 
     readFileToString.mockReturnValueOnce('definitions')
@@ -198,14 +203,14 @@ volumes:
 services:
   node1:
     << : *quorum-def
-    container_name: node1
+    container_name: node1-1-nodes-istanbul-docker-compose
     hostname: node1
     ports:
       - "22000:8545"
       - "23000:8645"
       - "24000:8547"
     volumes:
-      - 1-nodes-istanbul-docker-compose-vol1:/qdata
+      - vol1:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
@@ -223,12 +228,11 @@ networks:
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  "1-nodes-istanbul-docker-compose-vol1":`
+  "vol1":`
     const expected = `quorumDefinitions${services}`
 
     readFileToString.mockReturnValueOnce('definitions')
     formatNewLine.mockReturnValueOnce('quorumDefinitions\n')
-
     expect(buildDockerCompose(config)).toEqual(expected)
   })
 
@@ -242,14 +246,14 @@ volumes:
 services:
   node1:
     << : *quorum-def
-    container_name: node1
+    container_name: node1-1-nodes-raft-docker-compose
     hostname: node1
     ports:
       - "22000:8545"
       - "23000:8645"
       - "24000:8547"
     volumes:
-      - 1-nodes-raft-docker-compose-vol1:/qdata
+      - vol1:/qdata
       - ./qdata:/examples:ro
     environment:
       - PRIVATE_CONFIG=ignore
@@ -260,12 +264,12 @@ services:
     
   cakeshop:
     << : *cakeshop-def
-    container_name: cakeshop
+    container_name: cakeshop-1-nodes-raft-docker-compose
     hostname: cakeshop
     ports:
       - "8999:8999"
     volumes:
-      - 1-nodes-raft-docker-compose-cakeshopvol:/qdata
+      - cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
       1-nodes-raft-docker-compose-net:
@@ -280,8 +284,8 @@ networks:
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  "1-nodes-raft-docker-compose-vol1":
-  "1-nodes-raft-docker-compose-cakeshopvol":`
+  "vol1":
+  "cakeshopvol":`
     const expected = `quorumDefinitions\ncakeshopDefinitions${services}`
 
     readFileToString.mockReturnValueOnce('quorumDefinitions')
@@ -301,14 +305,14 @@ volumes:
 services:
   node1:
     << : *quorum-def
-    container_name: node1
+    container_name: node1-1-nodes-raft-tessera-docker-compose
     hostname: node1
     ports:
       - "22000:8545"
       - "23000:8645"
       - "24000:8547"
     volumes:
-      - 1-nodes-raft-tessera-docker-compose-vol1:/qdata
+      - vol1:/qdata
       - ./qdata:/examples:ro
     depends_on:
       - txmanager1
@@ -321,12 +325,12 @@ services:
     
   txmanager1:
     << : *tx-manager-def
-    container_name: txmanager1
+    container_name: txmanager1-1-nodes-raft-tessera-docker-compose
     hostname: txmanager1
     ports:
       - "9081:9080"
     volumes:
-      - 1-nodes-raft-tessera-docker-compose-vol1:/qdata
+      - vol1:/qdata
       - ./qdata:/examples:ro
     networks:
       1-nodes-raft-tessera-docker-compose-net:
@@ -336,12 +340,12 @@ services:
     
   cakeshop:
     << : *cakeshop-def
-    container_name: cakeshop
+    container_name: cakeshop-1-nodes-raft-tessera-docker-compose
     hostname: cakeshop
     ports:
       - "8999:8999"
     volumes:
-      - 1-nodes-raft-tessera-docker-compose-cakeshopvol:/qdata
+      - cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
       1-nodes-raft-tessera-docker-compose-net:
@@ -356,8 +360,8 @@ networks:
       config:
         - subnet: 172.16.239.0/24
 volumes:
-  "1-nodes-raft-tessera-docker-compose-vol1":
-  "1-nodes-raft-tessera-docker-compose-cakeshopvol":`
+  "vol1":
+  "cakeshopvol":`
     const expected = `quorumDefinitions\ntesseraDefinitions\ncakeshopDefinitions${services}`
 
     readFileToString.mockReturnValueOnce('definitions')

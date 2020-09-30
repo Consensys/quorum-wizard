@@ -1,6 +1,4 @@
 import { startScriptBash } from '../bashHelper'
-import { libRootDir, readFileToString } from '../../utils/fileUtils'
-import { joinPath } from '../../utils/pathUtils'
 import { addScriptExtension, scriptHeader } from './utils'
 import { isWin32 } from '../../utils/execUtils'
 
@@ -21,11 +19,27 @@ export default {
   },
 }
 
+function startSplunkDocker(config) {
+  return `docker-compose -f docker-compose-splunk.yml up -d
+
+  sleep 3
+
+  echo -n 'Waiting for splunk to start.'
+  until docker logs splunk-${config.network.name} | grep -m 1 'Ansible playbook complete'
+  do
+    echo -n "."
+    sleep 5
+  done
+  echo " "
+  echo "Splunk started!"
+
+  echo "Starting quorum stack..."`
+}
+
 function startScriptDocker(config) {
-  if (config.network.splunk) {
-    return readFileToString(joinPath(libRootDir(), 'lib', 'start-with-splunk.sh'))
-  }
+  const startSplunk = config.network.splunk ? startSplunkDocker(config) : ''
   return `${scriptHeader()}
+${startSplunk}
 docker-compose up -d`
 }
 

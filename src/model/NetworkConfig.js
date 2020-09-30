@@ -17,6 +17,7 @@ export function createConfigFromAnswers(answers) {
     nodes = [],
     cakeshopPort = isKubernetes(deployment) ? '30108' : '8999',
     splunkPort = '8000',
+    splunkHecPort = '8088',
     remoteDebug = false,
     containerPorts = undefined,
   } = answers
@@ -45,6 +46,7 @@ export function createConfigFromAnswers(answers) {
       remoteDebug,
       splunkIp: (splunk) ? cidrhost(dockerSubnet, 66) : '127.0.0.1',
       splunkPort,
+      splunkHecPort,
     },
     nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(
       numberNodes,
@@ -146,3 +148,5 @@ export function isRaft(consensus) {
 export function isCakeshop(cakeshop) {
   return cakeshop !== 'none'
 }
+
+export const CUSTOM_CONFIG_LOCATION = 'Enter path to config.json'

@@ -2,8 +2,16 @@
 
 import 'source-map-support/register'
 import inquirer from 'inquirer'
-import { createLogger, debug, info } from './utils/log'
-import { promptUser } from './questions'
+import {
+  createLogger,
+  debug,
+  error,
+  info,
+} from './utils/log'
+import {
+  promptUser,
+  promptGenerate,
+} from './questions'
 import { INITIAL_MODE } from './questions/questions'
 import {
   createConfigFromAnswers, isBash, isDocker, isKubernetes, isTessera, isCakeshop,
@@ -19,6 +27,7 @@ import { initBash } from './generators/bashHelper'
 import { initDockerCompose, setDockerRegistry } from './generators/dockerHelper'
 import { formatTesseraKeysOutput, loadTesseraPublicKey } from './generators/transactionManager'
 import { downloadAndCopyBinaries } from './generators/binaryHelper'
+import { readJsonFile } from './utils/fileUtils'
 import { wrapScript } from './utils/pathUtils'
 import SCRIPTS from './generators/scripts'
 
@@ -31,6 +40,14 @@ const { argv } = yargs
   .boolean('v')
   .alias('v', 'verbose')
   .describe('v', 'Turn on additional logs for debugging')
+  .command('generate', '--config path to config.json', () => yargs.option('config', {
+    desc: 'path to config.json',
+  })
+    .coerce('config', (configPath) => {
+      const config = readJsonFile(configPath)
+      checkValidConfig(config)
+      return config
+    }))
   .string('r')
   .alias('r', 'registry')
   .describe('r', 'Use a custom docker registry (instead of registry.hub.docker.com)')
@@ -45,26 +62,56 @@ setDockerRegistry(argv.r)
 
 if (argv.q) {
   buildNetwork('quickstart')
+} else if (argv.config) {
+  generateNetwork(argv.config)
+} else if (argv._[0] === 'generate') {
+  regenerateNetwork()
 } else {
   inquirer.prompt([INITIAL_MODE])
     .then(async ({ mode }) => {
       if (mode === 'exit') {
         info('Exiting...')
         return
+      } if (mode === 'generate') {
+        regenerateNetwork()
+        return
       }
       buildNetwork(mode)
     })
 }
 
-async function buildNetwork(mode) {
-  const answers = await promptUser(mode)
-  const config = createConfigFromAnswers(answers)
+async function regenerateNetwork() {
+  const ans = await promptGenerate()
+  try {
+    const config = readJsonFile(ans.configLocation)
+    config.network.name = ans.name
+    checkValidConfig(config)
+    generateNetwork(config)
+  } catch (e) {
+    error(e.message)
+    process.exit(1)
+  }
+}
+
+function checkValidConfig(config) {
+  if (!isBash(config.network.deployment) && Object.keys(config.containerPorts).length === 0) {
+    throw new Error('Invalid config: containerPorts object is required for docker and kubernetes')
+  }
+}
+
+async function generateNetwork(config) {
   if (isBash(config.network.deployment)) {
     await downloadAndCopyBinaries(config)
   }
   await createDirectory(config)
   createScripts(config)
   printInstructions(config)
+}
+
+async function buildNetwork(mode) {
+  const answers = await promptUser(mode)
+  const config = createConfigFromAnswers(answers)
+  generateNetwork(config)
 }
 
 async function createDirectory(config) {

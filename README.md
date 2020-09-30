@@ -6,7 +6,7 @@ Quorum Wizard is a command line tool that allow users to set up a development Qu
 
 ## Using Quorum Wizard
 
-Quorum Wizard is written in Javascript and designed to be run as a global NPM module from the command line. Make sure you have [Node.js/NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
+Quorum Wizard is written in Javascript and designed to be run as a global NPM module from the command line. Make sure you have [Node.js/NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed (version 10 or higher).
 
 Using npx to run the wizard without the need to install:
 
@@ -27,7 +27,7 @@ Note: Many installations of npm don't have permission to install global modules 
 
 ## Dependencies
 
-Here are the dependencies (in addition to NodeJS) that are required depending on the mode that you run the wizard in:
+Here are the dependencies (in addition to NodeJS 10+) that are required depending on the mode that you run the wizard in:
 
 Bash:
 

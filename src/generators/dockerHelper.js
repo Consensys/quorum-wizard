@@ -1,13 +1,19 @@
 import {
   formatNewLine, libRootDir, readFileToString, writeFile,
 } from '../utils/fileUtils'
-import { getFullNetworkPath } from './networkCreator'
+import { getFullNetworkPath } from './networkHelper'
 import { buildCakeshopDir } from './cakeshopHelper'
 import { isCakeshop, isTessera } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { joinPath, removeTrailingSlash } from '../utils/pathUtils'
 import { buildDockerIp, cidrhost } from '../utils/subnetUtils'
 import { isQuorum260Plus } from './binaryHelper'
+import {
+  buildCadvisorService,
+  buildEthloggerService,
+  buildSplunkDockerCompose,
+  getSplunkDefinitions,
+} from './splunkHelper'
 
 let DOCKER_REGISTRY
 
@@ -51,10 +57,7 @@ export function buildDockerCompose(config) {
     'lib/docker-compose-definitions-cakeshop.yml',
   )) : ''
 
-  const splunkDefinitions = hasSplunk ? readFileToString(joinPath(
-    libRootDir(),
-    'lib/docker-compose-definitions-splunk-helpers.yml',
-  )) : ''
+  const splunkDefinitions = hasSplunk ? getSplunkDefinitions(config) : ''
 
   let services = config.nodes.map((node, i) => {
     let allServices = buildNodeService(config, node, i, hasTessera, hasSplunk)
@@ -83,23 +86,8 @@ export function buildDockerCompose(config) {
   ].join('')
 }
 
-export function buildSplunkDockerCompose(config) {
-  const version = `version: "3.6"
-`
-  const services = [buildSplunkService(config)]
-  info('Splunk>')
-
-  return [
-    version,
-    'services:',
-    services.join(''),
-    buildSplunkEndService(config),
-  ].join('')
-}
-
 export async function initDockerCompose(config) {
   info('Building docker-compose file...')
-  const splunkFile = buildSplunkDockerCompose(config)
   const file = buildDockerCompose(config)
   const hasSplunk = config.network.splunk
   const networkPath = getFullNetworkPath(config)
@@ -110,7 +98,7 @@ export async function initDockerCompose(config) {
   }
 
   if (hasSplunk) {
-    writeFile(joinPath(networkPath, 'docker-compose-splunk.yml'), splunkFile, false)
+    writeFile(joinPath(networkPath, 'docker-compose-splunk.yml'), buildSplunkDockerCompose(config), false)
   }
   writeFile(joinPath(networkPath, 'docker-compose.yml'), file, false)
   writeFile(joinPath(networkPath, '.env'), createEnvFile(config, isTessera(config.network.transactionManager)), false)
@@ -157,14 +145,14 @@ function buildNodeService(config, node, i, hasTessera, hasSplunk) {
   return `
   node${i + 1}:
     << : *quorum-def
-    container_name: node${i + 1}
+    container_name: node${i + 1}-${networkName}
     hostname: node${i + 1}
     ports:
       - "${node.quorum.rpcPort}:${config.containerPorts.quorum.rpcPort}"
       - "${node.quorum.wsPort}:${config.containerPorts.quorum.wsPort}"
       - "${node.quorum.graphQlPort}:${config.containerPorts.quorum.graphQlPort}"
     volumes:
-      - ${networkName}-vol${i + 1}:/qdata
+      - vol${i + 1}:/qdata
       - ./qdata:/examples:ro
     ${txManager}
       - NODE_ID=${i + 1}
@@ -181,12 +169,12 @@ function buildTesseraService(config, node, i, hasSplunk) {
   return `
   txmanager${i + 1}:
     << : *tx-manager-def
-    container_name: txmanager${i + 1}
+    container_name: txmanager${i + 1}-${networkName}
     hostname: txmanager${i + 1}
     ports:
       - "${node.tm.thirdPartyPort}:${config.containerPorts.tm.thirdPartyPort}"
     volumes:
-      - ${networkName}-vol${i + 1}:/qdata
+      - vol${i + 1}:/qdata
       - ./qdata:/examples:ro
     networks:
       ${networkName}-net:
@@ -203,12 +191,12 @@ function buildCakeshopService(config, hasSplunk) {
   return `
   cakeshop:
     << : *cakeshop-def
-    container_name: cakeshop
+    container_name: cakeshop-${networkName}
     hostname: cakeshop
     ports:
       - "${config.network.cakeshopPort}:8999"
     volumes:
-      - ${networkName}-cakeshopvol:/qdata
+      - cakeshopvol:/qdata
       - ./qdata:/examples:ro
     networks:
       ${networkName}-net:
@@ -216,107 +204,18 @@ function buildCakeshopService(config, hasSplunk) {
     ${splunkLogging}`
 }
 
-function buildSplunkService(config) {
-  const networkName = config.network.name
-  return `
-  splunk:
-    image: splunk/splunk:8.0.4-debian
-    container_name: splunk
-    hostname: splunk
-    environment:
-      - SPLUNK_START_ARGS=--accept-license
-      - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113
-      - SPLUNK_PASSWORD=changeme
-      - SPLUNK_APPS_URL=https://github.com/splunk/ethereum-basics/releases/download/latest/ethereum-basics.tgz,https://splunk-quorum.s3.us-east-2.amazonaws.com/oss-quorum-app-for-splunk_109.tgz
-    expose:
-      - "8000"
-      - "8088"
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8000']
-      interval: 5s
-      timeout: 5s
-      retries: 20
-    ports:
-      - "${config.network.splunkPort}:8000"
-      - "8088:8088"
-      - "8125:8125"
-    volumes:
-      - splunk-var:/opt/splunk/var
-      - splunk-etc:/opt/splunk/etc
-      - ./out/config/splunk/splunk-config.yml:/tmp/defaults/default.yml
-    networks:
-      ${networkName}-net:
-        ipv4_address: ${config.network.splunkIp}`
-}
-
-function buildCadvisorService(config) {
-  const networkName = config.network.name
-  return `
-  cadvisor:
-    image: google/cadvisor:latest
-    container_name: cadvisor
-    hostname: cadvisor
-    command:
-      - --storage_driver=statsd
-      - --storage_driver_host=${config.network.splunkIp}:8125
-      - --docker_only=true
-    user: root
-    volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-    networks:
-      - ${networkName}-net
-    logging: *default-logging`
-}
-
-function buildEthloggerService(config) {
-  const networkName = config.network.name
-  let ethloggers = ''
-
-  config.nodes.forEach((node, i) => {
-    const instance = i + 1
-    ethloggers += `
-  ethlogger${instance}:
-    image: splunkdlt/ethlogger:latest
-    container_name: ethlogger${instance}
-    hostname: ethlogger${instance}
-    environment:
-      - ETH_RPC_URL=http://node${instance}:${config.containerPorts.quorum.rpcPort}
-      - NETWORK_NAME=quorum
-      - START_AT_BLOCK=genesis
-      - SPLUNK_HEC_URL=https://${config.network.splunkIp}:8088
-      - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113
-      - SPLUNK_EVENTS_INDEX=ethereum
-      - SPLUNK_METRICS_INDEX=metrics
-      - SPLUNK_INTERNAL_INDEX=metrics
-      - SPLUNK_HEC_REJECT_INVALID_CERTS=false
-      - COLLECT_PEER_INFO=true
-    depends_on:
-      - node${instance}
-    restart: unless-stopped
-    volumes:
-      - ethlogger-state${instance}:/app
-    networks:
-      - ${networkName}-net
-    logging: *default-logging`
-  })
-  return ethloggers
-}
-
 function buildEndService(config) {
   const networkName = config.network.name
   const volumes = []
   config.nodes.forEach((_node, i) => {
     const nodeNumber = i + 1
-    volumes.push(`  "${networkName}-vol${nodeNumber}":`)
+    volumes.push(`  "vol${nodeNumber}":`)
     if (config.network.splunk) {
       volumes.push(`  "ethlogger-state${nodeNumber}":`)
     }
   })
   if (isCakeshop(config.network.cakeshop)) {
-    volumes.push(`  "${networkName}-cakeshopvol":`)
+    volumes.push('  "cakeshopvol":')
   }
   return `
 networks:
@@ -329,20 +228,4 @@ networks:
         - subnet: ${config.containerPorts.dockerSubnet}
 volumes:
 ${volumes.join('\n')}`
-}
-
-function buildSplunkEndService(config) {
-  const networkName = config.network.name
-  return `
-networks:
-  ${networkName}-net:
-    name: ${networkName}-net
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: ${config.containerPorts.dockerSubnet}
-volumes:
-  "splunk-var":
-  "splunk-etc":`
 }

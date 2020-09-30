@@ -1,4 +1,3 @@
-import sanitize from 'sanitize-filename'
 import {
   copyDirectory,
   copyFile,
@@ -8,6 +7,7 @@ import {
   readFileToString,
   removeFolder,
   writeFile,
+  readDir,
   writeJsonFile,
   writeScript,
 } from '../utils/fileUtils'
@@ -16,7 +16,12 @@ import { generateConsensusConfig } from '../model/ConsensusConfig'
 import { createConfig } from '../model/TesseraConfig'
 import { buildKubernetesResource, LATEST_QUBERNETES } from '../model/ResourceConfig'
 import {
-  isBash, isDocker, isKubernetes, isRaft, isTessera,
+  isRaft,
+  isTessera,
+  isDocker,
+  isKubernetes,
+  isBash,
+  CUSTOM_CONFIG_LOCATION,
 } from '../model/NetworkConfig'
 import { joinPath, unixifyPath } from '../utils/pathUtils'
 import { executeSync } from '../utils/execUtils'
@@ -24,13 +29,16 @@ import { info, error } from '../utils/log'
 import { buildDockerIp } from '../utils/subnetUtils'
 import SCRIPTS from './scripts'
 import { getDockerRegistry } from './dockerHelper'
+import { getFullNetworkPath } from './networkHelper'
 
 export function createNetwork(config) {
   info('Building network directory...')
   const networkPath = getFullNetworkPath(config)
   removeFolder(networkPath)
   createFolder(networkPath, true)
-  writeJsonFile(networkPath, 'config.json', config)
+  const configPath = getConfigPath()
+  createFolder(configPath, true)
+  writeJsonFile(configPath, `${config.network.name}-config.json`, config)
 }
 
 export function generateResourcesRemote(config) {
@@ -171,13 +179,14 @@ function createPeerList(nodes, transactionManager) {
   return nodes.map((node) => ({ url: `http://${node.tm.ip}:${node.tm.p2pPort}` }))
 }
 
-export function getFullNetworkPath(config) {
-  const networkFolderName = sanitize(config.network.name)
-  if (networkFolderName === '') {
-    throw new Error('Network name was empty or contained invalid characters')
-  }
+export function getConfigPath(...relativePaths) {
+  return joinPath(cwd(), 'configs', ...relativePaths)
+}
 
-  return joinPath(cwd(), 'network', networkFolderName)
+export function getAvailableConfigs() {
+  const configDir = getConfigPath()
+  const availableConfigs = readDir(configDir) || []
+  return [CUSTOM_CONFIG_LOCATION, ...availableConfigs]
 }
 
 export function createScripts(config) {
