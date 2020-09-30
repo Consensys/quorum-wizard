@@ -169,15 +169,20 @@ export async function getCustomizedCakeshopPort() {
 }
 
 export async function getCustomizedSplunkPort() {
-  const question = {
+  const questions = [{
     type: 'input',
     name: 'splunkPort',
     message: 'input splunk port',
     default: '8000',
-  }
-  const answer = await inquirer.prompt(question)
-
-  return answer.splunkPort
+  },
+  {
+    type: 'input',
+    name: 'splunkHecPort',
+    message: 'input splunk hec port',
+    default: '8088',
+  },
+  ]
+  return inquirer.prompt(questions)
 }
 
 function numToString(num) {

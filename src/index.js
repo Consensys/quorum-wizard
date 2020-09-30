@@ -2,7 +2,6 @@
 
 import 'source-map-support/register'
 import inquirer from 'inquirer'
-import isWsl from 'is-wsl'
 import {
   createLogger,
   debug,
@@ -44,11 +43,11 @@ const { argv } = yargs
   .command('generate', '--config path to config.json', () => yargs.option('config', {
     desc: 'path to config.json',
   })
-  .coerce('config', (configPath) => {
-    const config = readJsonFile(configPath)
-    checkValidConfig(config)
-    return config
-  }))
+    .coerce('config', (configPath) => {
+      const config = readJsonFile(configPath)
+      checkValidConfig(config)
+      return config
+    }))
   .string('r')
   .alias('r', 'registry')
   .describe('r', 'Use a custom docker registry (instead of registry.hub.docker.com)')

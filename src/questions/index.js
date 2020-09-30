@@ -22,10 +22,10 @@ import {
   GENERATE_QUESTIONS,
 } from './questions'
 import {
-  getFullNetworkPath,
   getConfigPath,
 } from '../generators/networkCreator'
 import { exists } from '../utils/fileUtils'
+import { getFullNetworkPath } from '../generators/networkHelper'
 
 // eslint-disable-next-line import/prefer-default-export
 export async function promptUser(mode) {
@@ -62,7 +62,9 @@ async function promptForCustomPorts(answers) {
   }
 
   if (answers.tools.includes('splunk')) {
-    answers.splunkPort = await getCustomizedSplunkPort()
+    const { splunkPort, splunkHecPort } = await getCustomizedSplunkPort()
+    answers.splunkPort = splunkPort
+    answers.splunkHecPort = splunkHecPort
   }
 }
 

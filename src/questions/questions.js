@@ -20,7 +20,9 @@ import {
   getAvailableConfigs,
   getConfigPath,
 } from '../generators/networkCreator'
-import { executeSync, isWindows, isWin32, isJava11Plus } from '../utils/execUtils'
+import {
+  executeSync, isWindows, isWin32, isJava11Plus,
+} from '../utils/execUtils'
 import {
   exists,
   readJsonFile,

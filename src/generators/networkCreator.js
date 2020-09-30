@@ -1,4 +1,3 @@
-import sanitize from 'sanitize-filename'
 import {
   copyDirectory,
   copyFile,
@@ -30,6 +29,7 @@ import { info, error } from '../utils/log'
 import { buildDockerIp } from '../utils/subnetUtils'
 import SCRIPTS from './scripts'
 import { getDockerRegistry } from './dockerHelper'
+import { getFullNetworkPath } from './networkHelper'
 
 export function createNetwork(config) {
   info('Building network directory...')
@@ -177,15 +177,6 @@ function createPeerList(nodes, transactionManager) {
     return []
   }
   return nodes.map((node) => ({ url: `http://${node.tm.ip}:${node.tm.p2pPort}` }))
-}
-
-export function getFullNetworkPath(config) {
-  const networkFolderName = sanitize(config.network.name)
-  if (networkFolderName === '') {
-    throw new Error('Network name was empty or contained invalid characters')
-  }
-
-  return joinPath(cwd(), 'network', networkFolderName)
 }
 
 export function getConfigPath(...relativePaths) {

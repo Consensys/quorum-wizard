@@ -20,6 +20,7 @@ import { CUSTOM_CONFIG_LOCATION } from '../model/NetworkConfig'
 
 jest.mock('inquirer')
 jest.mock('./customPromptHelper')
+jest.mock('../generators/networkHelper')
 jest.mock('../generators/networkCreator')
 jest.mock('../utils/fileUtils')
 exists.mockReturnValue(false)
