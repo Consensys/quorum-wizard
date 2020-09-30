@@ -20,5 +20,5 @@ export function createLibPath(...relativePaths) {
 }
 
 export function createConfigPath(...relativePaths) {
-  return joinPath(cwd(), 'configs', ...relativePaths)
+  return joinPath(getOutputPath(), 'configs', ...relativePaths)
 }

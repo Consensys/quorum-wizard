@@ -9,6 +9,7 @@ import {
   readDir,
   writeJsonFile,
   writeScript,
+  getOutputPath,
 } from '../utils/fileUtils'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
@@ -42,7 +43,7 @@ export function createNetwork(config) {
 
 export function generateResourcesRemote(config) {
   info('Pulling docker container and generating network resources...')
-  const configDir = getFullConfigPath(config)
+  const configDir = getFullResourceConfigDir(config)
   const networkPath = getFullNetworkPath(config)
   const remoteOutputDir = joinPath(networkPath, 'out', 'config')
 
@@ -84,7 +85,7 @@ export function generateResourcesRemote(config) {
 
 export async function generateResourcesLocally(config) {
   info('Generating network resources locally...')
-  const configDir = getFullConfigPath(config)
+  const configDir = getFullResourceConfigDir(config)
   createFolder(configDir, true)
 
   if (config.network.generateKeys) {
@@ -112,7 +113,7 @@ export function createQdataDirectory(config) {
   const logs = joinPath(qdata, 'logs')
   createFolder(logs, true)
 
-  const configPath = getFullConfigPath(config)
+  const configPath = getFullResourceConfigDir(config)
 
   const peerList = createPeerList(config.nodes, config.network.transactionManager)
 
@@ -178,8 +179,12 @@ function createPeerList(nodes, transactionManager) {
   return nodes.map((node) => ({ url: `http://${node.tm.ip}:${node.tm.p2pPort}` }))
 }
 
-export function getFullConfigPath(config) {
+export function getFullResourceConfigDir(config) {
   return joinPath(config.network.networkPath, config.network.configDir)
+}
+
+export function getConfigPath(...relativePaths) {
+  return joinPath(getOutputPath(), 'configs', ...relativePaths)
 }
 
 export function getAvailableConfigs() {

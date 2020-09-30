@@ -18,7 +18,7 @@ import {
 
 import {
   getAvailableConfigs,
-  getConfigPath,
+  getConfigsPath,
 } from '../generators/networkCreator'
 import {
   executeSync, isWindows, isWin32, isJava11Plus,
@@ -219,7 +219,7 @@ export const GENERATE_NAME = {
   default: (answers) => {
     const configPath = answers.generate === CUSTOM_CONFIG_LOCATION
       ? answers.configLocation
-      : getConfigPath(answers.generate)
+      : getConfigsPath(answers.generate)
     const json = readJsonFile(configPath)
     return json.network.name
   },
