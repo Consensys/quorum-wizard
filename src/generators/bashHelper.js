@@ -59,8 +59,11 @@ export function createCommands(config) {
     const logs = joinPath('qdata', 'logs')
 
     const tmIpcLocation = isTessera(config.network.transactionManager)
-      ? joinPath(tmDir, 'tm.ipc')
+      ? joinPath(getFullNetworkPath(config), tmDir, 'tm.ipc')
       : 'ignore'
+    if (tmIpcLocation.length > 104) {
+      throw new Error(`The full path to your network folder is ${tmIpcLocation.length - 88} character(s) too long. Please re-run the wizard in a different folder with a shorter path.`)
+    }
     const startCommand = createGethStartCommand(
       config,
       node,
