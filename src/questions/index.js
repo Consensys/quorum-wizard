@@ -57,7 +57,9 @@ async function promptForCustomPorts(answers) {
   }
 
   if (answers.tools.includes('splunk')) {
-    answers.splunkPort = await getCustomizedSplunkPort()
+    const { splunkPort, splunkHecPort } = await getCustomizedSplunkPort()
+    answers.splunkPort = splunkPort
+    answers.splunkHecPort = splunkHecPort
   }
 }
 

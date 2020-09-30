@@ -17,6 +17,7 @@ export function createConfigFromAnswers(answers) {
     nodes = [],
     cakeshopPort = '8999',
     splunkPort = '8000',
+    splunkHecPort = '8088',
     remoteDebug = false,
     containerPorts = undefined,
   } = answers
@@ -45,6 +46,7 @@ export function createConfigFromAnswers(answers) {
       remoteDebug,
       splunkIp: (splunk) ? cidrhost(dockerSubnet, 66) : '127.0.0.1',
       splunkPort,
+      splunkHecPort,
     },
     nodes: (customizePorts && nodes.length > 0) ? nodes : generateNodeConfigs(
       numberNodes,

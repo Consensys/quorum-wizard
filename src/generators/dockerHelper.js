@@ -8,7 +8,12 @@ import { info } from '../utils/log'
 import { joinPath, removeTrailingSlash } from '../utils/pathUtils'
 import { buildDockerIp, cidrhost } from '../utils/subnetUtils'
 import { isQuorum260Plus } from './binaryHelper'
-import { buildSplunkDockerCompose, buildEthloggerService, buildCadvisorService } from './splunkHelper'
+import {
+  buildCadvisorService,
+  buildEthloggerService,
+  buildSplunkDockerCompose,
+  getSplunkDefinitions,
+} from './splunkHelper'
 
 let DOCKER_REGISTRY
 
@@ -52,10 +57,7 @@ export function buildDockerCompose(config) {
     'lib/docker-compose-definitions-cakeshop.yml',
   )) : ''
 
-  const splunkDefinitions = hasSplunk ? readFileToString(joinPath(
-    libRootDir(),
-    'lib/docker-compose-definitions-splunk-helpers.yml',
-  )) : ''
+  const splunkDefinitions = hasSplunk ? getSplunkDefinitions(config) : ''
 
   let services = config.nodes.map((node, i) => {
     let allServices = buildNodeService(config, node, i, hasTessera, hasSplunk)
@@ -213,7 +215,7 @@ function buildEndService(config) {
     }
   })
   if (isCakeshop(config.network.cakeshop)) {
-    volumes.push(`  "cakeshopvol":`)
+    volumes.push('  "cakeshopvol":')
   }
   return `
 networks:

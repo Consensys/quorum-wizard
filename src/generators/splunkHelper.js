@@ -36,6 +36,7 @@ function buildSplunkService(config) {
       retries: 20
     ports:
       - "${config.network.splunkPort}:8000"
+      - "${config.network.splunkHecPort}:8088"
     volumes:
       - splunk-var:/opt/splunk/var
       - splunk-etc:/opt/splunk/etc
@@ -115,4 +116,21 @@ export function buildEthloggerService(config) {
     logging: *default-logging`
   })
   return ethloggers
+}
+
+export function getSplunkDefinitions(config) {
+  return `
+x-logging:
+  &default-logging
+  driver: splunk
+  options:
+    splunk-token: 11111111-1111-1111-1111-1111111111113
+    splunk-url: https://localhost:${config.network.splunkHecPort}
+    splunk-index: logs
+    splunk-sourcetype: docker
+    splunk-insecureskipverify: "true"
+    splunk-verify-connection: "false"
+    splunk-format: "raw"
+    tag: "{{.Name}}-{{.ID}}"
+  `
 }
