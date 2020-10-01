@@ -229,7 +229,7 @@ export const GENERATE = {
   type: 'list',
   name: 'generate',
   message: 'Choose from the list of available config.json to generate',
-  choices: getAvailableConfigs(),
+  choices: () => { return getAvailableConfigs()},
 }
 
 export const GENERATE_LOCATION = {

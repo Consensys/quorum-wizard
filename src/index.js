@@ -22,8 +22,8 @@ import {
   createScripts,
   generateResourcesLocally,
   generateResourcesRemote,
-  getFullNetworkPath,
 } from './generators/networkCreator'
+import { getFullNetworkPath } from './generators/networkHelper'
 import { initBash } from './generators/bashHelper'
 import { initDockerCompose, setDockerRegistry } from './generators/dockerHelper'
 import { formatTesseraKeysOutput, loadTesseraPublicKey } from './generators/transactionManager'

@@ -36,7 +36,7 @@ export function createNetwork(config) {
   const networkPath = getFullNetworkPath(config)
   removeFolder(networkPath)
   createFolder(networkPath, true)
-  const configPath = getConfigPath()
+  const configPath = getConfigsPath()
   createFolder(configPath, true)
   writeJsonFile(configPath, `${config.network.name}-config.json`, config)
 }
@@ -183,12 +183,12 @@ export function getFullResourceConfigDir(config) {
   return joinPath(config.network.networkPath, config.network.configDir)
 }
 
-export function getConfigPath(...relativePaths) {
+export function getConfigsPath(...relativePaths) {
   return joinPath(getOutputPath(), 'configs', ...relativePaths)
 }
 
 export function getAvailableConfigs() {
-  const configDir = getConfigPath()
+  const configDir = getConfigsPath()
   const availableConfigs = readDir(configDir) || []
   return [CUSTOM_CONFIG_LOCATION, ...availableConfigs]
 }
