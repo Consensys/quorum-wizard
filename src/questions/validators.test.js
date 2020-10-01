@@ -2,10 +2,16 @@ import {
   disableIfWrongJavaVersion,
   validateNetworkId,
   validateNumberStringInRange,
+  validatePathLength,
 } from './validators'
 import { isJava11Plus } from '../utils/execUtils'
+import { cwd } from '../utils/fileUtils'
+import { TEST_CWD } from '../utils/testHelper'
 
 jest.mock('../utils/execUtils')
+jest.mock('../utils/fileUtils')
+
+cwd.mockReturnValue(TEST_CWD)
 
 test('accepts answer bottom of range', () => {
   expect(validateNumberStringInRange('2', 2, 3)).toBe(true)
@@ -50,4 +56,14 @@ test('Disables java choices based on java version', () => {
   expect(disableIfWrongJavaVersion({ type: 'jar' })).toEqual(false)
   isJava11Plus.mockReturnValue(false)
   expect(disableIfWrongJavaVersion({ type: 'jar' })).toEqual('Disabled, requires Java 11+')
+})
+
+test('Validates network name and path length', () => {
+  expect(validatePathLength('', 'bash')).toEqual('Network name must not be blank.')
+  expect(validatePathLength('valid_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'bash'))
+    .toEqual(true)
+  expect(validatePathLength('invalid_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'bash'))
+    .toEqual('The full path to your network folder is 1 character(s) too long. Please choose a shorter name or re-run the wizard in a different folder with a shorter path.')
+  expect(validatePathLength('invalid_but_is_docker_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'docker-compose'))
+    .toEqual(true)
 })

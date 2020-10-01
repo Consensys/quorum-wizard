@@ -2,6 +2,7 @@ import { Separator } from 'inquirer'
 import {
   validateNetworkId,
   validateNumberStringInRange,
+  validatePathLength,
 } from './validators'
 import {
   getDownloadableGethChoices,
@@ -34,7 +35,6 @@ import {
 } from '../generators/download'
 import { error } from '../utils/log'
 import SCRIPTS from '../generators/scripts'
-import { getFullNetworkPath } from '../generators/networkHelper'
 
 export const INITIAL_MODE = {
   type: 'list',
@@ -198,19 +198,7 @@ export const NETWORK_NAME = {
   type: 'input',
   name: 'name',
   message: 'What would you like to call this network?',
-  validate: (input, answers) => {
-    const trimmed = input.trim()
-    if (trimmed === '') {
-      return 'Network name must not be blank.'
-    }
-    const fullPath = getFullNetworkPath({ network: { name: trimmed } })
-    if (isBash(answers.deployment) && fullPath.length > 88) {
-      // the max path length for unix sockets is 104-108 characters, depending on the os
-      // 88 characters plus /qdata/c1/tm.ipc gets us to 104
-      return `The full path to your network folder is ${fullPath.length - 88} character(s) too long. Please choose a shorter name or re-run the wizard in a different folder with a shorter path.`
-    }
-    return true
-  },
+  validate: (input, answers) => validatePathLength(input, answers.deployment),
   default: (answers) => defaultNetworkName(answers.numberNodes,
     answers.consensus,
     answers.transactionManager,
@@ -226,13 +214,21 @@ export const NETWORK_CONFIRM = {
 
 export const GENERATE_NAME = {
   ...NETWORK_NAME,
-  default: (answers) => {
-    const configPath = answers.generate === CUSTOM_CONFIG_LOCATION
-      ? answers.configLocation
-      : getConfigPath(answers.generate)
-    const json = readJsonFile(configPath)
-    return json.network.name
+  validate: (input, answers) => {
+    const config = loadConfig(answers)
+    return validatePathLength(input, config.network.deployment)
   },
+  default: (answers) => {
+    const config = loadConfig(answers)
+    return config.network.name
+  },
+}
+
+function loadConfig(answers) {
+  const configPath = answers.generate === CUSTOM_CONFIG_LOCATION
+    ? answers.configLocation
+    : getConfigPath(answers.generate)
+  return readJsonFile(configPath)
 }
 
 export const GENERATE = {
