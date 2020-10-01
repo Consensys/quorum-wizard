@@ -1,6 +1,5 @@
 import { createConfigFromAnswers } from './NetworkConfig'
 import { LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
-import { TEST_CWD } from '../utils/testHelper'
 
 jest.mock('../utils/execUtils')
 

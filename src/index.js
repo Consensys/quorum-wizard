@@ -28,7 +28,7 @@ import { initBash } from './generators/bashHelper'
 import { initDockerCompose, setDockerRegistry } from './generators/dockerHelper'
 import { formatTesseraKeysOutput, loadTesseraPublicKey } from './generators/transactionManager'
 import { downloadAndCopyBinaries } from './generators/binaryHelper'
-import { setOutputPath, readJsonFile, getOutputPath } from './utils/fileUtils'
+import { setOutputPath, readJsonFile } from './utils/fileUtils'
 import { wrapScript } from './utils/pathUtils'
 import SCRIPTS from './generators/scripts'
 
