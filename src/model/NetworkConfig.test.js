@@ -1,12 +1,8 @@
 import { createConfigFromAnswers } from './NetworkConfig'
 import { LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
-import { getOutputPath } from '../utils/fileUtils'
 import { TEST_CWD } from '../utils/testHelper'
 
 jest.mock('../utils/execUtils')
-jest.mock('../utils/fileUtils')
-// isJava11Plus.mockReturnValue(true)
-getOutputPath.mockReturnValue(TEST_CWD)
 
 // rather than having big test jsons that we match to, we can just use snapshot
 // tests, where it will compare against the last time you ran and if it's

@@ -12,7 +12,7 @@ export function overrideProcessValue(key, value) {
 }
 
 export function createNetPath(config, ...relativePaths) {
-  return joinPath(getOutputPath(), 'network', config.network.name, ...relativePaths)
+  return joinPath(normalize(getOutputPath()), 'network', config.network.name, ...relativePaths)
 }
 
 export function createLibPath(...relativePaths) {
@@ -20,5 +20,5 @@ export function createLibPath(...relativePaths) {
 }
 
 export function createConfigPath(...relativePaths) {
-  return joinPath(getOutputPath(), 'configs', ...relativePaths)
+  return joinPath(normalize(getOutputPath()), 'configs', ...relativePaths)
 }

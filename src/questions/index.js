@@ -25,7 +25,7 @@ import {
 import {
   getConfigsPath,
 } from '../generators/networkCreator'
-import { exists, getOutputPath } from '../utils/fileUtils'
+import { exists } from '../utils/fileUtils'
 import { getFullNetworkPath } from '../generators/networkHelper'
 
 // eslint-disable-next-line import/prefer-default-export
@@ -105,10 +105,5 @@ async function confirmGenerateNetworkName(answers) {
 }
 
 function networkExists(networkName) {
-  return exists(getFullNetworkPath({
-    network: {
-      name: networkName,
-      networkPath: getOutputPath(),
-    },
-  }))
+  return exists(getFullNetworkPath({ network: { name: networkName } }))
 }

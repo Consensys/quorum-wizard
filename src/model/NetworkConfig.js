@@ -1,13 +1,5 @@
-import {
-  LATEST_CAKESHOP,
-  LATEST_QUORUM,
-  LATEST_TESSERA,
-} from '../generators/download'
-import {
-  getDockerSubnet,
-  cidrhost,
-} from '../utils/subnetUtils'
-import { getOutputPath } from '../utils/fileUtils'
+import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import { cidrhost, getDockerSubnet } from '../utils/subnetUtils'
 
 export function createConfigFromAnswers(answers) {
   const {
