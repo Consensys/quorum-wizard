@@ -28,7 +28,7 @@ import { initBash } from './generators/bashHelper'
 import { initDockerCompose, setDockerRegistry } from './generators/dockerHelper'
 import { formatTesseraKeysOutput, loadTesseraPublicKey } from './generators/transactionManager'
 import { downloadAndCopyBinaries } from './generators/binaryHelper'
-import { setOutputPath, readJsonFile } from './utils/fileUtils'
+import { setOutputPath, readJsonFile, getOutputPath } from './utils/fileUtils'
 import { wrapScript } from './utils/pathUtils'
 import SCRIPTS from './generators/scripts'
 
@@ -69,7 +69,9 @@ setOutputPath(argv.o)
 if (argv.q) {
   buildNetwork('quickstart')
 } else if (argv.config) {
-  generateNetwork(argv.config)
+  const c = argv.config 
+  c.network.networkPath = getOutputPath()
+  generateNetwork(c)
 } else if (argv._[0] === 'generate') {
   regenerateNetwork()
 } else {
@@ -91,6 +93,7 @@ async function regenerateNetwork() {
   try {
     const config = readJsonFile(ans.configLocation)
     config.network.name = ans.name
+    config.network.networkPath = getOutputPath()
     checkValidConfig(config)
     generateNetwork(config)
   } catch (e) {
