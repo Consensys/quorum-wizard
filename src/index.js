@@ -69,9 +69,7 @@ setOutputPath(argv.o)
 if (argv.q) {
   buildNetwork('quickstart')
 } else if (argv.config) {
-  const c = argv.config 
-  c.network.networkPath = getOutputPath()
-  generateNetwork(c)
+  generateNetwork(argv.config)
 } else if (argv._[0] === 'generate') {
   regenerateNetwork()
 } else {
@@ -93,7 +91,6 @@ async function regenerateNetwork() {
   try {
     const config = readJsonFile(ans.configLocation)
     config.network.name = ans.name
-    config.network.networkPath = getOutputPath()
     checkValidConfig(config)
     generateNetwork(config)
   } catch (e) {

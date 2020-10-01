@@ -180,7 +180,7 @@ function createPeerList(nodes, transactionManager) {
 }
 
 export function getFullResourceConfigDir(config) {
-  return joinPath(config.network.networkPath, config.network.configDir)
+  return joinPath(getOutputPath(), config.network.configDir)
 }
 
 export function getConfigsPath(...relativePaths) {
