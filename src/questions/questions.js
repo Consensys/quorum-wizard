@@ -2,6 +2,7 @@ import { Separator } from 'inquirer'
 import {
   validateNetworkId,
   validateNumberStringInRange,
+  validatePathLength,
 } from './validators'
 import {
   getDownloadableGethChoices,
@@ -197,7 +198,7 @@ export const NETWORK_NAME = {
   type: 'input',
   name: 'name',
   message: 'What would you like to call this network?',
-  validate: (input) => input.trim() !== '' || 'Network name must not be blank.',
+  validate: (input, answers) => validatePathLength(input, answers.deployment),
   default: (answers) => defaultNetworkName(answers.numberNodes,
     answers.consensus,
     answers.transactionManager,
@@ -212,17 +213,22 @@ export const NETWORK_CONFIRM = {
 }
 
 export const GENERATE_NAME = {
-  type: 'input',
-  name: 'name',
-  message: 'What would you like to call this network?',
-  validate: (input) => input.trim() !== '' || 'Network name must not be blank.',
-  default: (answers) => {
-    const configPath = answers.generate === CUSTOM_CONFIG_LOCATION
-      ? answers.configLocation
-      : getConfigsPath(answers.generate)
-    const json = readJsonFile(configPath)
-    return json.network.name
+  ...NETWORK_NAME,
+  validate: (input, answers) => {
+    const config = loadConfig(answers)
+    return validatePathLength(input, config.network.deployment)
   },
+  default: (answers) => {
+    const config = loadConfig(answers)
+    return config.network.name
+  },
+}
+
+function loadConfig(answers) {
+  const configPath = answers.generate === CUSTOM_CONFIG_LOCATION
+    ? answers.configLocation
+    : getConfigsPath(answers.generate)
+  return readJsonFile(configPath)
 }
 
 export const GENERATE = {
