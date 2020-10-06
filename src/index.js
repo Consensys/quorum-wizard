@@ -42,7 +42,7 @@ const { argv } = yargs
   .alias('v', 'verbose')
   .describe('v', 'Turn on additional logs for debugging')
   .alias('o', 'outputPath')
-  .describe('o', 'Set path to network output folder')
+  .describe('o', 'Set the output path. Wizard will place all generated files into this folder. Defaults to the location where Wizard is run.')
   .string('o')
   .command('generate', '--config path to config.json', () => yargs.option('config', {
     desc: 'path to config.json',
