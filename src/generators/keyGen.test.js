@@ -9,7 +9,7 @@ import { execute } from '../utils/execUtils'
 import {
   createFolder,
   writeFile,
-  cwd,
+  getOutputPath,
 } from '../utils/fileUtils'
 import {
   TEST_CWD,
@@ -21,7 +21,7 @@ jest.mock('./binaryHelper')
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
 jest.mock('../utils/log')
-cwd.mockReturnValue(TEST_CWD)
+getOutputPath.mockReturnValue(TEST_CWD)
 info.mockReturnValue('log')
 
 describe('generates keys', () => {

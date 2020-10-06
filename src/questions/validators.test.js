@@ -5,13 +5,13 @@ import {
   validatePathLength,
 } from './validators'
 import { isJava11Plus } from '../utils/execUtils'
-import { cwd } from '../utils/fileUtils'
+import { getOutputPath } from '../utils/fileUtils'
 import { TEST_CWD } from '../utils/testHelper'
 
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
 
-cwd.mockReturnValue(TEST_CWD)
+getOutputPath.mockReturnValue(TEST_CWD)
 
 test('accepts answer bottom of range', () => {
   expect(validateNumberStringInRange('2', 2, 3)).toBe(true)

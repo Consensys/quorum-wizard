@@ -19,7 +19,7 @@ import {
 
 import {
   getAvailableConfigs,
-  getConfigPath,
+  getConfigsPath,
 } from '../generators/networkCreator'
 import {
   executeSync, isWindows, isWin32, isJava11Plus,
@@ -227,7 +227,7 @@ export const GENERATE_NAME = {
 function loadConfig(answers) {
   const configPath = answers.generate === CUSTOM_CONFIG_LOCATION
     ? answers.configLocation
-    : getConfigPath(answers.generate)
+    : getConfigsPath(answers.generate)
   return readJsonFile(configPath)
 }
 
@@ -235,7 +235,7 @@ export const GENERATE = {
   type: 'list',
   name: 'generate',
   message: 'Choose from the list of available config.json to generate',
-  choices: getAvailableConfigs(),
+  choices: () => { return getAvailableConfigs()},
 }
 
 export const GENERATE_LOCATION = {

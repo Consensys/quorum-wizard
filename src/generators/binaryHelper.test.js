@@ -16,7 +16,7 @@ import {
   isJava11Plus,
 } from '../utils/execUtils'
 import {
-  cwd,
+  getOutputPath,
   libRootDir,
   wizardHomeDir,
 } from '../utils/fileUtils'
@@ -39,7 +39,7 @@ jest.mock('../generators/download')
 jest.mock('../utils/execUtils')
 jest.mock('../utils/fileUtils')
 jest.mock('../utils/log')
-cwd.mockReturnValue(TEST_CWD)
+getOutputPath.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 wizardHomeDir.mockReturnValue(TEST_WIZARD_HOME_DIR)
 downloadIfMissing.mockReturnValue(Promise.resolve())

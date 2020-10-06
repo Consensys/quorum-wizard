@@ -1,5 +1,5 @@
+import { getOutputPath, libRootDir } from './fileUtils'
 import { normalize } from 'path'
-import { cwd, libRootDir } from './fileUtils'
 import { joinPath } from './pathUtils'
 
 export const TEST_CWD = '/current/working/dir'
@@ -12,7 +12,7 @@ export function overrideProcessValue(key, value) {
 }
 
 export function createNetPath(config, ...relativePaths) {
-  return joinPath(normalize(cwd()), 'network', config.network.name, ...relativePaths)
+  return joinPath(normalize(getOutputPath()), 'network', config.network.name, ...relativePaths)
 }
 
 export function createLibPath(...relativePaths) {
@@ -20,5 +20,5 @@ export function createLibPath(...relativePaths) {
 }
 
 export function createConfigPath(...relativePaths) {
-  return joinPath(cwd(), 'configs', ...relativePaths)
+  return joinPath(normalize(getOutputPath()), 'configs', ...relativePaths)
 }

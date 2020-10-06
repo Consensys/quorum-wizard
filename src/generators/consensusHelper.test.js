@@ -4,7 +4,7 @@ import {
 } from './consensusHelper'
 import nodekeyToAccount from '../utils/accountHelper'
 import {
-  cwd,
+  getOutputPath,
   libRootDir,
   readFileToString,
   wizardHomeDir,
@@ -22,7 +22,7 @@ import { joinPath } from '../utils/pathUtils'
 jest.mock('../utils/fileUtils')
 jest.mock('../utils/accountHelper')
 jest.mock('../utils/execUtils')
-cwd.mockReturnValue(TEST_CWD)
+getOutputPath.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 wizardHomeDir.mockReturnValue(TEST_WIZARD_HOME_DIR)
 

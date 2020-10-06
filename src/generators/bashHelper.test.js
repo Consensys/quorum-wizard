@@ -6,6 +6,7 @@ import {
 import { createConfigFromAnswers } from '../model/NetworkConfig'
 import {
   cwd,
+  getOutputPath,
   libRootDir,
   readFileToString,
   writeFile,
@@ -29,7 +30,7 @@ jest.mock('../utils/fileUtils')
 jest.mock('./consensusHelper')
 jest.mock('../utils/execUtils')
 jest.mock('../utils/log')
-cwd.mockReturnValue(TEST_CWD)
+getOutputPath.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 wizardHomeDir.mockReturnValue(TEST_WIZARD_HOME_DIR)
 generateAccounts.mockReturnValue('accounts')
