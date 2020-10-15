@@ -105,3 +105,21 @@ test('creates 7nodes istanbul docker generate keys with cakeshop', () => {
   const kubernetes = buildKubernetesResource(config)
   expect(kubernetes).toMatchSnapshot()
 })
+
+test('creates 7nodes istanbul kubernetes generate keys with cakeshop and prometheus', () => {
+  const config = createConfigFromAnswers({
+    ...baseNetwork,
+    numberNodes: '7',
+    deployment: 'kubernetes',
+    consensus: 'istanbul',
+    tools: ['cakeshop', 'prometheus'],
+    cakeshopPort: 8999,
+    generateKeys: true,
+    containerPorts: {
+      dockerSubnet: '172.16.239.0/24',
+      ...containerPortInfo,
+    },
+  })
+  const kubernetes = buildKubernetesResource(config)
+  expect(kubernetes).toMatchSnapshot()
+})
