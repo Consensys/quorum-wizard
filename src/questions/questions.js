@@ -158,6 +158,16 @@ export const TOOLS = {
         return false
       },
     },
+      {
+        name: 'Prometheus - prometheus geth monitoring',
+        value: 'prometheus',
+        disabled: () => {
+          if (!isKubernetes(answers.deployment)) {
+            return 'Disabled, Prometheus is only available with kubernetes'
+          }
+          return false
+        },
+    },
   ]),
   default: [],
 }

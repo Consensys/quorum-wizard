@@ -26,6 +26,7 @@ export function createConfigFromAnswers(answers) {
   const dockerSubnet = (isDocker(deployment) && containerPorts !== undefined) ? containerPorts.dockerSubnet : ''
   const cakeshop = tools.includes('cakeshop') ? LATEST_CAKESHOP : 'none'
   const splunk = tools.includes('splunk')
+  const prometheus = tools.includes('prometheus')
   return {
     network: {
       name: networkFolder,
@@ -40,6 +41,7 @@ export function createConfigFromAnswers(answers) {
       deployment,
       cakeshop,
       splunk,
+      prometheus,
       networkId,
       customizePorts,
       cakeshopPort,

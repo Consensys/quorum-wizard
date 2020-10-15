@@ -8,6 +8,7 @@ export function buildKubernetesResource(config) {
   return [
     buildKubernetesDetails(config),
     buildCakeshopDetails(config),
+    buildPrometheusDetails(config),
     buildGenesisDetails(config),
     buildNodesDetails(config)
   ].join('')
@@ -97,7 +98,7 @@ cakeshop:
 }
 
 function buildPrometheusDetails(config) {
-  if (!isPrometheus(config.network.prometheus)) {
+  if (!config.network.prometheus) {
     return ''
   }
   return `

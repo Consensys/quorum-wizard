@@ -156,10 +156,7 @@ function printInstructions(config) {
   }
   if (isKubernetes(config.network.deployment)) {
     info('A script to retrieve the quorum rpc and tessera 3rd party endpoints to use with remix or cakeshop is provided')
-    if (isCakeshop(config.network.cakeshop)) {
-      info('You will be able to get the cakeshop url by running the below script for any node')
-    }
-    info(`To use run ${wrapScript(SCRIPTS.getEndpoints.filename)}  from the network folder`)
+    info(`To use run ${wrapScript(SCRIPTS.getEndpoints.filename)} from the network folder after starting`)
     info('')
   }
   if(isCakeshop(config.network.cakeshop)) {
@@ -168,6 +165,10 @@ function printInstructions(config) {
     } else {
       info(`After starting, Cakeshop will be accessible here: http://localhost:${config.network.cakeshopPort}`)
     }
+    info('')
+  }
+  if(config.network.prometheus) {
+    info('After starting, run ./getEndpoints on any node to get the Prometheus url')
     info('')
   }
   if(config.network.splunk) {

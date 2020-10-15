@@ -46,6 +46,14 @@ then
   CAKESHOP_PORT=$(kubectl get service cakeshop-service -o=jsonpath='{range.spec.ports[?(@.name=="http")]}{.nodePort}')
   echo cakeshop: http://$IP_ADDRESS:$CAKESHOP_PORT
 fi
+
+kubectl get service quorum-monitor > /dev/null 2>&1
+EXIT_CODE=$?
+if [ $EXIT_CODE -eq 0 ];
+then
+  PROMETHEUS_PORT=$(kubectl get service quorum-monitor -o=jsonpath='{range.spec.ports[?(@.name=="prometheus")]}{.nodePort}')
+  echo prometheus: http://$IP_ADDRESS:$PROMETHEUS_PORT
+fi
 `
 }
 
@@ -73,5 +81,11 @@ kubectl get service cakeshop-service >nul 2>&1
 if ERRORLEVEL 1 (
   FOR /F "tokens=* USEBACKQ" %%g IN (\`kubectl get service cakeshop-service -o^=jsonpath^="{range.spec.ports[?(@.name=='http')]}{.nodePort}"\`) DO set CAKESHOP_PORT=%%g
   echo cakeshop: http://%IP_ADDRESS%:%CAKESHOP_PORT%
+)
+
+kubectl get service quorum-monitor >nul 2>&1
+if ERRORLEVEL 1 (
+  FOR /F "tokens=* USEBACKQ" %%g IN (\`kubectl get service quorum-monitor -o^=jsonpath^="{range.spec.ports[?(@.name=='prometheus')]}{.nodePort}"\`) DO set PROMETHEUS_PORT=%%g
+  echo prometheus: http://%IP_ADDRESS%:%PROMETHEUS_PORT%
 )`
 }
