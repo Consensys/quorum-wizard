@@ -56,7 +56,6 @@ function buildQuorumDetails(config) {
     quorum:
       quorum:
         consensus: ${config.network.consensus}
-        Raft_Port: ${config.containerPorts.quorum.raftPort}
         Quorum_Version: ${config.network.quorumVersion}
         Docker_Repo: ${getDockerRegistry()}quorumengineering`
 }
@@ -64,8 +63,6 @@ function buildQuorumDetails(config) {
 function buildGethDetails(config) {
   return `
     geth:
-      Node_RPCPort: ${config.containerPorts.quorum.rpcPort}
-      NodeP2P_ListenAddr: ${config.containerPorts.quorum.p2pPort}
       network:
         id: ${config.network.networkId}
         public: false
@@ -79,8 +76,6 @@ function buildTesseraDetails(config) {
         Name: tessera
         Tm_Version: ${config.network.transactionManager}
         Docker_Repo: ${getDockerRegistry()}quorumengineering
-        Port: ${config.containerPorts.tm.p2pPort}
-        3Party_Port: ${config.containerPorts.tm.thirdPartyPort}
         Tessera_Config_Dir: out/config`
 }
 
