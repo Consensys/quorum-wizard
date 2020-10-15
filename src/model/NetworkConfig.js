@@ -109,13 +109,13 @@ export function getContainerPorts(deployment) {
     dockerSubnet,
     quorum: {
       rpcPort: 8545,
-      p2pPort: 21000,
-      raftPort: 50400,
-      wsPort: 8645,
+      p2pPort: 30303,
+      raftPort: 50401,
+      wsPort: 8546,
       graphQlPort: 8547,
     },
     tm: {
-      p2pPort: 9000,
+      p2pPort: 9001,
       thirdPartyPort: 9080,
     },
   }
