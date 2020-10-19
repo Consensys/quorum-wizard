@@ -17,6 +17,16 @@ import { joinPath, verifyPathInsideDirectory } from './pathUtils'
 // Go up two folders and cache that path for later use
 const libRoot = resolve(__dirname, '../..')
 
+let outputPath
+
+export function setOutputPath(path) {
+  outputPath = path
+}
+
+export function getOutputPath() {
+  return (outputPath !== undefined) ? outputPath : cwd()
+}
+
 export function cwd() {
   return process.cwd()
 }
@@ -57,7 +67,7 @@ export function writeScript(networkPath, config, script) {
 }
 
 export function removeFolder(networkPath = '') {
-  verifyPathInsideDirectory(cwd(), networkPath)
+  verifyPathInsideDirectory(getOutputPath(), networkPath)
 
   if (exists(networkPath)) {
     removeSync(networkPath)

@@ -2,7 +2,6 @@ import {
   copyDirectory,
   copyFile,
   createFolder,
-  cwd,
   libRootDir,
   readFileToString,
   removeFolder,
@@ -10,6 +9,7 @@ import {
   readDir,
   writeJsonFile,
   writeScript,
+  getOutputPath,
 } from '../utils/fileUtils'
 import { generateKeys } from './keyGen'
 import { generateConsensusConfig } from '../model/ConsensusConfig'
@@ -36,14 +36,14 @@ export function createNetwork(config) {
   const networkPath = getFullNetworkPath(config)
   removeFolder(networkPath)
   createFolder(networkPath, true)
-  const configPath = getConfigPath()
+  const configPath = getConfigsPath()
   createFolder(configPath, true)
   writeJsonFile(configPath, `${config.network.name}-config.json`, config)
 }
 
 export function generateResourcesRemote(config) {
   info('Pulling docker container and generating network resources...')
-  const configDir = joinPath(cwd(), config.network.configDir)
+  const configDir = getFullResourceConfigDir(config)
   const networkPath = getFullNetworkPath(config)
   const remoteOutputDir = joinPath(networkPath, 'out', 'config')
 
@@ -85,7 +85,7 @@ export function generateResourcesRemote(config) {
 
 export async function generateResourcesLocally(config) {
   info('Generating network resources locally...')
-  const configDir = joinPath(cwd(), config.network.configDir)
+  const configDir = getFullResourceConfigDir(config)
   createFolder(configDir, true)
 
   if (config.network.generateKeys) {
@@ -113,7 +113,7 @@ export function createQdataDirectory(config) {
   const logs = joinPath(qdata, 'logs')
   createFolder(logs, true)
 
-  const configPath = joinPath(cwd(), config.network.configDir)
+  const configPath = getFullResourceConfigDir(config)
 
   const peerList = createPeerList(config.nodes, config.network.transactionManager)
 
@@ -179,12 +179,16 @@ function createPeerList(nodes, transactionManager) {
   return nodes.map((node) => ({ url: `http://${node.tm.ip}:${node.tm.p2pPort}` }))
 }
 
-export function getConfigPath(...relativePaths) {
-  return joinPath(cwd(), 'configs', ...relativePaths)
+export function getFullResourceConfigDir(config) {
+  return joinPath(getOutputPath(), config.network.configDir)
+}
+
+export function getConfigsPath(...relativePaths) {
+  return joinPath(getOutputPath(), 'configs', ...relativePaths)
 }
 
 export function getAvailableConfigs() {
-  const configDir = getConfigPath()
+  const configDir = getConfigsPath()
   const availableConfigs = readDir(configDir) || []
   return [CUSTOM_CONFIG_LOCATION, ...availableConfigs]
 }

@@ -20,9 +20,10 @@ import {
   NETWORK_NAME,
   QUESTIONS,
   GENERATE_QUESTIONS,
+  GENERATE_NAME,
 } from './questions'
 import {
-  getConfigPath,
+  getConfigsPath,
 } from '../generators/networkCreator'
 import { exists } from '../utils/fileUtils'
 import { getFullNetworkPath } from '../generators/networkHelper'
@@ -72,10 +73,10 @@ export async function promptGenerate() {
   const answers = await inquirer.prompt(GENERATE_QUESTIONS)
 
   if (answers.name) {
-    await confirmNetworkName(answers)
+    await confirmGenerateNetworkName(answers)
   }
   if (answers.generate !== CUSTOM_CONFIG_LOCATION) {
-    answers.configLocation = getConfigPath(answers.generate)
+    answers.configLocation = getConfigsPath(answers.generate)
   }
 
   return answers
@@ -88,6 +89,17 @@ async function confirmNetworkName(answers) {
     if (overwrite === false) {
       delete answers.name
       answers.name = (await inquirer.prompt([NETWORK_NAME], answers)).name
+    }
+  }
+}
+
+async function confirmGenerateNetworkName(answers) {
+  let overwrite = false
+  while (networkExists(answers.name) && !overwrite) {
+    overwrite = (await inquirer.prompt([NETWORK_CONFIRM], answers)).overwrite
+    if (overwrite === false) {
+      delete answers.name
+      answers.name = (await inquirer.prompt([GENERATE_NAME], answers)).name
     }
   }
 }

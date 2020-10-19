@@ -17,7 +17,7 @@ import {
 import {
   copyFile,
   createFolder,
-  cwd,
+  getOutputPath,
   libRootDir,
   readFileToString,
   writeJsonFile,
@@ -48,7 +48,7 @@ jest.mock('../model/ConsensusConfig')
 jest.mock('../model/ResourceConfig')
 jest.mock('./keyGen')
 
-cwd.mockReturnValue(TEST_CWD)
+getOutputPath.mockReturnValue(TEST_CWD)
 libRootDir.mockReturnValue(TEST_LIB_ROOT_DIR)
 buildKubernetesResource.mockReturnValue('qubernetes')
 

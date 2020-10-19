@@ -23,11 +23,12 @@ import {
   generateResourcesLocally,
   generateResourcesRemote,
 } from './generators/networkCreator'
+import { getFullNetworkPath } from './generators/networkHelper'
 import { initBash } from './generators/bashHelper'
 import { initDockerCompose, setDockerRegistry } from './generators/dockerHelper'
 import { formatTesseraKeysOutput, loadTesseraPublicKey } from './generators/transactionManager'
 import { downloadAndCopyBinaries } from './generators/binaryHelper'
-import { readJsonFile } from './utils/fileUtils'
+import { setOutputPath, readJsonFile } from './utils/fileUtils'
 import { wrapScript } from './utils/pathUtils'
 import SCRIPTS from './generators/scripts'
 
@@ -40,6 +41,9 @@ const { argv } = yargs
   .boolean('v')
   .alias('v', 'verbose')
   .describe('v', 'Turn on additional logs for debugging')
+  .alias('o', 'outputPath')
+  .describe('o', 'Set the output path. Wizard will place all generated files into this folder. Defaults to the location where Wizard is run.')
+  .string('o')
   .command('generate', '--config path to config.json', () => yargs.option('config', {
     desc: 'path to config.json',
   })
@@ -59,6 +63,8 @@ const { argv } = yargs
 createLogger(argv.v)
 debug('Showing debug logs')
 setDockerRegistry(argv.r)
+
+setOutputPath(argv.o)
 
 if (argv.q) {
   buildNetwork('quickstart')
@@ -143,7 +149,7 @@ function printInstructions(config) {
   }
   info('Run the following commands to start your network:')
   info('')
-  info(`cd network/${config.network.name}`)
+  info(`cd ${getFullNetworkPath(config)}`)
   info(`${wrapScript(SCRIPTS.start.filename)}`)
   info('')
   info('A sample simpleStorage contract is provided to deploy to your network')
