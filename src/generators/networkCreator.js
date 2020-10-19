@@ -53,7 +53,7 @@ export function generateResourcesRemote(config) {
 
   const qubeScript = isKubernetes(config.network.deployment) ? './qubernetes qubernetes.yaml' : ''
   const generateScript = !config.network.generateKeys ? 'cp -r /qubernetes/7nodes /qubernetes/out/config; ./quorum-config qubernetes.yaml; ' : './quorum-init --action=create qubernetes.yaml;'
-  const qubernetesImage = `${getDockerRegistry()}apratt3377/cakeshoptest`
+  const qubernetesImage = `${getDockerRegistry()}quorumengineering/qubernetes:${LATEST_QUBERNETES}`
   const outPath = joinPath(networkPath, 'out')
   const dockerCommands = [
     `cd ${networkPath}`,
