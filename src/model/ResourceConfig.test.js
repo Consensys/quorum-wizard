@@ -4,7 +4,7 @@ import {
   TEST_CWD,
 } from '../utils/testHelper'
 import { buildKubernetesResource } from './ResourceConfig'
-import { LATEST_QUORUM, LATEST_TESSERA} from '../generators/download'
+import { LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
 import { getDockerRegistry } from '../generators/dockerHelper'
 
 jest.mock('../utils/fileUtils')

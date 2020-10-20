@@ -10,7 +10,7 @@ export function buildKubernetesResource(config) {
     buildCakeshopDetails(config),
     buildPrometheusDetails(config),
     buildGenesisDetails(config),
-    buildNodesDetails(config)
+    buildNodesDetails(config),
   ].join('')
 }
 
@@ -23,11 +23,11 @@ genesis:
 }
 
 function buildGeneralDetails(config, i) {
-  const nodeName = !isKubernetes(config.network.deployment) ? `"%QUORUM-NODE${i+1}_SERVICE_HOST%"` : `quorum-node${i+1}`
+  const nodeName = !isKubernetes(config.network.deployment) ? `"%QUORUM-NODE${i + 1}_SERVICE_HOST%"` : `quorum-node${i + 1}`
   return `
   - Node_UserIdent: ${nodeName}
     Key_Dir_Base: ${config.network.generateKeys ? 'out/config' : '7nodes'}
-    Key_Dir: key${i+1}
+    Key_Dir: key${i + 1}
     Permissioned_Nodes_File: out/config/permissioned-nodes.json`
 }
 
@@ -103,7 +103,7 @@ prometheus:
   nodePort_prom: 31323`
 }
 
-function buildKubernetesDetails(config) {
+function buildKubernetesDetails() {
   return `
 k8s:
   sep_deployment_files: true

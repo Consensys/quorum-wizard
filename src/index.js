@@ -165,7 +165,7 @@ function printInstructions(config) {
     info(`To use run ${wrapScript(SCRIPTS.getEndpoints.filename)} from the network folder after starting`)
     info('')
   }
-  if(isCakeshop(config.network.cakeshop)) {
+  if (isCakeshop(config.network.cakeshop)) {
     if (isKubernetes(config.network.deployment)) {
       info('After starting, run ./getEndpoints on any node to get the Cakeshop url')
     } else {
@@ -173,11 +173,11 @@ function printInstructions(config) {
     }
     info('')
   }
-  if(config.network.prometheus) {
+  if (config.network.prometheus) {
     info('After starting, run ./getEndpoints on any node to get the Prometheus url')
     info('')
   }
-  if(config.network.splunk) {
+  if (config.network.splunk) {
     info(`After starting, Splunk will be accessible here: http://localhost:${config.network.splunkPort}`)
     info('The default credentials are admin:changeme')
     info('')
