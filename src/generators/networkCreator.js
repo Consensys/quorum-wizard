@@ -51,15 +51,15 @@ export function generateResourcesRemote(config) {
   const qubernetesYamlPath = joinPath(networkPath, 'qubernetes.yaml')
   writeFile(qubernetesYamlPath, file, false)
 
-  const initScript = isKubernetes(config.network.deployment) ? 'qube-init' : 'quorum-init'
-  const copy7nodes = !config.network.generateKeys ? 'cp -r /qubernetes/7nodes /qubernetes/out/config; ' : ''
+  const qubeScript = isKubernetes(config.network.deployment) ? './qubernetes qubernetes.yaml' : ''
+  const generateScript = !config.network.generateKeys ? 'cp -r /qubernetes/7nodes /qubernetes/out/config; ./quorum-config qubernetes.yaml; ' : './quorum-init --action=create qubernetes.yaml;'
   const qubernetesImage = `${getDockerRegistry()}quorumengineering/qubernetes:${LATEST_QUBERNETES}`
   const outPath = joinPath(networkPath, 'out')
   const dockerCommands = [
     `cd ${networkPath}`,
     `docker pull ${qubernetesImage}`,
     // docker volumes using C:\folder\ style paths cause problems, convert to /c/folder/ on windows
-    `docker run --rm -v ${unixifyPath(qubernetesYamlPath)}:/qubernetes/qubernetes.yaml -v ${unixifyPath(outPath)}:/qubernetes/out ${qubernetesImage} /bin/bash -c "${copy7nodes}./${initScript} --action=update qubernetes.yaml"`,
+    `docker run --rm -v ${unixifyPath(qubernetesYamlPath)}:/qubernetes/qubernetes.yaml -v ${unixifyPath(outPath)}:/qubernetes/out ${qubernetesImage} /bin/bash -c "${generateScript} ${qubeScript}"`,
   ]
 
   try {

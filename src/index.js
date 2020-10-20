@@ -162,14 +162,22 @@ function printInstructions(config) {
   }
   if (isKubernetes(config.network.deployment)) {
     info('A script to retrieve the quorum rpc and tessera 3rd party endpoints to use with remix or cakeshop is provided')
-    info(`To use run ${wrapScript(SCRIPTS.getEndpoints.filename)}  from the network folder`)
+    info(`To use run ${wrapScript(SCRIPTS.getEndpoints.filename)} from the network folder after starting`)
     info('')
   }
-  if (isCakeshop(config.network.cakeshop)) {
-    info(`After starting, Cakeshop will be accessible here: http://localhost:${config.network.cakeshopPort}`)
+  if(isCakeshop(config.network.cakeshop)) {
+    if (isKubernetes(config.network.deployment)) {
+      info('After starting, run ./getEndpoints on any node to get the Cakeshop url')
+    } else {
+      info(`After starting, Cakeshop will be accessible here: http://localhost:${config.network.cakeshopPort}`)
+    }
     info('')
   }
-  if (config.network.splunk) {
+  if(config.network.prometheus) {
+    info('After starting, run ./getEndpoints on any node to get the Prometheus url')
+    info('')
+  }
+  if(config.network.splunk) {
     info(`After starting, Splunk will be accessible here: http://localhost:${config.network.splunkPort}`)
     info('The default credentials are admin:changeme')
     info('')

@@ -15,7 +15,7 @@ export function createConfigFromAnswers(answers) {
     genesisLocation = 'none',
     customizePorts = false,
     nodes = [],
-    cakeshopPort = '8999',
+    cakeshopPort = isKubernetes(deployment) ? '30108' : '8999',
     splunkPort = '8000',
     splunkHecPort = '8088',
     remoteDebug = false,
@@ -26,6 +26,7 @@ export function createConfigFromAnswers(answers) {
   const dockerSubnet = (isDocker(deployment) && containerPorts !== undefined) ? containerPorts.dockerSubnet : ''
   const cakeshop = tools.includes('cakeshop') ? LATEST_CAKESHOP : 'none'
   const splunk = tools.includes('splunk')
+  const prometheus = tools.includes('prometheus')
   return {
     network: {
       name: networkFolder,
@@ -40,6 +41,7 @@ export function createConfigFromAnswers(answers) {
       deployment,
       cakeshop,
       splunk,
+      prometheus,
       networkId,
       customizePorts,
       cakeshopPort,
@@ -52,7 +54,6 @@ export function createConfigFromAnswers(answers) {
       numberNodes,
       transactionManager,
       deployment,
-      cakeshop,
       dockerSubnet,
     ),
     containerPorts,
@@ -70,7 +71,6 @@ export function generateNodeConfigs(
   numberNodes,
   transactionManager,
   deployment,
-  cakeshop,
   dockerSubnet,
 ) {
   const devP2pPort = 21000
@@ -111,13 +111,13 @@ export function getContainerPorts(deployment) {
     dockerSubnet,
     quorum: {
       rpcPort: 8545,
-      p2pPort: 21000,
-      raftPort: 50400,
-      wsPort: 8645,
+      p2pPort: 30303,
+      raftPort: 50401,
+      wsPort: 8546,
       graphQlPort: 8547,
     },
     tm: {
-      p2pPort: 9000,
+      p2pPort: 9001,
       thirdPartyPort: 9080,
     },
   }
