@@ -51,15 +51,19 @@ export function generateResourcesRemote(config) {
   const qubernetesYamlPath = joinPath(networkPath, 'qubernetes.yaml')
   writeFile(qubernetesYamlPath, file, false)
 
-  const qubeScript = isKubernetes(config.network.deployment) ? './qubernetes qubernetes.yaml' : ''
-  const generateScript = !config.network.generateKeys ? 'cp -r /qubernetes/7nodes /qubernetes/out/config; ./quorum-config qubernetes.yaml; ' : './quorum-init --action=create qubernetes.yaml;'
+  const qubeScript = isKubernetes(config.network.deployment) ? './qubernetes qubernetes.yaml;' : ''
+  const generateScript = !config.network.generateKeys ? 'cp -r /qubernetes/7nodes /qubernetes/out/config; ./quorum-config qubernetes.yaml;' : './quorum-init --action=create qubernetes.yaml;'
+  // dockerd may run as root, so all the files created in the volumes will be owned by root
+  // fix this by passing in the user/group ids from the host's user and chown the whole directory
+  // $(id -u):$(id -g) will be evaluated first, so in the container will look like 1000:1000
+  const fixPermissionsScript = 'chown -R $(id -u):$(id -g) /qubernetes/out; '
   const qubernetesImage = `${getDockerRegistry()}quorumengineering/qubernetes:${LATEST_QUBERNETES}`
   const outPath = joinPath(networkPath, 'out')
   const dockerCommands = [
     `cd ${networkPath}`,
     `docker pull ${qubernetesImage}`,
     // docker volumes using C:\folder\ style paths cause problems, convert to /c/folder/ on windows
-    `docker run --rm -v ${unixifyPath(qubernetesYamlPath)}:/qubernetes/qubernetes.yaml -v ${unixifyPath(outPath)}:/qubernetes/out ${qubernetesImage} /bin/bash -c "${generateScript} ${qubeScript}"`,
+    `docker run --rm -v ${unixifyPath(qubernetesYamlPath)}:/qubernetes/qubernetes.yaml -v ${unixifyPath(outPath)}:/qubernetes/out ${qubernetesImage} /bin/bash -c "${generateScript} ${qubeScript} ${fixPermissionsScript}"`,
   ]
 
   try {

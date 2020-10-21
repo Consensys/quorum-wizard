@@ -5,7 +5,6 @@ import {
 } from './bashHelper'
 import { createConfigFromAnswers } from '../model/NetworkConfig'
 import {
-  cwd,
   getOutputPath,
   libRootDir,
   readFileToString,

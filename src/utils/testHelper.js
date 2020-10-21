@@ -1,5 +1,5 @@
-import { getOutputPath, libRootDir } from './fileUtils'
 import { normalize } from 'path'
+import { getOutputPath, libRootDir } from './fileUtils'
 import { joinPath } from './pathUtils'
 
 export const TEST_CWD = '/current/working/dir'

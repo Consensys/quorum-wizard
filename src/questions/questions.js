@@ -82,8 +82,12 @@ export const DEPLOYMENT_TYPE = {
     try {
       executeSync('docker info 2>&1')
     } catch (e) {
-      // any error means docker isn't running
-      dockerDisabled = 'Disabled, docker must be running on your machine'
+      const errorMessage = e.stdout.toString()
+      if (errorMessage.indexOf('permission denied') >= 0) {
+        dockerDisabled = 'Disabled, unable to run docker commands as the current user'
+      } else {
+        dockerDisabled = 'Disabled, docker must be running on your machine'
+      }
     }
 
     const bashDisabled = isWindows() ? 'Disabled, Bash not supported on Windows systems' : false
@@ -159,15 +163,15 @@ export const TOOLS = {
         return false
       },
     },
-      {
-        name: 'Prometheus - prometheus geth monitoring',
-        value: 'prometheus',
-        disabled: () => {
-          if (!isKubernetes(answers.deployment)) {
-            return 'Disabled, Prometheus is only available with kubernetes'
-          }
-          return false
-        },
+    {
+      name: 'Prometheus - prometheus geth monitoring',
+      value: 'prometheus',
+      disabled: () => {
+        if (!isKubernetes(answers.deployment)) {
+          return 'Disabled, Prometheus is only available with kubernetes'
+        }
+        return false
+      },
     },
   ]),
   default: [],
@@ -244,7 +248,7 @@ export const GENERATE = {
   type: 'list',
   name: 'generate',
   message: 'Choose from the list of available config.json to generate',
-  choices: () => { return getAvailableConfigs()},
+  choices: () => getAvailableConfigs(),
 }
 
 export const GENERATE_LOCATION = {
