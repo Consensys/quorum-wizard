@@ -26,7 +26,7 @@ function attachCommand(config) {
 
 export function attachCommandBash(config) {
   return `${setEnvironmentCommand(config)}
-$BIN_GETH attach qdata/dd$1/geth.ipc`
+"$BIN_GETH" attach qdata/dd$1/geth.ipc`
 }
 
 function attachCommandDockerWindows() {

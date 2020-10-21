@@ -30,14 +30,14 @@ export async function generateKeys(config, keyPath) {
 }
 
 function doExec(keyDir, config) {
-  let cmd = `cd ${keyDir} && ${pathToQuorumBinary(config.network.quorumVersion)} account new --keystore ${keyDir} --password password.txt 2>&1
-  ${pathToBootnode()} -genkey=nodekey
-  ${pathToBootnode()} --nodekey=nodekey --writeaddress > enode
+  let cmd = `cd '${keyDir}' && '${pathToQuorumBinary(config.network.quorumVersion)}' account new --keystore '${keyDir}' --password password.txt 2>&1
+  '${pathToBootnode()}' -genkey=nodekey
+  '${pathToBootnode()}' --nodekey=nodekey --writeaddress > enode
   find . -type f -name 'UTC*' -execdir mv {} acctkeyfile.json ';'
   `
   if (isTessera(config.network.transactionManager)) {
     // blank password for now using `< /dev/null` to automatically answer password prompts
-    cmd += `java -jar ${pathToTesseraJar(config.network.transactionManager)} -keygen -filename tm < /dev/null`
+    cmd += `java -jar '${pathToTesseraJar(config.network.transactionManager)}' -keygen -filename tm < /dev/null`
   }
 
   return execute(cmd)

@@ -4,12 +4,12 @@ import { isWin32 } from '../../utils/execUtils'
 
 export function setEnvironmentCommand(config) {
   const lines = []
-  lines.push(`BIN_GETH=${pathToQuorumBinary(config.network.quorumVersion)}`)
+  lines.push(`BIN_GETH='${pathToQuorumBinary(config.network.quorumVersion)}'`)
   if (isTessera(config.network.transactionManager)) {
-    lines.push(`BIN_TESSERA=${pathToTesseraJar(config.network.transactionManager)}`)
+    lines.push(`BIN_TESSERA='${pathToTesseraJar(config.network.transactionManager)}'`)
   }
   if (isCakeshop(config.network.cakeshop)) {
-    lines.push(`BIN_CAKESHOP=${pathToCakeshop(config.network.cakeshop)}`)
+    lines.push(`BIN_CAKESHOP='${pathToCakeshop(config.network.cakeshop)}'`)
   }
   lines.push('')
   return lines.join('\n')
