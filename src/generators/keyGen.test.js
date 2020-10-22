@@ -38,9 +38,9 @@ describe('generates keys', () => {
     await generateKeys(config, joinPath(createNetPath(config), 'keyPath'))
     const keyNum = config.nodes.length
 
-    const expected = `cd ${joinPath(createNetPath(config), 'keyPath')}/key${keyNum} && quorumPath account new --keystore ${joinPath(createNetPath(config), 'keyPath')}/key${keyNum} --password password.txt 2>&1
-  bootnodePath -genkey=nodekey
-  bootnodePath --nodekey=nodekey --writeaddress > enode
+    const expected = `cd '${joinPath(createNetPath(config), 'keyPath')}/key${keyNum}' && 'quorumPath' account new --keystore '${joinPath(createNetPath(config), 'keyPath')}/key${keyNum}' --password password.txt 2>&1
+  'bootnodePath' -genkey=nodekey
+  'bootnodePath' --nodekey=nodekey --writeaddress > enode
   find . -type f -name 'UTC*' -execdir mv {} acctkeyfile.json ';'
   `
     expect(createFolder).toBeCalledWith(joinPath(createNetPath(config), 'keyPath', `key${keyNum}`), true)
@@ -62,11 +62,11 @@ describe('generates keys', () => {
     await generateKeys(config, joinPath(createNetPath(config), 'keyPath'))
     const keyNum = config.nodes.length
 
-    const withTessera = `cd ${joinPath(createNetPath(config), 'keyPath')}/key${keyNum} && quorumPath account new --keystore ${joinPath(createNetPath(config), 'keyPath')}/key${keyNum} --password password.txt 2>&1
-  bootnodePath -genkey=nodekey
-  bootnodePath --nodekey=nodekey --writeaddress > enode
+    const withTessera = `cd '${joinPath(createNetPath(config), 'keyPath')}/key${keyNum}' && 'quorumPath' account new --keystore '${joinPath(createNetPath(config), 'keyPath')}/key${keyNum}' --password password.txt 2>&1
+  'bootnodePath' -genkey=nodekey
+  'bootnodePath' --nodekey=nodekey --writeaddress > enode
   find . -type f -name 'UTC*' -execdir mv {} acctkeyfile.json ';'
-  java -jar tesseraPath -keygen -filename tm < /dev/null`
+  java -jar 'tesseraPath' -keygen -filename tm < /dev/null`
 
     expect(createFolder).toBeCalledWith(joinPath(createNetPath(config), 'keyPath', `key${keyNum}`), true)
     expect(writeFile).toBeCalledWith(joinPath(createNetPath(config), 'keyPath', `key${keyNum}`, 'password.txt'), '')

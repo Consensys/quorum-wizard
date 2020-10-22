@@ -27,7 +27,7 @@ function runScript(config) {
 
 export function runscriptCommandBash(config) {
   return `${setEnvironmentCommand(config)}
-$BIN_GETH --exec "loadScript(\\"$1\\")" attach qdata/dd1/geth.ipc`
+"$BIN_GETH" --exec "loadScript(\\"$1\\")" attach qdata/dd1/geth.ipc`
 }
 
 function runScriptCommandDockerWindows() {

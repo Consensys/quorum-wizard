@@ -38,7 +38,7 @@ export function generateCakeshopScript(config) {
     return ''
   }
   const jvmParams = '-Dcakeshop.config.dir=qdata/cakeshop -Dlogging.path=qdata/logs/cakeshop'
-  const startCommand = `java ${jvmParams} -jar $BIN_CAKESHOP > /dev/null 2>&1 &`
+  const startCommand = `java ${jvmParams} -jar "$BIN_CAKESHOP" > /dev/null 2>&1 &`
   return [
     'echo "Starting Cakeshop"',
     startCommand,

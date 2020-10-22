@@ -15,7 +15,7 @@ export async function initBash(config) {
     const nodeNumber = i + 1
     const quorumDir = joinPath('qdata', `dd${nodeNumber}`)
     const genesisLocation = joinPath(quorumDir, 'genesis.json')
-    const initCommand = `cd ${networkPath} && ${pathToQuorumBinary(config.network.quorumVersion)} --datadir ${quorumDir} init ${genesisLocation} 2>&1`
+    const initCommand = `cd '${networkPath}' && '${pathToQuorumBinary(config.network.quorumVersion)}' --datadir '${quorumDir}' init '${genesisLocation}' 2>&1`
     initCommands.push(initCommand)
   })
 
@@ -99,7 +99,7 @@ export function createGethStartCommand(config, node, passwordDestination, nodeNu
     ? `--raft --raftport ${raftPort}`
     : '--istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1'
 
-  return `PRIVATE_CONFIG=${tmIpcPath} nohup $BIN_GETH --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --verbosity ${verbosity} --networkid ${networkId} --rpcport ${rpcPort} --wsport ${wsPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
+  return `PRIVATE_CONFIG='${tmIpcPath}' nohup "$BIN_GETH" --datadir qdata/dd${nodeNumber} ${args} ${consensusArgs} --permissioned --verbosity ${verbosity} --networkid ${networkId} --rpcport ${rpcPort} --wsport ${wsPort} --port ${devP2pPort} 2>>qdata/logs/${nodeNumber}.log &`
 }
 
 export function createTesseraStartCommand(config, node, nodeNumber, tmDir, logDir) {
@@ -111,7 +111,7 @@ export function createTesseraStartCommand(config, node, nodeNumber, tmDir, logDi
   }
 
   const MEMORY = '-Xms128M -Xmx128M'
-  const CMD = `java ${DEBUG} ${MEMORY} -jar $BIN_TESSERA -configfile ${tmDir}/tessera-config-09-${nodeNumber}.json >> ${logDir}/tessera${nodeNumber}.log 2>&1 &`
+  const CMD = `java ${DEBUG} ${MEMORY} -jar "$BIN_TESSERA" -configfile ${tmDir}/tessera-config-09-${nodeNumber}.json >> ${logDir}/tessera${nodeNumber}.log 2>&1 &`
   return CMD
 }
 

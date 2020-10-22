@@ -22,7 +22,8 @@ export function createConfig(DDIR, i, ip, serverPortThirdParty, serverPortP2P, p
       {
         app: 'Q2T',
         enabled: true,
-        serverAddress: `unix:${DDIR}/tm.ipc`,
+        // Tessera uses URI.parse() for this, url encode any spaces in the path
+        serverAddress: `unix:${DDIR.replace(/\s/g, '%20')}/tm.ipc`,
         communicationType: 'REST',
       },
       {

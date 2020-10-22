@@ -60,10 +60,10 @@ export function generateResourcesRemote(config) {
   const qubernetesImage = `${getDockerRegistry()}quorumengineering/qubernetes:${LATEST_QUBERNETES}`
   const outPath = joinPath(networkPath, 'out')
   const dockerCommands = [
-    `cd ${networkPath}`,
+    `cd '${networkPath}'`,
     `docker pull ${qubernetesImage}`,
     // docker volumes using C:\folder\ style paths cause problems, convert to /c/folder/ on windows
-    `docker run --rm -v ${unixifyPath(qubernetesYamlPath)}:/qubernetes/qubernetes.yaml -v ${unixifyPath(outPath)}:/qubernetes/out ${qubernetesImage} /bin/bash -c "${generateScript} ${qubeScript} ${fixPermissionsScript}"`,
+    `docker run --rm -v '${unixifyPath(qubernetesYamlPath)}':/qubernetes/qubernetes.yaml -v '${unixifyPath(outPath)}':/qubernetes/out ${qubernetesImage} /bin/bash -c "${generateScript} ${qubeScript} ${fixPermissionsScript}"`,
   ]
 
   try {
