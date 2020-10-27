@@ -5,6 +5,7 @@ Object {
   "containerPorts": Object {
     "dockerSubnet": "172.16.239.0/24",
     "quorum": Object {
+      "graphQlPort": 8547,
       "p2pPort": 21000,
       "raftPort": 50400,
       "rpcPort": 8545,
@@ -297,6 +298,7 @@ Object {
   "containerPorts": Object {
     "dockerSubnet": "172.16.239.0/24",
     "quorum": Object {
+      "graphQlPort": 8547,
       "p2pPort": 21000,
       "raftPort": 50400,
       "rpcPort": 8545,
@@ -699,6 +701,7 @@ Object {
   "containerPorts": Object {
     "dockerSubnet": "172.16.239.0/24",
     "quorum": Object {
+      "graphQlPort": 8547,
       "p2pPort": 21000,
       "raftPort": 50400,
       "rpcPort": 8545,
@@ -846,6 +849,7 @@ Object {
   "containerPorts": Object {
     "dockerSubnet": "",
     "quorum": Object {
+      "graphQlPort": 8547,
       "p2pPort": 21000,
       "raftPort": 50400,
       "rpcPort": 8545,
@@ -1093,6 +1097,7 @@ Object {
   "containerPorts": Object {
     "dockerSubnet": "172.16.239.0/24",
     "quorum": Object {
+      "graphQlPort": 8547,
       "p2pPort": 21000,
       "raftPort": 50400,
       "rpcPort": 8545,
@@ -1205,6 +1210,7 @@ Object {
   "containerPorts": Object {
     "dockerSubnet": "",
     "quorum": Object {
+      "graphQlPort": 8547,
       "p2pPort": 21000,
       "raftPort": 50400,
       "rpcPort": 8545,
