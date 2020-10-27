@@ -20,7 +20,7 @@ const containerPortInfo = {
     rpcPort: 8545,
     p2pPort: 21000,
     raftPort: 50400,
-    wsPort: 8645,
+    wsPort: 8546,
   },
   tm: {
     p2pPort: 9000,

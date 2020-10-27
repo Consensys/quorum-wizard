@@ -66,7 +66,7 @@ x-quorum-def:
         --ws \
         --wsaddr 0.0.0.0 \
         --wsorigins "*" \
-        --wsport ${QUORUM_WS_PORT:-8645} \
+        --wsport ${QUORUM_WS_PORT:-8546} \
         --wsapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${QUORUM_CONSENSUS:-istanbul} \
         --port ${QUORUM_P2P_PORT:-21000} \
         --unlock 0 \

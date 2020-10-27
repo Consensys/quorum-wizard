@@ -49,7 +49,7 @@ const baseNetwork = {
       rpcPort: 8545,
       p2pPort: 21000,
       raftPort: 50400,
-      wsPort: 8645,
+      wsPort: 8546,
       graphQlPort: 8547,
     },
     tm: {
@@ -142,7 +142,7 @@ services:
     hostname: node1
     ports:
       - "22000:8545"
-      - "23000:8645"
+      - "23000:8546"
       - "24000:8547"
     volumes:
       - vol1:/qdata
@@ -207,7 +207,7 @@ services:
     hostname: node1
     ports:
       - "22000:8545"
-      - "23000:8645"
+      - "23000:8546"
       - "24000:8547"
     volumes:
       - vol1:/qdata
@@ -250,7 +250,7 @@ services:
     hostname: node1
     ports:
       - "22000:8545"
-      - "23000:8645"
+      - "23000:8546"
       - "24000:8547"
     volumes:
       - vol1:/qdata
@@ -309,7 +309,7 @@ services:
     hostname: node1
     ports:
       - "22000:8545"
-      - "23000:8645"
+      - "23000:8546"
       - "24000:8547"
     volumes:
       - vol1:/qdata
