@@ -4,19 +4,21 @@ import {
   generateExtraData,
 } from '../generators/consensusHelper'
 import { isRaft } from './NetworkConfig'
+import { isLegacyTessera } from '../generators/binaryHelper'
 
-export function generateConsensusConfig(configDir, consensus, nodes, networkId) {
+export function generateConsensusConfig(configDir, consensus, nodes, networkId, tessera) {
   writeJsonFile(
     configDir,
     'genesis.json',
     isRaft(consensus)
-      ? generateRaftConfig(nodes, configDir, networkId)
-      : generateIstanbulConfig(nodes, configDir, networkId),
+      ? generateRaftConfig(nodes, configDir, networkId, tessera)
+      : generateIstanbulConfig(nodes, configDir, networkId, tessera),
   )
 }
 
-export function generateRaftConfig(nodes, configDir, networkId) {
+export function generateRaftConfig(nodes, configDir, networkId, tessera) {
   const alloc = generateAccounts(nodes, configDir)
+  const privacyEnhancementsBlock = isLegacyTessera(tessera) ? undefined : 0
   return {
     alloc,
     coinbase: '0x0000000000000000000000000000000000000000',
@@ -26,6 +28,7 @@ export function generateRaftConfig(nodes, configDir, networkId) {
       constantinopleBlock: 0,
       istanbulBlock: 0,
       petersburgBlock: 0,
+      privacyEnhancementsBlock,
       chainId: parseInt(networkId, 10),
       eip150Block: 0,
       eip155Block: 0,
@@ -49,9 +52,10 @@ export function generateRaftConfig(nodes, configDir, networkId) {
   }
 }
 
-export function generateIstanbulConfig(nodes, configDir, networkId) {
+export function generateIstanbulConfig(nodes, configDir, networkId, tessera) {
   const alloc = generateAccounts(nodes, configDir)
   const extraData = generateExtraData(nodes, configDir)
+  const privacyEnhancementsBlock = isLegacyTessera(tessera) ? undefined : 0
   return {
     alloc,
     coinbase: '0x0000000000000000000000000000000000000000',
@@ -61,6 +65,7 @@ export function generateIstanbulConfig(nodes, configDir, networkId) {
       constantinopleBlock: 0,
       istanbulBlock: 0,
       petersburgBlock: 0,
+      privacyEnhancementsBlock,
       chainId: parseInt(networkId, 10),
       eip150Block: 0,
       eip155Block: 0,

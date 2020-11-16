@@ -1,7 +1,7 @@
 import { getDockerRegistry } from '../generators/dockerHelper'
 import { isCakeshop, isKubernetes } from './NetworkConfig'
 
-export const LATEST_QUBERNETES = 'v0.2.0'
+export const LATEST_QUBERNETES = 'v0.2.1-rc2'
 
 // eslint-disable-next-line import/prefer-default-export
 export function buildKubernetesResource(config) {
@@ -15,10 +15,15 @@ export function buildKubernetesResource(config) {
 }
 
 function buildGenesisDetails(config) {
+  // even when not using tessera, qubernetes generates the resources for it anyways
+  // pass the pre-1.0.0 version so that qubernetes does not include the privacyEnhancementsBlock in the genesis file
+  // including this flag in the config without a compatible version of tessera will cause Quorum to fail to start
+  const tesseraVersion = config.network.transactionManager === 'none' ? '0.11.0' : config.network.transactionManager
   return `
 genesis:
   consensus: ${config.network.consensus}
   Quorum_Version: ${config.network.quorumVersion}
+  Tm_Version: ${tesseraVersion}
   Chain_Id: ${config.network.networkId}`
 }
 
@@ -67,7 +72,7 @@ function buildGethDetails(config) {
         id: ${config.network.networkId}
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\"*\\"`
+      Geth_Startup_Params: --rpccorsdomain=\\"*\\" --rpcvhosts=\\"*\\" --wsorigins=\\"*\\"`
 }
 
 function buildTesseraDetails(config) {

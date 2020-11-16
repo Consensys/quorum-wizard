@@ -79,8 +79,8 @@ export function getPlatformSpecificUrl({ url }) {
   return platformUrl
 }
 
-export const LATEST_QUORUM = '2.7.0'
-export const LATEST_TESSERA = '0.10.6'
+export const LATEST_QUORUM = '20.10.0'
+export const LATEST_TESSERA = '20.10.0'
 export const LATEST_CAKESHOP = '0.11.0'
 export const LATEST_ISTANBUL_TOOLS = '1.0.3'
 export const LATEST_BOOTNODE = '1.9.7'
@@ -88,6 +88,18 @@ export const QUORUM_PRE_260 = '2.5.0'
 
 export const BINARIES = {
   quorum: {
+    '20.10.0': {
+      name: 'geth',
+      description: 'Quorum 20.10.0',
+      url: {
+        darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v20.10.0/geth_v20.10.0_darwin_amd64.tar.gz',
+        linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v20.10.0/geth_v20.10.0_linux_amd64.tar.gz',
+      },
+      type: 'tar.gz',
+      files: [
+        'geth',
+      ],
+    },
     '2.7.0': {
       name: 'geth',
       description: 'Quorum 2.7.0',
@@ -127,6 +139,18 @@ export const BINARIES = {
   },
 
   tessera: {
+    '20.10.0': {
+      name: 'tessera-app.jar',
+      description: 'Tessera 20.10.0',
+      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/net/consensys/quorum/tessera/tessera-app/20.10.0/tessera-app-20.10.0-app.jar',
+      type: 'jar',
+    },
+    '0.11.0': {
+      name: 'tessera-app.jar',
+      description: 'Tessera 0.11.0',
+      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/net/consensys/quorum/tessera/tessera-app/0.11.0/tessera-app-0.11.0-app.jar',
+      type: 'jar',
+    },
     '0.10.6': {
       name: 'tessera-app.jar',
       description: 'Tessera 0.10.6',

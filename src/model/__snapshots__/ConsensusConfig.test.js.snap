@@ -32,6 +32,51 @@ Object {
       },
     ],
     "petersburgBlock": 0,
+    "privacyEnhancementsBlock": 0,
+  },
+  "difficulty": "0x0",
+  "extraData": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "gasLimit": "0xE0000000",
+  "mixhash": "0x00000000000000000000000000000000000000647572616c65787365646c6578",
+  "nonce": "0x0",
+  "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "timestamp": "0x00",
+}
+`;
+
+exports[`creates 3nodes raft genesis without privacy enhancements 1`] = `
+Object {
+  "alloc": Object {
+    "0x0fe3fd1414001b295da621e30698462df06eaad2": Object {
+      "balance": "1000000000000000000000000000",
+    },
+    "0x8aef5fa7f18ffda8fa98016ec27562ea33743f18": Object {
+      "balance": "1000000000000000000000000000",
+    },
+    "0xa5a0b81cbcd2d93bba08b3e27b1437d7bdc42836": Object {
+      "balance": "1000000000000000000000000000",
+    },
+  },
+  "coinbase": "0x0000000000000000000000000000000000000000",
+  "config": Object {
+    "byzantiumBlock": 0,
+    "chainId": 10,
+    "constantinopleBlock": 0,
+    "eip150Block": 0,
+    "eip150Hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "eip155Block": 0,
+    "eip158Block": 0,
+    "homesteadBlock": 0,
+    "isQuorum": true,
+    "istanbulBlock": 0,
+    "maxCodeSizeConfig": Array [
+      Object {
+        "block": 0,
+        "size": 32,
+      },
+    ],
+    "petersburgBlock": 0,
+    "privacyEnhancementsBlock": undefined,
   },
   "difficulty": "0x0",
   "extraData": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -86,6 +131,7 @@ Object {
       },
     ],
     "petersburgBlock": 0,
+    "privacyEnhancementsBlock": 0,
   },
   "difficulty": "0x1",
   "extraData": "0x0000000000000000000000000000000000000000000000000000000000000000f8aff86994dea501aa3315db296f1ce0f7d264c6c812b2088a942da3b70ed4e94ad02641ef83d33727d86da41e78945a4a874f95cd8f0758dea8f6719cd686aedc30e994d34cb7199598f100f76eed6fdfe962b37a66b7dc9499fc6e8ac3f567ae9ee11559e0fa686513aa9e74b8410000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0",

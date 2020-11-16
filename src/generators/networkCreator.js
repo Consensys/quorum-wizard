@@ -103,6 +103,7 @@ export async function generateResourcesLocally(config) {
     config.network.consensus,
     config.nodes,
     config.network.networkId,
+    config.network.transactionManager,
   )
 
   const staticNodes = createStaticNodes(config.nodes, config.network.consensus, configDir)

@@ -11,7 +11,8 @@ k8s:
     Capacity: 200Mi
 genesis:
   consensus: raft
-  Quorum_Version: 2.7.0
+  Quorum_Version: 20.10.0
+  Tm_Version: 20.10.0
   Chain_Id: 10
 nodes:
   
@@ -22,11 +23,11 @@ nodes:
     quorum:
       quorum:
         consensus: raft
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -34,7 +35,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node2
     Key_Dir_Base: 7nodes
     Key_Dir: key2
@@ -42,11 +43,11 @@ nodes:
     quorum:
       quorum:
         consensus: raft
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -54,7 +55,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node3
     Key_Dir_Base: 7nodes
     Key_Dir: key3
@@ -62,11 +63,11 @@ nodes:
     quorum:
       quorum:
         consensus: raft
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -74,7 +75,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node4
     Key_Dir_Base: 7nodes
     Key_Dir: key4
@@ -82,11 +83,11 @@ nodes:
     quorum:
       quorum:
         consensus: raft
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -94,7 +95,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node5
     Key_Dir_Base: 7nodes
     Key_Dir: key5
@@ -102,11 +103,11 @@ nodes:
     quorum:
       quorum:
         consensus: raft
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -114,7 +115,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\""
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\""
 `;
 
 exports[`creates 7nodes istanbul docker generate keys 1`] = `
@@ -128,7 +129,8 @@ k8s:
     Capacity: 200Mi
 genesis:
   consensus: istanbul
-  Quorum_Version: 2.7.0
+  Quorum_Version: 20.10.0
+  Tm_Version: 20.10.0
   Chain_Id: 10
 nodes:
   
@@ -139,11 +141,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -151,7 +153,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE2_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key2
@@ -159,11 +161,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -171,7 +173,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE3_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key3
@@ -179,11 +181,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -191,7 +193,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE4_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key4
@@ -199,11 +201,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -211,7 +213,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE5_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key5
@@ -219,11 +221,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -231,7 +233,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE6_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key6
@@ -239,11 +241,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -251,7 +253,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE7_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key7
@@ -259,11 +261,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -271,7 +273,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\""
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\""
 `;
 
 exports[`creates 7nodes istanbul docker generate keys no tessera 1`] = `
@@ -285,7 +287,8 @@ k8s:
     Capacity: 200Mi
 genesis:
   consensus: istanbul
-  Quorum_Version: 2.7.0
+  Quorum_Version: 20.10.0
+  Tm_Version: 20.10.0
   Chain_Id: 10
 nodes:
   
@@ -296,11 +299,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -308,7 +311,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE2_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key2
@@ -316,11 +319,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -328,7 +331,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE3_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key3
@@ -336,11 +339,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -348,7 +351,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE4_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key4
@@ -356,11 +359,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -368,7 +371,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE5_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key5
@@ -376,11 +379,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -388,7 +391,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE6_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key6
@@ -396,11 +399,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -408,7 +411,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE7_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key7
@@ -416,11 +419,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -428,7 +431,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\""
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\""
 `;
 
 exports[`creates 7nodes istanbul docker generate keys with cakeshop 1`] = `
@@ -448,7 +451,8 @@ cakeshop:
     nodePort: 8999
 genesis:
   consensus: istanbul
-  Quorum_Version: 2.7.0
+  Quorum_Version: 20.10.0
+  Tm_Version: 20.10.0
   Chain_Id: 10
 nodes:
   
@@ -459,11 +463,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -471,7 +475,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE2_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key2
@@ -479,11 +483,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -491,7 +495,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE3_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key3
@@ -499,11 +503,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -511,7 +515,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE4_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key4
@@ -519,11 +523,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -531,7 +535,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE5_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key5
@@ -539,11 +543,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -551,7 +555,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE6_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key6
@@ -559,11 +563,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -571,7 +575,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: \\"%QUORUM-NODE7_SERVICE_HOST%\\"
     Key_Dir_Base: out/config
     Key_Dir: key7
@@ -579,11 +583,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -591,7 +595,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\""
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\""
 `;
 
 exports[`creates 7nodes istanbul kubernetes generate keys 1`] = `
@@ -605,7 +609,8 @@ k8s:
     Capacity: 200Mi
 genesis:
   consensus: istanbul
-  Quorum_Version: 2.7.0
+  Quorum_Version: 20.10.0
+  Tm_Version: 20.10.0
   Chain_Id: 10
 nodes:
   
@@ -616,11 +621,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -628,7 +633,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node2
     Key_Dir_Base: out/config
     Key_Dir: key2
@@ -636,11 +641,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -648,7 +653,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node3
     Key_Dir_Base: out/config
     Key_Dir: key3
@@ -656,11 +661,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -668,7 +673,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node4
     Key_Dir_Base: out/config
     Key_Dir: key4
@@ -676,11 +681,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -688,7 +693,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node5
     Key_Dir_Base: out/config
     Key_Dir: key5
@@ -696,11 +701,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -708,7 +713,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node6
     Key_Dir_Base: out/config
     Key_Dir: key6
@@ -716,11 +721,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -728,7 +733,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node7
     Key_Dir_Base: out/config
     Key_Dir: key7
@@ -736,11 +741,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -748,7 +753,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\""
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\""
 `;
 
 exports[`creates 7nodes istanbul kubernetes generate keys with cakeshop and prometheus 1`] = `
@@ -772,7 +777,8 @@ prometheus:
   nodePort_prom: 31323
 genesis:
   consensus: istanbul
-  Quorum_Version: 2.7.0
+  Quorum_Version: 20.10.0
+  Tm_Version: 20.10.0
   Chain_Id: 10
 nodes:
   
@@ -783,11 +789,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -795,7 +801,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node2
     Key_Dir_Base: out/config
     Key_Dir: key2
@@ -803,11 +809,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -815,7 +821,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node3
     Key_Dir_Base: out/config
     Key_Dir: key3
@@ -823,11 +829,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -835,7 +841,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node4
     Key_Dir_Base: out/config
     Key_Dir: key4
@@ -843,11 +849,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -855,7 +861,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node5
     Key_Dir_Base: out/config
     Key_Dir: key5
@@ -863,11 +869,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -875,7 +881,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node6
     Key_Dir_Base: out/config
     Key_Dir: key6
@@ -883,11 +889,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -895,7 +901,7 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\"
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\"
   - Node_UserIdent: quorum-node7
     Key_Dir_Base: out/config
     Key_Dir: key7
@@ -903,11 +909,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 2.7.0
+        Quorum_Version: 20.10.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 0.10.6
+        Tm_Version: 20.10.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -915,5 +921,5 @@ nodes:
         id: 10
         public: false
       verbosity: 9
-      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\""
+      Geth_Startup_Params: --rpccorsdomain=\\\\\\"*\\\\\\" --rpcvhosts=\\\\\\"*\\\\\\" --wsorigins=\\\\\\"*\\\\\\""
 `;

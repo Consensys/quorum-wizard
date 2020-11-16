@@ -84,6 +84,18 @@ export function isQuorum260Plus(quorumVersion) {
   return cmp(version, '2.6.0') >= 0
 }
 
+export function isLegacyTessera(tesseraVersion) {
+  if(tesseraVersion === 'PATH') {
+    // no easy way to get version from tessera jar, assume it is not legacy
+    return false
+  }
+  if(tesseraVersion === 'none') {
+    // treat no tessera as legacy, since this determines if enhanced privacy is enabled
+    return true
+  }
+  return cmp(tesseraVersion, '1.0.0') < 0
+}
+
 export function getDownloadableGethChoices(deployment) {
   let choices = getDownloadableChoices(BINARIES.quorum)
   if (isBash(deployment)) {

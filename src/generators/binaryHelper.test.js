@@ -5,6 +5,7 @@ import {
   getDownloadableTesseraChoices,
   getGethOnPath,
   getTesseraOnPath,
+  isLegacyTessera,
   isQuorum260Plus,
   pathToBootnode,
   pathToCakeshop,
@@ -223,6 +224,15 @@ test('tests if quorum version on path is 2.6.0 or higher', () => {
   expect(isQuorum260Plus('PATH')).toBeTruthy()
   executeSync.mockReturnValueOnce(Buffer.from(quorumVersion))
   expect(isQuorum260Plus('PATH')).not.toBeTruthy()
+})
+
+test('tests if tessera version is 1.0.0 or higher', () => {
+  expect(isLegacyTessera('0.11.0')).toBeTruthy()
+  expect(isLegacyTessera('0.10.6')).toBeTruthy()
+  expect(isLegacyTessera('1.0.0')).not.toBeTruthy()
+  expect(isLegacyTessera('20.10.0')).not.toBeTruthy()
+  expect(isLegacyTessera('none')).toBeTruthy()
+  expect(isLegacyTessera('PATH')).not.toBeTruthy()
 })
 
 function overrideProcessValue(key, value) {
