@@ -5,8 +5,8 @@ exports[`creates 2nodes istanbul bash tessera cakeshop custom ports 1`] = `
 echo \\"
 Starting Quorum network...
 \\"
-BIN_GETH='/path/to/user/home/.quorum-wizard/bin/quorum/2.7.0/geth'
-BIN_TESSERA='/path/to/user/home/.quorum-wizard/bin/tessera/0.10.6/tessera-app.jar'
+BIN_GETH='/path/to/user/home/.quorum-wizard/bin/quorum/20.10.0/geth'
+BIN_TESSERA='/path/to/user/home/.quorum-wizard/bin/tessera/20.10.0/tessera-app.jar'
 BIN_CAKESHOP='/path/to/user/home/.quorum-wizard/bin/cakeshop/0.11.0/cakeshop.war'
 
 java  -Xms128M -Xmx128M -jar \\"$BIN_TESSERA\\" -configfile qdata/c1/tessera-config-09-1.json >> qdata/logs/tessera1.log 2>&1 &
@@ -99,7 +99,7 @@ exports[`creates 3nodes raft bash no tessera 1`] = `
 echo \\"
 Starting Quorum network...
 \\"
-BIN_GETH='/path/to/user/home/.quorum-wizard/bin/quorum/2.7.0/geth'
+BIN_GETH='/path/to/user/home/.quorum-wizard/bin/quorum/20.10.0/geth'
 
 
 
@@ -117,8 +117,8 @@ exports[`creates 3nodes raft bash tessera 1`] = `
 echo \\"
 Starting Quorum network...
 \\"
-BIN_GETH='/path/to/user/home/.quorum-wizard/bin/quorum/2.7.0/geth'
-BIN_TESSERA='/path/to/user/home/.quorum-wizard/bin/tessera/0.10.6/tessera-app.jar'
+BIN_GETH='/path/to/user/home/.quorum-wizard/bin/quorum/20.10.0/geth'
+BIN_TESSERA='/path/to/user/home/.quorum-wizard/bin/tessera/20.10.0/tessera-app.jar'
 
 java  -Xms128M -Xmx128M -jar \\"$BIN_TESSERA\\" -configfile qdata/c1/tessera-config-09-1.json >> qdata/logs/tessera1.log 2>&1 &
 java  -Xms128M -Xmx128M -jar \\"$BIN_TESSERA\\" -configfile qdata/c2/tessera-config-09-2.json >> qdata/logs/tessera2.log 2>&1 &
@@ -194,8 +194,8 @@ exports[`creates 3nodes raft bash tessera cakeshop 1`] = `
 echo \\"
 Starting Quorum network...
 \\"
-BIN_GETH='/path/to/user/home/.quorum-wizard/bin/quorum/2.7.0/geth'
-BIN_TESSERA='/path/to/user/home/.quorum-wizard/bin/tessera/0.10.6/tessera-app.jar'
+BIN_GETH='/path/to/user/home/.quorum-wizard/bin/quorum/20.10.0/geth'
+BIN_TESSERA='/path/to/user/home/.quorum-wizard/bin/tessera/20.10.0/tessera-app.jar'
 BIN_CAKESHOP='/path/to/user/home/.quorum-wizard/bin/cakeshop/0.11.0/cakeshop.war'
 
 java  -Xms128M -Xmx128M -jar \\"$BIN_TESSERA\\" -configfile qdata/c1/tessera-config-09-1.json >> qdata/logs/tessera1.log 2>&1 &
@@ -298,8 +298,8 @@ exports[`creates 3nodes raft bash tessera custom 1`] = `
 echo \\"
 Starting Quorum network...
 \\"
-BIN_GETH='/path/to/user/home/.quorum-wizard/bin/quorum/2.7.0/geth'
-BIN_TESSERA='/path/to/user/home/.quorum-wizard/bin/tessera/0.10.6/tessera-app.jar'
+BIN_GETH='/path/to/user/home/.quorum-wizard/bin/quorum/20.10.0/geth'
+BIN_TESSERA='/path/to/user/home/.quorum-wizard/bin/tessera/20.10.0/tessera-app.jar'
 
 java  -Xms128M -Xmx128M -jar \\"$BIN_TESSERA\\" -configfile qdata/c1/tessera-config-09-1.json >> qdata/logs/tessera1.log 2>&1 &
 java  -Xms128M -Xmx128M -jar \\"$BIN_TESSERA\\" -configfile qdata/c2/tessera-config-09-2.json >> qdata/logs/tessera2.log 2>&1 &
@@ -375,8 +375,8 @@ exports[`creates quickstart config 1`] = `
 echo \\"
 Starting Quorum network...
 \\"
-BIN_GETH='/path/to/user/home/.quorum-wizard/bin/quorum/2.7.0/geth'
-BIN_TESSERA='/path/to/user/home/.quorum-wizard/bin/tessera/0.10.6/tessera-app.jar'
+BIN_GETH='/path/to/user/home/.quorum-wizard/bin/quorum/20.10.0/geth'
+BIN_TESSERA='/path/to/user/home/.quorum-wizard/bin/tessera/20.10.0/tessera-app.jar'
 BIN_CAKESHOP='/path/to/user/home/.quorum-wizard/bin/cakeshop/0.11.0/cakeshop.war'
 
 java  -Xms128M -Xmx128M -jar \\"$BIN_TESSERA\\" -configfile qdata/c1/tessera-config-09-1.json >> qdata/logs/tessera1.log 2>&1 &
@@ -480,7 +480,7 @@ echo \\"
 Starting Quorum network...
 \\"
 BIN_GETH='/path/to/user/home/.quorum-wizard/bin/quorum/2.5.0/geth'
-BIN_TESSERA='/path/to/user/home/.quorum-wizard/bin/tessera/0.10.6/tessera-app.jar'
+BIN_TESSERA='/path/to/user/home/.quorum-wizard/bin/tessera/20.10.0/tessera-app.jar'
 BIN_CAKESHOP='/path/to/user/home/.quorum-wizard/bin/cakeshop/0.11.0/cakeshop.war'
 
 java  -Xms128M -Xmx128M -jar \\"$BIN_TESSERA\\" -configfile qdata/c1/tessera-config-09-1.json >> qdata/logs/tessera1.log 2>&1 &

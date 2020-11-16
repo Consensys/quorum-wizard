@@ -25,15 +25,7 @@ x-tx-manager-def:
           #extract the tessera version from the jar
           TESSERA_VERSION=$$(unzip -p /tessera/tessera-app.jar META-INF/MANIFEST.MF | grep Tessera-Version | cut -d" " -f2)
           echo "Tessera version (extracted from manifest file): $${TESSERA_VERSION}"
-          # sorting versions to target correct configuration
-          V08=$$(echo -e "0.8\n$${TESSERA_VERSION}" | sort -n -r -t '.' -k 1,1 -k 2,2 | head -n1)
-          V09AndAbove=$$(echo -e "0.9\n$${TESSERA_VERSION}" | sort -n -r -t '.' -k 1,1 -k 2,2 | head -n1)
           TESSERA_CONFIG_TYPE="-09"
-          case "$${TESSERA_VERSION}" in
-              "$${V09AndAbove}")
-                  TESSERA_CONFIG_TYPE="-09"
-                  ;;
-          esac
 
           echo Config type $${TESSERA_CONFIG_TYPE}
 

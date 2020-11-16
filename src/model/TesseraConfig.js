@@ -11,7 +11,6 @@ export function createConfig(DDIR, i, ip, serverPortThirdParty, serverPortP2P, p
     serverConfigs: [
       {
         app: 'ThirdParty',
-        enabled: true,
         serverAddress: `http://${ip}:${serverPortThirdParty}`,
         cors: {
           allowedMethods: ['GET', 'OPTIONS'],
@@ -21,14 +20,12 @@ export function createConfig(DDIR, i, ip, serverPortThirdParty, serverPortP2P, p
       },
       {
         app: 'Q2T',
-        enabled: true,
         // Tessera uses URI.parse() for this, url encode any spaces in the path
         serverAddress: `unix:${DDIR.replace(/\s/g, '%20')}/tm.ipc`,
         communicationType: 'REST',
       },
       {
         app: 'P2P',
-        enabled: true,
         serverAddress: `http://${ip}:${serverPortP2P}`,
         sslConfig: {
           tls: 'OFF',
@@ -60,5 +57,8 @@ export function createConfig(DDIR, i, ip, serverPortThirdParty, serverPortP2P, p
       ],
     },
     alwaysSendTo: [],
+    features: {
+      enablePrivacyEnhancements: true,
+    },
   }
 }
