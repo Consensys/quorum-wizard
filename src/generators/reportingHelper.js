@@ -37,7 +37,7 @@ export function generateReportingService(config) {
   return `
   reporting:
     << : *reporting-def
-    container_name: reporting-${(config.network.name)}
+    container_name: reporting-${config.network.name}
     hostname: reporting
     ports:
       - "${config.network.reportingRpcPort}:${config.containerPorts.reporting.rpcPort}"
@@ -53,7 +53,7 @@ export function generateElasticsearchService(config) {
   return `
   es:
     image: elasticsearch:7.9.2
-    container_name: es
+    container_name: es-${config.network.name}
     environment:
       - node.name=es
       - bootstrap.memory_lock=true
