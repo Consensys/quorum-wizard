@@ -3,9 +3,8 @@ import {
   createConfigFromAnswers,
 } from '../model/NetworkConfig'
 import {
-  getOutputPath,
-  formatNewLine,
   libRootDir,
+  getOutputPath,
   readFileToString,
   writeFile,
 } from '../utils/fileUtils'
@@ -55,6 +54,10 @@ const baseNetwork = {
     tm: {
       p2pPort: 9000,
       thirdPartyPort: 9080,
+    },
+    reporting: {
+      rpcPort: 4000,
+      uiPort: 3000,
     },
   },
 }
@@ -155,7 +158,6 @@ services:
     networks:
       1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
-    
   txmanager1:
     << : *tx-manager-def
     container_name: txmanager1-1-nodes-raft-tessera-docker-compose
@@ -170,7 +172,6 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
-    
 networks:
   1-nodes-raft-tessera-docker-compose-net:
     name: 1-nodes-raft-tessera-docker-compose-net
@@ -183,10 +184,8 @@ volumes:
   "vol1":`
     const expected = `quorumDefinitions\ntesseraDefinitions${services}`
 
-    readFileToString.mockReturnValueOnce('definitions')
-    readFileToString.mockReturnValueOnce('tessera')
-    formatNewLine.mockReturnValueOnce('quorumDefinitions\n')
-    formatNewLine.mockReturnValueOnce('tesseraDefinitions\n')
+    readFileToString.mockReturnValueOnce('quorumDefinitions')
+    readFileToString.mockReturnValueOnce('tesseraDefinitions')
 
     expect(buildDockerCompose(config)).toEqual(expected)
   })
@@ -218,7 +217,6 @@ services:
     networks:
       1-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.11
-    
 networks:
   1-nodes-istanbul-docker-compose-net:
     name: 1-nodes-istanbul-docker-compose-net
@@ -231,8 +229,7 @@ volumes:
   "vol1":`
     const expected = `quorumDefinitions${services}`
 
-    readFileToString.mockReturnValueOnce('definitions')
-    formatNewLine.mockReturnValueOnce('quorumDefinitions\n')
+    readFileToString.mockReturnValueOnce('quorumDefinitions')
     expect(buildDockerCompose(config)).toEqual(expected)
   })
 
@@ -261,7 +258,6 @@ services:
     networks:
       1-nodes-raft-docker-compose-net:
         ipv4_address: 172.16.239.11
-    
   cakeshop:
     << : *cakeshop-def
     container_name: cakeshop-1-nodes-raft-docker-compose
@@ -274,7 +270,6 @@ services:
     networks:
       1-nodes-raft-docker-compose-net:
         ipv4_address: 172.16.239.75
-    
 networks:
   1-nodes-raft-docker-compose-net:
     name: 1-nodes-raft-docker-compose-net
@@ -290,8 +285,6 @@ volumes:
 
     readFileToString.mockReturnValueOnce('quorumDefinitions')
     readFileToString.mockReturnValueOnce('cakeshopDefinitions')
-    formatNewLine.mockReturnValueOnce('quorumDefinitions\n')
-    formatNewLine.mockReturnValueOnce('cakeshopDefinitions\n')
 
     expect(buildDockerCompose(config)).toEqual(expected)
   })
@@ -322,7 +315,6 @@ services:
     networks:
       1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
-    
   txmanager1:
     << : *tx-manager-def
     container_name: txmanager1-1-nodes-raft-tessera-docker-compose
@@ -337,7 +329,6 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
-    
   cakeshop:
     << : *cakeshop-def
     container_name: cakeshop-1-nodes-raft-tessera-docker-compose
@@ -350,7 +341,6 @@ services:
     networks:
       1-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.75
-    
 networks:
   1-nodes-raft-tessera-docker-compose-net:
     name: 1-nodes-raft-tessera-docker-compose-net
@@ -364,12 +354,9 @@ volumes:
   "cakeshopvol":`
     const expected = `quorumDefinitions\ntesseraDefinitions\ncakeshopDefinitions${services}`
 
-    readFileToString.mockReturnValueOnce('definitions')
-    readFileToString.mockReturnValueOnce('tessera')
-    readFileToString.mockReturnValueOnce('cakeshop')
-    formatNewLine.mockReturnValueOnce('quorumDefinitions\n')
-    formatNewLine.mockReturnValueOnce('tesseraDefinitions\n')
-    formatNewLine.mockReturnValueOnce('cakeshopDefinitions\n')
+    readFileToString.mockReturnValueOnce('quorumDefinitions')
+    readFileToString.mockReturnValueOnce('tesseraDefinitions')
+    readFileToString.mockReturnValueOnce('cakeshopDefinitions')
 
     expect(buildDockerCompose(config)).toEqual(expected)
   })

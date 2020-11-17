@@ -177,6 +177,10 @@ function printInstructions(config) {
     info('After starting, run ./getEndpoints on any node to get the Prometheus url')
     info('')
   }
+  if (config.network.reporting) {
+    info(`After starting, the Reporting Tool will be accessible here: http://localhost:${config.network.reportingUiPort}`)
+    info('')
+  }
   if (config.network.splunk) {
     info(`After starting, Splunk will be accessible here: http://localhost:${config.network.splunkPort}`)
     info('The default credentials are admin:changeme')

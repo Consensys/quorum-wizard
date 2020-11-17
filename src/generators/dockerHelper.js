@@ -1,5 +1,7 @@
 import {
-  formatNewLine, libRootDir, readFileToString, writeFile,
+  libRootDir,
+  readFileToString,
+  writeFile,
 } from '../utils/fileUtils'
 import { getFullNetworkPath } from './networkHelper'
 import { buildCakeshopDir } from './cakeshopHelper'
@@ -14,6 +16,7 @@ import {
   buildSplunkDockerCompose,
   getSplunkDefinitions,
 } from './splunkHelper'
+import { generateElasticsearchService, generateReportingConfig, generateReportingService } from './reportingHelper'
 
 let DOCKER_REGISTRY
 
@@ -41,49 +44,45 @@ export function buildDockerCompose(config) {
   const hasTessera = isTessera(config.network.transactionManager)
   const hasCakeshop = isCakeshop(config.network.cakeshop)
   const hasSplunk = config.network.splunk
-
-  const quorumDefinitions = readFileToString(joinPath(
-    libRootDir(),
-    'lib/docker-compose-definitions-quorum.yml',
-  ))
-
-  const tesseraDefinitions = hasTessera ? readFileToString(joinPath(
-    libRootDir(),
-    'lib/docker-compose-definitions-tessera.yml',
-  )) : ''
-
-  const cakeshopDefinitions = hasCakeshop ? readFileToString(joinPath(
-    libRootDir(),
-    'lib/docker-compose-definitions-cakeshop.yml',
-  )) : ''
-
-  const splunkDefinitions = hasSplunk ? getSplunkDefinitions(config) : ''
-
-  let services = config.nodes.map((node, i) => {
+  const hasReporting = config.network.reporting
+  const definitions = []
+  const services = config.nodes.map((node, i) => {
     let allServices = buildNodeService(config, node, i, hasTessera, hasSplunk)
     if (hasTessera) {
       allServices = [allServices, buildTesseraService(config, node, i, hasSplunk)].join('')
     }
     return allServices
   })
-  if (hasCakeshop) {
-    services = [services.join(''), buildCakeshopService(config, hasSplunk)]
+
+  definitions.push(readFileToString(joinPath(libRootDir(), 'lib/docker-compose-definitions-quorum.yml')))
+
+  if (hasTessera) {
+    definitions.push(readFileToString(joinPath(libRootDir(), 'lib/docker-compose-definitions-tessera.yml')))
   }
+
+  if (hasCakeshop) {
+    definitions.push(readFileToString(joinPath(libRootDir(), 'lib/docker-compose-definitions-cakeshop.yml')))
+    services.push(buildCakeshopService(config, hasSplunk))
+  }
+  if (hasReporting) {
+    definitions.push(readFileToString(joinPath(libRootDir(), 'lib/docker-compose-definitions-reporting.yml')))
+    services.push(generateReportingService(config))
+    services.push(generateElasticsearchService(config))
+  }
+
   if (hasSplunk) {
-    services = [services.join(''),
-      buildEthloggerService(config),
-      buildCadvisorService(config)]
+    definitions.push(getSplunkDefinitions(config))
+    services.push(buildEthloggerService(config))
+    services.push(buildCadvisorService(config))
   }
 
   return [
-    formatNewLine(quorumDefinitions),
-    formatNewLine(tesseraDefinitions),
-    formatNewLine(cakeshopDefinitions),
-    formatNewLine(splunkDefinitions),
+    ...definitions,
     'services:',
-    services.join(''),
+    ...services,
     buildEndService(config),
-  ].join('')
+  ].join('\n')
+    .replace(/^\s*$(?:\r\n?|\n)/gm, '') // remove empty lines
 }
 
 export async function initDockerCompose(config) {
@@ -95,6 +94,10 @@ export async function initDockerCompose(config) {
 
   if (isCakeshop(config.network.cakeshop)) {
     buildCakeshopDir(config, qdata)
+  }
+
+  if (config.network.reporting) {
+    generateReportingConfig(config, qdata)
   }
 
   if (hasSplunk) {
@@ -121,11 +124,17 @@ TESSERA_3PARTY_PORT=${config.containerPorts.tm.thirdPartyPort}`)
   }
   if (isQuorum260Plus(config.network.quorumVersion)) {
     env = env.concat(`
-QUORUM_GETH_ARGS=--allow-insecure-unlock --graphql --graphql.port ${config.containerPorts.quorum.graphQlPort} --graphql.corsdomain=* --graphql.addr=0.0.0.0`)
+QUORUM_GETH_ARGS=--allow-insecure-unlock --graphql --graphql.port ${config.containerPorts.quorum.graphQlPort} --graphql.corsdomain=* --graphql.vhosts=* --graphql.addr=0.0.0.0`)
   }
   if (getDockerRegistry() !== '') {
     env = env.concat(`
 DOCKER_REGISTRY=${getDockerRegistry()}`)
+  }
+  if (config.network.reporting) {
+    env = env.concat(`
+REPORTING_DOCKER_IMAGE=quorumengineering/quorum-reporting:${config.network.reporting}
+REPORTING_RPC_PORT=${config.containerPorts.reporting.rpcPort}
+REPORTING_UI_PORT=${config.containerPorts.reporting.uiPort}`)
   }
   return env
 }
@@ -216,6 +225,9 @@ function buildEndService(config) {
   })
   if (isCakeshop(config.network.cakeshop)) {
     volumes.push('  "cakeshopvol":')
+  }
+  if (config.network.reporting) {
+    volumes.push('  "esvol":')
   }
   return `
 networks:

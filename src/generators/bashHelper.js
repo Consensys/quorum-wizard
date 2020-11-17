@@ -7,6 +7,7 @@ import { info } from '../utils/log'
 import { formatTesseraKeysOutput } from './transactionManager'
 import { joinPath } from '../utils/pathUtils'
 import { scriptHeader, setEnvironmentCommand } from './scripts/utils'
+import { generateReportingConfig, generateReportingScript } from './reportingHelper'
 
 export async function initBash(config) {
   const initCommands = []
@@ -19,8 +20,12 @@ export async function initBash(config) {
     initCommands.push(initCommand)
   })
 
+  const qdataFolder = joinPath(networkPath, 'qdata')
   if (isCakeshop(config.network.cakeshop)) {
-    buildCakeshopDir(config, joinPath(networkPath, 'qdata'))
+    buildCakeshopDir(config, qdataFolder)
+  }
+  if (config.network.reporting) {
+    generateReportingConfig(config, qdataFolder)
   }
   info('Initializing quorum...')
   initCommands.forEach((command) => executeSync(command))
@@ -39,6 +44,7 @@ export function startScriptBash(config) {
     'echo "Starting Quorum nodes"',
     commands.gethStart,
     generateCakeshopScript(config),
+    generateReportingScript(config),
     'echo "Successfully started Quorum network."',
     `echo "${formatTesseraKeysOutput(config)}"`,
   ]
@@ -92,7 +98,7 @@ export function createGethStartCommand(config, node, passwordDestination, nodeNu
   const {
     devP2pPort, rpcPort, raftPort, wsPort, graphQlPort,
   } = node.quorum
-  const quorum26Flags = isQuorum260Plus(quorumVersion) ? `--allow-insecure-unlock --graphql --graphql.port ${graphQlPort} --graphql.corsdomain=* --graphql.addr 0.0.0.0` : ''
+  const quorum26Flags = isQuorum260Plus(quorumVersion) ? `--allow-insecure-unlock --graphql --graphql.port ${graphQlPort} --graphql.corsdomain=*  --graphql.vhosts=* --graphql.addr 0.0.0.0` : ''
 
   const args = `--nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --ws --wsaddr 0.0.0.0 --wsorigins=* --wsapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --emitcheckpoints --unlock 0 --password ${passwordDestination} ${quorum26Flags}`
   const consensusArgs = isRaft(consensus)

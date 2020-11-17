@@ -70,6 +70,5 @@ export function waitForCakeshopCommand(cakeshopPort) {
     sleep 5
   done
 
-  echo "Cakeshop started at http://localhost:${cakeshopPort}"
-  `
+  echo "Cakeshop started at http://localhost:${cakeshopPort}"`
 }

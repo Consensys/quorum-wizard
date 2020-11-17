@@ -15,9 +15,10 @@ export function buildKubernetesResource(config) {
 }
 
 function buildGenesisDetails(config) {
-  // even when not using tessera, qubernetes generates the resources for it anyways
-  // pass the pre-1.0.0 version so that qubernetes does not include the privacyEnhancementsBlock in the genesis file
-  // including this flag in the config without a compatible version of tessera will cause Quorum to fail to start
+  // even when not using tessera, qubernetes generates the resources for it anyways, so pass the
+  // pre-1.0.0 version so that qubernetes does not include the privacyEnhancementsBlock in the
+  // genesis file. Including this flag in the config without a compatible version of tessera will
+  // cause Quorum to fail to start
   const tesseraVersion = config.network.transactionManager === 'none' ? '0.11.0' : config.network.transactionManager
   return `
 genesis:

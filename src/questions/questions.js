@@ -7,6 +7,7 @@ import {
 import {
   getDownloadableGethChoices,
   getDownloadableTesseraChoices,
+  isQuorum2010Plus,
 } from '../generators/binaryHelper'
 import {
   defaultNetworkName,
@@ -149,6 +150,11 @@ export const TOOLS = {
       name: 'Cakeshop, Quorum\'s official block explorer',
       value: 'cakeshop',
       disabled: isBash(answers.deployment) && !isJava11Plus() ? 'Disabled, Java 11+ is required to use Cakeshop' : false,
+    },
+    {
+      name: 'Quorum Reporting Tool (Beta)',
+      value: 'reporting',
+      disabled: !isDocker(answers.deployment) || !isQuorum2010Plus(answers.quorumVersion) ? 'Disabled, Reporting is only supported in Docker while using the Quorum 20.10.0+' : false,
     },
     new Separator('=== Third Party Tools ==='),
     {
