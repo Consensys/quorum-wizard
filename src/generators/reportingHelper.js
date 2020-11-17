@@ -65,8 +65,8 @@ export function generateElasticsearchService(config) {
         hard: -1
     volumes:
       - esvol:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
+    expose:
+      - "9200"
     networks:
       ${(config.network.name)}-net:
         ipv4_address: ${cidrhost(config.containerPorts.dockerSubnet, 66)}`
