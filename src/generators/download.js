@@ -85,6 +85,7 @@ export const LATEST_CAKESHOP = '0.11.0'
 export const LATEST_ISTANBUL_TOOLS = '1.0.3'
 export const LATEST_BOOTNODE = '1.9.7'
 export const QUORUM_PRE_260 = '2.5.0'
+export const LATEST_REPORTING = 'latest'
 
 export const BINARIES = {
   quorum: {

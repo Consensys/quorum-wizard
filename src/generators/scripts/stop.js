@@ -20,6 +20,7 @@ export default {
 export function stopScriptBash() {
   return `#!/bin/bash
 killall -INT geth
+killall -INT quorum-report
 killall constellation-node
 
 if [ "\`ps -ef | grep tessera-app.jar | grep -v grep\`" != "" ]

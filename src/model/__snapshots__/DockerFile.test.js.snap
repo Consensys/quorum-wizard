@@ -107,16 +107,13 @@ x-tx-manager-def:
           TESSERA_VERSION=$$(unzip -p /tessera/tessera-app.jar META-INF/MANIFEST.MF | grep Tessera-Version | cut -d\\" \\" -f2)
           echo \\"Tessera version (extracted from manifest file): $\${TESSERA_VERSION}\\"
           TESSERA_CONFIG_TYPE=\\"-09\\"
-
           echo Config type $\${TESSERA_CONFIG_TYPE}
-
           HOSTNAME=$$(hostname -i)
           sed -i \\"s,%THIS_PRIV_KEY%,$\${DDIR}/tm.key,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i \\"s,%THIS_PUB_KEY%,$\${DDIR}/tm.pub,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i 's,etc/quorum/,,g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i 's/%QUORUM-NODE\\\\([0-9]\\\\)_SERVICE_HOST%/txmanager\\\\1/g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i \\"s/%THIS_SERVICE_HOST%/$\${HOSTNAME}/g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
-
           cat $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           java -Xms128M -Xmx128M -jar /tessera/tessera-app.jar -configfile $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           ;;
@@ -172,7 +169,6 @@ services:
     networks:
       2-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
-    
   txmanager1:
     << : *tx-manager-def
     container_name: txmanager1-2-nodes-raft-tessera-docker-compose
@@ -187,7 +183,6 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
-    
   node2:
     << : *quorum-def
     container_name: node2-2-nodes-raft-tessera-docker-compose
@@ -207,7 +202,6 @@ services:
     networks:
       2-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
-    
   txmanager2:
     << : *tx-manager-def
     container_name: txmanager2-2-nodes-raft-tessera-docker-compose
@@ -222,7 +216,6 @@ services:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
-    
   cakeshop:
     << : *cakeshop-def
     container_name: cakeshop-2-nodes-raft-tessera-docker-compose
@@ -235,7 +228,6 @@ services:
     networks:
       2-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.75
-    
 networks:
   2-nodes-raft-tessera-docker-compose-net:
     name: 2-nodes-raft-tessera-docker-compose-net
@@ -357,16 +349,13 @@ x-tx-manager-def:
           TESSERA_VERSION=$$(unzip -p /tessera/tessera-app.jar META-INF/MANIFEST.MF | grep Tessera-Version | cut -d\\" \\" -f2)
           echo \\"Tessera version (extracted from manifest file): $\${TESSERA_VERSION}\\"
           TESSERA_CONFIG_TYPE=\\"-09\\"
-
           echo Config type $\${TESSERA_CONFIG_TYPE}
-
           HOSTNAME=$$(hostname -i)
           sed -i \\"s,%THIS_PRIV_KEY%,$\${DDIR}/tm.key,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i \\"s,%THIS_PUB_KEY%,$\${DDIR}/tm.pub,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i 's,etc/quorum/,,g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i 's/%QUORUM-NODE\\\\([0-9]\\\\)_SERVICE_HOST%/txmanager\\\\1/g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i \\"s/%THIS_SERVICE_HOST%/$\${HOSTNAME}/g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
-
           cat $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           java -Xms128M -Xmx128M -jar /tessera/tessera-app.jar -configfile $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           ;;
@@ -398,7 +387,6 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
-    
   txmanager1:
     << : *tx-manager-def
     container_name: txmanager1-3-nodes-raft-tessera-docker-compose
@@ -413,7 +401,6 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
-    
   node2:
     << : *quorum-def
     container_name: node2-3-nodes-raft-tessera-docker-compose
@@ -433,7 +420,6 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
-    
   txmanager2:
     << : *tx-manager-def
     container_name: txmanager2-3-nodes-raft-tessera-docker-compose
@@ -448,7 +434,6 @@ services:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
-    
   node3:
     << : *quorum-def
     container_name: node3-3-nodes-raft-tessera-docker-compose
@@ -468,7 +453,6 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.13
-    
   txmanager3:
     << : *tx-manager-def
     container_name: txmanager3-3-nodes-raft-tessera-docker-compose
@@ -483,7 +467,6 @@ services:
         ipv4_address: 172.16.239.103
     environment:
       - NODE_ID=3
-    
 networks:
   3-nodes-raft-tessera-docker-compose-net:
     name: 3-nodes-raft-tessera-docker-compose-net
@@ -605,16 +588,13 @@ x-tx-manager-def:
           TESSERA_VERSION=$$(unzip -p /tessera/tessera-app.jar META-INF/MANIFEST.MF | grep Tessera-Version | cut -d\\" \\" -f2)
           echo \\"Tessera version (extracted from manifest file): $\${TESSERA_VERSION}\\"
           TESSERA_CONFIG_TYPE=\\"-09\\"
-
           echo Config type $\${TESSERA_CONFIG_TYPE}
-
           HOSTNAME=$$(hostname -i)
           sed -i \\"s,%THIS_PRIV_KEY%,$\${DDIR}/tm.key,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i \\"s,%THIS_PUB_KEY%,$\${DDIR}/tm.pub,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i 's,etc/quorum/,,g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i 's/%QUORUM-NODE\\\\([0-9]\\\\)_SERVICE_HOST%/txmanager\\\\1/g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i \\"s/%THIS_SERVICE_HOST%/$\${HOSTNAME}/g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
-
           cat $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           java -Xms128M -Xmx128M -jar /tessera/tessera-app.jar -configfile $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           ;;
@@ -670,7 +650,6 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
-    
   txmanager1:
     << : *tx-manager-def
     container_name: txmanager1-3-nodes-raft-tessera-docker-compose
@@ -685,7 +664,6 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
-    
   node2:
     << : *quorum-def
     container_name: node2-3-nodes-raft-tessera-docker-compose
@@ -705,7 +683,6 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
-    
   txmanager2:
     << : *tx-manager-def
     container_name: txmanager2-3-nodes-raft-tessera-docker-compose
@@ -720,7 +697,6 @@ services:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
-    
   node3:
     << : *quorum-def
     container_name: node3-3-nodes-raft-tessera-docker-compose
@@ -740,7 +716,6 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.13
-    
   txmanager3:
     << : *tx-manager-def
     container_name: txmanager3-3-nodes-raft-tessera-docker-compose
@@ -755,7 +730,6 @@ services:
         ipv4_address: 172.16.239.103
     environment:
       - NODE_ID=3
-    
   cakeshop:
     << : *cakeshop-def
     container_name: cakeshop-3-nodes-raft-tessera-docker-compose
@@ -768,7 +742,6 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.75
-    
 networks:
   3-nodes-raft-tessera-docker-compose-net:
     name: 3-nodes-raft-tessera-docker-compose-net
@@ -891,16 +864,13 @@ x-tx-manager-def:
           TESSERA_VERSION=$$(unzip -p /tessera/tessera-app.jar META-INF/MANIFEST.MF | grep Tessera-Version | cut -d\\" \\" -f2)
           echo \\"Tessera version (extracted from manifest file): $\${TESSERA_VERSION}\\"
           TESSERA_CONFIG_TYPE=\\"-09\\"
-
           echo Config type $\${TESSERA_CONFIG_TYPE}
-
           HOSTNAME=$$(hostname -i)
           sed -i \\"s,%THIS_PRIV_KEY%,$\${DDIR}/tm.key,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i \\"s,%THIS_PUB_KEY%,$\${DDIR}/tm.pub,g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i 's,etc/quorum/,,g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i 's/%QUORUM-NODE\\\\([0-9]\\\\)_SERVICE_HOST%/txmanager\\\\1/g' $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           sed -i \\"s/%THIS_SERVICE_HOST%/$\${HOSTNAME}/g\\" $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
-
           cat $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           java -Xms128M -Xmx128M -jar /tessera/tessera-app.jar -configfile $\${DDIR}/tessera-config$\${TESSERA_CONFIG_TYPE}.json
           ;;
@@ -932,7 +902,6 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.11
-    
   txmanager1:
     << : *tx-manager-def
     container_name: txmanager1-3-nodes-raft-tessera-docker-compose
@@ -947,7 +916,6 @@ services:
         ipv4_address: 172.16.239.101
     environment:
       - NODE_ID=1
-    
   node2:
     << : *quorum-def
     container_name: node2-3-nodes-raft-tessera-docker-compose
@@ -967,7 +935,6 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.12
-    
   txmanager2:
     << : *tx-manager-def
     container_name: txmanager2-3-nodes-raft-tessera-docker-compose
@@ -982,7 +949,6 @@ services:
         ipv4_address: 172.16.239.102
     environment:
       - NODE_ID=2
-    
   node3:
     << : *quorum-def
     container_name: node3-3-nodes-raft-tessera-docker-compose
@@ -1002,7 +968,6 @@ services:
     networks:
       3-nodes-raft-tessera-docker-compose-net:
         ipv4_address: 172.16.239.13
-    
   txmanager3:
     << : *tx-manager-def
     container_name: txmanager3-3-nodes-raft-tessera-docker-compose
@@ -1017,7 +982,6 @@ services:
         ipv4_address: 172.16.239.103
     environment:
       - NODE_ID=3
-    
 networks:
   3-nodes-raft-tessera-docker-compose-net:
     name: 3-nodes-raft-tessera-docker-compose-net
@@ -1153,7 +1117,6 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.11
-    
   node2:
     << : *quorum-def
     container_name: node2-5-nodes-istanbul-docker-compose
@@ -1171,7 +1134,6 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.12
-    
   node3:
     << : *quorum-def
     container_name: node3-5-nodes-istanbul-docker-compose
@@ -1189,7 +1151,6 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.13
-    
   node4:
     << : *quorum-def
     container_name: node4-5-nodes-istanbul-docker-compose
@@ -1207,7 +1168,6 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.14
-    
   node5:
     << : *quorum-def
     container_name: node5-5-nodes-istanbul-docker-compose
@@ -1225,7 +1185,6 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.15
-    
   cakeshop:
     << : *cakeshop-def
     container_name: cakeshop-5-nodes-istanbul-docker-compose
@@ -1238,7 +1197,6 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.75
-    
 networks:
   5-nodes-istanbul-docker-compose-net:
     name: 5-nodes-istanbul-docker-compose-net
@@ -1353,7 +1311,6 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.11
-    
   node2:
     << : *quorum-def
     container_name: node2-5-nodes-istanbul-docker-compose
@@ -1371,7 +1328,6 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.12
-    
   node3:
     << : *quorum-def
     container_name: node3-5-nodes-istanbul-docker-compose
@@ -1389,7 +1345,6 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.13
-    
   node4:
     << : *quorum-def
     container_name: node4-5-nodes-istanbul-docker-compose
@@ -1407,7 +1362,6 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.14
-    
   node5:
     << : *quorum-def
     container_name: node5-5-nodes-istanbul-docker-compose
@@ -1425,7 +1379,6 @@ services:
     networks:
       5-nodes-istanbul-docker-compose-net:
         ipv4_address: 172.16.239.15
-    
 networks:
   5-nodes-istanbul-docker-compose-net:
     name: 5-nodes-istanbul-docker-compose-net

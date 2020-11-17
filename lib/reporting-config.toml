@@ -1,0 +1,93 @@
+# This is sample config file for quorum reporting
+title = "Quorum reporting config example"
+
+# ----- Initial Contract Registration List -----
+
+# The list of addresses we want to index in more detail, including pulling storage & events
+# It includes the address itself, as well as optional default template and from block
+addresses = [
+]
+
+# A template contains an ABI definition for parsing contract events, and a storage layout for a the contracts variables
+# These definitions allow the data collected by the reporting tool to be parsed in a more usable format
+# Both the ABI and Storage Layout can be obtained from the Solidity compiler
+# - the ABI is present is almost all versions of the compiler
+# - the storage layout is present in version 0.6.5 of the compiler
+templates = [
+    { templateName = "SimpleStorage", abi = '[{"constant":true,"inputs":[],"name":"storedData","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_x","type":"uint256"}],"name":"set","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"get","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_initVal","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_value","type":"uint256"}],"name":"valueSet","type":"event"}]', storageLayout = '{"storage":[{"astId":3,"contract":"scripts/simplestorage.sol:SimpleStorage","label":"storedData","offset":0,"slot":"0","type":"t_uint256"}],"types":{"t_uint256":{"encoding":"inplace","label":"uint256","numberOfBytes":"32"}}}' },
+    { templateName = "ERC20", abi = '[{"inputs":[{"internalType":"uint256","name":"_value","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"tokenOwner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokens","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokens","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"tokenOwner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"remaining","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"tokens","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"tokenOwner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"balance","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokens","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokens","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"}]' },
+    { templateName = "ERC721", abi = '[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"_owner","type":"address"},{"indexed":true,"internalType":"address","name":"_approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"_owner","type":"address"},{"indexed":true,"internalType":"address","name":"_operator","type":"address"},{"indexed":false,"internalType":"bool","name":"_approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"_from","type":"address"},{"indexed":true,"internalType":"address","name":"_to","type":"address"},{"indexed":true,"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"_approved","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"_operator","type":"address"},{"internalType":"bool","name":"_approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"payable","type":"function"}]' }
+]
+
+# A list of rules define contracts auto registration. Rules are only parsed once on reporting start up.
+# - scope can take "all", "internal", "external" as value. "all" represents auto registration for all deployment,
+#   "internal" restrict to deploying by contract only and "external" restrict to deploying by external account only
+# - templateName is required. It must be non empty
+# - deployer is optional. It only use with "internal"/ "external" scope to further restrict sender address
+# - eip165 is optional. Quorum reporting engine will use EIP165 to check contract if provided
+rules = [
+    { scope = "external", templateName = "ERC20", eip165 = "36372b07"},
+    { scope = "all", templateName = "ERC721", eip165 = "80ac58cd"}
+]
+
+# ----- Database Settings -----
+
+[database]
+
+    # How many transactions and blocks should be kept in memory for quicker retrieval instead of going to the database
+    # A higher value will give higher performance at the expense of more memory
+    #cacheSize = 10
+
+# The connection details to the ElasticSearch database (Recommended)
+# These are mostly a passthrough to the ElasticSearch golang client
+# found at https://github.com/elastic/go-elasticsearch
+[database.elasticsearch]
+
+    # A list of URLs the client will try and connect to
+    # Can also be configured by setting the ELASTICSEARCH_URL environment variable
+    urls = ["http://es:9200"]
+
+    #cloudid = "example elasticsearch cloudid"
+
+    # Username + password can also be set in the URL
+    #username = "user"
+    #password = "pass"
+    #apikey = ""
+
+    # Path to PEM-encoded certificate authorities file
+    # See https://www.elastic.co/blog/configuring-ssl-tls-and-https-to-secure-elasticsearch-kibana-beats-and-logstash
+    #cacert = "path to cacert file"
+
+# ----- Quorum Geth Connection -----
+
+# Details about this applications RPC server for serving requests
+[server]
+
+    # The interface + port the application should bind to
+    rpcAddr = "localhost:4000"
+    rpcCorsList = ["*"]
+    rpcvHosts = ["*"]
+    # The port number the in-built UI should run on
+    uiPort = 3000
+
+# Connection details to Quorum
+[connection]
+
+    wsUrl = "ws://localhost:23000"
+    graphQLUrl = "http://localhost:24000/graphql"
+    # How long the application should take, in seconds, to attempt a reconnect to Quorum at startup
+    #reconnectInterval = 5
+    # How many times the application should attempt to connect to Quorum before giving up
+    #maxReconnectTries = 5
+
+# ----- Performance Tuning -----
+
+# Various performance tuning options, do not affect functionality
+[tuning]
+
+    # How many blocks can be queued waiting to be processed
+    # Increasing this allows more batching to happen, resulting in quicker processing times per block
+    # but will use increased memory
+    #blockProcessingQueueSize = 100
+    # The minimal period in second before block processing queue
+    #blockProcessingFlushPeriod = 3

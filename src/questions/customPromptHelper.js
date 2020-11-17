@@ -168,6 +168,23 @@ export async function getCustomizedCakeshopPort() {
   return answer.cakeshopPort
 }
 
+export async function getCustomizedReportingPorts() {
+  const questions = [{
+    type: 'input',
+    name: 'reportingRpcPort',
+    message: 'input reporting rpc port',
+    default: '4000',
+  },
+  {
+    type: 'input',
+    name: 'reportingUiPort',
+    message: 'input reporting ui port',
+    default: '3000',
+  },
+  ]
+  return inquirer.prompt(questions)
+}
+
 export async function getCustomizedSplunkPort() {
   const questions = [{
     type: 'input',

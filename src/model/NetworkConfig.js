@@ -1,4 +1,6 @@
-import { LATEST_CAKESHOP, LATEST_QUORUM, LATEST_TESSERA } from '../generators/download'
+import {
+  LATEST_CAKESHOP, LATEST_QUORUM, LATEST_REPORTING, LATEST_TESSERA,
+} from '../generators/download'
 import { cidrhost, getDockerSubnet } from '../utils/subnetUtils'
 
 export function createConfigFromAnswers(answers) {
@@ -18,6 +20,8 @@ export function createConfigFromAnswers(answers) {
     cakeshopPort = isKubernetes(deployment) ? '30108' : '8999',
     splunkPort = '8000',
     splunkHecPort = '8088',
+    reportingRpcPort = '4000',
+    reportingUiPort = '3000',
     remoteDebug = false,
     containerPorts = undefined,
   } = answers
@@ -27,6 +31,7 @@ export function createConfigFromAnswers(answers) {
   const cakeshop = tools.includes('cakeshop') ? LATEST_CAKESHOP : 'none'
   const splunk = tools.includes('splunk')
   const prometheus = tools.includes('prometheus')
+  const reporting = tools.includes('reporting')
   return {
     network: {
       name: networkFolder,
@@ -42,6 +47,9 @@ export function createConfigFromAnswers(answers) {
       cakeshop,
       splunk,
       prometheus,
+      reporting: reporting && LATEST_REPORTING,
+      reportingRpcPort,
+      reportingUiPort,
       networkId,
       customizePorts,
       cakeshopPort,
@@ -119,6 +127,10 @@ export function getContainerPorts(deployment) {
     tm: {
       p2pPort: 9001,
       thirdPartyPort: 9080,
+    },
+    reporting: {
+      rpcPort: 4000,
+      uiPort: 3000,
     },
   }
 }

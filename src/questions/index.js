@@ -13,6 +13,7 @@ import {
   getCustomizedDockerPorts,
   getCustomizedCakeshopPort,
   getCustomizedSplunkPort,
+  getCustomizedReportingPorts,
 } from './customPromptHelper'
 import {
   getPrefilledAnswersForMode,
@@ -60,6 +61,12 @@ async function promptForCustomPorts(answers) {
 
   if (answers.tools.includes('cakeshop')) {
     answers.cakeshopPort = await getCustomizedCakeshopPort()
+  }
+
+  if (answers.tools.includes('reporting')) {
+    const { reportingRpcPort, reportingUiPort } = await getCustomizedReportingPorts()
+    answers.reportingRpcPort = reportingRpcPort
+    answers.reportingUiPort = reportingUiPort
   }
 
   if (answers.tools.includes('splunk')) {

@@ -42,6 +42,7 @@
   "homepage": "http://docs.goquorum.com/en/latest/Wizard/GettingStarted/",
   "dependencies": {
     "@babel/runtime": "^7.8.3",
+    "@iarna/toml": "^3.0.0",
     "axios": "^0.19.2",
     "ethers": "^5.0.7",
     "fs-extra": "^9.0.0",

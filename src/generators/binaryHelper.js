@@ -84,12 +84,17 @@ export function isQuorum260Plus(quorumVersion) {
   return cmp(version, '2.6.0') >= 0
 }
 
+export function isQuorum2010Plus(quorumVersion) {
+  const version = quorumVersion === 'PATH' ? getPathGethVersion() : quorumVersion
+  return cmp(version, '20.10.0') >= 0
+}
+
 export function isLegacyTessera(tesseraVersion) {
-  if(tesseraVersion === 'PATH') {
+  if (tesseraVersion === 'PATH') {
     // no easy way to get version from tessera jar, assume it is not legacy
     return false
   }
-  if(tesseraVersion === 'none') {
+  if (tesseraVersion === 'none') {
     // treat no tessera as legacy, since this determines if enhanced privacy is enabled
     return true
   }

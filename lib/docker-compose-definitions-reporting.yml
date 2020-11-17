@@ -1,0 +1,19 @@
+x-reporting-def:
+  &reporting-def
+  restart: "on-failure"
+  image: "${DOCKER_REGISTRY:-}${REPORTING_DOCKER_IMAGE:-quorum-reporting:latest}"
+  healthcheck:
+    test: ["CMD", "wget", "--spider", "--proxy", "off", "http://localhost:${REPORTING_UI_PORT:-3000}"]
+    interval: 3s
+    timeout: 3s
+    retries: 10
+    start_period: 5s
+  entrypoint:
+    - /bin/sh
+    - -c
+    - |
+      sleep 30
+      reporting -config /config/reporting-config.toml
+  expose:
+    - "${REPORTING_RPC_PORT:-4000}"
+    - "${REPORTING_UI_PORT:-3000}"
