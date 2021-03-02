@@ -1,12 +1,14 @@
 ![](https://github.com/jpmorganchase/quorum-wizard/workflows/Build%20&%20Test/badge.svg)
-# Quorum Wizard
-Quorum Wizard is a command line tool that allow users to set up a development Quorum network on their local machine in less than 2 minutes.
+# GoQuorum Wizard
+
+[GoQuorum Wizard](https://github.com/ConsenSys/quorum-wizard) is a command line tool that allows
+users to set up a development GoQuorum network on their local machine in less than 2 minutes.
 
 ![](docs/quorum-wizard.gif)
 
-## Using Quorum Wizard
+## Using GoQuorum Wizard
 
-Quorum Wizard is written in Javascript and designed to be run as a global NPM module from the command line. Make sure you have [Node.js/NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed (version 10 or higher).
+GoQuorum Wizard is written in Javascript and designed to be run as a global NPM module from the command line. Make sure you have [Node.js/NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed (version 10 or higher).
 
 Using npx to run the wizard without the need to install:
 
@@ -51,13 +53,20 @@ You can also provide these flags when running quorum-wizard:
 | Flags | Effect |
 | - | - |
 | `-q`, `--quickstart` | Create 3 node raft network with tessera and cakeshop (no user-input required) |
+| `generate --config <PATH>` | Generate a network from an existing config.json file |
+| `-r`, `--registry <REGISTRY>` | Use a custom docker registry (instead of registry.hub.docker.com) |
+| `-o`, `--outputPath <PATH>` | Set the output path. Wizard will place all generated files into this folder. Defaults to the location where Wizard is run |
 | `-v`, `--verbose` | Turn on additional logs for debugging |
 | `--version` | Show version number |
 | `-h`, `--help` | Show help |
 
 ## Interacting with the Network
 
-To explore the features of Quorum and deploy a private contract, follow the instructions on [Interacting with the Network](http://docs.goquorum.com/en/latest/Wizard/Interacting/).
+To explore the features of GoQuorum and deploy a private contract, follow the instructions on [Interacting with the Network](https://docs.goquorum.consensys.net/en/stable/HowTo/GetStarted/Wizard/Interacting/).
+
+## Tools
+
+The wizard provides the option to deploy some useful tools alongside your network. Learn more on the [Tools page](https://docs.goquorum.consensys.net/en/stable/HowTo/GetStarted/Wizard/Tools/).
 
 ## Developing
 Clone this repo to your local machine.
@@ -73,7 +82,7 @@ Clone this repo to your local machine.
 `quorum-wizard` to run (alternatively, you can run `node build/index.js`)
 
 ## Contributing
-Quorum Wizard is built on open source and we invite you to contribute enhancements. Upon review you will be required to complete a Contributor License Agreement (CLA) before we are able to merge. If you have any questions about the contribution process, please feel free to send an email to [info@goquorum.com](mailto:info@goquorum.com).
+GoQuorum Wizard is built on open source and we invite you to contribute enhancements. Upon review you will be required to complete a Contributor License Agreement (CLA) before we are able to merge. If you have any questions about the contribution process, please feel free to send an email to [quorum@consensys.net](mailto:quorum@consensys.net).
 
 ## Getting Help
 Stuck at some step? Please join our <a href="https://www.goquorum.com/slack-inviter" target="_blank" rel="noopener">Slack community</a> for support.
