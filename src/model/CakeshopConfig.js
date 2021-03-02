@@ -13,7 +13,7 @@ export function generateCakeshopConfig(config) {
       rpcUrl: isDocker(config.network.deployment)
         // docker-compose creates dns entries for the container's ip using container name (nodeX)
         ? `http://node${i + 1}:${config.containerPorts.quorum.rpcPort}`
-        : `http://localhost:${node.quorum.rpcPort}`,
+        : `http://${node.quorum.ip}:${node.quorum.rpcPort}`,
       transactionManagerUrl: createTransactionManagerUrl(config, node, i),
     }
     nodes.push(nodeData)
@@ -26,7 +26,7 @@ function createTransactionManagerUrl(config, node, i) {
     return isDocker(config.network.deployment)
       // docker-compose creates dns entries for the container's ip using container name (txmanagerX)
       ? `http://txmanager${i + 1}:${config.containerPorts.tm.thirdPartyPort}`
-      : `http://localhost:${node.tm.thirdPartyPort}`
+      : `http://${node.tm.ip}:${node.tm.thirdPartyPort}`
   }
   return ''
 }

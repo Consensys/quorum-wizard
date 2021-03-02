@@ -4,17 +4,17 @@ exports[`creates 3nodes istanbul bash no tessera cakeshop 1`] = `
 Array [
   Object {
     "name": "node1",
-    "rpcUrl": "http://localhost:22000",
+    "rpcUrl": "http://127.0.0.1:22000",
     "transactionManagerUrl": "",
   },
   Object {
     "name": "node2",
-    "rpcUrl": "http://localhost:22001",
+    "rpcUrl": "http://127.0.0.1:22001",
     "transactionManagerUrl": "",
   },
   Object {
     "name": "node3",
-    "rpcUrl": "http://localhost:22002",
+    "rpcUrl": "http://127.0.0.1:22002",
     "transactionManagerUrl": "",
   },
 ]
@@ -24,18 +24,18 @@ exports[`creates 3nodes istanbul bash tessera cakeshop 1`] = `
 Array [
   Object {
     "name": "node1",
-    "rpcUrl": "http://localhost:22000",
-    "transactionManagerUrl": "http://localhost:9081",
+    "rpcUrl": "http://127.0.0.1:22000",
+    "transactionManagerUrl": "http://127.0.0.1:9081",
   },
   Object {
     "name": "node2",
-    "rpcUrl": "http://localhost:22001",
-    "transactionManagerUrl": "http://localhost:9082",
+    "rpcUrl": "http://127.0.0.1:22001",
+    "transactionManagerUrl": "http://127.0.0.1:9082",
   },
   Object {
     "name": "node3",
-    "rpcUrl": "http://localhost:22002",
-    "transactionManagerUrl": "http://localhost:9083",
+    "rpcUrl": "http://127.0.0.1:22002",
+    "transactionManagerUrl": "http://127.0.0.1:9083",
   },
 ]
 `;
