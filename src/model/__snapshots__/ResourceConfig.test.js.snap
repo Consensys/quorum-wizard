@@ -11,8 +11,8 @@ k8s:
     Capacity: 200Mi
 genesis:
   consensus: raft
-  Quorum_Version: 20.10.0
-  Tm_Version: 20.10.0
+  Quorum_Version: 21.1.0
+  Tm_Version: 21.1.0
   Chain_Id: 10
 nodes:
   
@@ -23,11 +23,11 @@ nodes:
     quorum:
       quorum:
         consensus: raft
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -43,11 +43,11 @@ nodes:
     quorum:
       quorum:
         consensus: raft
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -63,11 +63,11 @@ nodes:
     quorum:
       quorum:
         consensus: raft
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -83,11 +83,11 @@ nodes:
     quorum:
       quorum:
         consensus: raft
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -103,11 +103,11 @@ nodes:
     quorum:
       quorum:
         consensus: raft
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -129,8 +129,8 @@ k8s:
     Capacity: 200Mi
 genesis:
   consensus: istanbul
-  Quorum_Version: 20.10.0
-  Tm_Version: 20.10.0
+  Quorum_Version: 21.1.0
+  Tm_Version: 21.1.0
   Chain_Id: 10
 nodes:
   
@@ -141,11 +141,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -161,11 +161,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -181,11 +181,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -201,11 +201,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -221,11 +221,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -241,11 +241,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -261,11 +261,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -287,8 +287,8 @@ k8s:
     Capacity: 200Mi
 genesis:
   consensus: istanbul
-  Quorum_Version: 20.10.0
-  Tm_Version: 20.10.0
+  Quorum_Version: 21.1.0
+  Tm_Version: 21.1.0
   Chain_Id: 10
 nodes:
   
@@ -299,11 +299,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -319,11 +319,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -339,11 +339,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -359,11 +359,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -379,11 +379,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -399,11 +399,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -419,11 +419,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -451,8 +451,8 @@ cakeshop:
     nodePort: 8999
 genesis:
   consensus: istanbul
-  Quorum_Version: 20.10.0
-  Tm_Version: 20.10.0
+  Quorum_Version: 21.1.0
+  Tm_Version: 21.1.0
   Chain_Id: 10
 nodes:
   
@@ -463,11 +463,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -483,11 +483,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -503,11 +503,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -523,11 +523,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -543,11 +543,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -563,11 +563,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -583,11 +583,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -609,8 +609,8 @@ k8s:
     Capacity: 200Mi
 genesis:
   consensus: istanbul
-  Quorum_Version: 20.10.0
-  Tm_Version: 20.10.0
+  Quorum_Version: 21.1.0
+  Tm_Version: 21.1.0
   Chain_Id: 10
 nodes:
   
@@ -621,11 +621,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -641,11 +641,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -661,11 +661,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -681,11 +681,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -701,11 +701,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -721,11 +721,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -741,11 +741,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -777,8 +777,8 @@ prometheus:
   nodePort_prom: 31323
 genesis:
   consensus: istanbul
-  Quorum_Version: 20.10.0
-  Tm_Version: 20.10.0
+  Quorum_Version: 21.1.0
+  Tm_Version: 21.1.0
   Chain_Id: 10
 nodes:
   
@@ -789,11 +789,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -809,11 +809,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -829,11 +829,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -849,11 +849,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -869,11 +869,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -889,11 +889,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:
@@ -909,11 +909,11 @@ nodes:
     quorum:
       quorum:
         consensus: istanbul
-        Quorum_Version: 20.10.0
+        Quorum_Version: 21.1.0
         Docker_Repo: quorumengineering
       tm:
         Name: tessera
-        Tm_Version: 20.10.0
+        Tm_Version: 21.1.0
         Docker_Repo: quorumengineering
         Tessera_Config_Dir: out/config
     geth:

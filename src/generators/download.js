@@ -79,9 +79,9 @@ export function getPlatformSpecificUrl({ url }) {
   return platformUrl
 }
 
-export const LATEST_QUORUM = '20.10.0'
-export const LATEST_TESSERA = '20.10.0'
-export const LATEST_CAKESHOP = '0.11.0'
+export const LATEST_QUORUM = '21.1.0'
+export const LATEST_TESSERA = '21.1.0'
+export const LATEST_CAKESHOP = '0.12.0'
 export const LATEST_ISTANBUL_TOOLS = '1.0.3'
 export const LATEST_BOOTNODE = '1.9.7'
 export const QUORUM_PRE_260 = '2.5.0'
@@ -89,6 +89,18 @@ export const LATEST_REPORTING = 'latest'
 
 export const BINARIES = {
   quorum: {
+    '21.1.0': {
+      name: 'geth',
+      description: 'Quorum 21.1.0',
+      url: {
+        darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v21.1.0/geth_v21.1.0_darwin_amd64.tar.gz',
+        linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v21.1.0/geth_v21.1.0_linux_amd64.tar.gz',
+      },
+      type: 'tar.gz',
+      files: [
+        'geth',
+      ],
+    },
     '20.10.0': {
       name: 'geth',
       description: 'Quorum 20.10.0',
@@ -140,6 +152,12 @@ export const BINARIES = {
   },
 
   tessera: {
+    '21.1.0': {
+      name: 'tessera-app.jar',
+      description: 'Tessera 21.1.0',
+      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/net/consensys/quorum/tessera/tessera-app/21.1.0/tessera-app-21.1.0-app.jar',
+      type: 'jar',
+    },
     '20.10.0': {
       name: 'tessera-app.jar',
       description: 'Tessera 20.10.0',
@@ -173,10 +191,10 @@ export const BINARIES = {
   },
 
   cakeshop: {
-    '0.11.0': {
+    '0.12.0': {
       name: 'cakeshop.war',
-      description: 'Cakeshop 0.11.0',
-      url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.11.0/cakeshop-0.11.0.war',
+      description: 'Cakeshop 0.12.0',
+      url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.12.0/cakeshop-0.12.0.war',
       type: 'jar',
     },
   },

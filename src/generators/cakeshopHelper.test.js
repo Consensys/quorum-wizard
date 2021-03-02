@@ -40,12 +40,6 @@ describe('creates a cakeshop directory structure for bash', () => {
       'cakeshop.json',
       anything(),
     )
-    expect(readFileToString).toBeCalledWith(
-      createLibPath(
-        'lib',
-        'cakeshop_application.properties.template',
-      ),
-    )
     expect(writeFile).toBeCalledWith(
       createNetPath(config, 'qdata/cakeshop/local/application.properties'),
       anything(),

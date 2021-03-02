@@ -136,6 +136,10 @@ REPORTING_DOCKER_IMAGE=quorumengineering/quorum-reporting:${config.network.repor
 REPORTING_RPC_PORT=${config.containerPorts.reporting.rpcPort}
 REPORTING_UI_PORT=${config.containerPorts.reporting.uiPort}`)
   }
+  if (isCakeshop(config.network.cakeshop)) {
+    env = env.concat(`
+CAKESHOP_DOCKER_IMAGE=quorumengineering/cakeshop:${config.network.cakeshop}`)
+  }
   return env
 }
 
