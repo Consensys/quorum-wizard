@@ -1,6 +1,6 @@
 {
   "name": "quorum-wizard",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Tool for walking through the setup of networks.",
   "main": "src/index.js",
   "bin": {
