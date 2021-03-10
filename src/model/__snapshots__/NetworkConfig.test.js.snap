@@ -17,7 +17,7 @@ Object {
     },
   },
   "network": Object {
-    "cakeshop": "0.12.0",
+    "cakeshop": "0.12.1",
     "cakeshopPort": "8999",
     "configDir": "network/5-nodes-raft-docker-compose/resources",
     "consensus": "raft",
@@ -442,7 +442,7 @@ exports[`creates 7nodes istanbul cakeshop config 1`] = `
 Object {
   "containerPorts": undefined,
   "network": Object {
-    "cakeshop": "0.12.0",
+    "cakeshop": "0.12.1",
     "cakeshopPort": "8999",
     "configDir": "network/7-nodes-istanbul-tessera-bash/resources",
     "consensus": "istanbul",
@@ -1390,7 +1390,7 @@ exports[`creates quickstart config 1`] = `
 Object {
   "containerPorts": undefined,
   "network": Object {
-    "cakeshop": "0.12.0",
+    "cakeshop": "0.12.1",
     "cakeshopPort": "8999",
     "configDir": "network/3-nodes-raft-tessera-bash/resources",
     "consensus": "raft",
