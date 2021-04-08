@@ -1,7 +1,7 @@
 import { getDockerRegistry } from '../generators/dockerHelper'
 import { isCakeshop, isKubernetes } from './NetworkConfig'
 
-export const LATEST_QUBERNETES = 'v0.2.1-rc2'
+export const LATEST_QUBERNETES = 'v0.2.2-rc1'
 
 // eslint-disable-next-line import/prefer-default-export
 export function buildKubernetesResource(config) {
@@ -91,7 +91,7 @@ function buildCakeshopDetails(config) {
   }
   return `
 cakeshop:
-  version: latest
+  version: ${config.network.cakeshop}
   Docker_Repo: ${getDockerRegistry()}quorumengineering
   service:
     type: NodePort

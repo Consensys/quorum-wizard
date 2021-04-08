@@ -81,7 +81,7 @@ export function getPlatformSpecificUrl({ url }) {
 
 export const LATEST_QUORUM = '21.1.0'
 export const LATEST_TESSERA = '21.1.0'
-export const LATEST_CAKESHOP = '0.12.0'
+export const LATEST_CAKESHOP = '0.12.1'
 export const LATEST_ISTANBUL_TOOLS = '1.0.3'
 export const LATEST_BOOTNODE = '1.9.7'
 export const QUORUM_PRE_260 = '2.5.0'
@@ -191,10 +191,10 @@ export const BINARIES = {
   },
 
   cakeshop: {
-    '0.12.0': {
+    '0.12.1': {
       name: 'cakeshop.war',
-      description: 'Cakeshop 0.12.0',
-      url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.12.0/cakeshop-0.12.0.war',
+      description: 'Cakeshop 0.12.1',
+      url: 'https://github.com/jpmorganchase/cakeshop/releases/download/v0.12.1/cakeshop-0.12.1.war',
       type: 'jar',
     },
   },
