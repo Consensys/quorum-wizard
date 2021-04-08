@@ -444,7 +444,7 @@ k8s:
     Type: PVC
     Capacity: 200Mi
 cakeshop:
-  version: latest
+  version: 0.12.1
   Docker_Repo: quorumengineering
   service:
     type: NodePort
@@ -766,7 +766,7 @@ k8s:
     Type: PVC
     Capacity: 200Mi
 cakeshop:
-  version: latest
+  version: 0.12.1
   Docker_Repo: quorumengineering
   service:
     type: NodePort
