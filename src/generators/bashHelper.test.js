@@ -51,12 +51,6 @@ test('creates quickstart config', () => {
   expect(bash).toMatchSnapshot()
 })
 
-test('creates quickstart start script without insecure unlock flag on quorum pre-2.6.0', () => {
-  const config = createConfigFromAnswers({ quorumVersion: '2.5.0' })
-  const bash = startScriptBash(config)
-  expect(bash).toMatchSnapshot()
-})
-
 test('creates 3nodes raft bash tessera', () => {
   const config = createConfigFromAnswers(baseNetwork)
   const bash = startScriptBash(config)

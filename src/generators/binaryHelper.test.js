@@ -6,7 +6,7 @@ import {
   getGethOnPath,
   getTesseraOnPath,
   isLegacyTessera,
-  isQuorum260Plus,
+  isQuorum2010Plus,
   pathToBootnode,
   pathToCakeshop,
   pathToQuorumBinary,
@@ -93,7 +93,7 @@ describe('Finds binaries on path', () => {
     executeSync.mockReturnValueOnce(Buffer.from(quorumVersion))
     expect(getGethOnPath()).toEqual([
       {
-        name: 'Quorum 2.2.4 on path (/usr/bin/geth)',
+        name: 'Quorum 21.1.0 on path (/usr/bin/geth)',
         value: 'PATH',
       },
     ])
@@ -213,17 +213,18 @@ describe('presents the correct binary options', () => {
   })
 })
 
-test('tests if quorum version is 2.6.0 or higher', () => {
-  expect(isQuorum260Plus('2.6.1')).toBeTruthy()
-  expect(isQuorum260Plus('2.6.0')).toBeTruthy()
-  expect(isQuorum260Plus('2.5.0')).not.toBeTruthy()
+test('tests if quorum version is 20.10.0 or higher', () => {
+  expect(isQuorum2010Plus('21.1.0')).toBeTruthy()
+  expect(isQuorum2010Plus('20.10.0')).toBeTruthy()
+  expect(isQuorum2010Plus('2.7.0')).not.toBeTruthy()
+  expect(isQuorum2010Plus('2.6.1')).not.toBeTruthy()
 })
 
-test('tests if quorum version on path is 2.6.0 or higher', () => {
+test('tests if quorum version on path is 20.10.0 or higher', () => {
   executeSync.mockReturnValueOnce(Buffer.from(quorumVersion26))
-  expect(isQuorum260Plus('PATH')).toBeTruthy()
+  expect(isQuorum2010Plus('PATH')).not.toBeTruthy()
   executeSync.mockReturnValueOnce(Buffer.from(quorumVersion))
-  expect(isQuorum260Plus('PATH')).not.toBeTruthy()
+  expect(isQuorum2010Plus('PATH')).toBeTruthy()
 })
 
 test('tests if tessera version is 1.0.0 or higher', () => {
@@ -252,16 +253,16 @@ GOPATH=/Users/bradmcdermott/go
 GOROOT=/usr/local/Cellar/go/1.12/libexec`
 
 const quorumVersion = `Geth
-Version: 1.8.18-stable
-Git Commit: d0262e2139ce74d16b127dd3b4ded57fd29e3a73
-Quorum Version: 2.2.4
+Version: 1.9.7-stable
+Git Commit: a21e1d44cb4da8eaaf66dedb3ae16118db0cb7ef
+Quorum Version: 21.1.0
 Architecture: amd64
-Protocol Versions: [63 62]
+Protocol Versions: [64 63]
 Network Id: 1337
-Go Version: go1.9.7
+Go Version: go1.15.5
 Operating System: darwin
 GOPATH=/Users/bradmcdermott/go
-GOROOT=/usr/local/Cellar/go@1.9/1.9.7/libexec`
+GOROOT=/Users/runner/hostedtoolcache/go/1.15.5/x64`
 
 const quorumVersion26 = `Geth
 Version: 1.9.7-stable

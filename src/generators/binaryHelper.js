@@ -79,11 +79,6 @@ export function getPathGethVersion() {
   return null
 }
 
-export function isQuorum260Plus(quorumVersion) {
-  const version = quorumVersion === 'PATH' ? getPathGethVersion() : quorumVersion
-  return cmp(version, '2.6.0') >= 0
-}
-
 export function isQuorum2010Plus(quorumVersion) {
   const version = quorumVersion === 'PATH' ? getPathGethVersion() : quorumVersion
   return cmp(version, '20.10.0') >= 0
