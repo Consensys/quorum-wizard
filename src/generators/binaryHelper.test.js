@@ -6,7 +6,7 @@ import {
   getGethOnPath,
   getTesseraOnPath,
   isLegacyTessera,
-  isQuorum2010Plus,
+  isQuorumVersionAbove,
   pathToBootnode,
   pathToCakeshop,
   pathToQuorumBinary,
@@ -214,17 +214,18 @@ describe('presents the correct binary options', () => {
 })
 
 test('tests if quorum version is 20.10.0 or higher', () => {
-  expect(isQuorum2010Plus('21.1.0')).toBeTruthy()
-  expect(isQuorum2010Plus('20.10.0')).toBeTruthy()
-  expect(isQuorum2010Plus('2.7.0')).not.toBeTruthy()
-  expect(isQuorum2010Plus('2.6.1')).not.toBeTruthy()
+  expect(isQuorumVersionAbove('21.4.0', '21.4.0')).toBeTruthy()
+  expect(isQuorumVersionAbove('21.1.0', '20.10.0')).toBeTruthy()
+  expect(isQuorumVersionAbove('20.10.0', '20.10.0')).toBeTruthy()
+  expect(isQuorumVersionAbove('2.7.0', '20.10.0')).not.toBeTruthy()
+  expect(isQuorumVersionAbove('2.6.1', '20.10.0')).not.toBeTruthy()
 })
 
 test('tests if quorum version on path is 20.10.0 or higher', () => {
   executeSync.mockReturnValueOnce(Buffer.from(quorumVersion26))
-  expect(isQuorum2010Plus('PATH')).not.toBeTruthy()
+  expect(isQuorumVersionAbove('PATH', '20.10.0')).not.toBeTruthy()
   executeSync.mockReturnValueOnce(Buffer.from(quorumVersion))
-  expect(isQuorum2010Plus('PATH')).toBeTruthy()
+  expect(isQuorumVersionAbove('PATH', '20.10.0')).toBeTruthy()
 })
 
 test('tests if tessera version is 1.0.0 or higher', () => {
