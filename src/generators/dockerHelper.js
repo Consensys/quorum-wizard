@@ -9,7 +9,6 @@ import { isCakeshop, isTessera } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { joinPath, removeTrailingSlash } from '../utils/pathUtils'
 import { buildDockerIp, cidrhost } from '../utils/subnetUtils'
-import { isQuorum260Plus } from './binaryHelper'
 import {
   buildCadvisorService,
   buildEthloggerService,
@@ -115,16 +114,13 @@ QUORUM_P2P_PORT=${config.containerPorts.quorum.p2pPort}
 QUORUM_RAFT_PORT=${config.containerPorts.quorum.raftPort}
 QUORUM_RPC_PORT=${config.containerPorts.quorum.rpcPort}
 QUORUM_WS_PORT=${config.containerPorts.quorum.wsPort}
-DOCKER_IP=${buildDockerIp(config.containerPorts.dockerSubnet, '10')}`
+DOCKER_IP=${buildDockerIp(config.containerPorts.dockerSubnet, '10')}
+QUORUM_GETH_ARGS=--allow-insecure-unlock --graphql --graphql.port ${config.containerPorts.quorum.graphQlPort} --graphql.corsdomain=* --graphql.vhosts=* --graphql.addr=0.0.0.0`
   if (hasTessera) {
     env = env.concat(`
 QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/tessera:${config.network.transactionManager}
 TESSERA_P2P_PORT=${config.containerPorts.tm.p2pPort}
 TESSERA_3PARTY_PORT=${config.containerPorts.tm.thirdPartyPort}`)
-  }
-  if (isQuorum260Plus(config.network.quorumVersion)) {
-    env = env.concat(`
-QUORUM_GETH_ARGS=--allow-insecure-unlock --graphql --graphql.port ${config.containerPorts.quorum.graphQlPort} --graphql.corsdomain=* --graphql.vhosts=* --graphql.addr=0.0.0.0`)
   }
   if (getDockerRegistry() !== '') {
     env = env.concat(`

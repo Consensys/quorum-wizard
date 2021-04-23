@@ -93,8 +93,8 @@ export const BINARIES = {
       name: 'geth',
       description: 'Quorum 21.1.0',
       url: {
-        darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v21.1.0/geth_v21.1.0_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v21.1.0/geth_v21.1.0_linux_amd64.tar.gz',
+        darwin: 'https://artifacts.consensys.net/public/go-quorum/raw/versions/v21.1.0/geth_v21.1.0_darwin_amd64.tar.gz',
+        linux: 'https://artifacts.consensys.net/public/go-quorum/raw/versions/v21.1.0/geth_v21.1.0_linux_amd64.tar.gz',
       },
       type: 'tar.gz',
       files: [
@@ -105,8 +105,8 @@ export const BINARIES = {
       name: 'geth',
       description: 'Quorum 20.10.0',
       url: {
-        darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v20.10.0/geth_v20.10.0_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v20.10.0/geth_v20.10.0_linux_amd64.tar.gz',
+        darwin: 'https://artifacts.consensys.net/public/go-quorum/raw/versions/v20.10.0/geth_v20.10.0_darwin_amd64.tar.gz',
+        linux: 'https://artifacts.consensys.net/public/go-quorum/raw/versions/v20.10.0/geth_v20.10.0_linux_amd64.tar.gz',
       },
       type: 'tar.gz',
       files: [
@@ -117,8 +117,8 @@ export const BINARIES = {
       name: 'geth',
       description: 'Quorum 2.7.0',
       url: {
-        darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.7.0/geth_v2.7.0_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.7.0/geth_v2.7.0_linux_amd64.tar.gz',
+        darwin: 'https://artifacts.consensys.net/public/go-quorum/raw/versions/v2.7.0/geth_v2.7.0_darwin_amd64.tar.gz',
+        linux: 'https://artifacts.consensys.net/public/go-quorum/raw/versions/v2.7.0/geth_v2.7.0_linux_amd64.tar.gz',
       },
       type: 'tar.gz',
       files: [
@@ -129,20 +129,8 @@ export const BINARIES = {
       name: 'geth',
       description: 'Quorum 2.6.0',
       url: {
-        darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.6.0/geth_v2.6.0_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.6.0/geth_v2.6.0_linux_amd64.tar.gz',
-      },
-      type: 'tar.gz',
-      files: [
-        'geth',
-      ],
-    },
-    '2.5.0': {
-      name: 'geth',
-      description: 'Quorum 2.5.0',
-      url: {
-        darwin: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.5.0/geth_v2.5.0_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/quorumengineering/quorum/download_file?file_path=v2.5.0/geth_v2.5.0_linux_amd64.tar.gz',
+        darwin: 'https://artifacts.consensys.net/public/go-quorum/raw/versions/v2.6.0/geth_v2.6.0_darwin_amd64.tar.gz',
+        linux: 'https://artifacts.consensys.net/public/go-quorum/raw/versions/v2.6.0/geth_v2.6.0_linux_amd64.tar.gz',
       },
       type: 'tar.gz',
       files: [
@@ -203,8 +191,8 @@ export const BINARIES = {
     '1.0.3': {
       name: 'istanbul',
       url: {
-        darwin: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.3_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/api/ui/download/quorumengineering/istanbul-tools/istanbul-tools_v1.0.3_linux_amd64.tar.gz',
+        darwin: 'https://artifacts.consensys.net/public/quorum-tools/raw/versions/v1.0.3/istanbul-tools_v1.0.3_darwin_amd64.tar.gz',
+        linux: 'https://artifacts.consensys.net/public/quorum-tools/raw/versions/v1.0.3/istanbul-tools_v1.0.3_linux_amd64.tar.gz',
       },
       type: 'tar.gz',
       files: [
@@ -217,8 +205,8 @@ export const BINARIES = {
     '1.9.7': {
       name: 'bootnode',
       url: {
-        darwin: 'https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v1.9.7_darwin_amd64.tar.gz',
-        linux: 'https://bintray.com/api/ui/download/quorumengineering/geth-bootnode/bootnode_v1.9.7_linux_amd64.tar.gz',
+        darwin: 'https://artifacts.consensys.net/public/quorum-tools/raw/versions/v1.9.7/bootnode_v1.9.7_darwin_amd64.tar.gz',
+        linux: 'https://artifacts.consensys.net/public/quorum-tools/raw/versions/v1.9.7/bootnode_v1.9.7_linux_amd64.tar.gz',
       },
       type: 'tar.gz',
       files: [

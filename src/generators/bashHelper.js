@@ -1,7 +1,7 @@
 import { getFullNetworkPath } from './networkHelper'
 import { executeSync } from '../utils/execUtils'
 import { buildCakeshopDir, generateCakeshopScript } from './cakeshopHelper'
-import { isQuorum260Plus, pathToQuorumBinary } from './binaryHelper'
+import { pathToQuorumBinary } from './binaryHelper'
 import { isCakeshop, isRaft, isTessera } from '../model/NetworkConfig'
 import { info } from '../utils/log'
 import { formatTesseraKeysOutput } from './transactionManager'
@@ -98,9 +98,7 @@ export function createGethStartCommand(config, node, passwordDestination, nodeNu
   const {
     devP2pPort, rpcPort, raftPort, wsPort, graphQlPort,
   } = node.quorum
-  const quorum26Flags = isQuorum260Plus(quorumVersion) ? `--allow-insecure-unlock --graphql --graphql.port ${graphQlPort} --graphql.corsdomain=*  --graphql.vhosts=* --graphql.addr 0.0.0.0` : ''
-
-  const args = `--nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --ws --wsaddr 0.0.0.0 --wsorigins=* --wsapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --emitcheckpoints --unlock 0 --password ${passwordDestination} ${quorum26Flags}`
+  const args = `--nodiscover --rpc --rpccorsdomain=* --rpcvhosts=* --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --ws --wsaddr 0.0.0.0 --wsorigins=* --wsapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${consensus},quorumPermission --emitcheckpoints --unlock 0 --password ${passwordDestination} --allow-insecure-unlock --graphql --graphql.port ${graphQlPort} --graphql.corsdomain=*  --graphql.vhosts=* --graphql.addr 0.0.0.0`
   const consensusArgs = isRaft(consensus)
     ? `--raft --raftport ${raftPort}`
     : '--istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1'
