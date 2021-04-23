@@ -7,7 +7,7 @@ import {
 import {
   getDownloadableGethChoices,
   getDownloadableTesseraChoices,
-  isQuorum2010Plus,
+  isQuorumVersionAbove,
 } from '../generators/binaryHelper'
 import {
   defaultNetworkName,
@@ -154,7 +154,7 @@ export const TOOLS = {
     {
       name: 'Quorum Reporting Tool (Beta)',
       value: 'reporting',
-      disabled: !isDocker(answers.deployment) || !isQuorum2010Plus(answers.quorumVersion) ? 'Disabled, Reporting is only supported in Docker while using the Quorum 20.10.0+' : false,
+      disabled: !isDocker(answers.deployment) || !isQuorumVersionAbove(answers.quorumVersion, '20.10.0') ? 'Disabled, Reporting is only supported in Docker while using the Quorum 20.10.0+' : false,
     },
     new Separator('=== Third Party Tools ==='),
     {

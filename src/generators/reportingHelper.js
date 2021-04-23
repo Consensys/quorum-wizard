@@ -3,6 +3,7 @@ import { libRootDir, readFileToString, writeFile } from '../utils/fileUtils'
 import { joinPath } from '../utils/pathUtils'
 import { cidrhost } from '../utils/subnetUtils'
 import { isBash, isDocker } from '../model/NetworkConfig'
+import { isQuorumVersionAbove } from './binaryHelper'
 
 export function generateReportingConfig(config, qdataFolder) {
   const reportingConfig = TOML.parse(readFileToString(joinPath(libRootDir(), 'lib', 'reporting-config.toml')))
@@ -11,12 +12,16 @@ export function generateReportingConfig(config, qdataFolder) {
     reportingConfig.server.rpcAddr = `0.0.0.0:${config.containerPorts.reporting.rpcPort}`
     reportingConfig.server.uiPort = parseInt(config.containerPorts.reporting.uiPort, 10)
     reportingConfig.connection.wsUrl = `ws://node1:${config.containerPorts.quorum.wsPort}`
-    reportingConfig.connection.graphQLUrl = `http://node1:${config.containerPorts.quorum.graphQlPort}/graphql`
+    // graphql is on the rpc port in quorum 21.4.0+
+    const graphQlPort = isQuorumVersionAbove(config.network.quorumVersion, '21.4.0') ? config.containerPorts.quorum.rpcPort : config.containerPorts.quorum.graphQlPort
+    reportingConfig.connection.graphQLUrl = `http://node1:${graphQlPort}/graphql`
   } else if (isBash(config.network.deployment)) {
     reportingConfig.server.rpcAddr = `localhost:${config.network.reportingRpcPort}`
     reportingConfig.server.uiPort = parseInt(config.network.reportingUiPort, 10)
     reportingConfig.connection.wsUrl = `ws://localhost:${config.nodes[0].quorum.wsPort}`
-    reportingConfig.connection.graphQLUrl = `http://localhost:${config.nodes[0].quorum.graphQlPort}/graphql`
+    // graphql is on the rpc port in quorum 21.4.0+
+    const graphQlPort = isQuorumVersionAbove(config.network.quorumVersion, '21.4.0') ? config.nodes[0].quorum.rpcPort : config.nodes[0].quorum.graphQlPort
+    reportingConfig.connection.graphQLUrl = `http://localhost:${graphQlPort}/graphql`
     // use in-memory db in bash mode by deleting database section
     delete reportingConfig.database
   }

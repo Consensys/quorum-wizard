@@ -69,6 +69,7 @@ x-quorum-def:
         --wsport ${QUORUM_WS_PORT:-8546} \
         --wsapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,${QUORUM_CONSENSUS:-istanbul} \
         --port ${QUORUM_P2P_PORT:-21000} \
+        --allow-insecure-unlock \
         --unlock 0 \
         --password $${DDIR}/keystore/password.txt \
         $${GETH_ARGS_${QUORUM_CONSENSUS:-istanbul}} \

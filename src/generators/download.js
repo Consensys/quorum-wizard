@@ -79,8 +79,8 @@ export function getPlatformSpecificUrl({ url }) {
   return platformUrl
 }
 
-export const LATEST_QUORUM = '21.1.0'
-export const LATEST_TESSERA = '21.1.0'
+export const LATEST_QUORUM = '21.4.0'
+export const LATEST_TESSERA = '21.1.1'
 export const LATEST_CAKESHOP = '0.12.1'
 export const LATEST_ISTANBUL_TOOLS = '1.0.3'
 export const LATEST_BOOTNODE = '1.9.7'
@@ -89,6 +89,18 @@ export const LATEST_REPORTING = 'latest'
 
 export const BINARIES = {
   quorum: {
+    '21.4.0': {
+      name: 'geth',
+      description: 'Quorum 21.4.0',
+      url: {
+        darwin: 'https://artifacts.consensys.net/public/go-quorum/raw/versions/v21.4.0/geth_v21.4.0_darwin_amd64.tar.gz',
+        linux: 'https://artifacts.consensys.net/public/go-quorum/raw/versions/v21.4.0/geth_v21.4.0_linux_amd64.tar.gz',
+      },
+      type: 'tar.gz',
+      files: [
+        'geth',
+      ],
+    },
     '21.1.0': {
       name: 'geth',
       description: 'Quorum 21.1.0',
@@ -140,6 +152,12 @@ export const BINARIES = {
   },
 
   tessera: {
+    '21.1.1': {
+      name: 'tessera-app.jar',
+      description: 'Tessera 21.1.1',
+      url: 'https://oss.sonatype.org/service/local/repositories/releases/content/net/consensys/quorum/tessera/tessera-app/21.1.1/tessera-app-21.1.1-app.jar',
+      type: 'jar',
+    },
     '21.1.0': {
       name: 'tessera-app.jar',
       description: 'Tessera 21.1.0',

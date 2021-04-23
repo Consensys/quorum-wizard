@@ -79,9 +79,9 @@ export function getPathGethVersion() {
   return null
 }
 
-export function isQuorum2010Plus(quorumVersion) {
+export function isQuorumVersionAbove(quorumVersion, compareVersion) {
   const version = quorumVersion === 'PATH' ? getPathGethVersion() : quorumVersion
-  return cmp(version, '20.10.0') >= 0
+  return cmp(version, compareVersion) >= 0
 }
 
 export function isLegacyTessera(tesseraVersion) {

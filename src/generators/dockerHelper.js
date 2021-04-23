@@ -16,6 +16,7 @@ import {
   getSplunkDefinitions,
 } from './splunkHelper'
 import { generateElasticsearchService, generateReportingConfig, generateReportingService } from './reportingHelper'
+import { isQuorumVersionAbove } from './binaryHelper'
 
 let DOCKER_REGISTRY
 
@@ -108,6 +109,9 @@ export async function initDockerCompose(config) {
 }
 
 function createEnvFile(config, hasTessera) {
+  // in quorum 21.4.0 and higher, addr and port are the same as the http/rpc addr and port
+  const legacyGraphQl = isQuorumVersionAbove(config.network.quorumVersion, '21.4.0') ? '' : `--graphql.addr=0.0.0.0 --graphql.port ${config.containerPorts.quorum.graphQlPort} `
+
   let env = `QUORUM_CONSENSUS=${config.network.consensus}
 QUORUM_DOCKER_IMAGE=quorumengineering/quorum:${config.network.quorumVersion}
 QUORUM_P2P_PORT=${config.containerPorts.quorum.p2pPort}
@@ -115,7 +119,7 @@ QUORUM_RAFT_PORT=${config.containerPorts.quorum.raftPort}
 QUORUM_RPC_PORT=${config.containerPorts.quorum.rpcPort}
 QUORUM_WS_PORT=${config.containerPorts.quorum.wsPort}
 DOCKER_IP=${buildDockerIp(config.containerPorts.dockerSubnet, '10')}
-QUORUM_GETH_ARGS=--allow-insecure-unlock --graphql --graphql.port ${config.containerPorts.quorum.graphQlPort} --graphql.corsdomain=* --graphql.vhosts=* --graphql.addr=0.0.0.0`
+QUORUM_GETH_ARGS=--graphql --graphql.corsdomain=* --graphql.vhosts=* ${legacyGraphQl}`
   if (hasTessera) {
     env = env.concat(`
 QUORUM_TX_MANAGER_DOCKER_IMAGE=quorumengineering/tessera:${config.network.transactionManager}
