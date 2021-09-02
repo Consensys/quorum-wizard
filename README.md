@@ -4,9 +4,19 @@
 [GoQuorum Wizard](https://github.com/ConsenSys/quorum-wizard) is a command line tool that allows
 users to set up a development GoQuorum network on their local machine in less than 2 minutes.
 
-![](docs/quorum-wizard.gif)
+## ⚠️ Project Deprecation Notice ⚠️
+
+quorum-wizard will be deprecated on December 31st 2021, date from when we will stop supporting the project.
+
+From now on, we encourage all users to use to [quorum-dev-quickstart](https://github.com/ConsenSys/quorum-dev-quickstart) which is a similar tool offering extra compatibility with Quorum products, in particular Hyperledger Besu and Orchestrate.
+
+We will continue to support quorum-wizard in particular fixing bugs until the end of 2021.
+
+If you have any questions or concerns, please reach out to the ConsenSys protocol engineering team on [#Discord](https://chat.consensys.net) or by [email](mailto:quorum@consensys.net).
 
 ## Using GoQuorum Wizard
+
+![](docs/quorum-wizard.gif)
 
 GoQuorum Wizard is written in Javascript and designed to be run as a global NPM module from the command line. Make sure you have [Node.js/NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed (version 10 or higher).
 
