@@ -25,7 +25,7 @@ function buildSplunkService(config) {
       - SPLUNK_START_ARGS=--accept-license
       - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-1111111111113
       - SPLUNK_PASSWORD=changeme
-      - SPLUNK_APPS_URL=https://github.com/splunk/ethereum-basics/releases/download/latest/ethereum-basics.tgz,https://splunk-quorum.s3.us-east-2.amazonaws.com/oss-quorum-app-for-splunk_109.tgz
+      - SPLUNK_APPS_URL=https://github.com/splunk/ethereum-basics/releases/download/latest/ethereum-basics.tgz,https://github.com/splunkdlt/splunk-app-quorum/releases/download/1.0.7/splunk-app-quorum-v1.0.7.tgz
     expose:
       - "8000"
       - "8088"
