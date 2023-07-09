@@ -75,6 +75,6 @@
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^2.5.1",
     "expect": "latest",
-    "jest": "^25.1.0"
+    "jest": "^29.6.1"
   }
 }
